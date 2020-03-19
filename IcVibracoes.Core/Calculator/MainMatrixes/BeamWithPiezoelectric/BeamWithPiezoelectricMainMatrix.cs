@@ -1,10 +1,8 @@
-﻿using IcVibracoes.Calculator.MainMatrixes;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Piezoelectric;
-using IcVibracoes.Models.Beam.Characteristics;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,23 +13,17 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
     /// It's responsible to calculate the beam with piezoelectric main matrixes.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class BeamWithPiezoelectricMainMatrix<TProfile> : CommonMainMatrix, IBeamWithPiezoelectricMainMatrix<TProfile>
+    public abstract class BeamWithPiezoelectricMainMatrix<TProfile> : BeamMainMatrix<TProfile>, IBeamWithPiezoelectricMainMatrix<TProfile>
         where TProfile : Profile, new()
     {
-        private readonly IBeamMainMatrix<TProfile> _beamMainMatrix;
         private readonly IArrayOperation _arrayOperation;
 
         /// <summary>
         /// Class construtor.
         /// </summary>
-        /// <param name="commonMainMatrix"></param>
-        /// <param name="beamMainMatrix"></param>
         /// <param name="arrayOperation"></param>
-        public BeamWithPiezoelectricMainMatrix(
-            IBeamMainMatrix<TProfile> beamMainMatrix,
-            IArrayOperation arrayOperation)
+        public BeamWithPiezoelectricMainMatrix(IArrayOperation arrayOperation)
         {
-            this._beamMainMatrix = beamMainMatrix;
             this._arrayOperation = arrayOperation;
         }
 
@@ -90,7 +82,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
             for (uint n = 0; n < numberOfElements; n++)
             {
                 double[,] piezoelectricElementHardness = new double[Constants.DegreesFreedomElement, Constants.DegreesFreedomElement];
-                double[,] beamElementHardness = await this._beamMainMatrix.CalculateElementHardness(beamWithPiezoelectric.GeometricProperty.MomentOfInertia[n], beamWithPiezoelectric.Material.YoungModulus, elementLength);
+                double[,] beamElementHardness = await base.CalculateElementHardness(beamWithPiezoelectric.GeometricProperty.MomentOfInertia[n], beamWithPiezoelectric.Material.YoungModulus, elementLength);
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
@@ -187,7 +179,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// It's responsible to calculate piezoelectric capacitance matrix.
         /// </summary>
         /// <param name="beamWithPiezoelectric"></param>
-        /// <param name="numberOfElements"></param>
         /// <returns></returns>
         public async Task<double[,]> CalculatePiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric)
         {
@@ -219,6 +210,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// It's responsible to calculate element piezoelectric capacitance matrix.
         /// </summary>
         /// <param name="beamWithPiezoelectric"></param>
+        /// <param name="elementIndex"></param>
         /// <returns></returns>
         public abstract Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint elementIndex);
 

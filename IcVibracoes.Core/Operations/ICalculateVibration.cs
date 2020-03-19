@@ -10,7 +10,7 @@ namespace IcVibracoes.Core.Operations
     /// <typeparam name="TProfile"></typeparam>
     public interface ICalculateVibration<TRequest, TRequestData, TProfile, TBeam> : IOperationBase<TRequest, CalculateVibrationResponse>
         where TProfile : Profile, new()
-        where TRequestData : CalculateVibrationRequestData<TProfile>
+        where TRequestData : IBeamRequestData<TProfile>
         where TRequest : CalculateVibrationRequest<TProfile, TRequestData>
         where TBeam : AbstractBeam<TProfile>, new()
     {

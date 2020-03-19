@@ -3,7 +3,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles.Circular;
-using IcVibracoes.Core.NewmarkNumericalIntegration;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Methods.AuxiliarOperations;
 

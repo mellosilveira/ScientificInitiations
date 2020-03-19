@@ -1,12 +1,21 @@
-﻿using IcVibracoes.Common.Classes;
-using IcVibracoes.Core.Models;
+﻿using IcVibracoes.Core.Models;
 using System;
 using System.IO;
 
 namespace IcVibracoes.Methods.AuxiliarOperations
 {
+    /// <summary>
+    /// It contains auxiliar operations to the solve specific problems in the project.
+    /// </summary>
     public class AuxiliarOperation : IAuxiliarOperation
     {
+        /// <summary>
+        /// Applies the bondary conditions to a matrix.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="bondaryConditions"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public double[,] ApplyBondaryConditions(double[,] matrix, bool[] bondaryConditions, uint size)
         {
             int i, j, count1, count2;
@@ -40,11 +49,18 @@ namespace IcVibracoes.Methods.AuxiliarOperations
             return matrixBC;
         }
 
-        public double[] ApplyBondaryConditions(double[] matrix, bool[] bondaryConditions, uint size)
+        /// <summary>
+        /// Applies the bondary conditions to a vector.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="bondaryConditions"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public double[] ApplyBondaryConditions(double[] vector, bool[] bondaryConditions, uint size)
         {
             int i, count1 = 0;
 
-            int n = matrix.GetLength(0);
+            int n = vector.GetLength(0);
 
             double[] matrixCC = new double[size];
 
@@ -52,7 +68,7 @@ namespace IcVibracoes.Methods.AuxiliarOperations
             {
                 if (bondaryConditions[i] == true)
                 {
-                    matrixCC[count1] = matrix[i];
+                    matrixCC[count1] = vector[i];
                     count1 += 1;
                 }
             }
@@ -60,15 +76,24 @@ namespace IcVibracoes.Methods.AuxiliarOperations
             return matrixCC;
         }
 
+        /// <summary>
+        /// Calculates the degrees freedom maximum.
+        /// </summary>
+        /// <param name="numberOfElements"></param>
+        /// <returns></returns>
         public uint CalculateDegreesFreedomMaximum(uint numberOfElements)
         {
             return (numberOfElements + 1) * Constants.NodesPerElement;
         }
 
-        public void WriteInFile(double time, double[] values)
+        /// <summary>
+        /// Writes the values ​​corresponding to an instant of time in a file.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="values"></param>
+        /// <param name="path"></param>
+        public void WriteInFile(double time, double[] values, string path)
         {
-            const string path = "C:/Users/bruno/OneDrive/Documentos/GitHub/IC_Vibra-es/IcVibrations/Solutions/TestSolution.csv";
-
             StreamWriter streamWriter = new StreamWriter(path, true);
 
             try
@@ -98,10 +123,13 @@ namespace IcVibracoes.Methods.AuxiliarOperations
             }
         }
 
-        public void WriteInFile(double angularFrequency)
+        /// <summary>
+        /// Writes the angular frequency in a file to start calculating the solution.
+        /// </summary>
+        /// <param name="angularFrequency"></param>
+        /// <param name="path"></param>
+        public void WriteInFile(double angularFrequency, string path)
         {
-            const string path = "C:/Users/bruno/OneDrive/Documentos/GitHub/IC_Vibra-es/IcVibrations/Solutions/TestSolution.csv";
-
             StreamWriter streamWriter = new StreamWriter(path, true);
 
             try

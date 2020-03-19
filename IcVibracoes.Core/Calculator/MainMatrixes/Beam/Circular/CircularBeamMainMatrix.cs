@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Calculator.MainMatrixes;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular
 {

@@ -1,4 +1,5 @@
-﻿using IcVibracoes.Calculator.MainMatrixes;
+﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Models.Beam.Characteristics;
 using System.Threading.Tasks;
 
@@ -7,7 +8,8 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
     /// <summary>
     /// It's responsible to calculate the beam with DVA main matrixes.
     /// </summary>
-    public interface IBeamWithDvaMainMatrix : ICommonMainMatrix
+    public interface IBeamWithDvaMainMatrix<TProfile> : IBeamMainMatrix<TProfile>
+        where TProfile : Profile, new()
     {
         /// <summary>
         /// Responsible to calculate the mass matrix of the beam.

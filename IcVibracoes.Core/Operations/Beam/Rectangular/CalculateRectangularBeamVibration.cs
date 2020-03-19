@@ -3,7 +3,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles.Rectangular;
-using IcVibracoes.Core.NewmarkNumericalIntegration;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using IcVibracoes.Methods.AuxiliarOperations;
 

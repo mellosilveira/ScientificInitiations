@@ -27,6 +27,10 @@ namespace IcVibracoes.Core.Mapper.Profiles.Circular
             this._calculateGeometricProperty = calculateGeometricProperty;
         }
 
+        /// <summary>
+        /// Method to build the circular profile.
+        /// </summary>
+        /// <param name="degreesFreedomMaximum"></param>
         public async override Task<GeometricProperty> Execute(CircularProfile profile, uint degreesFreedomMaximum)
         {
             GeometricProperty geometricProperty = new GeometricProperty();
@@ -34,8 +38,8 @@ namespace IcVibracoes.Core.Mapper.Profiles.Circular
             double area = await this._calculateGeometricProperty.Area(profile.Diameter, profile.Thickness.Value);
             double momentOfInertia = await this._calculateGeometricProperty.MomentOfInertia(profile.Diameter, profile.Thickness.Value);
 
-            geometricProperty.Area = await this._arrayOperation.Create(area, degreesFreedomMaximum);
-            geometricProperty.MomentOfInertia = await this._arrayOperation.Create(momentOfInertia, degreesFreedomMaximum);
+            geometricProperty.Area = await this._arrayOperation.Create(area, degreesFreedomMaximum, nameof(area));
+            geometricProperty.MomentOfInertia = await this._arrayOperation.Create(momentOfInertia, degreesFreedomMaximum, nameof(momentOfInertia));
 
             return geometricProperty;
         }

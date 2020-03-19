@@ -2,6 +2,7 @@
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration.Beam;
 using System.Collections.Generic;
+using static IcVibracoes.Common.Enum;
 
 namespace IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric
 {
@@ -51,6 +52,11 @@ namespace IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric
         /// Elements with piezoelectric.
         /// </summary>
         public uint[] ElementsWithPiezoelectric { get; set; }
+
+        /// <summary>
+        /// Piezoelectric position on the beam. Can be: up, down, up and down, around.
+        /// </summary>
+        public string PiezoelectricPosition { get; set; } 
 
         /// <summary>
         /// Piezoelectric profile.

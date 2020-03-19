@@ -2,8 +2,9 @@
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Circular;
 using IcVibracoes.Core.Mapper.Profiles.Circular;
-using IcVibracoes.Core.NewmarkNumericalIntegration;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Methods.AuxiliarOperations;
 
@@ -30,9 +31,10 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric.Circular
             ICircularProfileValidator profileValidator,
             IAuxiliarOperation auxiliarOperation,
             ICircularProfileMapper profileMapper,
+            IPiezoelectricCircularProfileMapper piezoelectricProfileMapper,
             ICircularBeamWithPiezoelectricMainMatrix mainMatrix,
             IArrayOperation arrayOperation)
-            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation, profileMapper, mainMatrix, arrayOperation)
+            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation, profileMapper, piezoelectricProfileMapper, mainMatrix, arrayOperation)
         {
         }
     }

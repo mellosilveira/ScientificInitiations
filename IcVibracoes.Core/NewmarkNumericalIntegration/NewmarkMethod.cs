@@ -87,7 +87,7 @@ namespace IcVibracoes.Core.NewmarkNumericalIntegration
 
                 try
                 {
-                    this._auxiliarOperation.WriteInFile(input.AngularFrequency);
+                    //this._auxiliarOperation.WriteInFile(input.AngularFrequency);
                     await Solution(input);
                 }
                 catch (Exception ex)
@@ -146,7 +146,7 @@ namespace IcVibracoes.Core.NewmarkNumericalIntegration
                         }
                     }
 
-                    this._auxiliarOperation.WriteInFile(time, y);
+                    //this._auxiliarOperation.WriteInFile(time, y);
 
                     time += input.DeltaTime;
 

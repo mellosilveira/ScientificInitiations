@@ -4,7 +4,7 @@ using IcVibracoes.Models.Beam.Characteristics;
 namespace IcVibracoes.Core.Models.Beam
 {
     /// <summary>
-    /// It represents the analyzed beam.
+    /// It represents the beam abstract object.
     /// </summary>
     public abstract class AbstractBeam<TProfile>
         where TProfile : Profile, new()

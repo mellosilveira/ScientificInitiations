@@ -2,8 +2,9 @@
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular;
 using IcVibracoes.Core.Mapper.Profiles.Rectangular;
-using IcVibracoes.Core.NewmarkNumericalIntegration;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using IcVibracoes.Methods.AuxiliarOperations;
 
@@ -30,9 +31,10 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric.Rectangular
             IRectangularProfileValidator profileValidator,
             IAuxiliarOperation auxiliarOperation,
             IRectangularProfileMapper profileMapper,
+            IPiezoelectricRectangularProfileMapper piezoelectricProfileMapper,
             IRectangularBeamWithPiezoelectricMainMatrix mainMatrix,
             IArrayOperation arrayOperation)
-            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation, profileMapper, mainMatrix, arrayOperation)
+            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation, profileMapper, piezoelectricProfileMapper, mainMatrix, arrayOperation)
         {
         }
     }

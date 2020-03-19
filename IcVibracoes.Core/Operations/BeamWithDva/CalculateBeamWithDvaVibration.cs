@@ -7,7 +7,7 @@ using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles;
 using IcVibracoes.Core.Models.BeamWithDynamicVibrationAbsorber;
-using IcVibracoes.Core.NewmarkNumericalIntegration;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration.BeamWithDynamicVibrationAbsorber;
 using IcVibracoes.Methods.AuxiliarOperations;
@@ -26,7 +26,7 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
         private readonly IMappingResolver _mappingResolver;
         private readonly IAuxiliarOperation _auxiliarOperation;
         private readonly IProfileMapper<TProfile> _profileMapper;
-        private readonly IBeamWithDvaMainMatrix _mainMatrix;
+        private readonly IBeamWithDvaMainMatrix<TProfile> _mainMatrix;
         private readonly IBeamMainMatrix<TProfile> _beamMainMatrix;
         private readonly IArrayOperation _arrayOperation;
 
@@ -42,15 +42,15 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
         /// <param name="beamMainMatrix"></param>
         /// <param name="arrayOperation"></param>
         public CalculateBeamWithDvaVibration(
-            INewmarkMethod newmarkMethod, 
-            IMappingResolver mappingResolver, 
-            IProfileValidator<TProfile> profileValidator, 
+            IBeamWithDvaNewmarkMethod newmarkMethod,
+            IMappingResolver mappingResolver,
+            IProfileValidator<TProfile> profileValidator,
             IAuxiliarOperation auxiliarOperation,
             IProfileMapper<TProfile> profileMapper,
-            IBeamWithDvaMainMatrix mainMatrix,
+            IBeamWithDvaMainMatrix<TProfile> mainMatrix,
             IBeamMainMatrix<TProfile> beamMainMatrix,
-            IArrayOperation arrayOperation) 
-            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation)
+            IArrayOperation arrayOperation)
+            : base(newmarkMethod, profileValidator, auxiliarOperation)
         {
             this._mappingResolver = mappingResolver;
             this._auxiliarOperation = auxiliarOperation;
@@ -60,6 +60,12 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
             this._arrayOperation = arrayOperation;
         }
 
+        /// <summary>
+        /// Builds the beam with dynamic vibration absorbers object.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="degreesFreedomMaximum"></param>
+        /// <returns></returns>
         public async override Task<BeamWithDva<TProfile>> BuildBeam(CalculateBeamWithDvaVibrationRequest<TProfile> request, uint degreesFreedomMaximum)
         {
             if (request == null)
@@ -68,7 +74,7 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
             }
 
             int i = 0;
-            
+
             double[] dvaMasses = new double[request.BeamData.Dvas.Count];
             double[] dvaHardnesses = new double[request.BeamData.Dvas.Count];
             uint[] dvaNodePositions = new uint[request.BeamData.Dvas.Count];
@@ -85,8 +91,8 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
 
             if (request.BeamData.Profile.Area != default && request.BeamData.Profile.MomentOfInertia != default)
             {
-                geometricProperty.Area = await this._arrayOperation.Create(request.BeamData.Profile.Area.Value, request.BeamData.NumberOfElements);
-                geometricProperty.MomentOfInertia = await this._arrayOperation.Create(request.BeamData.Profile.MomentOfInertia.Value, request.BeamData.NumberOfElements);
+                geometricProperty.Area = await this._arrayOperation.Create(request.BeamData.Profile.Area.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.Profile.Area));
+                geometricProperty.MomentOfInertia = await this._arrayOperation.Create(request.BeamData.Profile.MomentOfInertia.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.Profile.MomentOfInertia));
             }
             else
             {
@@ -109,12 +115,19 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
             };
         }
 
+        /// <summary>
+        /// Creates the Newmark method input.
+        /// </summary>
+        /// <param name="beam"></param>
+        /// <param name="newmarkMethodParameter"></param>
+        /// <param name="degreesFreedomMaximum"></param>
+        /// <returns></returns>
         public async override Task<NewmarkMethodInput> CreateInput(BeamWithDva<TProfile> beam, NewmarkMethodParameter newmarkMethodParameter, uint degreesFreedomMaximum)
         {
             bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.FirstFastening, beam.LastFastening, degreesFreedomMaximum, (uint)beam.DvaNodePositions.Length);
             uint numberOfTrueBoundaryConditions = 0;
 
-            for (int i = 0; i < degreesFreedomMaximum + (uint)beam.DvaNodePositions.Length; i++)
+            for (int i = 0; i < degreesFreedomMaximum; i++)
             {
                 if (bondaryCondition[i] == true)
                 {
@@ -131,18 +144,18 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
 
             double[,] hardnessWithDva = await this._mainMatrix.CalculateHardnessWithDva(hardness, beam.DvaHardnesses, beam.DvaNodePositions);
 
-            double[,] dampingWithDva = await this._mainMatrix.CalculateDamping(massWithDva, hardnessWithDva, degreesFreedomMaximum);
+            double[,] dampingWithDva = await this._mainMatrix.CalculateDamping(massWithDva, hardnessWithDva);
 
             double[] forces = beam.Forces;
 
             // Creating input.
             NewmarkMethodInput input = new NewmarkMethodInput
             {
-                Mass = this._auxiliarOperation.ApplyBondaryConditions(massWithDva, bondaryCondition, numberOfTrueBoundaryConditions),
+                Mass = this._auxiliarOperation.ApplyBondaryConditions(massWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
-                Hardness = this._auxiliarOperation.ApplyBondaryConditions(hardnessWithDva, bondaryCondition, numberOfTrueBoundaryConditions),
+                Hardness = this._auxiliarOperation.ApplyBondaryConditions(hardnessWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
-                Damping = this._auxiliarOperation.ApplyBondaryConditions(dampingWithDva, bondaryCondition, numberOfTrueBoundaryConditions),
+                Damping = this._auxiliarOperation.ApplyBondaryConditions(dampingWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
                 Force = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
 

@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace IcVibrationsTest
+namespace IcVibracoes.Test.Core.Calculator.MainMatrixes
 {
     public class MainMatrixTest
     {

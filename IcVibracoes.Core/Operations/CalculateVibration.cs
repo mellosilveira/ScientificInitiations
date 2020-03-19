@@ -4,7 +4,7 @@ using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models.Beam;
-using IcVibracoes.Core.NewmarkNumericalIntegration;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration;
 using IcVibracoes.Methods.AuxiliarOperations;
@@ -22,12 +22,11 @@ namespace IcVibracoes.Core.Operations
     /// <typeparam name="TBeam"></typeparam>
     public abstract class CalculateVibration<TRequest, TRequestData, TProfile, TBeam> : OperationBase<TRequest, CalculateVibrationResponse>, ICalculateVibration<TRequest, TRequestData, TProfile, TBeam>
         where TProfile : Profile, new()
-        where TRequestData : CalculateVibrationRequestData<TProfile>, new()
+        where TRequestData : IBeamRequestData<TProfile>, new()
         where TRequest : CalculateVibrationRequest<TProfile, TRequestData>
         where TBeam : AbstractBeam<TProfile>, new()
     {
         private readonly INewmarkMethod _newmarkMethod;
-        private readonly IMappingResolver _mappingResolver;
         private readonly IProfileValidator<TProfile> _profileValidator;
         private readonly IAuxiliarOperation _auxiliarOperation;
 
@@ -35,17 +34,14 @@ namespace IcVibracoes.Core.Operations
         /// Class construtor.
         /// </summary>
         /// <param name="newmarkMethod"></param>
-        /// <param name="mappingResolver"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
         public CalculateVibration(
             INewmarkMethod newmarkMethod,
-            IMappingResolver mappingResolver,
             IProfileValidator<TProfile> profileValidator,
             IAuxiliarOperation auxiliarOperation)
         {
             this._newmarkMethod = newmarkMethod;
-            this._mappingResolver = mappingResolver;
             this._profileValidator = profileValidator;
             this._auxiliarOperation = auxiliarOperation;
         }
@@ -98,7 +94,11 @@ namespace IcVibracoes.Core.Operations
         {
             CalculateVibrationResponse response = new CalculateVibrationResponse();
 
-            if(!await this._profileValidator.Execute(request.BeamData.Profile, response))
+            bool isProfileValid = await this._profileValidator.Execute(request.BeamData.Profile, response);
+
+            bool isBeamDataValid;
+
+            if (!isProfileValid)
             {
                 return response;
             }

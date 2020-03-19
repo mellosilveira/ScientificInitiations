@@ -1,5 +1,6 @@
-﻿using IcVibracoes.Calculator.MainMatrixes;
+﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.ArrayOperations;
+using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Models.Beam.Characteristics;
 using System.Threading.Tasks;
 
@@ -8,7 +9,8 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
     /// <summary>
     /// It's responsible to calculate the beam with DVA main matrixes.
     /// </summary>
-    public class BeamWithDvaMainMatrix : CommonMainMatrix, IBeamWithDvaMainMatrix
+    public abstract class BeamWithDvaMainMatrix<TProfile> : BeamMainMatrix<TProfile>, IBeamWithDvaMainMatrix<TProfile>
+        where TProfile : Profile, new()
     {
         private readonly IArrayOperation _arrayOperation;
 
@@ -16,7 +18,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         /// Class construtor.
         /// </summary>
         /// <param name="arrayOperation"></param>
-        /// <param name="commonMainMatrix"></param>
         public BeamWithDvaMainMatrix(
             IArrayOperation arrayOperation)
         {
@@ -85,6 +86,14 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
             return hardnessWithDva;
         }
 
+        /// <summary>
+        /// Responsible to calculate the bondary conditions matrix of the beam with dynamic vibration absorbers.
+        /// </summary>
+        /// <param name="firstFastening"></param>
+        /// <param name="lastFastening"></param>
+        /// <param name="degreesFreedomMaximum"></param>
+        /// <param name="numberOfDvas"></param>
+        /// <returns></returns>
         public Task<bool[]> CalculateBondaryCondition(Fastening firstFastening, Fastening lastFastening, uint degreesFreedomMaximum, uint numberOfDvas)
         {
             uint size = degreesFreedomMaximum + numberOfDvas;
@@ -94,19 +103,19 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
             {
                 if (i == 0)
                 {
-                    bondaryCondition[i] = firstFastening.Displacement;
+                    bondaryCondition[i] = firstFastening.LinearDisplacement;
                 }
                 else if (i == degreesFreedomMaximum - 2)
                 {
-                    bondaryCondition[i] = lastFastening.Displacement;
+                    bondaryCondition[i] = lastFastening.LinearDisplacement;
                 }
                 else if (i == 1)
                 {
-                    bondaryCondition[i] = firstFastening.Angle;
+                    bondaryCondition[i] = firstFastening.AngularDisplacement;
                 }
                 else if (i == degreesFreedomMaximum - 1)
                 {
-                    bondaryCondition[i] = lastFastening.Angle;
+                    bondaryCondition[i] = lastFastening.AngularDisplacement;
                 }
                 else
                 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IcVibrationsTest.Core.Calculator.GeometricProperties
+namespace IcVibracoes.Test.Core.Calculator.GeometricProperties
 {
     public class GeometricPropertyTest
     {
