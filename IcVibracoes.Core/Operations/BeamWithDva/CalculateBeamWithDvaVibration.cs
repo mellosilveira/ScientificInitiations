@@ -96,7 +96,7 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
             }
             else
             {
-                geometricProperty = await this._profileMapper.Execute(request.BeamData.Profile, degreesFreedomMaximum);
+                geometricProperty = await this._profileMapper.Execute(request.BeamData.Profile, request.BeamData.NumberOfElements);
             }
 
             return new BeamWithDva<TProfile>()

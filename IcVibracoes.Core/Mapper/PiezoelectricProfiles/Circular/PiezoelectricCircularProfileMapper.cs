@@ -33,9 +33,9 @@ namespace IcVibracoes.Core.Mapper.PiezoelectricProfiles.Circular
         /// <param name="profile"></param>
         /// <param name="numberOfPiezoelectricsPerElements"></param>
         /// <param name="elementsWithPiezoelectric"></param>
-        /// <param name="degreesFreedomMaximum"></param>
+        /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        public async override Task<GeometricProperty> Execute(CircularProfile profile, uint numberOfPiezoelectricsPerElements, uint[] elementsWithPiezoelectric, uint degreesFreedomMaximum)
+        public async override Task<GeometricProperty> Execute(CircularProfile profile, uint numberOfPiezoelectricsPerElements, uint[] elementsWithPiezoelectric, uint numberOfElements)
         {
             GeometricProperty geometricProperty = new GeometricProperty();
 
@@ -45,8 +45,8 @@ namespace IcVibracoes.Core.Mapper.PiezoelectricProfiles.Circular
             double area = uniqueArea * numberOfPiezoelectricsPerElements;
             double momentOfInertia = uniqueMomentOfInertia * numberOfPiezoelectricsPerElements;
 
-            geometricProperty.Area = await this._arrayOperation.Create(area, degreesFreedomMaximum, elementsWithPiezoelectric, nameof(area));
-            geometricProperty.MomentOfInertia = await this._arrayOperation.Create(momentOfInertia, degreesFreedomMaximum, elementsWithPiezoelectric, nameof(momentOfInertia));
+            geometricProperty.Area = await this._arrayOperation.Create(area, numberOfElements, elementsWithPiezoelectric, nameof(area));
+            geometricProperty.MomentOfInertia = await this._arrayOperation.Create(momentOfInertia, numberOfElements, elementsWithPiezoelectric, nameof(momentOfInertia));
 
             return geometricProperty;
         }

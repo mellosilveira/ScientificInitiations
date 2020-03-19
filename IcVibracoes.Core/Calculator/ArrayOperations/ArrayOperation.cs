@@ -73,18 +73,18 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// </summary>
         /// <param name="value"></param>
         /// <param name="size"></param>
-        /// <param name="positions"></param>
+        /// <param name="elementPositions"></param>
         /// <param name="vectorName"></param>
         /// <returns></returns>
-        public Task<double[]> Create(double value, uint size, uint[] positions, string vectorName)
+        public Task<double[]> Create(double value, uint size, uint[] elementPositions, string vectorName)
         {
             double[] newVector = new double[size];
 
             try
             {
-                for(int i = 0; i< positions.Length; i++)
+                for(int i = 0; i< elementPositions.Length; i++)
                 {
-                    newVector[positions[i] - 1] = value;
+                    newVector[elementPositions[i] - 1] = value;
                 }
             }
             catch

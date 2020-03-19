@@ -9,7 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IcVibracoes.Core\IcVibracoes.Core.csproj" />
+    <ProjectReference Include="..\IcVibracoes.DataContracts\IcVibracoes.DataContracts.csproj" />
   </ItemGroup>
 
 

@@ -85,18 +85,20 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
             }
             else
             {
-                geometricProperty = await this._piezoelectricProfileMapper.Execute(request.BeamData.Profile, numberOfPiezoelectricPerElements, request.BeamData.ElementsWithPiezoelectric, degreesFreedomMaximum);
+                geometricProperty = await this._profileMapper.Execute(request.BeamData.Profile, request.BeamData.NumberOfElements);
             }
 
             if (request.BeamData.PiezoelectricProfile.Area != default && request.BeamData.PiezoelectricProfile.MomentOfInertia != default)
             {
-                piezoelectricGeometricProperty.Area = await this._arrayOperation.Create(request.BeamData.PiezoelectricProfile.Area.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.PiezoelectricProfile.Area));
-                piezoelectricGeometricProperty.MomentOfInertia = await this._arrayOperation.Create(request.BeamData.PiezoelectricProfile.MomentOfInertia.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.PiezoelectricProfile.MomentOfInertia));
+                double area = request.BeamData.PiezoelectricProfile.Area.Value * numberOfPiezoelectricPerElements;
+                double momentOfInertia = request.BeamData.PiezoelectricProfile.MomentOfInertia.Value * numberOfPiezoelectricPerElements;
+
+                piezoelectricGeometricProperty.Area = await this._arrayOperation.Create(area, request.BeamData.NumberOfElements, request.BeamData.ElementsWithPiezoelectric, nameof(area));
+                piezoelectricGeometricProperty.MomentOfInertia = await this._arrayOperation.Create(momentOfInertia, request.BeamData.NumberOfElements, request.BeamData.ElementsWithPiezoelectric, nameof(momentOfInertia));
             }
             else
             {
-                // Criar método similar a AddValue dentro do ProfileMapper.
-                piezoelectricGeometricProperty = await this._profileMapper.Execute(request.BeamData.PiezoelectricProfile, degreesFreedomMaximum);
+                piezoelectricGeometricProperty = await this._piezoelectricProfileMapper.Execute(request.BeamData.PiezoelectricProfile, numberOfPiezoelectricPerElements, request.BeamData.ElementsWithPiezoelectric, request.BeamData.NumberOfElements);
             }
 
             return new BeamWithPiezoelectric<TProfile>()

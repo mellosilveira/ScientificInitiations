@@ -70,14 +70,14 @@ namespace IcVibracoes.Core.Operations.Beam
 
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            if(request.BeamData.Profile.Area != default && request.BeamData.Profile.MomentOfInertia != default)
+            if (request.BeamData.Profile.Area != default && request.BeamData.Profile.MomentOfInertia != default)
             {
                 geometricProperty.Area = await this._arrayOperation.Create(request.BeamData.Profile.Area.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.Profile.Area));
                 geometricProperty.MomentOfInertia = await this._arrayOperation.Create(request.BeamData.Profile.MomentOfInertia.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.Profile.MomentOfInertia));
             }
             else
             {
-                geometricProperty = await this._profileMapper.Execute(request.BeamData.Profile, degreesFreedomMaximum);
+                geometricProperty = await this._profileMapper.Execute(request.BeamData.Profile, request.BeamData.NumberOfElements);
             }
 
             return new Beam<TProfile>()

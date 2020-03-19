@@ -1,18 +1,18 @@
-﻿using IcVibrations.Common.Profiles;
-using IcVibrations.Core.Operations.Beam.Circular;
-using IcVibrations.Core.Operations.Beam.Rectangular;
-using IcVibrations.Core.Operations.BeamWithDva.Circular;
-using IcVibrations.Core.Operations.BeamWithDva.Rectangular;
-using IcVibrations.Core.Operations.BeamWithPiezoelectric.Circular;
-using IcVibrations.Core.Operations.BeamWithPiezoelectric.Rectangular;
-using IcVibrations.DataContracts.CalculateVibration;
-using IcVibrations.DataContracts.CalculateVibration.Beam;
-using IcVibrations.DataContracts.CalculateVibration.BeamWithDynamicVibrationAbsorber;
-using IcVibrations.DataContracts.CalculateVibration.BeamWithPiezoelectric;
+﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Operations.Beam.Circular;
+using IcVibracoes.Core.Operations.Beam.Rectangular;
+using IcVibracoes.Core.Operations.BeamWithDva.Circular;
+using IcVibracoes.Core.Operations.BeamWithDva.Rectangular;
+using IcVibracoes.Core.Operations.BeamWithPiezoelectric.Circular;
+using IcVibracoes.Core.Operations.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.DataContracts.CalculateVibration;
+using IcVibracoes.DataContracts.CalculateVibration.Beam;
+using IcVibracoes.DataContracts.CalculateVibration.BeamWithDynamicVibrationAbsorber;
+using IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace IC_Vibrations.Controllers
+namespace IcVibracoes.Controllers
 {
 
     [Route("api/v1/beam")]
