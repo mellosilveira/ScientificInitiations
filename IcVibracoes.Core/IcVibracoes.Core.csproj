@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IcVibracoes.Common\IcVibracoes.Common.csproj" />
+    <ProjectReference Include="..\IcVibracoes.DataContracts\IcVibracoes.DataContracts.csproj" />
+  </ItemGroup>
+
+</Project>

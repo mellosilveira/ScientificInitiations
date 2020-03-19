@@ -1,0 +1,46 @@
+{
+  "BeamData": {
+    "PiezoelectricYoungModulus": 63e9,
+    "PiezoelectricConstant": 190e-12,
+    "DielectricConstant": 7.33e-9,
+    "DielectricPermissiveness": 30.705,
+    "ElasticityConstant": 1.076e11,
+    "ElectricalCharges": [
+      {
+        "Value": 0,
+        "NodePosition": 0
+      }
+    ],
+    "PiezoelectricSpecificMass": 7650,
+    "ElementsWithPiezoelectric": [
+      24, 23, 22, 21, 20, 19
+    ],
+    "PiezoelectricProfile": {
+      "Height": 0.267e-3,
+      "Width": 25e-3
+    },
+    "NumberOfElements": 24,
+    "Material": "Aluminum",
+    "FirstFastening": "Fixed",
+    "LastFastening": "None",
+    "Length": 0.48,
+    "Forces": [
+      {
+        "NodePosition": 24,
+        "Value": 5
+      }
+    ],
+    "Profile": {
+      "Height": 3e-3,
+      "Width": 25e-3
+    }
+  },
+  "MethodParameterData": {
+    "InitialTime": 0,
+    "PeriodDivision": 10,
+    "NumberOfPeriods": 10,
+    "InitialAngularFrequency": 30
+  },
+  "Author": "Bruno Silveira",
+  "AnalysisExplanation": "Vibration analysis in a single fixed beam with piezoelectric in its end with a pulsative force (Value: 5N, frequency: 30Hz) in the end."
+}

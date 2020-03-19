@@ -1,0 +1,25 @@
+{
+  "BeamData": {
+    "Diameter": 0.03175,
+    "ElementCount": 3,
+    "Material": "Steel4130",
+    "Thickness": 0.0021,
+    "FirstFastening": "Fixed",
+    "LastFastening": "Fixed",
+    "Length": 0.335,
+    "Forces": [
+      115
+    ],
+    "ForceNodePositions": [
+      1
+    ]
+  },
+  "MethodParameterData": {
+    "InitialTime": 0,
+    "PeriodDivion": 50,
+    "PeriodCount": 20,
+    "InitialAngularFrequency": 15,
+    "DeltaAngularFrequency": 1,
+    "FinalAngularFrequency": 60
+  }
+}
