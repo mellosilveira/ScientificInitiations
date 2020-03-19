@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1486B460-922B-4F74-A69A-DFA452D5A8EC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{FB9756E5-52FA-4EF8-8C66-D8122B82CDE0}"
+	ProjectSection(SolutionItems) = preProject
+		CHANGELOG.md = CHANGELOG.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1F3797D7-105F-44D1-AF0C-A56FC7BA38B2}"
 EndProject
@@ -20,6 +23,39 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IcVibracoes.Test", "IcVibracoes.Test\IcVibracoes.Test.csproj", "{58549B1B-848D-42AF-8E33-AA996AB99A31}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "programs in C", "programs in C", "{F12DE005-F3F9-4976-84AC-87C850BE83B4}"
+	ProjectSection(SolutionItems) = preProject
+		Programs in C\programapiezo\ALLOC_.H = Programs in C\programapiezo\ALLOC_.H
+		Programs in C\programapiezo\dados_piezo.inp = Programs in C\programapiezo\dados_piezo.inp
+		Programs in C\programapiezo\DEFVAR19_09.H = Programs in C\programapiezo\DEFVAR19_09.H
+		Programs in C\programapiezo\NEWMARK_com_PIEZOELETRICO_28-01.CPP = Programs in C\programapiezo\NEWMARK_com_PIEZOELETRICO_28-01.CPP
+		Programs in C\programapiezo\TEST_ARQ.C = Programs in C\programapiezo\TEST_ARQ.C
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{69DC91C4-15E5-46D3-A0D1-820C174221E8}"
+	ProjectSection(SolutionItems) = preProject
+		Request\Motor Baja = Request\Motor Baja
+		Request\Motor Baja 30Hz - 5 nós.json = Request\Motor Baja 30Hz - 5 nós.json
+		Request\Motor Baja 30Hz - 67 nós.json = Request\Motor Baja 30Hz - 67 nós.json
+		Request\Motor Baja com ADV 30Hz - 5 nós.json = Request\Motor Baja com ADV 30Hz - 5 nós.json
+		Request\Motor Baja com ADV 30Hz - 67 nós.json = Request\Motor Baja com ADV 30Hz - 67 nós.json
+		Request\RectangularBeamWithPiezoelectricRequest = Request\RectangularBeamWithPiezoelectricRequest
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutions", "solutions", "{FEF4F35F-FDF5-4FAF-937F-6AB5864597C0}"
+	ProjectSection(SolutionItems) = preProject
+		Solutions\Motor Baja 30Hz com ADV - 5 nós.xlsx = Solutions\Motor Baja 30Hz com ADV - 5 nós.xlsx
+		Solutions\Motor Baja 30Hz com ADV.xlsx = Solutions\Motor Baja 30Hz com ADV.xlsx
+		Solutions\Motor Baja 30Hz sem ADV - 5 nós.xlsx = Solutions\Motor Baja 30Hz sem ADV - 5 nós.xlsx
+		Solutions\Motor Baja 30Hz sem ADV.xlsx = Solutions\Motor Baja 30Hz sem ADV.xlsx
+		Solutions\Motor Baja 50hz.xlsx = Solutions\Motor Baja 50hz.xlsx
+		Solutions\MotorBaja.json = Solutions\MotorBaja.json
+		Solutions\Piezoelétrico - teste 1.xlsx = Solutions\Piezoelétrico - teste 1.xlsx
+		Solutions\Piezoelétrico - teste 2.xlsx = Solutions\Piezoelétrico - teste 2.xlsx
+		Solutions\RectangularBeamSolution.csv = Solutions\RectangularBeamSolution.csv
+		Solutions\RectangularBeamSolution.json = Solutions\RectangularBeamSolution.json
+		Solutions\TestSolution.csv = Solutions\TestSolution.csv
+		Solutions\TestSolution.txt = Solutions\TestSolution.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
