@@ -96,30 +96,23 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         {
             StreamWriter streamWriter = new StreamWriter(path, true);
 
-            try
+            using (StreamWriter sw = streamWriter)
             {
-                using (StreamWriter sw = streamWriter)
+                sw.Write(sw.NewLine);
+
+                sw.Write(string.Format("{0}; ", time));
+
+                for (int i = 0; i < values.Length / 2; i++)
                 {
-                    sw.Write(sw.NewLine);
-
-                    sw.Write(string.Format("{0}; ", time));
-
-                    for (int i = 0; i < values.Length / 2; i++)
-                    {
-                        sw.Write(string.Format("{0}; ", values[2 * i]));
-                    }
-
-                    sw.Write(" ;");
-
-                    for (int i = 0; i < values.Length / 2; i++)
-                    {
-                        sw.Write(string.Format("{0}; ", values[2 * i + 1]));
-                    }
+                    sw.Write(string.Format("{0}; ", values[2 * i]));
                 }
-            }
-            catch
-            {
-                throw new Exception("Couldn't open file.");
+
+                sw.Write(" ;");
+
+                for (int i = 0; i < values.Length / 2; i++)
+                {
+                    sw.Write(string.Format("{0}; ", values[2 * i + 1]));
+                }
             }
         }
 
@@ -132,16 +125,9 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         {
             StreamWriter streamWriter = new StreamWriter(path, true);
 
-            try
+            using (StreamWriter sw = streamWriter)
             {
-                using (StreamWriter sw = streamWriter)
-                {
-                    sw.WriteLine($"Angular frequency: {angularFrequency}");
-                }
-            }
-            catch
-            {
-                throw new Exception("Couldn't open file.");
+                sw.WriteLine($"Angular frequency: {angularFrequency}");
             }
         }
     }

@@ -25,7 +25,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <summary>
         /// The path of file to write the solutions.
         /// </summary>
-        public string path = @"C:\Users\bruno.silveira\Documents\GitHub\IC_Vibrações\IcVibrations\Solutions\TestSolution.csv";
+        public string path = "C:/Users/bruno/OneDrive/Documentos/GitHub/IcVibracoes/Solutions/Solution.csv";
 
         private readonly IArrayOperation _arrayOperation;
         private readonly IAuxiliarOperation _auxiliarOperation;
@@ -53,7 +53,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <returns></returns>
         public async Task CalculateResponse(NewmarkMethodInput input, OperationResponseBase response)
         {
-            if(await this._validator.ValidateParameters(input, response))
+            if (!await this._validator.ValidateParameters(input, response))
             {
                 return;
             }
@@ -71,7 +71,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             //Parallel.For
             for (int i = 0; i < angularFrequencyLoopCount; i++)
             {
-                input.AngularFrequency = input.Parameter.InitialAngularFrequency + i * input.Parameter.DeltaAngularFrequency.Value;
+                if (input.Parameter.DeltaAngularFrequency != null)
+                {
+                    input.AngularFrequency = (input.Parameter.InitialAngularFrequency + i * input.Parameter.DeltaAngularFrequency.Value) * 2 * Math.PI;
+                }
+                else
+                {
+                    input.AngularFrequency = input.Parameter.InitialAngularFrequency * 2 * Math.PI;
+                }
 
                 if (input.AngularFrequency != 0)
                 {
@@ -86,8 +93,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 a1 = Constants.Gama / (Constants.Beta * input.DeltaTime);
                 a2 = 1 / (Constants.Beta * input.DeltaTime);
                 a3 = 1 / (2 * Constants.Beta) - 1;
-                a4 = Constants.Gama / Constants.Beta - 1;
-                a5 = input.DeltaTime / 2 * (Constants.Beta / Constants.Beta - 2);
+                a4 = (Constants.Gama / Constants.Beta) - 1;
+                a5 = (input.DeltaTime / 2) * ((Constants.Beta / Constants.Beta) - 2);
                 a6 = input.DeltaTime * (1 - Constants.Gama);
                 a7 = Constants.Gama * input.DeltaTime;
 
@@ -144,10 +151,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                     {
                         y = await CalculateDisplacement(input, yPre, velPre, accelPre);
 
+                        // Parallel.For
                         for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
                         {
-                            accel[i] = a0 * (y[i] - yPre[i]) - a2 * velPre[i] - a3 * accelPre[i];
-                            vel[i] = velPre[i] + a6 * accelPre[i] + a7 * accel[i];
+                            accel[i] = (a0 * (y[i] - yPre[i])) - (a2 * velPre[i]) - (a3 * accelPre[i]);
+                            vel[i] = velPre[i] + (a6 * accelPre[i]) + (a7 * accel[i]);
                         }
                     }
 

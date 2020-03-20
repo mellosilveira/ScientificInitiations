@@ -18,7 +18,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         {
             double area;
 
-            if (thickness == default)
+            if (thickness == null)
             {
                 area = Math.PI * Math.Pow(diameter, 2) / 4;
             }
@@ -41,7 +41,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         {
             double area;
 
-            if (thickness == default)
+            if (thickness == null)
             {
                 area = height * width;
             }
@@ -63,7 +63,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         {
             double momentOfInertia;
 
-            if (thickness == default)
+            if (thickness == null)
             {
                 momentOfInertia = Math.PI * Math.Pow(diameter, 4) / 64;
             }
@@ -86,7 +86,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         {
             double momentOfInertia;
 
-            if (thickness == default)
+            if (thickness == null)
             {
                 momentOfInertia = Math.Pow(height, 3) * width / 12;
             }

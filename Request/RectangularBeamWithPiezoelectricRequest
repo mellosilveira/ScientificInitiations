@@ -13,8 +13,14 @@
     ],
     "PiezoelectricSpecificMass": 7650,
     "ElementsWithPiezoelectric": [
-      24, 23, 22, 21, 20, 19
+      24,
+      23,
+      22,
+      21,
+      20,
+      19
     ],
+    "PiezoelectricPosition": "Up and down",
     "PiezoelectricProfile": {
       "Height": 0.267e-3,
       "Width": 25e-3

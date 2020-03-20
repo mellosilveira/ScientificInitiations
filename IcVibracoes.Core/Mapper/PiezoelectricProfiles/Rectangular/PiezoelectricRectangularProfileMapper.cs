@@ -39,8 +39,8 @@ namespace IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular
         {
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            double uniqueArea = await this._calculateGeometricProperty.Area(profile.Height, profile.Width, profile.Thickness.Value);
-            double uniqueMomentOfInertia = await this._calculateGeometricProperty.MomentOfInertia(profile.Height, profile.Width, profile.Thickness.Value);
+            double uniqueArea = await this._calculateGeometricProperty.Area(profile.Height, profile.Width, profile.Thickness);
+            double uniqueMomentOfInertia = await this._calculateGeometricProperty.MomentOfInertia(profile.Height, profile.Width, profile.Thickness);
 
             double area = uniqueArea * numberOfPiezoelectricsPerElements;
             double momentOfInertia = uniqueMomentOfInertia * numberOfPiezoelectricsPerElements;
