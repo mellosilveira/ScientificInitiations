@@ -1,6 +1,7 @@
 ﻿using IcVibracoes.Core.Models;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace IcVibracoes.Methods.AuxiliarOperations
 {
@@ -94,24 +95,15 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         /// <param name="path"></param>
         public void WriteInFile(double time, double[] values, string path)
         {
-            StreamWriter streamWriter = new StreamWriter(path, true);
-
-            using (StreamWriter sw = streamWriter)
+            using (StreamWriter streamWriter = new StreamWriter(path, true))
             {
-                sw.Write(sw.NewLine);
+                streamWriter.Write(streamWriter.NewLine);
 
-                sw.Write(string.Format("{0}; ", time));
+                streamWriter.Write(string.Format("{0}; ", time));
 
-                for (int i = 0; i < values.Length / 2; i++)
+                for (int i = 0; i < values.Length; i++)
                 {
-                    sw.Write(string.Format("{0}; ", values[2 * i]));
-                }
-
-                sw.Write(" ;");
-
-                for (int i = 0; i < values.Length / 2; i++)
-                {
-                    sw.Write(string.Format("{0}; ", values[2 * i + 1]));
+                    streamWriter.Write(string.Format("{0}; ", values[i]));
                 }
             }
         }
@@ -123,12 +115,43 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         /// <param name="path"></param>
         public void WriteInFile(double angularFrequency, string path)
         {
-            StreamWriter streamWriter = new StreamWriter(path, true);
-
-            using (StreamWriter sw = streamWriter)
+            using (StreamWriter streamWriter = new StreamWriter(path, true))
             {
-                sw.WriteLine($"Angular frequency: {angularFrequency}");
+                streamWriter.WriteLine($"Angular frequency: {angularFrequency}");
             }
+        }
+
+        /// <summary>
+        /// Create a path to the files with the analysis solution.
+        /// </summary>
+        /// <param name="analysisType"></param>
+        /// <param name="initialAngularFrequency"></param>
+        /// <param name="finalAngularFrequency"></param>
+        /// <param name="numberOfElements"></param>
+        /// <returns></returns>
+        public string CreateSolutionPath(string analysisType, double initialAngularFrequency, double? finalAngularFrequency, uint numberOfElements)
+        {
+            string path = Directory.GetCurrentDirectory();
+
+            string folderName = Path.GetFileName(path);
+
+            string previousPath = path.Substring(0, path.Length - folderName.Length);
+
+            if (finalAngularFrequency == null)
+            {
+                path = Path.Combine(previousPath, "Solutions", $"{analysisType}_w0:{Math.Round(initialAngularFrequency, 2)}_nEl:{numberOfElements}.csv");
+            }
+            else
+            {
+                path = Path.Combine(previousPath, "Solutions", $"{analysisType}_w0:{Math.Round(initialAngularFrequency, 2)}_wf:{finalAngularFrequency}_nEl:{numberOfElements}.csv");
+            }
+
+            if(File.Exists(path))
+            {
+                throw new IOException($"File already exist. File name: {Path.GetFileName(path)}.");
+            }
+
+            return path;
         }
     }
 }

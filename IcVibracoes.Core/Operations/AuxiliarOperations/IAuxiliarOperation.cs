@@ -44,5 +44,11 @@
         /// <param name="angularFrequency"></param>
         /// <param name="path"></param>
         void WriteInFile(double angularFrequency, string path);
+
+        /// <summary>
+        /// Create a path to the files with the analysis solution.
+        /// </summary>
+        /// <returns></returns>
+        public string CreateSolutionPath(string analysisType, double initialAngularFrequency, double? finalAngularFrequency, uint numberOfElements);
     }
 }

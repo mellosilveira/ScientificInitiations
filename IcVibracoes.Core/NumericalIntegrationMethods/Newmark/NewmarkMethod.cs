@@ -25,7 +25,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <summary>
         /// The path of file to write the solutions.
         /// </summary>
-        public string path = "C:/Users/bruno/OneDrive/Documentos/GitHub/IcVibracoes/Solutions/Solution.csv";
+        public string path;
 
         private readonly IArrayOperation _arrayOperation;
         private readonly IAuxiliarOperation _auxiliarOperation;
@@ -50,34 +50,37 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// </summary>
         /// <param name="input"></param>
         /// <param name="response"></param>
+        /// <param name="analysisType"></param>
         /// <returns></returns>
-        public async Task CalculateResponse(NewmarkMethodInput input, OperationResponseBase response)
+        public async Task CalculateResponse(NewmarkMethodInput input, OperationResponseBase response, string analysisType, uint numberOfElements)
         {
             if (!await this._validator.ValidateParameters(input, response))
             {
                 return;
             }
 
-            int angularFrequencyLoopCount;
+            int numberOfLoops;
             if (input.Parameter.DeltaAngularFrequency != default)
             {
-                angularFrequencyLoopCount = (int)((input.Parameter.FinalAngularFrequency - input.Parameter.InitialAngularFrequency) / input.Parameter.DeltaAngularFrequency) + 1;
+                numberOfLoops = (int)((input.Parameter.FinalAngularFrequency - input.Parameter.InitialAngularFrequency) / input.Parameter.DeltaAngularFrequency) + 1;
             }
             else
             {
-                angularFrequencyLoopCount = 1;
+                numberOfLoops = 1;
             }
 
+            path = this._auxiliarOperation.CreateSolutionPath(analysisType, input.Parameter.InitialAngularFrequency, input.Parameter.FinalAngularFrequency, numberOfElements);
+
             //Parallel.For
-            for (int i = 0; i < angularFrequencyLoopCount; i++)
+            for (int i = 0; i < numberOfLoops; i++)
             {
                 if (input.Parameter.DeltaAngularFrequency != null)
                 {
-                    input.AngularFrequency = (input.Parameter.InitialAngularFrequency + i * input.Parameter.DeltaAngularFrequency.Value) * 2 * Math.PI;
+                    input.AngularFrequency = (input.Parameter.InitialAngularFrequency + i * input.Parameter.DeltaAngularFrequency.Value);
                 }
                 else
                 {
-                    input.AngularFrequency = input.Parameter.InitialAngularFrequency * 2 * Math.PI;
+                    input.AngularFrequency = input.Parameter.InitialAngularFrequency;
                 }
 
                 if (input.AngularFrequency != 0)

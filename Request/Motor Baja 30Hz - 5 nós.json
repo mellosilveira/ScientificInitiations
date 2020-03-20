@@ -23,5 +23,5 @@
     "initialAngularFrequency": 30
   },
   "author": "Mud Runner Baja SAE Team",
-  "analysisExplanation": "A vibration analysis in the engine support with 2 dynamic vibration absorbers."
+  "analysisType": "Circular beam with 2 DVAs"
 }

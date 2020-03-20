@@ -14,7 +14,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// </summary>
         /// <param name="input"></param>
         /// <param name="response"></param>
+        /// <param name="analysisType"></param>
         /// <returns></returns>
-        Task CalculateResponse(NewmarkMethodInput input, OperationResponseBase response);
+        Task CalculateResponse(NewmarkMethodInput input, OperationResponseBase response, string analysisType, uint numberOfElements);
     }
 }

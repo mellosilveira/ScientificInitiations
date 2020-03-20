@@ -73,7 +73,7 @@ namespace IcVibracoes.Core.Operations
 
                 NewmarkMethodInput input = await this.CreateInput(beam, request.MethodParameterData, degreesFreedomMaximum);
 
-                await this._newmarkMethod.CalculateResponse(input, response);
+                await this._newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements);
 
                 return response;
             }
@@ -96,7 +96,7 @@ namespace IcVibracoes.Core.Operations
 
             bool isProfileValid = await this._profileValidator.Execute(request.BeamData.Profile, response);
 
-            bool isBeamDataValid;
+            //bool isBeamDataValid;
 
             if (!isProfileValid)
             {

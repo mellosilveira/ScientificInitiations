@@ -8,8 +8,9 @@
         public string Author { get; set; }
 
         /// <summary>
-        /// A simple analysis explanation .
+        /// The type of analysis. 
+        /// Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
         /// </summary>
-        public string AnalysisExplanation { get; set; }
+        public string AnalysisType { get; set; }
     }
 }

@@ -1,0 +1,27 @@
+{
+  "beamData": {
+    "numberOfElements": 24,
+    "material": "Aluminum",
+    "firstFastening": "Fixed",
+    "lastFastening": "None",
+    "length": 0.48,
+    "forces": [
+      {
+        "nodePosition": 24,
+        "value": 5
+      }
+    ],
+    "Profile": {
+      "Height": 3e-3,
+      "Width": 25e-3
+    }
+  },
+  "MethodParameterData": {
+    "InitialTime": 0,
+    "PeriodDivision": 10,
+    "NumberOfPeriods": 10,
+    "InitialAngularFrequency": 30
+  },
+  "author": "Bruno Silveira",
+  "analysisExplanation": ""
+}

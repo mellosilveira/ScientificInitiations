@@ -13,6 +13,7 @@ using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric;
 using IcVibracoes.Methods.AuxiliarOperations;
 using IcVibracoes.Models.Beam.Characteristics;
+using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
@@ -195,7 +196,15 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 
-                Parameter = newmarkMethodParameter
+                Parameter = new NewmarkMethodParameter
+                {
+                    DeltaAngularFrequency = newmarkMethodParameter.DeltaAngularFrequency,
+                    FinalAngularFrequency = newmarkMethodParameter.FinalAngularFrequency,
+                    InitialAngularFrequency = newmarkMethodParameter.InitialAngularFrequency,
+                    InitialTime = newmarkMethodParameter.InitialTime,
+                    NumberOfPeriods = newmarkMethodParameter.NumberOfPeriods,
+                    PeriodDivision = newmarkMethodParameter.PeriodDivision
+                }
             };
 
             return input;

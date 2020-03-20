@@ -161,7 +161,15 @@ namespace IcVibracoes.Core.Operations.BeamWithDva
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 
-                Parameter = newmarkMethodParameter
+                Parameter = new NewmarkMethodParameter
+                {
+                    DeltaAngularFrequency = newmarkMethodParameter.DeltaAngularFrequency,
+                    FinalAngularFrequency = newmarkMethodParameter.FinalAngularFrequency,
+                    InitialAngularFrequency = newmarkMethodParameter.InitialAngularFrequency,
+                    InitialTime = newmarkMethodParameter.InitialTime,
+                    NumberOfPeriods = newmarkMethodParameter.NumberOfPeriods,
+                    PeriodDivision = newmarkMethodParameter.PeriodDivision
+                }
             };
 
             return input;
