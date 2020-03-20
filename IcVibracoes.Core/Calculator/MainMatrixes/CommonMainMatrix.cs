@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beam;
 using IcVibracoes.Models.Beam.Characteristics;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,17 +28,17 @@ namespace IcVibracoes.Calculator.MainMatrixes
             elementMass[0, 2] = 54 * constant;
             elementMass[0, 3] = -13 * length * constant;
             elementMass[1, 0] = 22 * length * constant;
-            elementMass[1, 1] = 4 * length * length * constant;
+            elementMass[1, 1] = 4 * Math.Pow(length, 2) * constant;
             elementMass[1, 2] = 13 * length * constant;
-            elementMass[1, 3] = -3 * length * length * constant;
+            elementMass[1, 3] = -3 * Math.Pow(length, 2) * constant;
             elementMass[2, 0] = 54 * constant;
             elementMass[2, 1] = 13 * length * constant;
             elementMass[2, 2] = 156 * constant;
             elementMass[2, 3] = -22 * length * constant;
             elementMass[3, 0] = -13 * length * constant;
-            elementMass[3, 1] = -3 * length * length * constant;
+            elementMass[3, 1] = -3 * Math.Pow(length, 2) * constant;
             elementMass[3, 2] = -22 * length * constant;
-            elementMass[3, 3] = 4 * length * length * constant;
+            elementMass[3, 3] = 4 * Math.Pow(length, 2) * constant;
 
             return Task.FromResult(elementMass);
         }

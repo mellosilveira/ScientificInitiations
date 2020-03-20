@@ -221,7 +221,6 @@ void LeituraDados(void)
 		fscanf(input, "%Lf", &mEs[i]);
 	}
 
-   ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -255,31 +254,28 @@ void LeituraDados(void)
 		}
 	}
 
-   ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
 	}
 
 	// Forçamento
-	for (int i = 0; i < (nEl + 1) * gl; i++)
+	for (int i = 0; i < (nEl + 1) * gl; i++)      
 	{
 		fscanf(input, "%Lf", &f1[i]);
 	}
 
-   ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
 	}
-
+	
 	// Leitura do vetor cc
-	for (int i = 0; i < ((nEl + 1) * gl + ((nEl + 1) * gl) / 2.0); i++)
+	for (int i = 0; i < ((nEl + 1) * gl + ((nEl + 1) * gl) / 2.0); i++)						
 	{
 		fscanf(input, "%Lf", &cc[i]);
 	}
 
-   ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -288,10 +284,9 @@ void LeituraDados(void)
 	// Parâmetros de tempo
 	fscanf(input, "%Lf %d %d %d\n", &t0, &nm, &np, &nt_Transiente);
 	/* nm = numero de divisoes por periodo
-	   np = numero de periodos
+	   np = numero de periodos 
 	*/
-
-   ch = fgetc(input);
+	
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
