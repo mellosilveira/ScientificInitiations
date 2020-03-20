@@ -8,7 +8,6 @@ namespace IcVibracoes.Core.Models.BeamWithPiezoelectric
         Up = 1,
         Down = -1,
         UpAndDown = 2,
-        Around = 4
     }
 
     /// <summary>
@@ -28,11 +27,10 @@ namespace IcVibracoes.Core.Models.BeamWithPiezoelectric
                 case PiezoelectricPosition.Up: return 1;
                 case PiezoelectricPosition.Down: return 1;
                 case PiezoelectricPosition.UpAndDown: return 2;
-                case PiezoelectricPosition.Around: return 4;
                 default: break;
             }
 
-            throw new Exception($"Invalid material: {piezoelectricPosition}.");
+            throw new Exception($"Invalid piezoelectric position: {piezoelectricPosition}.");
         }
     }
 }

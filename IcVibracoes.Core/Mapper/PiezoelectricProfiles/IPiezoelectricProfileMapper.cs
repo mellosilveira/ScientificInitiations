@@ -14,11 +14,12 @@ namespace IcVibracoes.Core.Mapper.PiezoelectricProfiles
         /// <summary>
         /// Method to build the piezoelectric profile.
         /// </summary>
-        /// <param name="profile"></param>
-        /// <param name="degreesFreedomMaximum"></param>
+        /// <param name="piezoelectricProfile"></param>
+        /// <param name="beamProfile"></param>
         /// <param name="numberOfPiezoelectricsPerElements"></param>
         /// <param name="elementsWithPiezoelectric"></param>
+        /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        Task<GeometricProperty> Execute(TProfile profile, uint numberOfPiezoelectricsPerElements, uint[] elementsWithPiezoelectric, uint degreesFreedomMaximum);
+        Task<GeometricProperty> Execute(TProfile piezoelectricProfile, TProfile beamProfile, uint numberOfPiezoelectricsPerElements, uint[] elementsWithPiezoelectric, uint numberOfElements);
     }
 }

@@ -30,23 +30,24 @@ namespace IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular
         /// <summary>
         /// Method to build the piezoelectric rectangular profile.
         /// </summary>
-        /// <param name="profile"></param>
+        /// <param name="piezoelectricProfile"></param>
+        /// <param name="beamProfile"></param>
         /// <param name="numberOfPiezoelectricsPerElements"></param>
         /// <param name="elementsWithPiezoelectric"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        public async override Task<GeometricProperty> Execute(RectangularProfile profile, uint numberOfPiezoelectricsPerElements, uint[] elementsWithPiezoelectric, uint degreesFreedomMaximum)
+        public async override Task<GeometricProperty> Execute(RectangularProfile piezoelectricProfile, RectangularProfile beamProfile, uint numberOfPiezoelectricsPerElements, uint[] elementsWithPiezoelectric, uint numberOfElements)
         {
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            double uniqueArea = await this._calculateGeometricProperty.Area(profile.Height, profile.Width, profile.Thickness);
-            double uniqueMomentOfInertia = await this._calculateGeometricProperty.MomentOfInertia(profile.Height, profile.Width, profile.Thickness);
+            double uniqueArea = await this._calculateGeometricProperty.Area(piezoelectricProfile.Height, piezoelectricProfile.Width, null);
+            double uniqueMomentOfInertia = await this._calculateGeometricProperty.PiezoelectricMomentOfInertia(piezoelectricProfile.Height, piezoelectricProfile.Width, beamProfile.Height, numberOfPiezoelectricsPerElements);
 
             double area = uniqueArea * numberOfPiezoelectricsPerElements;
             double momentOfInertia = uniqueMomentOfInertia * numberOfPiezoelectricsPerElements;
 
-            geometricProperty.Area = await this._arrayOperation.Create(area, degreesFreedomMaximum, elementsWithPiezoelectric, nameof(area));
-            geometricProperty.MomentOfInertia = await this._arrayOperation.Create(momentOfInertia, degreesFreedomMaximum, elementsWithPiezoelectric, nameof(momentOfInertia));
+            geometricProperty.Area = await this._arrayOperation.Create(area, numberOfElements, elementsWithPiezoelectric, nameof(area));
+            geometricProperty.MomentOfInertia = await this._arrayOperation.Create(momentOfInertia, numberOfElements, elementsWithPiezoelectric, nameof(momentOfInertia));
 
             return geometricProperty;
         }

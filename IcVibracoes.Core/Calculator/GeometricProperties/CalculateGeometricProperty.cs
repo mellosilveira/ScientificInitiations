@@ -97,5 +97,21 @@ namespace IcVibracoes.Calculator.GeometricProperties
 
             return Task.FromResult(momentOfInertia);
         }
+
+        public Task<double> PiezoelectricMomentOfInertia(double height, double width, double beamHeight, uint numberOfPiezoelectricsPerElement)
+        {
+            double momentOfInertia;
+
+            if (numberOfPiezoelectricsPerElement <= 2 || numberOfPiezoelectricsPerElement > 0)
+            {
+                momentOfInertia = numberOfPiezoelectricsPerElement * (((Math.Pow(height, 3)) * width / 12) + ((height * width) * (Math.Pow((beamHeight - height) / 2, 2))));
+            }
+            else
+            {
+                throw new NotImplementedException($"Not implemented moment of inertia calculation to number of piezoelectric:{numberOfPiezoelectricsPerElement}.");
+            }
+
+            return Task.FromResult(momentOfInertia);
+        }
     }
 }

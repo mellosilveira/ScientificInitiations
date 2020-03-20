@@ -69,7 +69,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
         /// <returns></returns>
         public async override Task<BeamWithPiezoelectric<TProfile>> BuildBeam(CalculateBeamWithPiezoelectricVibrationRequest<TProfile> request, uint degreesFreedomMaximum)
         {
-            if (request == null)
+            if (request == null || degreesFreedomMaximum == default)
             {
                 return null;
             }
@@ -79,6 +79,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
 
             uint numberOfPiezoelectricPerElements = PiezoelectricPositionFactory.Create(request.BeamData.PiezoelectricPosition);
 
+            // Calculating beam geometric properties.
             if (request.BeamData.Profile.Area != default && request.BeamData.Profile.MomentOfInertia != default)
             {
                 geometricProperty.Area = await this._arrayOperation.Create(request.BeamData.Profile.Area.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.Profile.Area));
@@ -89,6 +90,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
                 geometricProperty = await this._profileMapper.Execute(request.BeamData.Profile, request.BeamData.NumberOfElements);
             }
 
+            // Calculating piezoelectric geometric properties.
             if (request.BeamData.PiezoelectricProfile.Area != default && request.BeamData.PiezoelectricProfile.MomentOfInertia != default)
             {
                 double area = request.BeamData.PiezoelectricProfile.Area.Value * numberOfPiezoelectricPerElements;
@@ -99,7 +101,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
             }
             else
             {
-                piezoelectricGeometricProperty = await this._piezoelectricProfileMapper.Execute(request.BeamData.PiezoelectricProfile, numberOfPiezoelectricPerElements, request.BeamData.ElementsWithPiezoelectric, request.BeamData.NumberOfElements);
+                piezoelectricGeometricProperty = await this._piezoelectricProfileMapper.Execute(request.BeamData.PiezoelectricProfile, request.BeamData.Profile, numberOfPiezoelectricPerElements, request.BeamData.ElementsWithPiezoelectric, request.BeamData.NumberOfElements);
             }
 
             return new BeamWithPiezoelectric<TProfile>()
