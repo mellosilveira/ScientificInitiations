@@ -92,14 +92,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                     input.DeltaTime = Math.PI * 2 / input.Parameter.PeriodDivision;
                 }
 
-                a0 = 1 / (Constants.Beta * Math.Pow(input.DeltaTime, 2));
-                a1 = Constants.Gama / (Constants.Beta * input.DeltaTime);
-                a2 = 1 / (Constants.Beta * input.DeltaTime);
-                a3 = 1 / (2 * Constants.Beta) - 1;
-                a4 = (Constants.Gama / Constants.Beta) - 1;
-                a5 = (input.DeltaTime / 2) * ((Constants.Beta / Constants.Beta) - 2);
-                a6 = input.DeltaTime * (1 - Constants.Gama);
-                a7 = Constants.Gama * input.DeltaTime;
+                a0 = 1 / (Constant.Beta * Math.Pow(input.DeltaTime, 2));
+                a1 = Constant.Gama / (Constant.Beta * input.DeltaTime);
+                a2 = 1 / (Constant.Beta * input.DeltaTime);
+                a3 = 1 / (2 * Constant.Beta) - 1;
+                a4 = (Constant.Gama / Constant.Beta) - 1;
+                a5 = (input.DeltaTime / 2) * ((Constant.Beta / Constant.Beta) - 2);
+                a6 = input.DeltaTime * (1 - Constant.Gama);
+                a7 = Constant.Gama * input.DeltaTime;
 
                 try
                 {
@@ -138,7 +138,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             double[] accel = new double[input.NumberOfTrueBoundaryConditions];
             double[] accelPre = new double[input.NumberOfTrueBoundaryConditions];
 
-            double[] forcePre = new double[input.NumberOfTrueBoundaryConditions];
+            //double[] forcePre = new double[input.NumberOfTrueBoundaryConditions];
 
             for (int jp = 0; jp < input.Parameter.NumberOfPeriods; jp++)
             {
@@ -171,7 +171,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                         yPre[i] = y[i];
                         velPre[i] = vel[i];
                         accelPre[i] = accel[i];
-                        forcePre[i] = input.Force[i];
+                        //forcePre[i] = input.Force[i];
                     }
                 }
             }
@@ -239,18 +239,18 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <summary>
         /// Calculates the equivalent velocity to calculate the equivalent force.
         /// </summary>
-        /// <param name="displacement"></param>
-        /// <param name="velocity"></param>
-        /// <param name="acceleration"></param>
+        /// <param name="previousDisplacement"></param>
+        /// <param name="previousVelocity"></param>
+        /// <param name="previousAcceleration"></param>
         /// <param name="numberOfTrueBondaryConditions"></param>
         /// <returns></returns>
-        protected Task<double[]> CalculateEquivalentVelocity(double[] displacement, double[] velocity, double[] acceleration, uint numberOfTrueBondaryConditions)
+        protected Task<double[]> CalculateEquivalentVelocity(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBondaryConditions)
         {
             double[] equivalentVelocity = new double[numberOfTrueBondaryConditions];
 
             for (int i = 0; i < numberOfTrueBondaryConditions; i++)
             {
-                equivalentVelocity[i] = a1 * displacement[i] + a4 * velocity[i] + a5 * acceleration[i];
+                equivalentVelocity[i] = a1 * previousDisplacement[i] + a4 * previousVelocity[i] + a5 * previousAcceleration[i];
             }
 
             return Task.FromResult(equivalentVelocity);

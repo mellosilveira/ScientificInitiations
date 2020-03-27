@@ -111,14 +111,13 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
             int n = matrix.GetLength(0);
             double[,] matrizInv = new double[n, n];
             double pivot, p;
-            int i, j, k, l;
 
             try
             {
                 // Parallel.For
-                for (i = 0; i < n; i++)
+                for (int i = 0; i < n; i++)
                 {
-                    for (j = 0; j < n; j++)
+                    for (int j = 0; j < n; j++)
                     {
                         if (i == j)
                         {
@@ -139,7 +138,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
             try
             {
                 // Triangularization
-                for (i = 0; i < n; i++)
+                for (int i = 0; i < n; i++)
                 {
                     pivot = matrix[i, i];
                     if (pivot == 0)
@@ -148,18 +147,18 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
                     }
 
                     // Parallel.For
-                    for (l = 0; l < n; l++)
+                    for (int l = 0; l < n; l++)
                     {
                         matrix[i, l] = matrix[i, l] / pivot;
                         matrizInv[i, l] = matrizInv[i, l] / pivot;
                     }
 
-                    for (k = i + 1; k < n; k++)
+                    for (int k = i + 1; k < n; k++)
                     {
                         p = matrix[k, i];
 
                         // Parallel.For
-                        for (j = 0; j < n; j++)
+                        for (int j = 0; j < n; j++)
                         {
                             matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
                             matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);
@@ -168,14 +167,14 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
                 }
 
                 // Retrosubstitution
-                for (i = n - 1; i >= 0; i--)
+                for (int i = n - 1; i >= 0; i--)
                 {
-                    for (k = i - 1; k >= 0; k--)
+                    for (int k = i - 1; k >= 0; k--)
                     {
                         p = matrix[k, i];
 
                         // Parallel.For
-                        for (j = n - 1; j >= 0; j--)
+                        for (int j = n - 1; j >= 0; j--)
                         {
                             matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
                             matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);

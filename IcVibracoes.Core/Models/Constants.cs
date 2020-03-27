@@ -3,7 +3,7 @@
     /// <summary>
     /// It contains the constants used in the application.
     /// </summary>
-    public class Constants
+    public class Constant
     {
         /// <summary>
         /// Nodes per element in a 1D analysis.
@@ -40,13 +40,13 @@
 
         /// <summary>
         /// Proportionality constant used in the damping calculate. 
-        /// That is used with the hardness.
+        /// It is multiplied by mass matrix.
         /// </summary>
         public const double Alpha = 1e-6;
 
         /// <summary>
         /// Proportionality constant used in the damping calculate. 
-        /// That is used with the mass.
+        /// It is multiplied by mass matrix.
         /// </summary>
         public const double Mi = 0;
 

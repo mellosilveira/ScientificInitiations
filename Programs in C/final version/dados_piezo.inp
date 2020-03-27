@@ -13,7 +13,7 @@
  1 1e11
  2 1e11
  Vetor Forcamento
- 0 0 10000 0 0 0
+ 0 0 10000 0 0 0 0 0 0
  Condicoes contorno
  0 1 1 1 0 1 0 1 1
  numero de periodos

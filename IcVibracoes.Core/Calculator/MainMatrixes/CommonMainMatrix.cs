@@ -19,7 +19,7 @@ namespace IcVibracoes.Calculator.MainMatrixes
         /// <returns></returns>
         public Task<double[,]> CalculateElementMass(double area, double specificMass, double length)
         {
-            double[,] elementMass = new double[Constants.DegreesFreedomElement, Constants.DegreesFreedomElement];
+            double[,] elementMass = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
 
             double constant = area * specificMass * length / 420;
 
@@ -58,7 +58,7 @@ namespace IcVibracoes.Calculator.MainMatrixes
             {
                 for (uint j = 0; j < size; j++)
                 {
-                    damping[i, j] = Constants.Mi * mass[i, j] + Constants.Alpha * hardness[i, j];
+                    damping[i, j] = Constant.Mi * mass[i, j] + Constant.Alpha * hardness[i, j];
                 }
             }
 

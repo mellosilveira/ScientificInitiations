@@ -33,7 +33,7 @@ long double Wi, Wf, dW;
 long double lp, ls; 							//tamanho do elemento analisado
 long double PI;
 long double tf;
-long double gama, alfa, f1[6];
+long double gama, alfa;
 long double a0, a1, a2, a3, a4, a5, a6, a7;
 long double hs, hp, bs, bp;
 long double MoIs, MoIp;
@@ -101,33 +101,72 @@ long double K_cc[CCT][CCT];
 //Formação da Matriz amortecimento incluindo os graus de liberdade relacionados com os potenciais,e diminuindo o numero e condições de contorno.
 long double C_cc[CCT][CCT];
 
-long double P1[CCT][CCT];              //[P1] = a0*[M] + a1*[C] + [K]
-long double P2a[CCT][CCT];			  //[P2a] = a0*[M] + a1*[C]
-long double P2[CCT];                   //[P2] = [P2a] x [y]
-long double P3a[CCT][CCT];			  //[P3a] = a2*[M] + a4*[C]
-long double P3[CCT];                   //[P3] = [P3a] x [vel]
-long double P4a[CCT][CCT];			  //[P4a] = a3*[M] + a5*[C]
-long double P4[CCT];                   //[P4] = [P4a] x [acel]
-long double P5[CCT];					  //[P5] = [fa]*sin(W*t) + [P2] + [P3] + [P4]
+//vetor forçamento aplicado as condições de contorno
+long double fa[CCT];
 
-long double fa[CCT];                   //vetor forçamento [4] aplicado as condições de contorno
+//[P1] = a0*[M] + a1*[C] + [K]
+long double P1[CCT][CCT];
+
+//[P2a] = a0*[M] + a1*[C]
+long double P2a[CCT][CCT];
+
+//[P2] = [P2a] x [y]
+long double P2[CCT];
+
+//[P3a] = a2*[M] + a4*[C]
+long double P3a[CCT][CCT];
+
+//[P3] = [P3a] x [vel]
+long double P3[CCT];
+
+//[P4a] = a3*[M] + a5*[C]
+long double P4a[CCT][CCT];
+
+//[P4] = [P4a] x [acel]
+long double P4[CCT];
+
+//[P5] = [fa]*sin(W*t) + [P2] + [P3] + [P4]
+long double P5[CCT];
 
 long double y_equivalente[CCT];        //vetor delta y para calcular o resultado
-long double fa_ant[CCT];               //vetor forçamento 4x4 no instante anterior
 long double delta_fa[CCT];             //[delta_fa] = [fa]i - [fa]i-1
 
 long double K_Y[CCT];      		      //vetor produto [K] x [y]
 long double C_Y[CCT];    	      	  //vetor produto [C] x [vel]
 long double K_C_Y[CCT];                //[K_C_Y] = [fa] - [C_Y] - [K_Y]
 long double acel[CCT];				  //vetor aceleração
-long double f[NGL2]; 				  //vetor forçamento do corpo todo
+
+// Vetor forçamento do corpo todo usado diretamente no método 
+long double f[NGL2];
+
+// Vetor forçamento com os valores máximos
+long double f_max[NGL2];
+
 long double cc[NGL2], cc_p[nELE];      //vetor condições de contorno
 long double Aes[nELE], Aep[nELE];	  //vetor área transversal de todos os elementos
 long double mEs[nELE], mEp[nELE];      //vetor módulo de elasticidade de todos os elementos
 long double Mos[nELE], Mop[nELE];      //vetor momento de inércia de todos os elementos
-long double y[21]; 					  //vetor variáveis
-long double y_ant[21];                 //vetor com valores anteriores das variáveis
-long double delta_y[21];               //[delta_y] = [y]i - [y]i-1
+
+// Vetor deslocamento
+long double y[CCT];
+
+// Vetor velocidade
+long double vel[CCT];
+
+// Vetor aceleração
+long double acel[CCT];
+
+// Vetor deslocamento anterior
+long double y_ant[CCT];
+
+// Vetor velocidade anterior
+long double vel_ant[CCT];
+
+// Vetor aceleração anterior
+long double acel_ant[CCT];
+
+//[delta_y] = [y]i - [y]i-1
+long double delta_y[21];
 
 FILE* input;
 FILE* output;
@@ -159,7 +198,7 @@ void LeituraDados(void)
 	//	Numero de barras piezoelétrica
 	fscanf(input, "%d", &nbp);
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -168,7 +207,7 @@ void LeituraDados(void)
 	// Permissividade elétrica e constante dielétrica
 	fscanf(input, "%Lf %Lf %Lf\n", &e31, &k33);
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -177,7 +216,7 @@ void LeituraDados(void)
 	// Dimensão transversal da barra e do piezo
 	fscanf(input, "%Lf %Lf %Lf %Lf %Lf %Lf\n", &bs, &hs, &bp, &hp, &lp, &ls);
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -208,7 +247,7 @@ void LeituraDados(void)
 		}
 	}
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -221,7 +260,7 @@ void LeituraDados(void)
 		fscanf(input, "%Lf", &mEs[i]);
 	}
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -255,19 +294,19 @@ void LeituraDados(void)
 		}
 	}
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
 	}
 
 	// Forçamento
-	for (int i = 0; i < (nEl + 1) * gl; i++)
+	for (int i = 0; i < NGL2; i++)
 	{
-		fscanf(input, "%Lf", &f1[i]);
+		fscanf(input, "%Lf", &f_max[i]);
 	}
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -279,7 +318,7 @@ void LeituraDados(void)
 		fscanf(input, "%Lf", &cc[i]);
 	}
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -291,7 +330,7 @@ void LeituraDados(void)
 	   np = numero de periodos
 	*/
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -319,24 +358,24 @@ void MatrizRigidez_estrutura(void)
 
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constant = Mos[n] * mEs[n] / pow(ls, 3);
+		long double constante = Mos[n] * mEs[n] / pow(ls, 3);
 
-		KEls[0][0] = 12 * constant;
-		KEls[0][1] = 6 * ls * constant;
-		KEls[0][2] = -12 * constant;
-		KEls[0][3] = 6 * ls * constant;
-		KEls[1][0] = 6 * ls * constant;
-		KEls[1][1] = 4 * pow(ls, 2) * constant;
-		KEls[1][2] = -(6 * ls * constant);
-		KEls[1][3] = 2 * pow(ls, 2) * constant;
-		KEls[2][0] = -(12 * constant);
-		KEls[2][1] = -(6 * ls * constant);
-		KEls[2][2] = 12 * constant;
-		KEls[2][3] = -(6 * ls * constant);
-		KEls[3][0] = 6 * ls * constant;
-		KEls[3][1] = 2 * pow(ls, 2) * constant;
-		KEls[3][2] = -(6 * ls * constant);
-		KEls[3][3] = 4 * pow(ls, 2) * constant;
+		KEls[0][0] = 12 * constante;
+		KEls[0][1] = 6 * ls * constante;
+		KEls[0][2] = -12 * constante;
+		KEls[0][3] = 6 * ls * constante;
+		KEls[1][0] = 6 * ls * constante;
+		KEls[1][1] = 4 * pow(ls, 2) * constante;
+		KEls[1][2] = -(6 * ls * constante);
+		KEls[1][3] = 2 * pow(ls, 2) * constante;
+		KEls[2][0] = -(12 * constante);
+		KEls[2][1] = -(6 * ls * constante);
+		KEls[2][2] = 12 * constante;
+		KEls[2][3] = -(6 * ls * constante);
+		KEls[3][0] = 6 * ls * constante;
+		KEls[3][1] = 2 * pow(ls, 2) * constante;
+		KEls[3][2] = -(6 * ls * constante);
+		KEls[3][3] = 4 * pow(ls, 2) * constante;
 
 		for (int i = 2 * n; i < 2 * n + 4; i++)
 		{
@@ -360,7 +399,7 @@ void MatrizRigidez_piezo(void)
 
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constant = Mop[n] * mEp[n] / pow(lp, 3);
+		long double constante = Mop[n] * mEp[n] / pow(lp, 3);
 
 		if (cc_p[n] == 0)
 		{
@@ -374,22 +413,22 @@ void MatrizRigidez_piezo(void)
 		}
 		else
 		{
-			KElp[0][0] = 12 * constant;
-			KElp[0][1] = 6 * lp * constant;
-			KElp[0][2] = -12 * constant;
-			KElp[0][3] = 6 * lp * constant;
-			KElp[1][0] = 6 * lp * constant;
-			KElp[1][1] = 4 * pow(lp, 2) * constant;
-			KElp[1][2] = -(6 * lp * constant);
-			KElp[1][3] = 2 * pow(lp, 2) * constant;
-			KElp[2][0] = -(12 * constant);
-			KElp[2][1] = -(6 * lp * constant);
-			KElp[2][2] = 12 * constant;
-			KElp[2][3] = -(6 * lp * constant);
-			KElp[3][0] = 6 * lp * constant;
-			KElp[3][1] = 2 * pow(lp, 2) * constant;
-			KElp[3][2] = -(6 * lp * constant);
-			KElp[3][3] = 4 * pow(lp, 2) * constant;
+			KElp[0][0] = 12 * constante;
+			KElp[0][1] = 6 * lp * constante;
+			KElp[0][2] = -12 * constante;
+			KElp[0][3] = 6 * lp * constante;
+			KElp[1][0] = 6 * lp * constante;
+			KElp[1][1] = 4 * pow(lp, 2) * constante;
+			KElp[1][2] = -(6 * lp * constante);
+			KElp[1][3] = 2 * pow(lp, 2) * constante;
+			KElp[2][0] = -(12 * constante);
+			KElp[2][1] = -(6 * lp * constante);
+			KElp[2][2] = 12 * constante;
+			KElp[2][3] = -(6 * lp * constante);
+			KElp[3][0] = 6 * lp * constante;
+			KElp[3][1] = 2 * pow(lp, 2) * constante;
+			KElp[3][2] = -(6 * lp * constante);
+			KElp[3][3] = 4 * pow(lp, 2) * constante;
 		}
 
 		for (int i = 2 * n; i < 2 * n + 4; i++)
@@ -415,24 +454,24 @@ void MatrizMassa_estrutura(void)
 
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constant = Aes[n] * dens * ls / 420;
+		long double constante = Aes[n] * dens * ls / 420;
 
-		Mls[0][0] = 156 * constant;
-		Mls[0][1] = 22 * ls * constant;
-		Mls[0][2] = 54 * constant;
-		Mls[0][3] = -13 * ls * constant;
-		Mls[1][0] = 22 * ls * constant;
-		Mls[1][1] = 4 * pow(ls, 2) * constant;
-		Mls[1][2] = 13 * ls * constant;
-		Mls[1][3] = -3 * pow(ls, 2) * constant;
-		Mls[2][0] = 54 * constant;
-		Mls[2][1] = 13 * ls * constant;
-		Mls[2][2] = 156 * constant;
-		Mls[2][3] = -22 * ls * constant;
-		Mls[3][0] = -13 * ls * constant;
-		Mls[3][1] = -3 * pow(ls, 2) * constant;
-		Mls[3][2] = -22 * ls * constant;
-		Mls[3][3] = 4 * pow(ls, 2) * constant;
+		Mls[0][0] = 156 * constante;
+		Mls[0][1] = 22 * ls * constante;
+		Mls[0][2] = 54 * constante;
+		Mls[0][3] = -13 * ls * constante;
+		Mls[1][0] = 22 * ls * constante;
+		Mls[1][1] = 4 * pow(ls, 2) * constante;
+		Mls[1][2] = 13 * ls * constante;
+		Mls[1][3] = -3 * pow(ls, 2) * constante;
+		Mls[2][0] = 54 * constante;
+		Mls[2][1] = 13 * ls * constante;
+		Mls[2][2] = 156 * constante;
+		Mls[2][3] = -22 * ls * constante;
+		Mls[3][0] = -13 * ls * constante;
+		Mls[3][1] = -3 * pow(ls, 2) * constante;
+		Mls[3][2] = -22 * ls * constante;
+		Mls[3][3] = 4 * pow(ls, 2) * constante;
 
 		for (int i = 2 * n; i < 2 * n + 4; i++)
 		{
@@ -457,7 +496,7 @@ void MatrizMassa_piezo(void)
 
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constant = Aep[n] * dens * lp / 420;
+		long double constante = Aep[n] * dens * lp / 420;
 
 		if (cc_p[n] == 0)
 		{
@@ -471,22 +510,22 @@ void MatrizMassa_piezo(void)
 		}
 		else
 		{
-			Mlp[0][0] = 156 * constant;
-			Mlp[0][1] = 22 * lp * constant;
-			Mlp[0][2] = 54 * constant;
-			Mlp[0][3] = -13 * lp * constant;
-			Mlp[1][0] = 22 * lp * constant;
-			Mlp[1][1] = 4 * pow(lp, 2) * constant;
-			Mlp[1][2] = 13 * lp * constant;
-			Mlp[1][3] = -3 * pow(lp, 2) * constant;
-			Mlp[2][0] = 54 * constant;
-			Mlp[2][1] = 13 * lp * constant;
-			Mlp[2][2] = 156 * constant;
-			Mlp[2][3] = -22 * lp * constant;
-			Mlp[3][0] = -13 * lp * constant;
-			Mlp[3][1] = -3 * pow(lp, 2) * constant;
-			Mlp[3][2] = -22 * lp * constant;
-			Mlp[3][3] = 4 * pow(lp, 2) * constant;
+			Mlp[0][0] = 156 * constante;
+			Mlp[0][1] = 22 * lp * constante;
+			Mlp[0][2] = 54 * constante;
+			Mlp[0][3] = -13 * lp * constante;
+			Mlp[1][0] = 22 * lp * constante;
+			Mlp[1][1] = 4 * pow(lp, 2) * constante;
+			Mlp[1][2] = 13 * lp * constante;
+			Mlp[1][3] = -3 * pow(lp, 2) * constante;
+			Mlp[2][0] = 54 * constante;
+			Mlp[2][1] = 13 * lp * constante;
+			Mlp[2][2] = 156 * constante;
+			Mlp[2][3] = -22 * lp * constante;
+			Mlp[3][0] = -13 * lp * constante;
+			Mlp[3][1] = -3 * pow(lp, 2) * constante;
+			Mlp[3][2] = -22 * lp * constante;
+			Mlp[3][3] = 4 * pow(lp, 2) * constante;
 		}
 
 		for (int i = 2 * n; i < 2 * n + 4; i++)
@@ -522,7 +561,7 @@ void Matriz_acoplamento_eletromecanico_U_V(void)
 	}
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constant = -e31 * bp * lp * (2 * hs * hp + hp * hp) / 2.0;
+		long double constante = -e31 * bp * lp * (2 * hs * hp + hp * hp) / 2.0;
 
 		if (cc_p[n] == 0)
 		{
@@ -537,13 +576,13 @@ void Matriz_acoplamento_eletromecanico_U_V(void)
 		else
 		{
 			K_u_vp[0][0] = 0;
-			K_u_vp[0][1] = -constant * lp;
+			K_u_vp[0][1] = -constante * lp;
 			K_u_vp[0][2] = 0;
-			K_u_vp[0][3] = constant * lp;
+			K_u_vp[0][3] = constante * lp;
 			K_u_vp[1][0] = 0;
-			K_u_vp[1][1] = constant * lp;
-			K_u_vp[1][2] = constant * lp;
-			K_u_vp[1][3] = -constant * lp;
+			K_u_vp[1][1] = constante * lp;
+			K_u_vp[1][2] = constante * lp;
+			K_u_vp[1][3] = -constante * lp;
 		}
 
 		for (int i = 2 * n; i < 2 * n + 4; i++)
@@ -579,7 +618,7 @@ void Matriz_acoplamento_eletromecanico_V_V(void)
 
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constant = -k33 * Aep[n] * lp / (hp * hp);
+		long double constante = -k33 * Aep[n] * lp / (hp * hp);
 
 		if (cc_p[n] == 0)
 		{
@@ -593,10 +632,10 @@ void Matriz_acoplamento_eletromecanico_V_V(void)
 		}
 		else
 		{
-			K_v_vp[0][0] = constant;
-			K_v_vp[0][1] = -constant;
-			K_v_vp[1][0] = -constant;
-			K_v_vp[1][1] = constant;
+			K_v_vp[0][0] = constante;
+			K_v_vp[0][1] = -constante;
+			K_v_vp[1][0] = -constante;
+			K_v_vp[1][1] = constante;
 		}
 
 		for (int i = n; i < n + 2; i++)
@@ -660,7 +699,7 @@ void MatrizC(void)
 	{
 		for (int j = 0; j < N + N / 2.0; j++)
 		{
-			C[i][j] = 0.0005 * M_G[i][j] + 0.0005 * K_G[i][j];
+			C[i][j] = 0 * M_G[i][j] + 0.000001 * K_G[i][j];
 		}
 	}
 }
@@ -673,21 +712,15 @@ void CondicoesContorno(void)
 		{
 			for (int j = 0; j < N + N / 2.0; j++)
 			{
-				if (j != i || j == i)
-				{
-					K_G[i][j] = 0;
-					M_G[i][j] = 0;
-					C[i][j] = 0;
-				}
+				K_G[i][j] = 0;
+				M_G[i][j] = 0;
+				C[i][j] = 0;
 			}
 			for (int k = 0; k < N + N / 2.0; k++)
 			{
-				if (k != i || k == i)
-				{
-					K_G[k][i] = 0;
-					M_G[k][i] = 0;
-					C[k][i] = 0;
-				}
+				K_G[k][i] = 0;
+				M_G[k][i] = 0;
+				C[k][i] = 0;
 			}
 		}
 	}
@@ -698,11 +731,11 @@ void CondicoesContorno(void)
 	{
 		count2 = 0;
 
-		if (cc[i] == true)
+		if (cc[i] == 1)
 		{
 			for (int j = 0; j < N + N / 2.0; j++)
 			{
-				if (cc[j] == true)
+				if (cc[j] == 1)
 				{
 					M_cc[count1][count2] = M_G[j][i];
 					K_cc[count1][count2] = K_G[j][i];
@@ -811,7 +844,7 @@ void MatrizP3(void)
 
 		for (int j = 0; j < N2; j++)
 		{
-			soma += P3a[i][j] * y_ant[j + (N2)];
+			soma += P3a[i][j] * vel_ant[j];
 		}
 
 		P3[i] = soma;
@@ -828,7 +861,7 @@ void MatrizP4(void)
 
 		for (int j = 0; j < N2; j++)
 		{
-			soma += P4a[i][j] * y_ant[j + 2 * (N2)];
+			soma += P4a[i][j] * acel_ant[j];
 		}
 
 		P4[i] = soma;
@@ -864,7 +897,7 @@ void Elim_Gauss(void)
 		}
 	}
 
-	// Triangularization
+	// Triangularização
 	for (int i = 0; i < N2; i++)
 	{
 		pivot = P1[i][i];
@@ -887,7 +920,7 @@ void Elim_Gauss(void)
 		}
 	}
 
-	// Retrosubstitution
+	// Retrosubstituição
 	for (int i = N2 - 1; i >= 0; i--)
 	{
 		for (int k = i - 1; k >= 0; k--)
@@ -924,7 +957,7 @@ void solucao(void)
 		{
 			for (int i = 0; i < N; i++)
 			{
-				f[i] = f[i] * sin(W * t);
+				f[i] = f_max[i] * sin(W * t);
 			}
 
 			CondicoesContorno1();
@@ -957,26 +990,22 @@ void solucao(void)
 
 			for (int i = 0; i < N2; i++)
 			{
-				y[i + 2 * N2] = a0 * (y[i] - y_ant[i]) - a2 * y_ant[i + N2] - a3 * y_ant[i + 2 * N2];
+				acel[i] = a0 * (y[i] - y_ant[i]) - a2 * vel_ant[i] - a3 * acel_ant[i];
 			}
 
 			for (int i = 0; i < N2; i++)
 			{
-				y[i + N2] = y_ant[i + N2] + a6 * y_ant[i + 2 * N2] + a7 * y[i + 2 * N2];
+				vel[i] = vel_ant[i] + a6 * acel_ant[i] + a7 * acel[i];
 			}
 
 			t = t + dt;
 
-			for (int i = 0; i < 3 * N2; i++)
-			{
-				y_ant[i] = y[i];
-			}
-
 			for (int i = 0; i < N2; i++)
 			{
-				fa_ant[i] = fa[i];
+				y_ant[i] = y[i];
+				vel_ant[i] = vel[i];
+				acel_ant[i] = acel[i];
 			}
-
 		}
 	}
 
@@ -1039,11 +1068,11 @@ main()
 
 		if (W != 0)
 		{
-			dt = (long double)((PI * 2 / W) / nm);
+			dt = ((PI * 2 / W) / nm);
 		}
 		else
 		{
-			dt = (long double)(PI * 2 / nm);
+			dt = (PI * 2 / nm);
 		}
 
 		if (t == 0)
@@ -1057,9 +1086,9 @@ main()
 		a0 = 1.0 / (alfa * dt * dt);
 		a1 = gama / (alfa * dt);
 		a2 = 1.0 / (alfa * dt);
-		a3 = gama / (alfa);
-		a4 = 1 / (2 * alfa);
-		a5 = dt * ((gama / (2 * alfa)) - 1);
+		a3 = (1 / (2 * alfa)) - 1;
+		a4 = (gama / alfa) - 1;
+		a5 = (dt / 2) * ((gama / alpha) - 2);
 		a6 = dt * (1 - gama);
 		a7 = gama * dt;
 

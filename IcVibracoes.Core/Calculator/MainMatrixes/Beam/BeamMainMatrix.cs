@@ -23,7 +23,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// <returns></returns>
         public Task<double[,]> CalculateElementMass(double area, double specificMass, double length)
         {
-            double[,] elementMass = new double[Constants.DegreesFreedomElement, Constants.DegreesFreedomElement];
+            double[,] elementMass = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
 
             double constant = area * specificMass * length / 420;
 
@@ -32,17 +32,17 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
             elementMass[0, 2] = 54 * constant;
             elementMass[0, 3] = -13 * length * constant;
             elementMass[1, 0] = 22 * length * constant;
-            elementMass[1, 1] = 4 * length * length * constant;
+            elementMass[1, 1] = 4 * Math.Pow(length, 2) * constant;
             elementMass[1, 2] = 13 * length * constant;
-            elementMass[1, 3] = -3 * length * length * constant;
+            elementMass[1, 3] = -3 * Math.Pow(length, 2) * constant;
             elementMass[2, 0] = 54 * constant;
             elementMass[2, 1] = 13 * length * constant;
             elementMass[2, 2] = 156 * constant;
             elementMass[2, 3] = -22 * length * constant;
             elementMass[3, 0] = -13 * length * constant;
-            elementMass[3, 1] = -3 * length * length * constant;
+            elementMass[3, 1] = -3 * Math.Pow(length, 2) * constant;
             elementMass[3, 2] = -22 * length * constant;
-            elementMass[3, 3] = 4 * length * length * constant;
+            elementMass[3, 3] = 4 * Math.Pow(length, 2) * constant;
 
             return Task.FromResult(elementMass);
         }
@@ -56,7 +56,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         public async Task<double[,]> CalculateMass(Beam<TProfile> beam, uint degreesFreedomMaximum)
         {
             uint numberOfElements = beam.NumberOfElements;
-            uint dfe = Constants.DegreesFreedomElement;
+            uint dfe = Constant.DegreesFreedomElement;
 
             double[,] mass = new double[degreesFreedomMaximum, degreesFreedomMaximum];
 
@@ -87,7 +87,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// <returns></returns>
         public Task<double[,]> CalculateElementHardness(double momentOfInertia, double youngModulus, double length)
         {
-            double[,] elementHardness = new double[Constants.DegreesFreedomElement, Constants.DegreesFreedomElement];
+            double[,] elementHardness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
 
             double constant = momentOfInertia * youngModulus / Math.Pow(length, 3);
 
@@ -120,7 +120,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         public async Task<double[,]> CalculateHardness(Beam<TProfile> beam, uint degreesFreedomMaximum)
         {
             uint numberOfElements = beam.NumberOfElements;
-            uint dfe = Constants.DegreesFreedomElement;
+            uint dfe = Constant.DegreesFreedomElement;
 
             double[,] hardness = new double[degreesFreedomMaximum, degreesFreedomMaximum];
 
@@ -178,13 +178,13 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
             {
                 for (int j = 0; j < size; j++)
                 {
-                    damping[i, j] = Constants.Mi * mass[i, j] + Constants.Alpha * hardness[i, j];
+                    damping[i, j] = Constant.Mi * mass[i, j] + Constant.Alpha * hardness[i, j];
                 }
             }
 
             return Task.FromResult(damping);
         }
-        
+
         /// <summary>
         /// It's responsible to build the bondary condition matrix.
         /// </summary>

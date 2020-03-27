@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Core.Models;
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace IcVibracoes.Methods.AuxiliarOperations
 {
@@ -19,21 +18,19 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         /// <returns></returns>
         public double[,] ApplyBondaryConditions(double[,] matrix, bool[] bondaryConditions, uint size)
         {
-            int i, j, count1, count2;
-
-            int n = matrix.GetLength(0);
+            int count1, count2;
 
             double[,] matrixBC = new double[size, size];
 
             count1 = 0;
 
-            for (i = 0; i < n; i++)
+            for (int i = 0; i < size; i++)
             {
                 count2 = 0;
 
                 if (bondaryConditions[i] == true)
                 {
-                    for (j = 0; j < n; j++)
+                    for (int j = 0; j < size; j++)
                     {
                         if (bondaryConditions[j] == true)
                         {
@@ -59,13 +56,11 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         /// <returns></returns>
         public double[] ApplyBondaryConditions(double[] vector, bool[] bondaryConditions, uint size)
         {
-            int i, count1 = 0;
-
-            int n = vector.GetLength(0);
+            int count1 = 0;
 
             double[] matrixCC = new double[size];
 
-            for (i = 0; i < n; i++)
+            for (int i = 0; i < size; i++)
             {
                 if (bondaryConditions[i] == true)
                 {
@@ -84,7 +79,7 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         /// <returns></returns>
         public uint CalculateDegreesFreedomMaximum(uint numberOfElements)
         {
-            return (numberOfElements + 1) * Constants.NodesPerElement;
+            return (numberOfElements + 1) * Constant.NodesPerElement;
         }
 
         /// <summary>

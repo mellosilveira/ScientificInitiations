@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Piezoelectric solution program in C.
 ### Removed
 - Unnecessary rograms in C.
+### Fixed
+- Name of classes.
+- Summaries.
 
 ## [1.2.0] - 2020-03-20 
 ### Added
