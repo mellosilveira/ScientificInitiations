@@ -21,7 +21,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="size"></param>
         /// <param name="vectorName"></param>
         /// <returns></returns>
-        Task<double[]> Create(double value, uint size, string vectorName);
+        Task<double[]> CreateVector(double value, uint size, string vectorName);
 
         /// <summary>
         /// It's responsible to create a vector with an unique value in the informed positions with a size that is informed too.
@@ -31,7 +31,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="positions"></param>
         /// <param name="vectorName"></param>
         /// <returns></returns>
-        Task<double[]> Create(double value, uint size, uint[] positions, string vectorName);
+        Task<double[]> CreateVector(double value, uint size, uint[] positions, string vectorName);
 
         /// <summary>
         /// It's responsible to inverse a matrix.

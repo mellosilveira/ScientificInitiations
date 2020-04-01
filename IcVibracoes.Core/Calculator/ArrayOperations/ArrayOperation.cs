@@ -48,21 +48,19 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="size"></param>
         /// <param name="vectorName"></param>
         /// <returns></returns>
-        public Task<double[]> Create(double value, uint size, string vectorName)
+        public Task<double[]> CreateVector(double value, uint size, string vectorName)
         {
+            if(size < 1)
+            {
+                throw new ArgumentException($"Cannot create a matrix with size: {size}. It must be greather or equals to 1.");
+            }
+
             double[] newVector = new double[size];
 
-            try
+            // Parallel.For
+            for (int i = 0; i < size; i++)
             {
-                // Parallel.For
-                for (int i = 0; i < size; i++)
-                {
-                    newVector[i] = value;
-                }
-            }
-            catch
-            {
-                throw new Exception($"Error creating the vector: {vectorName}.");
+                newVector[i] = value;
             }
 
             return Task.FromResult(newVector);
@@ -76,20 +74,25 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="elementPositions"></param>
         /// <param name="vectorName"></param>
         /// <returns></returns>
-        public Task<double[]> Create(double value, uint size, uint[] elementPositions, string vectorName)
+        public Task<double[]> CreateVector(double value, uint size, uint[] elementPositions, string vectorName)
         {
+            if (size < 1)
+            {
+                throw new ArgumentException($"Cannot create a matrix with size: {size}. It must be greather or equals to 1.");
+            }
+
             double[] newVector = new double[size];
 
             try
             {
-                for(int i = 0; i< elementPositions.Length; i++)
+                for (int i = 0; i < elementPositions.Length; i++)
                 {
                     newVector[elementPositions[i] - 1] = value;
                 }
             }
             catch
             {
-                throw new Exception($"Error creating the vector: {vectorName}.");
+                throw new ArgumentOutOfRangeException($"Error creating the vector: {vectorName}.");
             }
 
             return Task.FromResult(newVector);
@@ -402,7 +405,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
 
             return Task.FromResult(vectorSum);
         }
-        
+
         /// <summary>
         /// It's responsible to sum three vectors.
         /// </summary>

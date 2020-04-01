@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
+namespace IcVibracoes.Test.Core.Calculator
 {
     public class ArrayOperationTest
     {
@@ -26,6 +26,8 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
         private readonly double[,] _transposedMatrix1;
         private readonly double[,] _addedValuesInMatrix1;
 
+        private uint[] _elementPositions;
+        
         public ArrayOperationTest()
         {
             this._operation = new ArrayOperation();
@@ -35,6 +37,7 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             this._array2 = new double[4] { 5, 0, 1, 3 };
             this._valuesToAdd = new double[2] { -1, 1 };
             this._nodePositions = new uint[2] { 0, 1 };
+            this._elementPositions = new uint[2] { 1, 2 };
             this._addedValuesInMatrix1 = new double[4, 4] { { 0, 1, 1, 1 }, { 2, 5, 1, 4 }, { 3, 5, 3, 0 }, { 2, 5, 0, 1 } };
             this._inversedMatrix1 = new double[4, 4] { { 3.5, -1.3, -1.1, 1.7 }, { -1.5, 0.5, 0.5, -0.5 }, { -1.5, 0.7, 0.9, -1.3 }, { 0.5, 0.1, -0.3, 0.1 } };
             this._multipliedMatrix1Matrix2 = new double[4, 4] { { 9, 4, 7, 8 }, { 27, 12, 17, 31 }, { 32, 10, 18, 25 }, { 24, 8, 12, 24 } };
@@ -47,7 +50,7 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             this._transposedMatrix1 = new double[4, 4] { { 1, 2, 3, 2 }, { 1, 5, 5, 5 }, { 1, 1, 2, 0 }, { 1, 4, 0, 1 } };
         }
 
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Valid matrix. | When: Add value. | Should: Return correctly matrix size and values.")]
+        [Fact(DisplayName = @"Feature: AddValue | Given: Valid matrix. | When: Invoke. | Should: Return correctly matrix size and values.")]
         public async void AddValue_ValidMatrix_ShouldExecuteCorrectly()
         {
             // Arrange
@@ -61,7 +64,7 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             result.Should().BeEquivalentTo(this._addedValuesInMatrix1);
         }
 
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Invalid number of values and node positions. | When: Add value. | Should: Throw ArgumentException.")]
+        [Fact(DisplayName = @"Feature: AddValue | Given: Value and node position matrix with different lengths. | When: Invoke. | Should: Throw ArgumentException.")]
         public void AddValue_InvalidNumberOfValuesAndPositions_ShouldThrowArgumentException()
         {
             // Arrange
@@ -75,8 +78,8 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             act.Should().Throw<ArgumentException>();
         }
 
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Invalid node positions. | When: Add value. | Should: Throw ArgumentException.")]
-        public void AddValue_InvalidNodePositions_ShouldThrowArgumentException()
+        [Fact(DisplayName = @"Feature: AddValue | Given: Invalid node positions. | When: Invoke. | Should: Throw ArgumentException.")]
+        public void AddValue_InvalidNodePositions_ShouldThrowArgumentOutOfRangeException()
         {
             // Arrange
             uint[] nodePositions = new uint[2] { 5, 6 };
@@ -88,7 +91,90 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
 
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Valid matrix. | When: Inverse matrix. | Should: Return correctly matrix size and values.")]
+        //268435456 --> maximum size of double array --> maximum size of array = 2Gb, size of double = 8bytes
+        [Fact(DisplayName = @"Feature: CreateVector | Given: Valid sizes. | When: Create a full vector. | Should: Return correctly array size and values.")]
+        public async void CreateVector_When_CreateFullVector_ShouldExecuteCorrectly()
+        {
+            // Arrange
+            uint size = 4;
+            Random random = new Random();
+            double value = random.NextDouble();
+
+            // Act
+            double[] result = await this._operation.CreateVector(value, size, "test");
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount((int)size);
+            result.Should().OnlyContain(eoq => eoq == value);
+        }
+
+        [Fact(DisplayName = @"Feature: CreateVector | Given: Invalid size. | When: Create a full vector. | Should: Throw argument expection.")]
+        public void CreateVector_When_CreateFullVector_Should_ThrowArgumentException()
+        {
+            // Arrange / Act
+            Func<Task<double[]>> act = async () =>
+            {
+                Random random = new Random();
+                double value = random.NextDouble();
+
+                return await this._operation.CreateVector(value, size: 0, "teste");
+            };
+
+            // Assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Fact(DisplayName = @"Feature: CreateVector | Given: Invalid matrix size. | When: Create a vector based in the node positions. | Should: Throw ArgumentException.")]
+        public void CreateVector_Should_ThrowArgumentException()
+        {
+            // Arrange / Act
+            Func<Task<double[]>> act = async () =>
+            {
+                Random random = new Random();
+                double value = random.NextDouble();
+
+                return await this._operation.CreateVector(value, size: 0, this._elementPositions, "teste");
+            };
+
+            // Assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Fact(DisplayName = @"Feature: CreateVector | Given: Invalid positions. | When: Invoke. | Should: Throw ArgumentOutOfRangeException.")]
+        public void CreateVector_Should_ThrowArgumentOutOfRangeException()
+        {
+            // Arrange
+            this._elementPositions = new uint[2] { 5, 6 };
+            Random random = new Random();
+            double value = random.NextDouble();
+
+            // Act
+            Func<Task<double[]>> act = async () => await this._operation.CreateVector(value, size: 4, this._elementPositions, "teste");
+
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Fact(DisplayName = @"")]
+        public async void CreateVector_Should_ExecuteCorrectly()
+        {
+            // Arrange
+            Random random = new Random();
+            double value = random.NextDouble();
+            uint size = 4;
+            double[] expected = new double[4] { value, value, 0, 0 };
+
+            // Act
+            var result = await this._operation.CreateVector(value, size, this._elementPositions, "teste");
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount((int)size);
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact(DisplayName = @"Feature: InverseMatrix | Given: Valid matrix. | When: Inverse matrix. | Should: Return correctly matrix size and values.")]
         public async void InverseMatrix_ValidMatrix_ShouldExecuteCorrectly()
         {
             // Act
@@ -103,12 +189,12 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             {
                 Parallel.For(0, 4, j =>
                 {
-                    result[i, j].Should().BeApproximately(this._inversedMatrix1[i, j], 2);
+                    result[i, j].Should().BeApproximately(_inversedMatrix1[i, j], 2);
                 });
             });
         }
 
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: One matrix and one array. | When: Multiply matrix and array. | Should: Return correctly array size and values.")]
+        [Fact(DisplayName = @"Feature: Multiply | Given: One matrix and one array. | When: Multiply matrix and array. | Should: Return correctly array size and values.")]
         public async void Multiply_MatrixAndArray_ShouldExecuteCorrectly()
         {
             // Act
@@ -120,7 +206,7 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             result.Should().BeEquivalentTo(this._multipliedMatrix1Array1);
         }
 
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: One array and one matrix. | When: Multiply array and matrix. | Should: Return correctly array size and values.")]
+        [Fact(DisplayName = @"Feature: Multiply | Given: One array and one matrix. | When: Multiply array and matrix. | Should: Return correctly array size and values.")]
         public async void Multiply_ArrayAndMatrix_ShouldExecuteCorrectly()
         {
             // Act
@@ -184,28 +270,6 @@ namespace IcVibracoes.Test.Core.Calculator.ArrayOperations
             result.Should().BeEquivalentTo(this._addedArray1Array2);
         }
 
-        [Theory(DisplayName = @"Feature: ArrayOperation | Given: Valid sizes. | When: Create array. | Should: Return correctly array size and values.")]
-        [InlineData(uint.MinValue)]
-        [InlineData(1)]
-        [InlineData(1000)]
-        //268435456 --> maximum size of double array --> maximum size of array = 2Gb, size of double = 8bytes
-        public async void Create_ShouldExecuteCorrectly(uint size)
-        {
-            // Arrange
-            Random random = new Random();
-            double value = random.NextDouble();
-
-            // Act
-            double[] result = await this._operation.Create(value, size, "test");
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().HaveCount((int)size);
-            foreach (double d in result)
-            {
-                d.Should().Be(value);
-            }
-        }
 
         [Fact(DisplayName = @"Feature: ArrayOperation | Given: One matrix. | When: Transpose matrix. | Should: Return correctly matrix size and values.")]
         public async void TransposeMatrix_ValidMatrix_ShouldExecuteCorrectly()
