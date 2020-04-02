@@ -156,7 +156,7 @@ namespace IcVibracoes.Test.Core.Calculator
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
 
-        [Fact(DisplayName = @"")]
+        [Fact(DisplayName = @"Feature: CreateVector | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CreateVector_Should_ExecuteCorrectly()
         {
             // Arrange
@@ -189,9 +189,22 @@ namespace IcVibracoes.Test.Core.Calculator
             {
                 Parallel.For(0, 4, j =>
                 {
-                    result[i, j].Should().BeApproximately(_inversedMatrix1[i, j], 2);
+                    result[i, j].Should().BeApproximately(this._inversedMatrix1[i, j], 2);
                 });
             });
+        }
+
+        [Fact(DisplayName = @"Feature: InverdeMatrix | Given: Invalid matrix. | When: Invoke. | Should: Throw ArgumentException.")]
+        public void InverseMatrix_Should_ThrowArgumentException()
+        {
+            // Arrange
+            double[,] matrix = new double[2, 3];
+
+            // Act
+            Func<Task<double[,]>> act = async () => await this._operation.InverseMatrix(matrix, "teste");
+
+            // Assert
+            act.Should().Throw<ArgumentException>();
         }
 
         [Fact(DisplayName = @"Feature: Multiply | Given: One matrix and one array. | When: Multiply matrix and array. | Should: Return correctly array size and values.")]

@@ -50,7 +50,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <returns></returns>
         public Task<double[]> CreateVector(double value, uint size, string vectorName)
         {
-            if(size < 1)
+            if (size < 1)
             {
                 throw new ArgumentException($"Cannot create a matrix with size: {size}. It must be greather or equals to 1.");
             }
@@ -108,86 +108,72 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         {
             if (matrix.GetLength(0) != matrix.GetLength(1))
             {
-                throw new Exception($"Error inversing {matrixName}. It is just possible to inverse a square matrix.");
+                throw new ArgumentException($"Error inversing {matrixName}. It is just possible to inverse a square matrix.");
             }
 
             int n = matrix.GetLength(0);
             double[,] matrizInv = new double[n, n];
             double pivot, p;
 
-            try
+            // Parallel.For
+            for (int i = 0; i < n; i++)
             {
-                // Parallel.For
-                for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
                 {
-                    for (int j = 0; j < n; j++)
+                    if (i == j)
                     {
-                        if (i == j)
-                        {
-                            matrizInv[i, j] = 1;
-                        }
-                        else
-                        {
-                            matrizInv[i, j] = 0;
-                        }
+                        matrizInv[i, j] = 1;
+                    }
+                    else
+                    {
+                        matrizInv[i, j] = 0;
                     }
                 }
             }
-            catch
-            {
-                throw new Exception($"Error creating identity matrix to inverse the matrix: {matrixName}.");
-            }
 
-            try
+            // Triangularization
+            for (int i = 0; i < n; i++)
             {
-                // Triangularization
-                for (int i = 0; i < n; i++)
+                pivot = matrix[i, i];
+                if (pivot == 0)
                 {
-                    pivot = matrix[i, i];
-                    if (pivot == 0)
-                    {
-                        throw new Exception($"Invalid value to pivot: {pivot}.");
-                    }
+                    throw new DivideByZeroException($"Invalid value to pivot: {pivot}.");
+                }
+
+                // Parallel.For
+                for (int l = 0; l < n; l++)
+                {
+                    matrix[i, l] = matrix[i, l] / pivot;
+                    matrizInv[i, l] = matrizInv[i, l] / pivot;
+                }
+
+                for (int k = i + 1; k < n; k++)
+                {
+                    p = matrix[k, i];
 
                     // Parallel.For
-                    for (int l = 0; l < n; l++)
+                    for (int j = 0; j < n; j++)
                     {
-                        matrix[i, l] = matrix[i, l] / pivot;
-                        matrizInv[i, l] = matrizInv[i, l] / pivot;
-                    }
-
-                    for (int k = i + 1; k < n; k++)
-                    {
-                        p = matrix[k, i];
-
-                        // Parallel.For
-                        for (int j = 0; j < n; j++)
-                        {
-                            matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
-                            matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);
-                        }
-                    }
-                }
-
-                // Retrosubstitution
-                for (int i = n - 1; i >= 0; i--)
-                {
-                    for (int k = i - 1; k >= 0; k--)
-                    {
-                        p = matrix[k, i];
-
-                        // Parallel.For
-                        for (int j = n - 1; j >= 0; j--)
-                        {
-                            matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
-                            matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);
-                        }
+                        matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
+                        matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);
                     }
                 }
             }
-            catch
+
+            // Retrosubstitution
+            for (int i = n - 1; i >= 0; i--)
             {
-                throw new Exception($"Error inversing the matrix: {matrixName}.");
+                for (int k = i - 1; k >= 0; k--)
+                {
+                    p = matrix[k, i];
+
+                    // Parallel.For
+                    for (int j = n - 1; j >= 0; j--)
+                    {
+                        matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
+                        matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);
+                    }
+                }
             }
 
             return Task.FromResult(matrizInv);
