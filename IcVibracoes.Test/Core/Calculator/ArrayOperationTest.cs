@@ -8,46 +8,41 @@ namespace IcVibracoes.Test.Core.Calculator
 {
     public class ArrayOperationTest
     {
+        private const int arraySize = 4;
         private readonly ArrayOperation _operation;
         private readonly double[,] _matrix1;
         private readonly double[,] _matrix2;
-        private readonly double[] _array1;
-        private readonly double[] _array2;
+        private readonly double[] _vector1;
+        private readonly double[] _vector2;
+        private readonly double[] _vector3;
         private readonly double[] _valuesToAdd;
         private readonly uint[] _nodePositions;
+        private readonly double[] _sumVector1Vector2Vector3;
         private readonly double[,] _inversedMatrix1;
-        private readonly double[,] _multipliedMatrix1Matrix2;
-        private readonly double[] _multipliedArray1Matrix1;
-        private readonly double[] _multipliedMatrix1Array1;
-        private readonly double[,] _subtractedMatrix1Matrix2;
-        private readonly double[] _subtractedArray1Array2;
-        private readonly double[,] _addedMatrix1Matrix2;
-        private readonly double[] _addedArray1Array2;
         private readonly double[,] _transposedMatrix1;
         private readonly double[,] _addedValuesInMatrix1;
+        private readonly double[] _mergedVector1Vetor2;
+        private readonly double[] _multipliedMatrix1Vector1;
 
         private uint[] _elementPositions;
-        
+
         public ArrayOperationTest()
         {
             this._operation = new ArrayOperation();
-            this._matrix1 = new double[4, 4] { { 1, 1, 1, 1 }, { 2, 5, 1, 4 }, { 3, 5, 2, 0 }, { 2, 5, 0, 1 } };
-            this._matrix2 = new double[4, 4] { { 2, 1, 3, 1 }, { 4, 1, 1, 4 }, { 3, 1, 2, 1 }, { 0, 1, 1, 2 } };
-            this._array1 = new double[4] { 1, 2, 3, 4 };
-            this._array2 = new double[4] { 5, 0, 1, 3 };
+            this._matrix1 = new double[arraySize, arraySize] { { 1, 1, 1, 1 }, { 2, 5, 1, 4 }, { 3, 5, 2, 0 }, { 2, 5, 0, 1 } };
+            this._matrix2 = new double[arraySize, arraySize] { { 2, 1, 3, 1 }, { 4, 1, 1, 4 }, { 3, 1, 2, 1 }, { 0, 1, 1, 2 } };
+            this._vector1 = new double[arraySize] { 1, 2, 3, 4 };
+            this._vector2 = new double[arraySize] { 5, 0, 1, 3 };
+            this._vector3 = new double[arraySize] { 5, 6, 7, 8 };
             this._valuesToAdd = new double[2] { -1, 1 };
             this._nodePositions = new uint[2] { 0, 1 };
             this._elementPositions = new uint[2] { 1, 2 };
-            this._addedValuesInMatrix1 = new double[4, 4] { { 0, 1, 1, 1 }, { 2, 5, 1, 4 }, { 3, 5, 3, 0 }, { 2, 5, 0, 1 } };
-            this._inversedMatrix1 = new double[4, 4] { { 3.5, -1.3, -1.1, 1.7 }, { -1.5, 0.5, 0.5, -0.5 }, { -1.5, 0.7, 0.9, -1.3 }, { 0.5, 0.1, -0.3, 0.1 } };
-            this._multipliedMatrix1Matrix2 = new double[4, 4] { { 9, 4, 7, 8 }, { 27, 12, 17, 31 }, { 32, 10, 18, 25 }, { 24, 8, 12, 24 } };
-            this._multipliedArray1Matrix1 = new double[4] { 22, 46, 9, 13 };
-            this._multipliedMatrix1Array1 = new double[4] { 10, 31, 19, 16 };
-            this._subtractedMatrix1Matrix2 = new double[4, 4] { { -1, 0, -2, 0 }, { -2, 4, 0, 0 }, { 0, 4, 0, -1 }, { 2, 4, -1, -1 } };
-            this._subtractedArray1Array2 = new double[4] { 6, 2, 4, 7 };
-            this._addedMatrix1Matrix2 = new double[4, 4] { { 3, 2, 4, 2 }, { 6, 6, 2, 8 }, { 6, 6, 4, 1 }, { 2, 6, 1, 3 } };
-            this._addedArray1Array2 = new double[4] { -4, 2, 2, 1 };
-            this._transposedMatrix1 = new double[4, 4] { { 1, 2, 3, 2 }, { 1, 5, 5, 5 }, { 1, 1, 2, 0 }, { 1, 4, 0, 1 } };
+            this._sumVector1Vector2Vector3 = new double[arraySize] { 11, 8, 11, 15 };
+            this._addedValuesInMatrix1 = new double[arraySize, arraySize] { { 0, 1, 1, 1 }, { 2, 5, 1, 4 }, { 3, 5, 3, 0 }, { 2, 5, 0, 1 } };
+            this._inversedMatrix1 = new double[arraySize, arraySize] { { 3.5, -1.3, -1.1, 1.7 }, { -1.5, 0.5, 0.5, -0.5 }, { -1.5, 0.7, 0.9, -1.3 }, { 0.5, 0.1, -0.3, 0.1 } };
+            this._mergedVector1Vetor2 = new double[2 * arraySize] { 1, 2, 3, 4, 5, 0, 1, 3 };
+            this._multipliedMatrix1Vector1 = new double[arraySize] { 10, 31, 19, 16 };
+            this._transposedMatrix1 = new double[arraySize, arraySize] { { 1, 2, 3, 2 }, { 1, 5, 5, 5 }, { 1, 1, 2, 0 }, { 1, 4, 0, 1 } };
         }
 
         [Fact(DisplayName = @"Feature: AddValue | Given: Valid matrix. | When: Invoke. | Should: Return correctly matrix size and values.")]
@@ -96,16 +91,15 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CreateVector_When_CreateFullVector_ShouldExecuteCorrectly()
         {
             // Arrange
-            uint size = 4;
             Random random = new Random();
             double value = random.NextDouble();
 
             // Act
-            double[] result = await this._operation.CreateVector(value, size, "test");
+            double[] result = await this._operation.CreateVector(value, arraySize, "test");
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().HaveCount((int)size);
+            result.Should().HaveCount(arraySize);
             result.Should().OnlyContain(eoq => eoq == value);
         }
 
@@ -150,7 +144,7 @@ namespace IcVibracoes.Test.Core.Calculator
             double value = random.NextDouble();
 
             // Act
-            Func<Task<double[]>> act = async () => await this._operation.CreateVector(value, size: 4, this._elementPositions, "teste");
+            Func<Task<double[]>> act = async () => await this._operation.CreateVector(value, arraySize, this._elementPositions, "teste");
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
@@ -162,15 +156,14 @@ namespace IcVibracoes.Test.Core.Calculator
             // Arrange
             Random random = new Random();
             double value = random.NextDouble();
-            uint size = 4;
-            double[] expected = new double[4] { value, value, 0, 0 };
+            double[] expected = new double[arraySize] { value, value, 0, 0 };
 
             // Act
-            var result = await this._operation.CreateVector(value, size, this._elementPositions, "teste");
+            var result = await this._operation.CreateVector(value, arraySize, this._elementPositions, "teste");
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().HaveCount((int)size);
+            result.Should().HaveCount(arraySize);
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -185,9 +178,9 @@ namespace IcVibracoes.Test.Core.Calculator
             result.GetLength(0).Should().Be(this._matrix1.GetLength(0));
             result.GetLength(1).Should().Be(this._matrix1.GetLength(1));
 
-            Parallel.For(0, 4, i =>
+            Parallel.For(0, arraySize, i =>
             {
-                Parallel.For(0, 4, j =>
+                Parallel.For(0, arraySize, j =>
                 {
                     result[i, j].Should().BeApproximately(this._inversedMatrix1[i, j], 2);
                 });
@@ -207,88 +200,43 @@ namespace IcVibracoes.Test.Core.Calculator
             act.Should().Throw<ArgumentException>();
         }
 
+        [Fact(DisplayName = @"Feature: MergeVectors | Given: Valid vectors. | When: Invoke. | Should: Execute correctly.")]
+        public async void MergeVectors_Shoudl_ExecuteCorrectly()
+        {
+            // Act
+            var result = await this._operation.MergeVectors(this._vector1, this._vector2);
+
+            // Assert
+            result.Should().BeEquivalentTo(this._mergedVector1Vetor2);
+        }
+
         [Fact(DisplayName = @"Feature: Multiply | Given: One matrix and one array. | When: Multiply matrix and array. | Should: Return correctly array size and values.")]
         public async void Multiply_MatrixAndArray_ShouldExecuteCorrectly()
         {
             // Act
-            double[] result = await this._operation.Multiply(this._matrix1, this._array1, "Multiply Test");
+            double[] result = await this._operation.Multiply(this._matrix1, this._vector1, "Multiply Test");
 
             // Assert
             result.Should().NotBeEmpty();
             result.Length.Should().Be(this._matrix1.Length);
-            result.Should().BeEquivalentTo(this._multipliedMatrix1Array1);
+            result.Should().BeEquivalentTo(this._multipliedMatrix1Vector1);
         }
 
-        [Fact(DisplayName = @"Feature: Multiply | Given: One array and one matrix. | When: Multiply array and matrix. | Should: Return correctly array size and values.")]
-        public async void Multiply_ArrayAndMatrix_ShouldExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: Sum | Given: Valid vectors. | When: Invoke. | Should: Exeute correctly.")]
+        public async void Sum_Should_ExecuteCorrectly()
         {
             // Act
-            double[] result = await this._operation.Multiply(this._array1, this._matrix1, "Multiply test");
+            var result = await this._operation.Sum(this._vector1, this._vector2, this._vector3, "teste");
 
-            // Assert
-            result.Should().NotBeEmpty();
-            result.Length.Should().Be(this._matrix1.Length);
-            result.Should().BeEquivalentTo(this._multipliedArray1Matrix1);
+            // ASsert
+            result.Should().BeEquivalentTo(this._sumVector1Vector2Vector3);
         }
-
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Two matrixes. | When: Subtract matrixes. | Should: Return correctly matrix size and values.")]
-        public async void Subtract_TwoMatrixes_ShouldExecuteCorrectly()
-        {
-            // Act
-            double[,] result = await this._operation.Subtract(this._matrix1, this._matrix2, "Subtract Test");
-
-            // Assert
-            result.Should().NotBeEmpty();
-            result.Length.Should().Be(this._matrix1.Length);
-            result.Length.Should().Be(this._matrix2.Length);
-            result.Should().BeEquivalentTo(this._subtractedMatrix1Matrix2);
-        }
-
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Two arrays. | When: Subtract arrays. | Should: Return correctly array size and values.")]
-        public async void Subtract_TwoArrays_ShouldExecuteCorrectly()
-        {
-            // Act
-            double[] result = await this._operation.Subtract(this._array1, this._array2, "Subtract Test");
-
-            // Assert
-            result.Should().NotBeEmpty();
-            result.Length.Should().Be(this._array1.Length);
-            result.Length.Should().Be(this._array1.Length);
-            result.Should().BeEquivalentTo(this._subtractedArray1Array2);
-        }
-
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Two matrixes. | When: Sum matrixes. | Should: Return correctly matrix size and values.")]
-        public async void Sum_TwoMatrixes_ShouldExecuteCorrectly()
-        {
-            // Act
-            double[,] result = await this._operation.Sum(this._matrix1, this._matrix2, "Sum Test");
-
-            // Assert
-            result.Should().NotBeEmpty();
-            result.Length.Should().Be(this._matrix1.Length);
-            result.Length.Should().Be(this._matrix2.Length);
-            result.Should().BeEquivalentTo(this._addedMatrix1Matrix2);
-        }
-
-        [Fact(DisplayName = @"Feature: ArrayOperation | Given: Two arrays. | When: Sum arrays. | Should: Return correctly array size and values.")]
-        public async void Sum_TwoArrays_ShouldExecuteCorrectly()
-        {
-            // Act
-            double[] result = await this._operation.Sum(this._array1, this._array2, "Sum test");
-
-            // Assert
-            result.Should().NotBeEmpty();
-            result.Length.Should().Be(this._array1.Length);
-            result.Length.Should().Be(this._array1.Length);
-            result.Should().BeEquivalentTo(this._addedArray1Array2);
-        }
-
 
         [Fact(DisplayName = @"Feature: ArrayOperation | Given: One matrix. | When: Transpose matrix. | Should: Return correctly matrix size and values.")]
         public async void TransposeMatrix_ValidMatrix_ShouldExecuteCorrectly()
         {
             // Act
-            double[,] result = await this._operation.InverseMatrix(this._matrix1, "Inverse Test");
+            double[,] result = await this._operation.TransposeMatrix(this._matrix1);
 
             // Assert
             result.Should().NotBeEmpty();

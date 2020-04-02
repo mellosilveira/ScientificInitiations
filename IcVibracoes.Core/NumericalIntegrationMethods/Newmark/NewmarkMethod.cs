@@ -192,7 +192,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
             double[] equivalentForce = await CalculateEquivalentForce(input, previousDisplacement, previousVelocity, previousAcceleration).ConfigureAwait(false);
 
-            return await this._arrayOperation.Multiply(equivalentForce, inversedEquivalentHardness, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentHardness)}");
+            return await this._arrayOperation.Multiply(inversedEquivalentHardness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentHardness)}");
         }
 
         /// <summary>

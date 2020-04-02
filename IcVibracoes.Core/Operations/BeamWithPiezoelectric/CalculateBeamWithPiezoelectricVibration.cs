@@ -161,7 +161,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
                 }
             }
 
-            bool[] bondaryConditions = await this._arrayOperation.MergeVectors(beamBondaryConditions, piezoelectricBondaryConditions);
+            bool[] bondaryConditions = await this._arrayOperation.MergeVectors<bool>(beamBondaryConditions, piezoelectricBondaryConditions);
             uint numberOfTrueBoundaryConditions = numberOfTrueBeamBoundaryConditions + numberOfTruePiezoelectricBoundaryConditions;
 
             // Main matrixes to create input.
@@ -183,7 +183,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
 
             double[] electricalCharge = beam.ElectricalCharge;
 
-            double[] equivalentForce = await this._arrayOperation.MergeVectors(force, electricalCharge);
+            double[] equivalentForce = await this._arrayOperation.MergeVectors<double>(force, electricalCharge);
 
             // Creating input.
             NewmarkMethodInput input = new NewmarkMethodInput

@@ -47,15 +47,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="vector1"></param>
         /// <param name="vector2"></param>
         /// <returns></returns>
-        Task<double[]> MergeVectors(double[] vector1, double[] vector2);
-
-        /// <summary>
-        /// It's responsible to merge two vectors.
-        /// </summary>
-        /// <param name="vector1"></param>
-        /// <param name="vector2"></param>
-        /// <returns></returns>
-        Task<bool[]> MergeVectors(bool[] vector1, bool[] vector2);
+        Task<T[]> MergeVectors<T>(T[] vector1, T[] vector2);
 
         /// <summary>
         /// It's responsible to multiplicate a matrix and a vector.
@@ -67,42 +59,6 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         Task<double[]> Multiply(double[,] matrix, double[] vector, string arraysName);
 
         /// <summary>
-        /// It's responsible to multiplicate a vector and a matrix.
-        /// </summary>
-        /// <param name="vector"></param>
-        /// <param name="matrix"></param>
-        /// <param name="arraysName"></param>
-        /// <returns></returns>
-        Task<double[]> Multiply(double[] vector, double[,] matrix, string arraysName);
-
-        /// <summary>
-        /// It's responsible to subtract two matrixes.
-        /// </summary>
-        /// <param name="matrix1"></param>
-        /// <param name="matrix2"></param>
-        /// <param name="matrixesName"></param>
-        /// <returns></returns>
-        Task<double[,]> Subtract(double[,] matrix1, double[,] matrix2, string matrixesName);
-
-        /// <summary>
-        /// It's responsible to subtract two vectors.
-        /// </summary>
-        /// <param name="vector1"></param>
-        /// <param name="vector2"></param>
-        /// <param name="vectorsName"></param>
-        /// <returns></returns>
-        Task<double[]> Subtract(double[] vector1, double[] vector2, string vectorsName);
-
-        /// <summary>
-        /// It's responsible to sum two matrixes.
-        /// </summary>
-        /// <param name="matrix1"></param>
-        /// <param name="matrix2"></param>
-        /// <param name="matrixesName"></param>
-        /// <returns></returns>
-        Task<double[,]> Sum(double[,] matrix1, double[,] matrix2, string matrixesName);
-
-        /// <summary>
         /// It's responsible to sum three vectors.
         /// </summary>
         /// <param name="vector1"></param>
@@ -110,15 +66,6 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="vector3"></param>
         /// <param name="vectorsName"></param>
         Task<double[]> Sum(double[] vector1, double[] vector2, double[] vector3, string vectorsName);
-
-        /// <summary>
-        /// It's responsible to sum two vectors.
-        /// </summary>
-        /// <param name="vector1"></param>
-        /// <param name="vector2"></param>
-        /// <param name="vectorsName"></param>
-        /// <returns></returns>
-        Task<double[]> Sum(double[] vector1, double[] vector2, string vectorsName);
 
         /// <summary>
         /// It's responsible to calculate the transposed matrix of a informed matrix.
