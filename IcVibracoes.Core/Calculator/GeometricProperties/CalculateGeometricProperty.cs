@@ -16,6 +16,11 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <returns></returns>
         public Task<double> CalculateArea(double diameter, double? thickness)
         {
+            if(diameter <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"Invalid value to diameter: {diameter}. It must be greather than zero.");
+            }
+
             double area;
 
             if (thickness == null)
@@ -39,6 +44,11 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <returns></returns>
         public Task<double> CalculateArea(double height, double width, double? thickness)
         {
+            if (height <= 0 || width <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"Invalid value to height: {height} or width: {width}. They must be greather than zero.");
+            }
+
             double area;
 
             if (thickness == null)
@@ -61,6 +71,11 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <returns></returns>
         public Task<double> CalculateMomentOfInertia(double diameter, double? thickness)
         {
+            if (diameter <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"Invalid value to diameter: {diameter}. It must be greather than zero.");
+            }
+
             double momentOfInertia;
 
             if (thickness == null)
@@ -84,6 +99,11 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <returns></returns>
         public Task<double> CalculateMomentOfInertia(double height, double width, double? thickness)
         {
+            if (height <= 0 || width <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"Invalid value to height: {height} or width: {width}. They must be greather than zero.");
+            }
+
             double momentOfInertia;
 
             if (thickness == null)

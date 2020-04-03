@@ -92,14 +92,14 @@ namespace IcVibracoes.Methods.AuxiliarOperations
         {
             using (StreamWriter streamWriter = new StreamWriter(path, true))
             {
-                streamWriter.Write(streamWriter.NewLine);
-
                 streamWriter.Write(string.Format("{0}; ", time));
 
                 for (int i = 0; i < values.Length; i++)
                 {
                     streamWriter.Write(string.Format("{0}; ", values[i]));
                 }
+
+                streamWriter.Write(streamWriter.NewLine);
             }
         }
 
