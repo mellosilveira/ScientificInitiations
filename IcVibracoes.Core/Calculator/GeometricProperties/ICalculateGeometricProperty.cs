@@ -13,7 +13,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="diameter"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        Task<double> Area(double diameter, double? thickness);
+        Task<double> CalculateArea(double diameter, double? thickness);
 
         /// <summary>
         /// Method to calculate the area to rectangular or square profile.
@@ -22,7 +22,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="width"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        Task<double> Area(double height, double width, double? thickness);
+        Task<double> CalculateArea(double height, double width, double? thickness);
 
         /// <summary>
         /// Method to calculate the moment of inertia to circular profile.
@@ -30,7 +30,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="diameter"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        Task<double> MomentOfInertia(double diameter, double? thickness);
+        Task<double> CalculateMomentOfInertia(double diameter, double? thickness);
 
         /// <summary>
         /// Method to calculate the moment of inertia to rectangular or square profile.
@@ -39,7 +39,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="width"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        Task<double> MomentOfInertia(double height, double width, double? thickness);
+        Task<double> CalculateMomentOfInertia(double height, double width, double? thickness);
 
         /// <summary>
         /// Method to calculate the moment of inertia to rectangular or square piezoelectric profile.
@@ -49,6 +49,6 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="beamHeight"></param>
         /// <param name="numberOfPiezoelectricsPerElement"></param>
         /// <returns></returns>
-        Task<double> PiezoelectricMomentOfInertia(double height, double width, double beamHeight, uint numberOfPiezoelectricsPerElement);
+        Task<double> CalculatePiezoelectricMomentOfInertia(double height, double width, double beamHeight, uint numberOfPiezoelectricsPerElement);
     }
 }

@@ -35,8 +35,8 @@ namespace IcVibracoes.Core.Mapper.Profiles.Circular
         {
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            double area = await this._calculateGeometricProperty.Area(profile.Diameter, profile.Thickness.Value);
-            double momentOfInertia = await this._calculateGeometricProperty.MomentOfInertia(profile.Diameter, profile.Thickness.Value);
+            double area = await this._calculateGeometricProperty.CalculateArea(profile.Diameter, profile.Thickness.Value);
+            double momentOfInertia = await this._calculateGeometricProperty.CalculateMomentOfInertia(profile.Diameter, profile.Thickness.Value);
 
             geometricProperty.Area = await this._arrayOperation.CreateVector(area, degreesFreedomMaximum, nameof(area));
             geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, degreesFreedomMaximum, nameof(momentOfInertia));

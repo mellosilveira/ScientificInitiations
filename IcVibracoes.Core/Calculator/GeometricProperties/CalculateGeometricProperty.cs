@@ -14,7 +14,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="diameter"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        public Task<double> Area(double diameter, double? thickness)
+        public Task<double> CalculateArea(double diameter, double? thickness)
         {
             double area;
 
@@ -37,7 +37,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="width"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        public Task<double> Area(double height, double width, double? thickness)
+        public Task<double> CalculateArea(double height, double width, double? thickness)
         {
             double area;
 
@@ -59,7 +59,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="diameter"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        public Task<double> MomentOfInertia(double diameter, double? thickness)
+        public Task<double> CalculateMomentOfInertia(double diameter, double? thickness)
         {
             double momentOfInertia;
 
@@ -82,7 +82,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="width"></param>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        public Task<double> MomentOfInertia(double height, double width, double? thickness)
+        public Task<double> CalculateMomentOfInertia(double height, double width, double? thickness)
         {
             double momentOfInertia;
 
@@ -98,7 +98,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
             return Task.FromResult(momentOfInertia);
         }
 
-        public Task<double> PiezoelectricMomentOfInertia(double height, double width, double beamHeight, uint numberOfPiezoelectricsPerElement)
+        public Task<double> CalculatePiezoelectricMomentOfInertia(double height, double width, double beamHeight, uint numberOfPiezoelectricsPerElement)
         {
             double momentOfInertia;
 
