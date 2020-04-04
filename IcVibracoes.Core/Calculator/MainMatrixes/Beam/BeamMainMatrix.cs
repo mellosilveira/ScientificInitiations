@@ -18,14 +18,13 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// </summary>
         /// <param name="area"></param>
         /// <param name="specificMass"></param>
-        /// <param name="length"></param>
+        /// <param name="elementLength"></param>
         /// <returns></returns>
         public Task<double[,]> CalculateElementMass(double area, double specificMass, double length)
         {
-            double[,] elementMass = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
-
             double constant = area * specificMass * length / 420;
-
+            
+            double[,] elementMass = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
             elementMass[0, 0] = 156 * constant;
             elementMass[0, 1] = 22 * length * constant;
             elementMass[0, 2] = 54 * constant;
@@ -146,6 +145,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// </summary>
         /// <param name="mass"></param>
         /// <param name="hardness"></param>
+        /// <param name="size"></param>
         /// <returns></returns>
         public Task<double[,]> CalculateDamping(double[,] mass, double[,] hardness)
         {
@@ -185,7 +185,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         }
 
         /// <summary>
-        /// It's responsible to build the bondary condition matrix.
+        /// It's rewsponsible to build the bondary condition matrix.
         /// </summary>
         /// <param name="firstFastening"></param>
         /// <param name="lastFastening"></param>

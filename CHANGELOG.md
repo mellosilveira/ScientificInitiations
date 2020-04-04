@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 - Unnecessary rograms in C.
 ### Fixed
+- Application methods based in the unit tests.
 - Name of classes.
 - Summaries.
 

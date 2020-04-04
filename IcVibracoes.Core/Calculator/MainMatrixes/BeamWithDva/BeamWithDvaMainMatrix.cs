@@ -15,7 +15,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         private readonly IArrayOperation _arrayOperation;
 
         /// <summary>
-        /// Class construtor.
+        /// Class constructor.
         /// </summary>
         /// <param name="arrayOperation"></param>
         public BeamWithDvaMainMatrix(

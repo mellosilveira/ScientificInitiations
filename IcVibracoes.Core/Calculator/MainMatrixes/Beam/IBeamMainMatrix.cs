@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Calculator.MainMatrixes;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Characteristics;
 using System.Threading.Tasks;
@@ -10,9 +9,18 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
     /// It's responsible to calculate the beam main matrixes.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public interface IBeamMainMatrix<TProfile> : ICommonMainMatrix
+    public interface IBeamMainMatrix<TProfile>
         where TProfile : Profile, new()
     {
+        /// <summary>
+        /// It's responsible to calculate the element mass matrix.
+        /// </summary>
+        /// <param name="area"></param>
+        /// <param name="specificMass"></param>
+        /// <param name="elementLength"></param>
+        /// <returns></returns>
+        Task<double[,]> CalculateElementMass(double area, double specificMass, double elementLength);
+
         /// <summary>
         /// Responsible to calculate the beam mass matrix.
         /// </summary>
@@ -43,11 +51,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// </summary>
         /// <param name="mass"></param>
         /// <param name="hardness"></param>
+        /// <param name="size"></param>
         /// <returns></returns>
         Task<double[,]> CalculateDamping(double[,] mass, double[,] hardness);
 
         /// <summary>
-        /// It's responsible to build the bondary condition matrix.
+        /// It's rewsponsible to build the bondary condition matrix.
         /// </summary>
         /// <param name="firstFastening"></param>
         /// <param name="lastFastening"></param>

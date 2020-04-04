@@ -1,10 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Models;
 
 namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
 {
-    class RectangularBeamMainMatrixTest
+    public class RectangularBeamMainMatrixTest : BeamMainMatrixTest<RectangularProfile>
     {
+        // Degrees Freedom Maximum = (Number of Elements + 1) * Degrees Freedom Per Node
+        private const int degreesFreedomMaximum = 6;
+
+        public RectangularBeamMainMatrixTest()
+        {
+            // Values were calculated for the GeometricProperty unit test.
+            base.Area = 2.7E-05;
+            base.MomentOfInertia = 4.025E-11;
+
+            base.ElementMassMatrix = new double[Constant.DegreesFreedom, Constant.DegreesFreedom];
+            base.MassMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum];
+            base.ElementHardnessMatrix = new double[Constant.DegreesFreedom, Constant.DegreesFreedom];
+            base.HardnessMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum];
+            base.DampingMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum];
+        }
     }
 }
