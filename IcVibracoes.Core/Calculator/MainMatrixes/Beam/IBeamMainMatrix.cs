@@ -1,6 +1,7 @@
-﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models.Beam;
-using IcVibracoes.Models.Beam.Characteristics;
+﻿using IcVibracoes.Calculator.MainMatrixes;
+using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Characteristics;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
@@ -9,24 +10,15 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
     /// It's responsible to calculate the beam main matrixes.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public interface IBeamMainMatrix<TProfile>
+    public interface IBeamMainMatrix<TProfile> : ICommonMainMatrix
         where TProfile : Profile, new()
     {
-        /// <summary>
-        /// It's responsible to calculate the element mass matrix.
-        /// </summary>
-        /// <param name="area"></param>
-        /// <param name="specificMass"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateElementMass(double area, double specificMass, double length);
         /// <summary>
         /// Responsible to calculate the beam mass matrix.
         /// </summary>
         /// <param name="beam"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        
         Task<double[,]> CalculateMass(Beam<TProfile> beam, uint degreesFreedomMaximum);
 
         /// <summary>

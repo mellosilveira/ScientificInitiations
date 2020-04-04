@@ -11,7 +11,6 @@ namespace IcVibracoes.Test.Core.Calculator
         private const int arraySize = 4;
         private readonly ArrayOperation _operation;
         private readonly double[,] _matrix1;
-        private readonly double[,] _matrix2;
         private readonly double[] _vector1;
         private readonly double[] _vector2;
         private readonly double[] _vector3;
@@ -30,7 +29,6 @@ namespace IcVibracoes.Test.Core.Calculator
         {
             this._operation = new ArrayOperation();
             this._matrix1 = new double[arraySize, arraySize] { { 1, 1, 1, 1 }, { 2, 5, 1, 4 }, { 3, 5, 2, 0 }, { 2, 5, 0, 1 } };
-            this._matrix2 = new double[arraySize, arraySize] { { 2, 1, 3, 1 }, { 4, 1, 1, 4 }, { 3, 1, 2, 1 }, { 0, 1, 1, 2 } };
             this._vector1 = new double[arraySize] { 1, 2, 3, 4 };
             this._vector2 = new double[arraySize] { 5, 0, 1, 3 };
             this._vector3 = new double[arraySize] { 5, 6, 7, 8 };
@@ -182,7 +180,7 @@ namespace IcVibracoes.Test.Core.Calculator
             {
                 Parallel.For(0, arraySize, j =>
                 {
-                    result[i, j].Should().BeApproximately(this._inversedMatrix1[i, j], 2);
+                    result[i, j].Should().BeApproximately(this._inversedMatrix1[i, j], precision: 1e-15);
                 });
             });
         }
@@ -218,7 +216,7 @@ namespace IcVibracoes.Test.Core.Calculator
 
             // Assert
             result.Should().NotBeEmpty();
-            result.Length.Should().Be(this._matrix1.Length);
+            result.Length.Should().Be(this._vector1.Length);
             result.Should().BeEquivalentTo(this._multipliedMatrix1Vector1);
         }
 

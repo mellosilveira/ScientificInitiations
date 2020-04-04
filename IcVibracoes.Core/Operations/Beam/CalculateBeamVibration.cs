@@ -5,12 +5,12 @@ using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles;
-using IcVibracoes.Core.Models.Beam;
+using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Characteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration.Beam;
 using IcVibracoes.Methods.AuxiliarOperations;
-using IcVibracoes.Models.Beam.Characteristics;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.Beam

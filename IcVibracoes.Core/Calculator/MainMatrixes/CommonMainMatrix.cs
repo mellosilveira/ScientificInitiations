@@ -1,9 +1,6 @@
-﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.Beam;
-using IcVibracoes.Models.Beam.Characteristics;
+﻿using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Characteristics;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Calculator.MainMatrixes
@@ -50,13 +47,35 @@ namespace IcVibracoes.Calculator.MainMatrixes
         /// <param name="hardness"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculateDamping(double[,] mass, double[,] hardness, uint size)
+        public Task<double[,]> CalculateDamping(double[,] mass, double[,] hardness)
         {
+            int massRow = mass.GetLength(0);
+            int massColumn = mass.GetLength(1);
+            int hardnessRow = mass.GetLength(0);
+            int hardnessColumn = mass.GetLength(1);
+
+            if (massRow != massColumn)
+            {
+                throw new Exception($"Mass must be a square matrix.");
+            }
+
+            if (hardnessRow != hardnessColumn)
+            {
+                throw new Exception($"Hardness must be a square matrix.");
+            }
+
+            if (massRow != hardnessRow || massColumn != hardnessColumn)
+            {
+                throw new Exception($"Mass sizes: {massRow}x{massColumn} must be equals to hardness sizes: {hardnessRow}x{hardnessColumn}.");
+            }
+
+            int size = massRow;
+
             double[,] damping = new double[size, size];
 
-            for (uint i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
             {
-                for (uint j = 0; j < size; j++)
+                for (int j = 0; j < size; j++)
                 {
                     damping[i, j] = Constant.Mi * mass[i, j] + Constant.Alpha * hardness[i, j];
                 }

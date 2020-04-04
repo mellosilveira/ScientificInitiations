@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models.Beam;
+using IcVibracoes.Core.Models;
 using IcVibracoes.DataContracts.CalculateVibration;
 
 namespace IcVibracoes.Core.Operations
@@ -12,7 +12,7 @@ namespace IcVibracoes.Core.Operations
         where TProfile : Profile, new()
         where TRequestData : IBeamRequestData<TProfile>
         where TRequest : CalculateVibrationRequest<TProfile, TRequestData>
-        where TBeam : AbstractBeam<TProfile>, new()
+        where TBeam : IBeam<TProfile>, new()
     {
     }
 }

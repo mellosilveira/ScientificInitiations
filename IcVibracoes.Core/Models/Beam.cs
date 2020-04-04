@@ -1,12 +1,12 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Models.Beam.Characteristics;
+using IcVibracoes.Core.Models.Characteristics;
 
-namespace IcVibracoes.Core.Models.Beam
+namespace IcVibracoes.Core.Models
 {
     /// <summary>
-    /// It represents the beam abstract object.
+    /// It represents the analyzed beam.
     /// </summary>
-    public abstract class AbstractBeam<TProfile>
+    public class Beam<TProfile> : IBeam<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>

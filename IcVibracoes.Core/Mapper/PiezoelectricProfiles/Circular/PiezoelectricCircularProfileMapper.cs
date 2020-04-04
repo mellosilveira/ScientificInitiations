@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.Models.Beam.Characteristics;
+using IcVibracoes.Core.Models.Characteristics;
 using System;
 using System.Threading.Tasks;
 

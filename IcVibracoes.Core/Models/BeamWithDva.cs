@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models.Beam;
 
 namespace IcVibracoes.Core.Models.BeamWithDynamicVibrationAbsorber
 {

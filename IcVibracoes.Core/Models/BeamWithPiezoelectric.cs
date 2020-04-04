@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models.Beam;
-using IcVibracoes.Models.Beam.Characteristics;
+using IcVibracoes.Core.Models.Characteristics;
 
 namespace IcVibracoes.Core.Models.Piezoelectric
 {

@@ -124,7 +124,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
 
             if (numberOfPiezoelectricsPerElement <= 2 || numberOfPiezoelectricsPerElement > 0)
             {
-                momentOfInertia = numberOfPiezoelectricsPerElement * (((Math.Pow(height, 3)) * width / 12) + ((height * width) * (Math.Pow((beamHeight - height) / 2, 2))));
+                momentOfInertia = numberOfPiezoelectricsPerElement * ((Math.Pow(height, 3) * width / 12) + (height * width * Math.Pow((beamHeight + height) / 2, 2)));
             }
             else
             {

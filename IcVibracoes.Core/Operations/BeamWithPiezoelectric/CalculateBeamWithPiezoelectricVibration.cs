@@ -7,12 +7,12 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.PiezoelectricProfiles;
 using IcVibracoes.Core.Mapper.Profiles;
 using IcVibracoes.Core.Models.BeamWithPiezoelectric;
+using IcVibracoes.Core.Models.Characteristics;
 using IcVibracoes.Core.Models.Piezoelectric;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric;
 using IcVibracoes.Methods.AuxiliarOperations;
-using IcVibracoes.Models.Beam.Characteristics;
 using System;
 using System.Threading.Tasks;
 

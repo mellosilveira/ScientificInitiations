@@ -1,7 +1,7 @@
 ﻿using System;
 using static IcVibracoes.Common.Enum;
 
-namespace IcVibracoes.Models.Beam.Characteristics
+namespace IcVibracoes.Core.Models.Characteristics
 {
     /// <summary>
     /// It represents the degrees of freedom for a generic fastening.

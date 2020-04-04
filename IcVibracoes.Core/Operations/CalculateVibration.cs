@@ -3,7 +3,7 @@ using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Models.Beam;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration;
@@ -24,7 +24,7 @@ namespace IcVibracoes.Core.Operations
         where TProfile : Profile, new()
         where TRequestData : IBeamRequestData<TProfile>, new()
         where TRequest : CalculateVibrationRequest<TProfile, TRequestData>
-        where TBeam : AbstractBeam<TProfile>, new()
+        where TBeam : IBeam<TProfile>, new()
     {
         private readonly INewmarkMethod _newmarkMethod;
         private readonly IProfileValidator<TProfile> _profileValidator;

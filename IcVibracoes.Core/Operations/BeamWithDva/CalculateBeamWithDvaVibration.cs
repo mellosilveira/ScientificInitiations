@@ -7,11 +7,11 @@ using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles;
 using IcVibracoes.Core.Models.BeamWithDynamicVibrationAbsorber;
+using IcVibracoes.Core.Models.Characteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration.BeamWithDynamicVibrationAbsorber;
 using IcVibracoes.Methods.AuxiliarOperations;
-using IcVibracoes.Models.Beam.Characteristics;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.BeamWithDva

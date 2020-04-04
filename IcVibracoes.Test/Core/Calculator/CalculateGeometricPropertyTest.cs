@@ -10,17 +10,19 @@ namespace IcVibracoes.Test.Core.Calculator
         private readonly CalculateGeometricProperty _operation;
         private readonly double _circleWithThicknessArea;
         private readonly double _circleWithoutThicknessArea;
-        private readonly double _rectangleWithThicknessArea;
-        private readonly double _rectangleWithoutThicknessArea;
         private readonly double _circleWithThicknessMomentOfInertia;
         private readonly double _circleWithoutThicknessMomentOfInertia;
+        private readonly double _rectangleWithThicknessArea;
+        private readonly double _rectangleWithoutThicknessArea;
         private readonly double _rectangleWithThicknessMomentOfInertia;
         private readonly double _rectangleWithoutThicknessMomentOfInertia;
+        private readonly double _rectanglePiezoelectricMomentOfInertia;
         private readonly double _precision;
 
         private double _diameter;
         private double _width;
         private double _height;
+        private double _piezoelectricHeight;
         private double _diameterThickness;
         private double _rectangularThickness;
 
@@ -32,19 +34,21 @@ namespace IcVibracoes.Test.Core.Calculator
 
             this._diameter = 0.03175;
             this._width = 25e-3;
-            this._height = 0.267e-3;
+            this._height = 3e-3;
+            this._piezoelectricHeight = 0.267e-3;
             this._diameterThickness = 2.1e-3;
-            this._rectangularThickness = 0.1e-3;
+            this._rectangularThickness = 0.5e-3;
 
             // The calculations were made manually with the values inside that test.
             this._circleWithThicknessArea = 1.95611266575769E-04;
             this._circleWithoutThicknessArea = 7.91730436089840E-04;
             this._circleWithThicknessMomentOfInertia = 2.1603613923E-08;
             this._circleWithoutThicknessMomentOfInertia = 4.9882110171E-08;
-            this._rectangleWithThicknessArea = 5.013400000000E-06;
-            this._rectangleWithoutThicknessArea = 6.675000000000E-06;
-            this._rectangleWithThicknessMomentOfInertia = 3.9033E-14;
-            this._rectangleWithoutThicknessMomentOfInertia = 3.9655E-14;
+            this._rectangleWithThicknessArea = 2.7000000000000E-05;
+            this._rectangleWithoutThicknessArea = 7.5000000000000E-05;
+            this._rectangleWithThicknessMomentOfInertia = 4.0250000E-11;
+            this._rectangleWithoutThicknessMomentOfInertia = 5.6250000E-11;
+            this._rectanglePiezoelectricMomentOfInertia = 3.5701411E-11;
         }
 
         [Fact(DisplayName = @"Feature: CalculateArea | Given: Diameter. | When: Invoke. | Should: Execute correctly.")]
@@ -97,7 +101,7 @@ namespace IcVibracoes.Test.Core.Calculator
             result.Should().BeApproximately(this._rectangleWithoutThicknessArea, this._precision);
         }
 
-        [Fact(DisplayName = @"Feature: CalculateArea | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        [Fact(DisplayName = @"Feature: CalculateArea | Given: Heigth, width and thickness. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculateArea_Given_HeightAndWidthAndThickness_Should_ExecuteCorrectly()
         {
             // Act
@@ -117,7 +121,7 @@ namespace IcVibracoes.Test.Core.Calculator
             result.Should().BeApproximately(this._rectangleWithoutThicknessMomentOfInertia, this._precision);
         }
 
-        [Fact(DisplayName = @"Feature: CalculateMomentOfInertia | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        [Fact(DisplayName = @"Feature: CalculateMomentOfInertia | Given: Heigth, width and thickness. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculateMomentOfInertia_Given_HeightAndWidthAndThickness_Should_ExecuteCorrectly()
         {
             // Act
@@ -125,6 +129,16 @@ namespace IcVibracoes.Test.Core.Calculator
 
             // Assert
             result.Should().BeApproximately(this._rectangleWithThicknessMomentOfInertia, this._precision);
+        }
+
+        [Fact(DisplayName = @"Feature: CalculatePiezoelectricMomentOfInertia | Given: Valid parameter. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculatePiezoelectricMomentOfInertia_Should_ExecuteCorrectly()
+        {
+            // Act
+            var result = await this._operation.CalculatePiezoelectricMomentOfInertia(this._piezoelectricHeight, this._width, this._height, numberOfPiezoelectricsPerElement: 2);
+
+            // Assert
+            result.Should().BeApproximately(this._rectanglePiezoelectricMomentOfInertia, this._precision);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.DTO.Input;
-using IcVibracoes.Core.Models.Beam;
+using IcVibracoes.Core.Models;
 using IcVibracoes.DataContracts.CalculateVibration.Beam;
 
 namespace IcVibracoes.Core.Operations.Beam

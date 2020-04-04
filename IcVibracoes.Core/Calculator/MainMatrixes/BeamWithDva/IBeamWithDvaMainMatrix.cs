@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
-using IcVibracoes.Models.Beam.Characteristics;
+using IcVibracoes.Core.Models.Characteristics;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
