@@ -2,7 +2,6 @@
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.Piezoelectric;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -105,14 +104,14 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// It's responsible to calculate piezoelectric element hardness matrix.
         /// </summary>
         /// <param name="elasticityConstant"></param>
-        /// <param name="momentInertia"></param>
+        /// <param name="momentOfInertia"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculatePiezoelectricElementHardness(double elasticityConstant, double momentInertia, double length)
+        public Task<double[,]> CalculatePiezoelectricElementHardness(double elasticityConstant, double momentOfInertia, double length)
         {
             double[,] elementHardness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
 
-            double constant = momentInertia * elasticityConstant / Math.Pow(length, 3);
+            double constant = momentOfInertia * elasticityConstant / Math.Pow(length, 3);
 
             elementHardness[0, 0] = 12 * constant;
             elementHardness[0, 1] = 6 * length * constant;
@@ -191,7 +190,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
-                    piezoelectricElementCapacitance = await this.CalculateElementPiezoelectricCapacitance(beamWithPiezoelectric, n);
+                    piezoelectricElementCapacitance = await this.CalculateElementPiezoelectricCapacitance(beamWithPiezoelectric, elementIndex: n);
                 }
 
                 for (uint i = n; i < n + Constant.PiezoelectricElementMatrixSize; i++)
@@ -286,27 +285,28 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
             return equivalentHardness;
         }
-    
+
         /// <summary>
-        /// It's rewsponsible to build the bondary condition matrix.
+        /// It's responsible to build the bondary condition matrix.
         /// </summary>
-        /// <param name="numberOfNodes"></param>
+        /// <param name="numberOfElements"></param>
         /// <param name="elementsWithPiezoelectric"></param>
         /// <returns></returns>
-        public Task<bool[]> CalculatePiezoelectricBondaryCondition(uint numberOfNodes, uint[] elementsWithPiezoelectric)
+        public Task<bool[]> CalculatePiezoelectricBondaryCondition(uint numberOfElements, uint[] elementsWithPiezoelectric)
         {
-            bool[] bondaryCondition = new bool[numberOfNodes];
+            bool[] bondaryCondition = new bool[numberOfElements + 1];
 
-            for (uint i = 0; i < numberOfNodes; i++)
+            for (uint i = 0; i < numberOfElements; i++)
             {
-                if(elementsWithPiezoelectric.Contains(i))
+                if (elementsWithPiezoelectric.Contains(i + 1))
                 {
-                    bondaryCondition[i - 1] = true;
                     bondaryCondition[i] = true;
+                    bondaryCondition[i + 1] = true;
                 }
                 else
                 {
                     bondaryCondition[i] = false;
+                    bondaryCondition[i + 1] = false;
                 }
             }
 

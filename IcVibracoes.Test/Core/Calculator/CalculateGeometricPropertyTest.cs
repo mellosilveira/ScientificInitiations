@@ -18,13 +18,12 @@ namespace IcVibracoes.Test.Core.Calculator
         private readonly double _rectangleWithoutThicknessMomentOfInertia;
         private readonly double _rectanglePiezoelectricMomentOfInertia;
         private readonly double _precision;
-
-        private double _diameter;
-        private double _width;
-        private double _height;
-        private double _piezoelectricHeight;
-        private double _diameterThickness;
-        private double _rectangularThickness;
+        private readonly double _diameter;
+        private readonly double _width;
+        private readonly double _height;
+        private readonly double _piezoelectricHeight;
+        private readonly double _diameterThickness;
+        private readonly double _rectangularThickness;
 
         public CalculateGeometricPropertyTest()
         {

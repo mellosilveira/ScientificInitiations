@@ -6,9 +6,8 @@ using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.PiezoelectricProfiles;
 using IcVibracoes.Core.Mapper.Profiles;
-using IcVibracoes.Core.Models.BeamWithPiezoelectric;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Characteristics;
-using IcVibracoes.Core.Models.Piezoelectric;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric;
@@ -123,7 +122,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
                 PiezoelectricGeometricProperty = piezoelectricGeometricProperty,
                 Profile = request.BeamData.Profile,
                 PiezoelectricSpecificMass = request.BeamData.PiezoelectricSpecificMass,
-                YoungModulus = request.BeamData.PiezoelectricYoungModulus,
+                PiezoelectricYoungModulus = request.BeamData.PiezoelectricYoungModulus,
                 ElectricalCharge = new double[request.BeamData.NumberOfElements + 1]
             };
         }
@@ -150,7 +149,7 @@ namespace IcVibracoes.Core.Operations.BeamWithPiezoelectric
                 }
             }
 
-            bool[] piezoelectricBondaryConditions = await this._mainMatrix.CalculatePiezoelectricBondaryCondition(piezoelectricDegreesFreedomMaximum, beam.ElementsWithPiezoelectric);
+            bool[] piezoelectricBondaryConditions = await this._mainMatrix.CalculatePiezoelectricBondaryCondition(beam.NumberOfElements, beam.ElementsWithPiezoelectric);
             uint numberOfTruePiezoelectricBoundaryConditions = 0;
 
             for (int i = 0; i < piezoelectricDegreesFreedomMaximum; i++)

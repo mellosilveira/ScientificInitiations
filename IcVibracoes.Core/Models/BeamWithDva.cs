@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 
-namespace IcVibracoes.Core.Models.BeamWithDynamicVibrationAbsorber
+namespace IcVibracoes.Core.Models
 {
     /// <summary>
     /// It represents a beam with dynamic vibration absorber.

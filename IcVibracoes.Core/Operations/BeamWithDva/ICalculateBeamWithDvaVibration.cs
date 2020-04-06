@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.DTO.Input;
-using IcVibracoes.Core.Models.BeamWithDynamicVibrationAbsorber;
+using IcVibracoes.Core.Models;
 using IcVibracoes.DataContracts.CalculateVibration.BeamWithDynamicVibrationAbsorber;
 
 namespace IcVibracoes.Core.Operations.BeamWithDva

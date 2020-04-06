@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.Piezoelectric;
 using System;
 using System.Threading.Tasks;
 

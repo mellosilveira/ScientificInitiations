@@ -10,7 +10,8 @@ using Xunit;
 
 namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
 {
-    public abstract class BeamMainMatrixTest<TProfile>
+    public abstract class BeamMainMatrixTest<T, TProfile>
+        where T : BeamMainMatrix<TProfile>
         where TProfile : Profile, new()
     {
         protected double Area { get; set; }
@@ -23,7 +24,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
         protected double[,] DampingMatrix { get; set; }
 
         private readonly bool[] _boundaryConditionsVector;
-        private readonly Mock<BeamMainMatrix<TProfile>> _operationMock;
+        private readonly Mock<T> _operationMock;
         private readonly Beam<TProfile> _beam;
         private readonly double _elementLength;
         private readonly double[] _forceVector;
@@ -35,14 +36,14 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
 
         public BeamMainMatrixTest()
         {
-            this._operationMock = new Mock<BeamMainMatrix<TProfile>>();
+            this._operationMock = new Mock<T>();
             this._precision = 1e-15;
 
             this._elementLength = 0.5;
 
             this._forceVector = new double[degreesFreedomMaximum] { 0, 0, 100, 0, 0, 0 };
 
-            this._boundaryConditionsVector = new bool[degreesFreedomMaximum] { true, false, true, true, true, false };
+            this._boundaryConditionsVector = new bool[degreesFreedomMaximum] { false, true, true, true, false, true };
 
             this._beam = new Beam<TProfile>
             {

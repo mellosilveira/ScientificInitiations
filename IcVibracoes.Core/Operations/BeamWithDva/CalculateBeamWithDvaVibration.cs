@@ -6,7 +6,7 @@ using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles;
-using IcVibracoes.Core.Models.BeamWithDynamicVibrationAbsorber;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Characteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva;
 using IcVibracoes.Core.Validators.Profiles;

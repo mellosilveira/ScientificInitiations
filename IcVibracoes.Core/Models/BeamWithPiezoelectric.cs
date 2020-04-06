@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models.Characteristics;
 
-namespace IcVibracoes.Core.Models.Piezoelectric
+namespace IcVibracoes.Core.Models
 {
     /// <summary>
     /// It represents a beam with piezoelectric.
@@ -13,7 +13,7 @@ namespace IcVibracoes.Core.Models.Piezoelectric
         /// <summary>
         /// Piezoelectric Young Modulus.
         /// </summary>
-        public double YoungModulus { get; set; }
+        public double PiezoelectricYoungModulus { get; set; }
 
         /// <summary>
         /// Piezoelectric constant. Variable: d31.
@@ -54,7 +54,6 @@ namespace IcVibracoes.Core.Models.Piezoelectric
         /// Number of piezoelectrics per elements. It can be positionated at top or bottom of the beam, top and bottom or around the bar.
         /// If is positionated at the top or at the bottom, number of piezoelectrics per elements = 1.
         /// If is positionated at the top and at the bottom, number of piezoelectrics per elements = 2.
-        /// If is positionated around the beam, number of piezoelectrics per elements = 4.
         /// </summary>
         public uint NumberOfPiezoelectricPerElements { get; set; }
 

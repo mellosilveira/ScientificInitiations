@@ -1,9 +1,10 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Models;
 
 namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
 {
-    public class CircularBeamMainMatrixTest : BeamMainMatrixTest<CircularProfile>
+    public class CircularBeamMainMatrixTest : BeamMainMatrixTest<CircularBeamMainMatrix, CircularProfile>
     {
         // Degrees Freedom Maximum = (Number of Elements + 1) * Degrees Freedom Per Node
         private const int degreesFreedomMaximum = 6;

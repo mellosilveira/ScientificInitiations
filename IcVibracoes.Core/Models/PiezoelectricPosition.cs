@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace IcVibracoes.Core.Models.BeamWithPiezoelectric
+namespace IcVibracoes.Core.Models
 {
     public enum PiezoelectricPosition
     {

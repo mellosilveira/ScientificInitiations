@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{69
 		Request\Motor Baja com ADV 30Hz - 5 nós.json = Request\Motor Baja com ADV 30Hz - 5 nós.json
 		Request\Motor Baja com ADV 30Hz - 67 nós.json = Request\Motor Baja com ADV 30Hz - 67 nós.json
 		Request\RectangularBeamWithPiezoelectricRequest = Request\RectangularBeamWithPiezoelectricRequest
+		Request\Viga retangular engastada sem piezoeletrico.json = Request\Viga retangular engastada sem piezoeletrico.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutions", "solutions", "{FEF4F35F-FDF5-4FAF-937F-6AB5864597C0}"
