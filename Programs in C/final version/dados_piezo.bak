@@ -5,7 +5,7 @@ permissividade elétrica e constante dielétrica
 constante de elasticidade
 1.076e11
 dimensao transversal da barra e do piezo
-25e-3 3e-3 25e-3 0.267e-3 1 1
+25e-3 3e-3 25e-3 0.267e-3 0.5 0.5
 Condicoes contorno piezoeletrico
 0 1
 modulo de elasticidade da estrutura

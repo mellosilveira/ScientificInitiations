@@ -22,6 +22,7 @@ int gl;                  //número de graus de liberdade
 int N, N2;               //N = (nEl + 1) * gl
 int nm, np, nt_Transiente;
 long double dens;
+long double densp;
 long double aux;
 long double a, b, c;
 long double d, ef, fe, g;
@@ -194,7 +195,7 @@ void LeituraDados(void)
 	}
 
 	//	Numero de barras piezoelétrica
-	fscanf(input, "%Lg", &nbp);
+	fscanf(input, "%d", &nbp);
 
 	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
@@ -403,7 +404,7 @@ void MatrizRigidez_piezo(void)
 
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constante = Mop[n] * mEp[n] / pow(lp, 3);
+		long double constante = Mop[n] * c11 / pow(lp, 3);
 
 		if (cc_p[n] == 0)
 		{
@@ -500,7 +501,7 @@ void MatrizMassa_piezo(void)
 
 	for (int n = 0; n < nEl; n++)
 	{
-		long double constante = Aep[n] * dens * lp / 420;
+		long double constante = Aep[n] * densp * lp / 420;
 
 		if (cc_p[n] == 0)
 		{
@@ -1029,7 +1030,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<GL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", KEls[i][j]);
+      	fprintf(matrizes, "%Lf, ", KEls[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1042,7 +1043,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<GL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", KElp[i][j]);
+      	fprintf(matrizes, "%Lf, ", KElp[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1055,7 +1056,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<GL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", Mls[i][j]);
+      	fprintf(matrizes, "%Lf, ", Mls[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1068,7 +1069,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<GL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", Mlp[i][j]);
+      	fprintf(matrizes, "%Lf, ", Mlp[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1081,7 +1082,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<NGL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", Ks[i][j]);
+      	fprintf(matrizes, "%Lf, ", Ks[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1094,7 +1095,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<NGL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", Kp[i][j]);
+      	fprintf(matrizes, "%Lf, ", Kp[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1107,7 +1108,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<NGL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", Ms[i][j]);
+      	fprintf(matrizes, "%Lf, ", Ms[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1120,7 +1121,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<NGL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", Mp[i][j]);
+      	fprintf(matrizes, "%Lf, ", Mp[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1133,7 +1134,7 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<NGL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", K[i][j]);
+      	fprintf(matrizes, "%Lf, ", K[i][j]);
    	}
       fprintf(matrizes, "},");
    }
@@ -1146,8 +1147,8 @@ void ImprimirMatrizes()
       fprintf(matrizes, "{");
    	for(int j = 0;j<NGL; j++)
    	{
-      	fprintf(matrizes, "%Lg, ", M[i][j]);
-   	}                                 
+      	fprintf(matrizes, "%Lf, ", M[i][j]);
+   	}
       fprintf(matrizes, "},");
    }
    fprintf(matrizes, "}");
@@ -1164,6 +1165,7 @@ main()
 	alfa = 1.0 / 4.0;
 	gama = 1.0 / 2.0;
 	dens = 7850;
+   densp = 7650;
 	LeituraDados();
 
 	output = fopen("LINEAR.dat", "w");			/* external filename */
