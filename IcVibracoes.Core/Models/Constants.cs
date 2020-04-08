@@ -53,6 +53,6 @@
         /// <summary>
         /// Size of piezoelectric element size.
         /// </summary>
-        public const int PiezoelectricElementMatrixSize = 2;
+        public const int PiezoelectricDegreesFreedomElement = 2;
     }
 }

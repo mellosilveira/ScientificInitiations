@@ -148,7 +148,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
             for (uint n = 0; n < numberOfElements; n++)
             {
-                double[,] piezoelectricElementElectromechanicalCoupling = new double[Constant.DegreesFreedomElement, Constant.PiezoelectricElementMatrixSize];
+                double[,] piezoelectricElementElectromechanicalCoupling = new double[Constant.DegreesFreedomElement, Constant.PiezoelectricDegreesFreedomElement];
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
@@ -157,7 +157,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
                 {
-                    for (uint j = n; j < n + Constant.PiezoelectricElementMatrixSize; j++)
+                    for (uint j = n; j < n + Constant.PiezoelectricDegreesFreedomElement; j++)
                     {
                         piezoelectricElectromechanicalCoupling[i, j] += piezoelectricElementElectromechanicalCoupling[i - 2 * n, j - n];
                     }
@@ -186,16 +186,16 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
             for (uint n = 0; n < numberOfElements; n++)
             {
-                double[,] piezoelectricElementCapacitance = new double[Constant.PiezoelectricElementMatrixSize, Constant.PiezoelectricElementMatrixSize];
+                double[,] piezoelectricElementCapacitance = new double[Constant.PiezoelectricDegreesFreedomElement, Constant.PiezoelectricDegreesFreedomElement];
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
                     piezoelectricElementCapacitance = await this.CalculateElementPiezoelectricCapacitance(beamWithPiezoelectric, elementIndex: n);
                 }
 
-                for (uint i = n; i < n + Constant.PiezoelectricElementMatrixSize; i++)
+                for (uint i = n; i < n + Constant.PiezoelectricDegreesFreedomElement; i++)
                 {
-                    for (uint j = n; j < n + Constant.PiezoelectricElementMatrixSize; j++)
+                    for (uint j = n; j < n + Constant.PiezoelectricDegreesFreedomElement; j++)
                     {
                         piezoelectricCapacitance[i, j] += piezoelectricElementCapacitance[i - n, j - n];
                     }

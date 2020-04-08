@@ -38,7 +38,7 @@ long double a0, a1, a2, a3, a4, a5, a6, a7;
 long double hs, hp, bs, bp;
 long double MoIs, MoIp;
 long double aes, aep;
-long double e31, s33, k33, u1;
+long double e31, k33, c11;
 int np_F1, np_F2, np_F3, np_F4, np_F5, np_F6;
 int nbp;
 
@@ -134,7 +134,6 @@ long double delta_fa[CCT];             //[delta_fa] = [fa]i - [fa]i-1
 long double K_Y[CCT];      		      //vetor produto [K] x [y]
 long double C_Y[CCT];    	      	  //vetor produto [C] x [vel]
 long double K_C_Y[CCT];                //[K_C_Y] = [fa] - [C_Y] - [K_Y]
-long double acel[CCT];				  //vetor aceleração
 
 // Vetor forçamento do corpo todo usado diretamente no método 
 long double f[NGL2];
@@ -176,7 +175,6 @@ void LeituraDados(void)
 {
 	char ch;
 	char abobrinhas[100];
-	int i_aux;
 
 	gl = GL / 2;
 	nNs = nGmax;
@@ -196,7 +194,7 @@ void LeituraDados(void)
 	}
 
 	//	Numero de barras piezoelétrica
-	fscanf(input, "%d", &nbp);
+	fscanf(input, "%Lg", &nbp);
 
 	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
@@ -205,9 +203,17 @@ void LeituraDados(void)
 	}
 
 	// Permissividade elétrica e constante dielétrica
-	fscanf(input, "%Lf %Lf %Lf\n", &e31, &k33);
+	fscanf(input, "%Lf %Lf\n", &e31, &k33);
 
 	ch = fgetc(input);
+	while ((ch = fgetc(input)) != EOF)
+	{
+		if (ch == '\n') break;
+	}
+
+   fscanf(input, "%Lf\n", &c11);
+
+   ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -256,7 +262,6 @@ void LeituraDados(void)
 	// Modulo de elasticidade ESTRUTURA
 	for (int i = 0; i < nEl; i++)
 	{
-		fscanf(input, "%d", &i_aux);
 		fscanf(input, "%Lf", &mEs[i]);
 	}
 
@@ -269,7 +274,6 @@ void LeituraDados(void)
 	// Modulo de elasticidade PIEZO
 	for (int i = 0; i < nEl; i++)
 	{
-		fscanf(input, "%d", &i_aux);
 		fscanf(input, "%Lf", &mEp[i]);
 	}
 
@@ -1012,6 +1016,145 @@ void solucao(void)
 	fprintf(frequencia, "%Lg\t %Lg\n", W, z);
 }
 
+void ImprimirMatrizes()
+{
+	FILE* matrizes;
+
+   matrizes = fopen("matrizes.txt", "w");
+
+   // Matriz rigidez de um elemento da estrutura
+   fprintf(matrizes, "KEls: {");
+   for(int i=0;i<GL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<GL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", KEls[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz rigidez de um elemento do piezoelétrico
+   fprintf(matrizes, "\nKElp: {");
+   for(int i=0;i<GL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<GL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", KElp[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz massa de um elemento da estrutura
+   fprintf(matrizes, "\nMls: {");
+   for(int i=0;i<GL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<GL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", Mls[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz massa de um elemento do piezoelétrico
+   fprintf(matrizes, "\nMlp: {");
+   for(int i=0;i<GL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<GL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", Mlp[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz rigidez da estrutura
+   fprintf(matrizes, "\nKs: {");
+   for(int i=0;i<NGL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<NGL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", Ks[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz rigidez do piezoelétrico
+   fprintf(matrizes, "\nKp: {");
+   for(int i=0;i<NGL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<NGL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", Kp[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz massa da estrutura
+   fprintf(matrizes, "\nMs: {");
+   for(int i=0;i<NGL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<NGL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", Ms[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz massa do piezoelétrico
+   fprintf(matrizes, "\nMp: {");
+   for(int i=0;i<NGL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<NGL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", Mp[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz massa
+   fprintf(matrizes, "\nK: {");
+   for(int i=0;i<NGL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<NGL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", K[i][j]);
+   	}
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   // Matriz rigidez
+   fprintf(matrizes, "\nM: {");
+   for(int i=0;i<NGL;i++)
+   {
+      fprintf(matrizes, "{");
+   	for(int j = 0;j<NGL; j++)
+   	{
+      	fprintf(matrizes, "%Lg, ", M[i][j]);
+   	}                                 
+      fprintf(matrizes, "},");
+   }
+   fprintf(matrizes, "}");
+
+   fclose(matrizes);
+}
+
 /***********************************************************************/
 /* Programa Principal */
 main()
@@ -1052,6 +1195,8 @@ main()
 	Matriz_K_geral();
 	MatrizC();
 
+   ImprimirMatrizes();
+
 	CondicoesContorno();
 
 	RigidezEquivalente();
@@ -1088,7 +1233,7 @@ main()
 		a2 = 1.0 / (alfa * dt);
 		a3 = (1 / (2 * alfa)) - 1;
 		a4 = (gama / alfa) - 1;
-		a5 = (dt / 2) * ((gama / alpha) - 2);
+		a5 = (dt / 2) * ((gama / alfa) - 2);
 		a6 = dt * (1 - gama);
 		a7 = gama * dt;
 
