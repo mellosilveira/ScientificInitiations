@@ -8,6 +8,5 @@ namespace IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric
     /// <typeparam name="TProfile"></typeparam>
     public class CalculateBeamWithPiezoelectricVibrationRequest<TProfile> : CalculateVibrationRequest<TProfile, PiezoelectricRequestData<TProfile>>
         where TProfile : Profile, new()
-    {
-    }
+    { }
 }

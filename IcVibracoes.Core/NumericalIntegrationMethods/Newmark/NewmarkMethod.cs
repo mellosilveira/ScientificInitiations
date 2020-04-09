@@ -40,9 +40,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             IAuxiliarOperation auxiliarOperation,
             INewmarkMethodValidator validator)
         {
-            this._arrayOperation = arrayOperation;
-            this._auxiliarOperation = auxiliarOperation;
-            this._validator = validator;
+            this._arrayOperation = arrayOperation ?? throw new ArgumentNullException("", nameof(IArrayOperation));
+            this._auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException("", nameof(IAuxiliarOperation));
+            this._validator = validator ?? throw new ArgumentNullException("", nameof(INewmarkMethodValidator));
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        protected async Task Solution(NewmarkMethodInput input)
+        public async Task Solution(NewmarkMethodInput input)
         {
             double time = input.Parameter.InitialTime;
 
@@ -185,7 +185,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousVelocity"></param>
         /// <param name="previousAcceleration"></param>
         /// <returns></returns>
-        protected async Task<double[]> CalculateDisplacement(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
+        public async Task<double[]> CalculateDisplacement(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
             double[,] equivalentHardness = await CalculateEquivalentHardness(input.Mass, input.Hardness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
             double[,] inversedEquivalentHardness = await this._arrayOperation.InverseMatrix(equivalentHardness, nameof(equivalentHardness)).ConfigureAwait(false);
@@ -203,7 +203,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousVelocity"></param>
         /// <param name="previousAcceleration"></param>
         /// <returns></returns>
-        protected virtual async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
+        public virtual async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
             double[] equivalentVelocity = await CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
             double[] equivalentAcceleration = await CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
@@ -224,7 +224,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="acceleration"></param>
         /// <param name="numberOfTrueBondaryConditions"></param>
         /// <returns></returns>
-        protected Task<double[]> CalculateEquivalentAcceleration(double[] displacement, double[] velocity, double[] acceleration, uint numberOfTrueBondaryConditions)
+        public Task<double[]> CalculateEquivalentAcceleration(double[] displacement, double[] velocity, double[] acceleration, uint numberOfTrueBondaryConditions)
         {
             double[] equivalentAcceleration = new double[numberOfTrueBondaryConditions];
 
@@ -244,7 +244,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousAcceleration"></param>
         /// <param name="numberOfTrueBondaryConditions"></param>
         /// <returns></returns>
-        protected Task<double[]> CalculateEquivalentVelocity(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBondaryConditions)
+        public Task<double[]> CalculateEquivalentVelocity(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBondaryConditions)
         {
             double[] equivalentVelocity = new double[numberOfTrueBondaryConditions];
 
@@ -264,7 +264,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="hardness"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        protected Task<double[,]> CalculateEquivalentHardness(double[,] mass, double[,] hardness, double[,] damping, uint numberOfTrueBoundaryConditions)
+        public Task<double[,]> CalculateEquivalentHardness(double[,] mass, double[,] hardness, double[,] damping, uint numberOfTrueBoundaryConditions)
         {
             double[,] equivalentHardness = new double[numberOfTrueBoundaryConditions, numberOfTrueBoundaryConditions];
 

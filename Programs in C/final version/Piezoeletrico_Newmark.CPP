@@ -69,7 +69,7 @@ long double K_u_vp[GL][GLP];
 long double K_u_v[NGL][GLPT];
 
 //Formação da Matriz acoplamento v u por elemento
-long double K_v_up[GL][GLP];
+long double K_v_up[GLP][GL];
 //Formação da Matriz acoplamento total v u
 long double K_v_u[GLPT][NGL];
 
@@ -212,9 +212,9 @@ void LeituraDados(void)
 		if (ch == '\n') break;
 	}
 
-   fscanf(input, "%Lf\n", &c11);
+	fscanf(input, "%Lf\n", &c11);
 
-   ch = fgetc(input);
+	ch = fgetc(input);
 	while ((ch = fgetc(input)) != EOF)
 	{
 		if (ch == '\n') break;
@@ -581,13 +581,13 @@ void Matriz_acoplamento_eletromecanico_U_V(void)
 		else
 		{
 			K_u_vp[0][0] = 0;
-			K_u_vp[0][1] = -constante * lp;
-			K_u_vp[0][2] = 0;
-			K_u_vp[0][3] = constante * lp;
-			K_u_vp[1][0] = 0;
+			K_u_vp[0][1] = 0;
+			K_u_vp[1][0] = -constante * lp;
 			K_u_vp[1][1] = constante * lp;
-			K_u_vp[1][2] = constante * lp;
-			K_u_vp[1][3] = -constante * lp;
+			K_u_vp[2][0] = 0;
+			K_u_vp[2][1] = constante * lp;
+			K_u_vp[3][0] = constante * lp;
+			K_u_vp[3][1] = -constante * lp;
 		}
 
 		for (int i = 2 * n; i < 2 * n + 4; i++)
@@ -962,7 +962,7 @@ void solucao(void)
 		{
 			for (int i = 0; i < N; i++)
 			{
-				f[i] = f_max[i] * sin(W * t);
+				f[i] = f_max[i] * cos(W * t);
 			}
 
 			CondicoesContorno1();
@@ -986,6 +986,36 @@ void solucao(void)
 			MatrizP3();
 			MatrizP4();
 			MatrizP5();
+
+			/******************************************************/
+			FILE* matrizes_resultantes;
+
+			matrizes_resultantes = fopen("matrizes_resultantes.txt", "w");
+
+			// Matriz rigidez equivalente
+			fprintf(matrizes_resultantes, "P1: {");
+			for (int i = 0; i < CCT; i++)
+			{
+				fprintf(matrizes_resultantes, "{");
+				for (int j = 0; j < CCT; j++)
+				{
+					fprintf(matrizes_resultantes, "%Lg, ", P1[i][j]);
+				}
+				fprintf(matrizes_resultantes, "},");
+			}
+			fprintf(matrizes_resultantes, "}");
+
+			// Matriz força equivalente
+			fprintf(matrizes_resultantes, "\nP5: {");
+			for (int i = 0; i < CCT; i++)
+			{
+				fprintf(matrizes_resultantes, "%Lg, ", P5[i]);
+			}
+			fprintf(matrizes_resultantes, "}");
+
+			fclose(matrizes_resultantes);
+			/******************************************************/
+
 			Elim_Gauss();
 
 			for (int i = 0; i < N2; i++)
@@ -1003,6 +1033,38 @@ void solucao(void)
 				vel[i] = vel_ant[i] + a6 * acel_ant[i] + a7 * acel[i];
 			}
 
+			/*******************************************************************/
+			FILE* matrizes_resultantes2;
+
+			matrizes_resultantes2 = fopen("matrizes_resultantes2.txt", "w");
+
+			// Matriz descolamento
+			fprintf(matrizes_resultantes2, "\ny: {");
+			for (int i = 0; i < CCT; i++)
+			{
+				fprintf(matrizes_resultantes2, "%Lf, ", y[i]);
+			}
+			fprintf(matrizes_resultantes2, "}");
+
+			// Matriz velocidade
+			fprintf(matrizes_resultantes2, "\nvel: {");
+			for (int i = 0; i < CCT; i++)
+			{
+				fprintf(matrizes_resultantes2, "%Lf, ", vel[i]);
+			}
+			fprintf(matrizes_resultantes2, "}");
+
+			// Matriz aceleração
+			fprintf(matrizes_resultantes2, "\nacel: {");
+			for (int i = 0; i < CCT; i++)
+			{
+				fprintf(matrizes_resultantes2, "%Lf, ", acel[i]);
+			}
+			fprintf(matrizes_resultantes2, "}");
+
+			fclose(matrizes_resultantes2);
+			/*******************************************************************/
+
 			t = t + dt;
 
 			for (int i = 0; i < N2; i++)
@@ -1017,143 +1079,331 @@ void solucao(void)
 	fprintf(frequencia, "%Lg\t %Lg\n", W, z);
 }
 
-void ImprimirMatrizes()
+/***************************************************************/
+
+void ImprimirMatrizesResultantes(void)
+{
+	FILE* matrizes_resultantes;
+
+	matrizes_resultantes = fopen("matrizes_resultantes.txt", "w");
+
+	// Matriz rigidez equivalente
+	fprintf(matrizes_resultantes, "P1: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes_resultantes, "{");
+		for (int j = 0; j < CCT; j++)
+		{
+			fprintf(matrizes_resultantes, "%Lf, ", P1[i][j]);
+		}
+		fprintf(matrizes_resultantes, "},");
+	}
+	fprintf(matrizes_resultantes, "}");
+
+	// Matriz força equivalente
+	fprintf(matrizes_resultantes, "P5: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes_resultantes, "%Lf, ", P5[i]);
+	}
+	fprintf(matrizes_resultantes, "}");
+
+	// Matriz descolamento
+	fprintf(matrizes_resultantes, "\ny: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes_resultantes, "%Lf, ", y[i]);
+	}
+	fprintf(matrizes_resultantes, "}");
+
+	// Matriz velocidade
+	fprintf(matrizes_resultantes, "\nvel: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes_resultantes, "%Lf, ", vel[i]);
+	}
+	fprintf(matrizes_resultantes, "}");
+
+	// Matriz aceleração
+	fprintf(matrizes_resultantes, "\nacel: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes_resultantes, "%Lf, ", acel[i]);
+	}
+	fprintf(matrizes_resultantes, "}");
+
+	fclose(matrizes_resultantes);
+}
+
+/***************************************************************/
+
+void ImprimirMatrizes(void)
 {
 	FILE* matrizes;
 
-   matrizes = fopen("matrizes.txt", "w");
+	matrizes = fopen("matrizes.txt", "w");
 
-   // Matriz rigidez de um elemento da estrutura
-   fprintf(matrizes, "KEls: {");
-   for(int i=0;i<GL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<GL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", KEls[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz rigidez de um elemento da estrutura
+	fprintf(matrizes, "KEls: {");
+	for (int i = 0; i < GL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", KEls[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz rigidez de um elemento do piezoelétrico
-   fprintf(matrizes, "\nKElp: {");
-   for(int i=0;i<GL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<GL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", KElp[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz rigidez da estrutura
+	fprintf(matrizes, "\nKs: {");
+	for (int i = 0; i < NGL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", Ks[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz massa de um elemento da estrutura
-   fprintf(matrizes, "\nMls: {");
-   for(int i=0;i<GL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<GL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", Mls[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz massa de um elemento da estrutura
+	fprintf(matrizes, "\nMls: {");
+	for (int i = 0; i < GL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", Mls[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz massa de um elemento do piezoelétrico
-   fprintf(matrizes, "\nMlp: {");
-   for(int i=0;i<GL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<GL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", Mlp[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz massa da estrutura
+	fprintf(matrizes, "\nMs: {");
+	for (int i = 0; i < NGL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", Ms[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz rigidez da estrutura
-   fprintf(matrizes, "\nKs: {");
-   for(int i=0;i<NGL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<NGL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", Ks[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz rigidez de um elemento do piezoelétrico
+	fprintf(matrizes, "\nKElp: {");
+	for (int i = 0; i < GL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", KElp[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz rigidez do piezoelétrico
-   fprintf(matrizes, "\nKp: {");
-   for(int i=0;i<NGL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<NGL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", Kp[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz rigidez do piezoelétrico
+	fprintf(matrizes, "\nKp: {");
+	for (int i = 0; i < NGL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", Kp[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz massa da estrutura
-   fprintf(matrizes, "\nMs: {");
-   for(int i=0;i<NGL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<NGL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", Ms[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz massa de um elemento do piezoelétrico
+	fprintf(matrizes, "\nMlp: {");
+	for (int i = 0; i < GL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", Mlp[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz massa do piezoelétrico
-   fprintf(matrizes, "\nMp: {");
-   for(int i=0;i<NGL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<NGL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", Mp[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz massa do piezoelétrico
+	fprintf(matrizes, "\nMp: {");
+	for (int i = 0; i < NGL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", Mp[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz massa
-   fprintf(matrizes, "\nK: {");
-   for(int i=0;i<NGL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<NGL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", K[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz massa
+	fprintf(matrizes, "\nK: {");
+	for (int i = 0; i < NGL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", K[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   // Matriz rigidez
-   fprintf(matrizes, "\nM: {");
-   for(int i=0;i<NGL;i++)
-   {
-      fprintf(matrizes, "{");
-   	for(int j = 0;j<NGL; j++)
-   	{
-      	fprintf(matrizes, "%Lf, ", M[i][j]);
-   	}
-      fprintf(matrizes, "},");
-   }
-   fprintf(matrizes, "}");
+	// Matriz rigidez
+	fprintf(matrizes, "\nM: {");
+	for (int i = 0; i < NGL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL; j++)
+		{
+			fprintf(matrizes, "%Lf, ", M[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
 
-   fclose(matrizes);
+	// Matriz acoplamento eletromecânico de um elemento do piezoelétrico
+	fprintf(matrizes, "\nK_u_vp: {");
+	for (int i = 0; i < GL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GLP; j++)
+		{
+			fprintf(matrizes, "%Lg, ", K_u_vp[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz acoplamento eletromecânico do piezoelétrico
+	fprintf(matrizes, "\nK_u_v: {");
+	for (int i = 0; i < NGL; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GLPT; j++)
+		{
+			fprintf(matrizes, "%Lg, ", K_u_v[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz capacitância de um elemento do piezoelétrico
+	fprintf(matrizes, "\nK_v_vp: {");
+	for (int i = 0; i < GLP; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GLP; j++)
+		{
+			fprintf(matrizes, "%Lg, ", K_v_vp[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz capacitância do piezoelétrico
+	fprintf(matrizes, "\nK_v_v: {");
+	for (int i = 0; i < GLPT; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < GLPT; j++)
+		{
+			fprintf(matrizes, "%Lg, ", K_v_v[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz massa geral
+	fprintf(matrizes, "\nK_G: {");
+	for (int i = 0; i < NGL2; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL2; j++)
+		{
+			fprintf(matrizes, "%Lg, ", K_G[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz rigidez geral
+	fprintf(matrizes, "\nM_G: {");
+	for (int i = 0; i < NGL2; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL2; j++)
+		{
+			fprintf(matrizes, "%Lg, ", M_G[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz amortecimento
+	fprintf(matrizes, "\nC: {");
+	for (int i = 0; i < NGL2; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < NGL2; j++)
+		{
+			fprintf(matrizes, "%Lg, ", C[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz amortecimento
+	fprintf(matrizes, "\nM_cc: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < CCT; j++)
+		{
+			fprintf(matrizes, "%Lg, ", M_cc[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz amortecimento
+	fprintf(matrizes, "\nK_cc: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < CCT; j++)
+		{
+			fprintf(matrizes, "%Lg, ", K_cc[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	// Matriz amortecimento
+	fprintf(matrizes, "\nC_cc: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes, "{");
+		for (int j = 0; j < CCT; j++)
+		{
+			fprintf(matrizes, "%Lg, ", C_cc[i][j]);
+		}
+		fprintf(matrizes, "},");
+	}
+	fprintf(matrizes, "}");
+
+	fclose(matrizes);
 }
 
 /***********************************************************************/
@@ -1165,7 +1415,7 @@ main()
 	alfa = 1.0 / 4.0;
 	gama = 1.0 / 2.0;
 	dens = 7850;
-   densp = 7650;
+	densp = 7650;
 	LeituraDados();
 
 	output = fopen("LINEAR.dat", "w");			/* external filename */
@@ -1197,14 +1447,14 @@ main()
 	Matriz_K_geral();
 	MatrizC();
 
-   ImprimirMatrizes();
-
 	CondicoesContorno();
 
 	RigidezEquivalente();
 	MatrizP2a();
 	MatrizP3a();
 	MatrizP4a();
+
+	ImprimirMatrizes();
 
 	int nbif = (int)((Wf - Wi) / dW) + 1;
 

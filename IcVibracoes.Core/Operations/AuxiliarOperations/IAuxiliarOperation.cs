@@ -49,6 +49,6 @@
         /// Create a path to the files with the analysis solution.
         /// </summary>
         /// <returns></returns>
-        public string CreateSolutionPath(string analysisType, double initialAngularFrequency, double? finalAngularFrequency, uint numberOfElements);
+        string CreateSolutionPath(string analysisType, double initialAngularFrequency, double? finalAngularFrequency, uint numberOfElements);
     }
 }

@@ -22,9 +22,9 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         private readonly BeamWithPiezoelectric<RectangularProfile> _beamWithPiezoelectric;
         private readonly double _elementLength;
         private readonly bool[] _piezoelectricBoundaryConditions;
-
+        
+        private double _precision;
         private readonly uint _numberOfPiezoelectricsPerElement;
-        private readonly double _precision;
         private readonly double _piezoelectricArea;
         private readonly double _piezoelectricMomentOfInertia;
 
@@ -38,8 +38,10 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
 
         private readonly double[,] _piezoelectricElementElectromechanicalCouplingMatrix;
         private readonly double[,] _piezoelectricElectromechanicalCouplingMatrix;
-        private readonly double[,] _piezoelectricCapacitanceMatrix;
         private readonly double[,] _elementPiezoelectricCapacitanceMatrix;
+        private readonly double[,] _piezoelectricCapacitanceMatrix;
+
+        private readonly double[,] _damping;
 
         public RectangularBeamWithPiezoelectricMainMatrixTest()
         {
@@ -82,9 +84,17 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
                     Area = new double[numberOfElements] { 0, this._piezoelectricArea },
                     MomentOfInertia = new double[numberOfElements] { 0, this._piezoelectricMomentOfInertia }
                 },
-                PiezoelectricProfile = new RectangularProfile(),
+                PiezoelectricProfile = new RectangularProfile
+                {
+                    Height = 0.267e-3,
+                    Width = 25e-3
+                },
                 PiezoelectricSpecificMass = 7650,
-                Profile = new RectangularProfile(),
+                Profile = new RectangularProfile
+                {
+                    Height = 3e-3,
+                    Width = 25e-3
+                },
                 PiezoelectricYoungModulus = 63e9
             };
 
@@ -122,6 +132,76 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
                 { 270.000000, 45.000000, 92.195324, 210.731775, -362.195324, 60.365887 },
                 { 0.000000, 0.000000, -1448.781296, -362.195324, 1448.781296, -362.195324 },
                 { 0.000000, 0.000000, 362.195324, 60.365887, -362.195324, 120.731775 }
+            };
+
+            this._piezoelectricElementElectromechanicalCouplingMatrix = new double[Constant.DegreesFreedomElement, Constant.PiezoelectricDegreesFreedomElement]
+            {
+                { 0, 0 },
+                { 1.60557e-07, -1.60557e-07 },
+                { 0, -1.60557e-07 },
+                { -1.60557e-07, 1.60557e-07 }
+            };
+
+            this._piezoelectricElectromechanicalCouplingMatrix = new double[degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum]
+            {
+                { 0, 0, 0 },
+                { 0, 0, 0 },
+                { 0, 0, 0 },
+                { 0, 1.60557e-07, -1.60557e-07 },
+                { 0, 0, -1.60557e-07 },
+                { 0, -1.60557e-07, 1.60557e-07 }
+            };
+
+            this._elementPiezoelectricCapacitanceMatrix = new double[Constant.PiezoelectricDegreesFreedomElement, Constant.PiezoelectricDegreesFreedomElement]
+            {
+                { -6.8633e-07, 6.8633e-07 },
+                { 6.8633e-07, -6.8633e-07 }
+            };
+
+            this._piezoelectricCapacitanceMatrix = new double[piezoelectricDegreesFreedomMaximum, piezoelectricDegreesFreedomMaximum]
+            {
+                { 0, 0, 0 },
+                { 0, -6.8633e-07, 6.8633e-07 },
+                { 0, 6.8633e-07, -6.8633e-07 }
+            };
+
+            this._equivalentMassMatrix = new double[degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum, degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum]
+            {
+                { 0.109339, 0.00770982, 0.0378482, -0.0045558, 0, 0, 0, 0, 0 },
+                { 0.00770982, 0.000700893, 0.0045558, -0.00052567, 0, 0, 0, 0, 0 },
+                { 0.0378482, 0.0045558, 0.237645, 0.00133738, 0.0444136, -0.00534608, 0, 0, 0 },
+                { -0.0045558, -0.00052567, 0.00133738, 0.00152337, 0.00534608, -0.000616855, 0, 0, 0 },
+                { 0, 0, 0.0444136, 0.00534608, 0.128306, -0.00904721, 0, 0, 0 },
+                { 0, 0, -0.00534608, -0.000616855, -0.00904721, 0.000822473, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+            };
+            
+            this._equivalentHardnessMatrix = new double[degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum, degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum]
+            { 
+                { 1080, 270, -1080, 270, 0, 0, 0, 0, 0 },
+                { 270, 90, -270, 45, 0, 0, 0, 0, 0 },
+                { -1080, -270, 2528.78, 92.1953, -1448.78, 362.195, 0, 0, 0 },
+                { 270, 45, 92.1953, 210.732, -362.195, 60.3659, 0, 1.60557e-07, -1.60557e-07 },
+                { 0, 0, -1448.78, -362.195, 1448.78, -362.195, 0, 0, -1.60557e-07 },
+                { 0, 0, 362.195, 60.3659, -362.195, 120.732, 0, -1.60557e-07, 1.60557e-07 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 1.60557e-07, 0, -1.60557e-07, 0, -6.8633e-07, 6.8633e-07 },
+                { 0, 0, 0, -1.60557e-07, -1.60557e-07, 1.60557e-07, 0, 6.8633e-07, -6.8633e-07 }
+            };
+
+            this._damping = new double[degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum, degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum]
+            {
+                { 0.00108, 0.00027, -0.00108, 0.00027, 0, 0, 0, 0, 0 },
+                { 0.00027, 9e-05, -0.00027, 4.5e-05, 0, 0, 0, 0, 0 },
+                { -0.00108, -0.00027, 0.00252878, 9.21953e-05, -0.00144878, 0.000362195, 0, 0, 0 },
+                { 0.00027, 4.5e-05, 9.21953e-05, 0.000210732, -0.000362195, 6.03659e-05, 0, 1.60557e-13, -1.60557e-13 },
+                { 0, 0, -0.00144878, -0.000362195, 0.00144878, -0.000362195, 0, 0, -1.60557e-13 },
+                { 0, 0, 0.000362195, 6.03659e-05, -0.000362195, 0.000120732, 0, -1.60557e-13, 1.60557e-13 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 1.60557e-13, 0, -1.60557e-13, 0, -6.8633e-13, 6.8633e-13 },
+                { 0, 0, 0, -1.60557e-13, -1.60557e-13, 1.60557e-13, 0, 6.8633e-13, -6.8633e-13 }
             };
 
             this._piezoelectricBoundaryConditions = new bool[degreesFreedomMaximum / 2] { false, true, true };
@@ -197,13 +277,16 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         [Fact(DisplayName = @"Feature: CalculatePiezoelectricElectromechanicalCoupling | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculatePiezoelectricElectromechanicalCoupling_Should_ExecuteCorrectly()
         {
+            // Arrange
+            this._precision = 1e-12;
+
             // Act
             var result = await this._operation.CalculatePiezoelectricElectromechanicalCoupling(this._beamWithPiezoelectric, degreesFreedomMaximum);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
             {
-                for (int j = 0; j < degreesFreedomMaximum; j++)
+                for (int j = 0; j < piezoelectricDegreesFreedomMaximum; j++)
                 {
                     result[i, j].Should().BeApproximately(this._piezoelectricElectromechanicalCouplingMatrix[i, j], this._precision);
                 }
@@ -213,6 +296,9 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         [Fact(DisplayName = @"Feature: CalculatePiezoelectricElementElectromechanicalCoupling | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculatePiezoelectricElementElectromechanicalCoupling_Should_ExecuteCorrectly()
         {
+            // Arrange
+            this._precision = 1e-12;
+
             // Act
             var result = await this._operation.CalculatePiezoelectricElementElectromechanicalCoupling(this._beamWithPiezoelectric);
 
@@ -229,6 +315,9 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         [Fact(DisplayName = @"Feature: CalculatePiezoelectricCapacitance | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculatePiezoelectricCapacitance_Should_ExecuteCorrectly()
         {
+            // Arrange
+            this._precision = 1e-12;
+
             // Act
             var result = await this._operation.CalculatePiezoelectricCapacitance(this._beamWithPiezoelectric);
 
@@ -245,6 +334,9 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         [Fact(DisplayName = @"Feature: CalculateElementPiezoelectricCapacitance | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculateElementPiezoelectricCapacitance_Should_ExecuteCorrectly()
         {
+            // Arrange
+            this._precision = 1e-12;
+
             // Act
             var result = await this._operation.CalculateElementPiezoelectricCapacitance(this._beamWithPiezoelectric, elementIndex: 1);
 
@@ -277,6 +369,9 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         [Fact(DisplayName = @"Feature: CalculateEquivalentHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculateEquivalentHardness_Should_ExecuteCorrectly()
         {
+            // Arrange
+            this._precision = 5e-3;
+
             // Act
             var result = await this._operation.CalculateEquivalentHardness(this._hardnessMatrix, this._piezoelectricElectromechanicalCouplingMatrix, this._piezoelectricCapacitanceMatrix, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
 
@@ -286,6 +381,25 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
                 for (int j = 0; j < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; j++)
                 {
                     result[i, j].Should().BeApproximately(this._equivalentHardnessMatrix[i, j], this._precision);
+                }
+            }
+        }
+
+        [Fact(DisplayName = @"Feature: CalculateDamping | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculateDamping_Should_ExecuteCorrectly()
+        {
+            // Arrange
+            this._precision = 5e-3;
+
+            // Act
+            var result = await this._operation.CalculateDamping(this._equivalentMassMatrix, this._equivalentHardnessMatrix);
+
+            // Assert
+            for (int i = 0; i < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; i++)
+            {
+                for (int j = 0; j < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; j++)
+                {
+                    result[i, j].Should().BeApproximately(this._damping[i, j], this._precision);
                 }
             }
         }

@@ -38,7 +38,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva
         /// <param name="previousVelocity"></param>
         /// <param name="previousAcceleration"></param>
         /// <returns></returns>
-        protected override async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
+        public override async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
             if (previousDisplacement.Length != input.NumberOfTrueBoundaryConditions)
             {
