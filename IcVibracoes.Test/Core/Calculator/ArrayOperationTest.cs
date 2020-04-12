@@ -22,6 +22,7 @@ namespace IcVibracoes.Test.Core.Calculator
         private readonly double[,] _addedValuesInMatrix1;
         private readonly double[] _mergedVector1Vetor2;
         private readonly double[] _multipliedMatrix1Vector1;
+        private readonly double[,] _equivalentHardness;
 
         private uint[] _elementPositions;
 
@@ -41,6 +42,16 @@ namespace IcVibracoes.Test.Core.Calculator
             this._mergedVector1Vetor2 = new double[2 * arraySize] { 1, 2, 3, 4, 5, 0, 1, 3 };
             this._multipliedMatrix1Vector1 = new double[arraySize] { 10, 31, 19, 16 };
             this._transposedMatrix1 = new double[arraySize, arraySize] { { 1, 2, 3, 2 }, { 1, 5, 5, 5 }, { 1, 1, 2, 0 }, { 1, 4, 0, 1 } };
+
+            this._equivalentHardness = new double[,]
+            {
+                { 90, -270, 45, 0, 0, 0 },
+                { -270, 2528.78, 92.1953, 362.195, 0, 0 },
+                { 45, 92.1953, 210.732, 60.3659, 1.60557e-07, -1.60557e-07 },
+                { 0, 362.195, 60.3659, 120.732, -1.60557e-07, 1.60557e-07 },
+                { 0, 0, 1.60557e-07, -1.60557e-07, -6.8633e-07, 6.8633e-07 },
+                { 0, 0, -1.60557e-07, 1.60557e-07, 6.8633e-07, -6.8633e-07 }
+            };
         }
 
         [Fact(DisplayName = @"Feature: AddValue | Given: Valid matrix. | When: Invoke. | Should: Return correctly matrix size and values.")]

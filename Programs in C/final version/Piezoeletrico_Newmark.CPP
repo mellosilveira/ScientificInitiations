@@ -6,20 +6,17 @@
 #include <stdlib.h>
 
 #define  nGmax  	3    // numero de nós
-#define  nDim		2    // número de dimensões
 #define  nELE		2    // número de elementos
-#define  NGL		6    // número de graus de liberdade máximo sem o grau de liberdade do potencial
-#define  NGL1		3    // número de graus de liberdade máximo dividido por 2
-#define  NGL2		9    // número de graus de liberdade máximo+número de graus de liberdade máximo dividido por 2
 #define  GL			4	 // número de graus de liberdade por elemento
+#define  NGL		6    // número de graus de liberdade máximo sem o grau de liberdade do potencial
+#define  NGLT		9    // número de graus de liberdade totais
 #define  GLP    	2    // número de potencial por elemento
-#define  GLPT    	3    // número de potencial total
-#define  CCT    	6    // número de grau de liberdade desprezando as condições de contorno
+#define  GLPT    	3    // número de potencial total = número de graus de liberdade máximo do potencial
+#define  CCT    	7    // número de grau de liberdade desprezando as condições de contorno
 
 int nNs; 				 //número de nós
 int nEl;                 //número de elementos
 int gl;                  //número de graus de liberdade
-int N, N2;               //N = (nEl + 1) * gl
 int nm, np, nt_Transiente;
 long double dens;
 long double densp;
@@ -85,13 +82,13 @@ long double M[NGL][NGL];
 long double K[NGL][NGL];
 
 //Formação da Matriz massa incluindo os graus de liberdade relacionados com os potenciais, onde NGL2 = NGL + NGL/2.
-long double M_G[NGL2][NGL2];
+long double M_G[NGLT][NGLT];
 
 //Formação da Matriz RIGIDEZ incluindo os graus de liberdade relacionados com os potenciais, onde NGL2 = NGL + NGL/2.
-long double K_G[NGL2][NGL2];
+long double K_G[NGLT][NGLT];
 
 //Formação da Matriz AMORTECIMENTO incluindo os graus de liberdade relacionados com os potenciais, onde NGL2 = NGL + NGL/2.
-long double C[NGL2][NGL2];
+long double C[NGLT][NGLT];
 
 //Formação da Matriz massa incluindo os graus de liberdade relacionados com os potenciais, e diminuindo o numero e condições de contorno.
 long double M_cc[CCT][CCT];
@@ -137,12 +134,12 @@ long double C_Y[CCT];    	      	  //vetor produto [C] x [vel]
 long double K_C_Y[CCT];                //[K_C_Y] = [fa] - [C_Y] - [K_Y]
 
 // Vetor forçamento do corpo todo usado diretamente no método 
-long double f[NGL2];
+long double f[NGLT];
 
 // Vetor forçamento com os valores máximos
-long double f_max[NGL2];
+long double f_max[NGLT];
 
-long double cc[NGL2], cc_p[nELE];      //vetor condições de contorno
+long double cc[NGLT], cc_p[nELE];      //vetor condições de contorno
 long double Aes[nELE], Aep[nELE];	  //vetor área transversal de todos os elementos
 long double mEs[nELE], mEp[nELE];      //vetor módulo de elasticidade de todos os elementos
 long double Mos[nELE], Mop[nELE];      //vetor momento de inércia de todos os elementos
@@ -306,7 +303,7 @@ void LeituraDados(void)
 	}
 
 	// Forçamento
-	for (int i = 0; i < NGL2; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		fscanf(input, "%Lf", &f_max[i]);
 	}
@@ -318,7 +315,7 @@ void LeituraDados(void)
 	}
 
 	// Leitura do vetor cc
-	for (int i = 0; i < ((nEl + 1) * gl + ((nEl + 1) * gl) / 2.0); i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		fscanf(input, "%Lf", &cc[i]);
 	}
@@ -353,9 +350,9 @@ void LeituraDados(void)
 void MatrizRigidez_estrutura(void)
 {
 	/* montagem da matriz global */
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < NGL; i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < NGL; j++)
 		{
 			Ks[i][j] = 0;
 		}
@@ -382,9 +379,9 @@ void MatrizRigidez_estrutura(void)
 		KEls[3][2] = -(6 * ls * constante);
 		KEls[3][3] = 4 * pow(ls, 2) * constante;
 
-		for (int i = 2 * n; i < 2 * n + 4; i++)
+		for (int i = 2 * n; i < 2 * n + GL; i++)
 		{
-			for (int j = 2 * n; j < 2 * n + 4; j++)
+			for (int j = 2 * n; j < 2 * n + GL; j++)
 			{
 				Ks[i][j] += KEls[i - 2 * n][j - 2 * n];
 			}
@@ -394,9 +391,9 @@ void MatrizRigidez_estrutura(void)
 /***********************************************************************/
 void MatrizRigidez_piezo(void)
 {
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < NGL; i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < NGL; j++)
 		{
 			Kp[i][j] = 0;
 		}
@@ -436,9 +433,9 @@ void MatrizRigidez_piezo(void)
 			KElp[3][3] = 4 * pow(lp, 2) * constante;
 		}
 
-		for (int i = 2 * n; i < 2 * n + 4; i++)
+		for (int i = 2 * n; i < 2 * n + GL; i++)
 		{
-			for (int j = 2 * n; j < 2 * n + 4; j++)
+			for (int j = 2 * n; j < 2 * n + GL; j++)
 			{
 				Kp[i][j] += KElp[i - 2 * n][j - 2 * n];
 			}
@@ -449,9 +446,9 @@ void MatrizRigidez_piezo(void)
 void MatrizMassa_estrutura(void)
 {
 	/* montagem da matriz massa*/
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < NGL; i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < NGL; j++)
 		{
 			Ms[i][j] = 0;
 		}
@@ -478,9 +475,9 @@ void MatrizMassa_estrutura(void)
 		Mls[3][2] = -22 * ls * constante;
 		Mls[3][3] = 4 * pow(ls, 2) * constante;
 
-		for (int i = 2 * n; i < 2 * n + 4; i++)
+		for (int i = 2 * n; i < 2 * n + GL; i++)
 		{
-			for (int j = 2 * n; j < 2 * n + 4; j++)
+			for (int j = 2 * n; j < 2 * n + GL; j++)
 			{
 				Ms[i][j] += Mls[i - 2 * n][j - 2 * n];
 			}
@@ -491,9 +488,9 @@ void MatrizMassa_estrutura(void)
 void MatrizMassa_piezo(void)
 {
 	/* montagem da matriz massa*/
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < NGL; i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < NGL; j++)
 		{
 			Mp[i][j] = 0;
 		}
@@ -533,9 +530,9 @@ void MatrizMassa_piezo(void)
 			Mlp[3][3] = 4 * pow(lp, 2) * constante;
 		}
 
-		for (int i = 2 * n; i < 2 * n + 4; i++)
+		for (int i = 2 * n; i < 2 * n + GL; i++)
 		{
-			for (int j = 2 * n; j < 2 * n + 4; j++)
+			for (int j = 2 * n; j < 2 * n + GL; j++)
 			{
 				Mp[i][j] += Mlp[i - 2 * n][j - 2 * n];
 			}
@@ -545,9 +542,9 @@ void MatrizMassa_piezo(void)
 /***********************************************************************/
 void soma_rigidez_massa(void)
 {
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < NGL; i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < NGL; j++)
 		{
 			K[i][j] = Ks[i][j] + Kp[i][j];
 			M[i][j] = Ms[i][j] + Mp[i][j];
@@ -557,9 +554,9 @@ void soma_rigidez_massa(void)
 /***********************************************************************/
 void Matriz_acoplamento_eletromecanico_U_V(void)
 {
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < NGL; i++)
 	{
-		for (int j = 0; j < N / 2.0; j++)
+		for (int j = 0; j < GLPT; j++)
 		{
 			K_u_v[i][j] = 0;
 		}
@@ -570,9 +567,9 @@ void Matriz_acoplamento_eletromecanico_U_V(void)
 
 		if (cc_p[n] == 0)
 		{
-			for (int i = 0; i < N; i++)
+			for (int i = 0; i < GL; i++)
 			{
-				for (int j = 0; j < N / 2.0; j++)
+				for (int j = 0; j < GLP; j++)
 				{
 					K_u_vp[i][j] = 0;
 				}
@@ -590,9 +587,9 @@ void Matriz_acoplamento_eletromecanico_U_V(void)
 			K_u_vp[3][1] = -constante * lp;
 		}
 
-		for (int i = 2 * n; i < 2 * n + 4; i++)
+		for (int i = 2 * n; i < 2 * n + GL; i++)
 		{
-			for (int j = n; j < n + 2; j++)
+			for (int j = n; j < n + GLP; j++)
 			{
 				K_u_v[i][j] += K_u_vp[i - 2 * n][j - n];
 			}
@@ -602,9 +599,9 @@ void Matriz_acoplamento_eletromecanico_U_V(void)
 /***********************************************************************/
 void Matriz_acoplamento_eletromecanico_V_U(void)
 {
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < NGL; i++)
 	{
-		for (int j = 0; j < N / 2.0; j++)
+		for (int j = 0; j < GLP; j++)
 		{
 			K_v_u[j][i] = K_u_v[i][j];
 		}
@@ -613,9 +610,9 @@ void Matriz_acoplamento_eletromecanico_V_U(void)
 /***********************************************************************/
 void Matriz_acoplamento_eletromecanico_V_V(void)
 {
-	for (int i = 0; i < N / 2.0; i++)
+	for (int i = 0; i < GLPT; i++)
 	{
-		for (int j = 0; j < N / 2; j++)
+		for (int j = 0; j < GLPT; j++)
 		{
 			K_v_v[i][j] = 0.0;
 		}
@@ -627,9 +624,9 @@ void Matriz_acoplamento_eletromecanico_V_V(void)
 
 		if (cc_p[n] == 0)
 		{
-			for (int i = 0; i < N / 2.0; i++)
+			for (int i = 0; i < GLPT; i++)
 			{
-				for (int j = 0; j < N / 2.0; j++)
+				for (int j = 0; j < GLPT; j++)
 				{
 					K_v_vp[i][j] = 0;
 				}
@@ -643,9 +640,9 @@ void Matriz_acoplamento_eletromecanico_V_V(void)
 			K_v_vp[1][1] = constante;
 		}
 
-		for (int i = n; i < n + 2; i++)
+		for (int i = n; i < n + GLP; i++)
 		{
-			for (int j = n; j < n + 2; j++)
+			for (int j = n; j < n + GLP; j++)
 			{
 				K_v_v[i][j] += K_v_vp[i - n][j - n];
 			}
@@ -655,11 +652,11 @@ void Matriz_acoplamento_eletromecanico_V_V(void)
 /***********************************************************************/
 void Matriz_M_geral(void)
 {
-	for (int i = 0; i < (N + N / 2); i++)
+	for (int i = 0; i < NGLT; i++)
 	{
-		for (int j = 0; j < (N + N / 2); j++)
+		for (int j = 0; j < NGLT; j++)
 		{
-			if (i < N && j < N)
+			if (i < NGL && j < NGL)
 			{
 				M_G[i][j] = M[i][j];
 			}
@@ -673,25 +670,25 @@ void Matriz_M_geral(void)
 /***********************************************************************/
 void Matriz_K_geral(void)
 {
-	for (int i = 0; i < (N + N / 2.0); i++)
+	for (int i = 0; i < NGLT; i++)
 	{
-		for (int j = 0; j < (N + N / 2.0); j++)
+		for (int j = 0; j < NGLT; j++)
 		{
-			if (i < N && j < N)
+			if (i < NGL && j < NGL)
 			{
 				K_G[i][j] = K[i][j];
 			}
-			else if (i < N && j >= N)
+			else if (i < NGL && j >= NGL)
 			{
-				K_G[i][j] = K_u_v[i][j - N];
+				K_G[i][j] = K_u_v[i][j - NGL];
 			}
-			else if (i >= N && j < N)
+			else if (i >= NGL && j < NGL)
 			{
-				K_G[i][j] = K_v_u[i - N][j];
+				K_G[i][j] = K_v_u[i - NGL][j];
 			}
-			else if (i >= N && j >= N)
+			else if (i >= NGL && j >= NGL)
 			{
-				K_G[i][j] = K_v_v[i - N][j - N];
+				K_G[i][j] = K_v_v[i - NGL][j - NGL];
 			}
 		}
 	}
@@ -699,29 +696,32 @@ void Matriz_K_geral(void)
 /***********************************************************************/
 void MatrizC(void)
 {
+	double alfa = 1e-6;
+	double mi = 0;
+
 	/* montagem da matriz massa*/
-	for (int i = 0; i < N + N / 2.0; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
-		for (int j = 0; j < N + N / 2.0; j++)
+		for (int j = 0; j < NGLT; j++)
 		{
-			C[i][j] = 0 * M_G[i][j] + 0.000001 * K_G[i][j];
+			C[i][j] = mi * M_G[i][j] + alfa * K_G[i][j];
 		}
 	}
 }
 /***********************************************************************/
 void CondicoesContorno(void)
 {
-	for (int i = 0; i < N + N / 2.0; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		if (cc[i] == 0)
 		{
-			for (int j = 0; j < N + N / 2.0; j++)
+			for (int j = 0; j < NGLT; j++)
 			{
 				K_G[i][j] = 0;
 				M_G[i][j] = 0;
 				C[i][j] = 0;
 			}
-			for (int k = 0; k < N + N / 2.0; k++)
+			for (int k = 0; k < NGLT; k++)
 			{
 				K_G[k][i] = 0;
 				M_G[k][i] = 0;
@@ -732,13 +732,13 @@ void CondicoesContorno(void)
 
 	int count1 = 0, count2 = 0;
 
-	for (int i = 0; i < N + N / 2.0; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		count2 = 0;
 
 		if (cc[i] == 1)
 		{
-			for (int j = 0; j < N + N / 2.0; j++)
+			for (int j = 0; j < NGLT; j++)
 			{
 				if (cc[j] == 1)
 				{
@@ -759,7 +759,7 @@ void CondicoesContorno1(void)
 {
 	int count1 = 0;
 
-	for (int i = 0; i < N + N / 2.0; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		if (cc[i] == true)
 		{
@@ -771,9 +771,9 @@ void CondicoesContorno1(void)
 /***********************************************************************/
 void RigidezEquivalente(void)
 {
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		for (int j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
 			P1[i][j] = a0 * M_cc[i][j] + a1 * C_cc[i][j] + K_cc[i][j];
 		}
@@ -782,12 +782,9 @@ void RigidezEquivalente(void)
 /***********************************************************************/
 void MatrizP2a(void)
 {
-	int i, j;
-	long double soma, soma1;
-
-	for (i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		for (j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
 			P2a[i][j] = a0 * M_cc[i][j] + a1 * C_cc[i][j];
 		}
@@ -796,12 +793,11 @@ void MatrizP2a(void)
 /***********************************************************************/
 void MatrizP3a(void)
 {
-	int i, j;
 	long double soma, soma1;
 
-	for (i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		for (j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
 			P3a[i][j] = a2 * M_cc[i][j] + a4 * C_cc[i][j];
 		}
@@ -810,12 +806,9 @@ void MatrizP3a(void)
 /***********************************************************************/
 void MatrizP4a(void)
 {
-	int i, j;
-	long double soma;
-
-	for (i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		for (j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
 			P4a[i][j] = a3 * M_cc[i][j] + a5 * C_cc[i][j];
 		}
@@ -824,13 +817,11 @@ void MatrizP4a(void)
 /***********************************************************************/
 void MatrizP2(void)
 {
-	long double soma;
-
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		soma = 0;
+		long double soma = 0;
 
-		for (int j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
 			soma += P2a[i][j] * y_ant[j];
 		}
@@ -841,13 +832,11 @@ void MatrizP2(void)
 /***********************************************************************/
 void MatrizP3(void)
 {
-	long double soma;
-
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		soma = 0;
+		long double soma = 0;
 
-		for (int j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
 			soma += P3a[i][j] * vel_ant[j];
 		}
@@ -860,11 +849,11 @@ void MatrizP4(void)
 {
 	long double soma;
 
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
 		soma = 0;
 
-		for (int j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
 			soma += P4a[i][j] * acel_ant[j];
 		}
@@ -875,7 +864,7 @@ void MatrizP4(void)
 /***********************************************************************/
 void MatrizP5(void)
 {
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
 		P5[i] = fa[i] + P2[i] + P3[i] + P4[i];
 	}
@@ -884,13 +873,15 @@ void MatrizP5(void)
 void Elim_Gauss(void)
 {
 	long double P1inv[CCT][CCT];
-	long double pivot, p, aux;
+   long double matriz[CCT][CCT];
+	long double pivot = 0, p = 0, aux = 0;
 	int i, j, k, l;
 
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		for (int j = 0; j < N2; j++)
+		for (int j = 0; j < CCT; j++)
 		{
+         matriz[i][j] = P1[i][j];
 			if (i == j)
 			{
 				P1inv[i][j] = 1;
@@ -903,46 +894,48 @@ void Elim_Gauss(void)
 	}
 
 	// Triangularização
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < CCT; i++)
 	{
-		pivot = P1[i][i];
+		pivot = matriz[i][i];
 
-		for (int l = 0; l < N2; l++)
+		for (int l = 0; l < CCT; l++)
 		{
-			P1[i][l] = P1[i][l] / pivot;
+			matriz[i][l] = matriz[i][l] / pivot;
 			P1inv[i][l] = P1inv[i][l] / pivot;
 		}
 
-		for (int k = i + 1; k < N2; k++)
+		for (int k = i + 1; k < CCT; k++)
 		{
-			p = P1[k][i];
+			p = matriz[k][i];
 
-			for (int j = 0; j < N2; j++)
+			for (int j = 0; j < CCT; j++)
 			{
-				P1[k][j] = P1[k][j] - (p * P1[i][j]);
+				matriz[k][j] = matriz[k][j] - (p * matriz[i][j]);
 				P1inv[k][j] = P1inv[k][j] - (p * P1inv[i][j]);
 			}
 		}
 	}
 
 	// Retrosubstituição
-	for (int i = N2 - 1; i >= 0; i--)
+	for (int i = CCT - 1; i >= 0; i--)
 	{
 		for (int k = i - 1; k >= 0; k--)
 		{
-			p = P1[k][i];
+			p = matriz[k][i];
 
-			for (int j = N2 - 1; j >= 0; j--)
+			for (int j = CCT - 1; j >= 0; j--)
 			{
-				P1[k][j] = P1[k][j] - (p * P1[i][j]);
+				matriz[k][j] = matriz[k][j] - (p * matriz[i][j]);
 				P1inv[k][j] = P1inv[k][j] - (p * P1inv[i][j]);
 			}
 		}
 	}
 
-	for (int i = 0; i < N2; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < N2; j++)
+		long double aux = 0;
+
+		for (int j = 0; j < 4; j++)
 		{
 			aux += P1inv[i][j] * P5[j];
 		}
@@ -950,6 +943,71 @@ void Elim_Gauss(void)
 		y_equivalente[i] = aux;
 	}
 }
+/********************************************************************/
+void ImprimirMatrizesEquivalentes(void)
+{
+	FILE* matrizes_resultantes;
+
+	matrizes_resultantes = fopen("matrizes_resultantes.txt", "w");
+
+	// Matriz rigidez equivalente
+	fprintf(matrizes_resultantes, "P1: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes_resultantes, "{");
+		for (int j = 0; j < CCT; j++)
+		{
+			fprintf(matrizes_resultantes, "%Lg, ", P1[i][j]);
+		}
+		fprintf(matrizes_resultantes, "},");
+	}
+	fprintf(matrizes_resultantes, "}");
+
+	// Matriz força equivalente
+	fprintf(matrizes_resultantes, "\nP5: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(matrizes_resultantes, "%Lg, ", P5[i]);
+	}
+	fprintf(matrizes_resultantes, "}");
+
+	fclose(matrizes_resultantes);
+}
+/***********************************************************************/
+
+void ImprimirResultados(void)
+{
+	FILE* resultados;
+
+	resultados = fopen("matrizes_resultantes2.txt", "w");
+
+	// Matriz descolamento
+	fprintf(resultados, "\ny: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(resultados, "%Lf, ", y[i]);
+	}
+	fprintf(resultados, "}");
+
+	// Matriz velocidade
+	fprintf(resultados, "\nvel: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(resultados, "%Lf, ", vel[i]);
+	}
+	fprintf(resultados, "}");
+
+	// Matriz aceleração
+	fprintf(resultados, "\nacel: {");
+	for (int i = 0; i < CCT; i++)
+	{
+		fprintf(resultados, "%Lf, ", acel[i]);
+	}
+	fprintf(resultados, "}");
+
+	fclose(resultados);
+}
+
 /***********************************************************************/
 void solucao(void)
 {
@@ -960,7 +1018,7 @@ void solucao(void)
 	{
 		for (int jn = 0; jn < nm; jn++)
 		{
-			for (int i = 0; i < N; i++)
+			for (int i = 0; i < NGLT; i++)
 			{
 				f[i] = f_max[i] * cos(W * t);
 			}
@@ -973,7 +1031,7 @@ void solucao(void)
 				{
 					fprintf(output, "%Lf\t %Lf\t", W, t);
 
-					for (int i = 0; i < N; i++)
+					for (int i = 0; i < CCT; i++)
 					{
 						fprintf(output, "%Lf\f", y[i]);
 					}
@@ -987,87 +1045,30 @@ void solucao(void)
 			MatrizP4();
 			MatrizP5();
 
-			/******************************************************/
-			FILE* matrizes_resultantes;
-
-			matrizes_resultantes = fopen("matrizes_resultantes.txt", "w");
-
-			// Matriz rigidez equivalente
-			fprintf(matrizes_resultantes, "P1: {");
-			for (int i = 0; i < CCT; i++)
-			{
-				fprintf(matrizes_resultantes, "{");
-				for (int j = 0; j < CCT; j++)
-				{
-					fprintf(matrizes_resultantes, "%Lg, ", P1[i][j]);
-				}
-				fprintf(matrizes_resultantes, "},");
-			}
-			fprintf(matrizes_resultantes, "}");
-
-			// Matriz força equivalente
-			fprintf(matrizes_resultantes, "\nP5: {");
-			for (int i = 0; i < CCT; i++)
-			{
-				fprintf(matrizes_resultantes, "%Lg, ", P5[i]);
-			}
-			fprintf(matrizes_resultantes, "}");
-
-			fclose(matrizes_resultantes);
-			/******************************************************/
+			ImprimirMatrizesEquivalentes();
 
 			Elim_Gauss();
 
-			for (int i = 0; i < N2; i++)
+			for (int i = 0; i < CCT; i++)
 			{
 				y[i] = y_equivalente[i];
 			}
 
-			for (int i = 0; i < N2; i++)
+			for (int i = 0; i < CCT; i++)
 			{
 				acel[i] = a0 * (y[i] - y_ant[i]) - a2 * vel_ant[i] - a3 * acel_ant[i];
 			}
 
-			for (int i = 0; i < N2; i++)
+			for (int i = 0; i < CCT; i++)
 			{
 				vel[i] = vel_ant[i] + a6 * acel_ant[i] + a7 * acel[i];
 			}
 
-			/*******************************************************************/
-			FILE* matrizes_resultantes2;
-
-			matrizes_resultantes2 = fopen("matrizes_resultantes2.txt", "w");
-
-			// Matriz descolamento
-			fprintf(matrizes_resultantes2, "\ny: {");
-			for (int i = 0; i < CCT; i++)
-			{
-				fprintf(matrizes_resultantes2, "%Lf, ", y[i]);
-			}
-			fprintf(matrizes_resultantes2, "}");
-
-			// Matriz velocidade
-			fprintf(matrizes_resultantes2, "\nvel: {");
-			for (int i = 0; i < CCT; i++)
-			{
-				fprintf(matrizes_resultantes2, "%Lf, ", vel[i]);
-			}
-			fprintf(matrizes_resultantes2, "}");
-
-			// Matriz aceleração
-			fprintf(matrizes_resultantes2, "\nacel: {");
-			for (int i = 0; i < CCT; i++)
-			{
-				fprintf(matrizes_resultantes2, "%Lf, ", acel[i]);
-			}
-			fprintf(matrizes_resultantes2, "}");
-
-			fclose(matrizes_resultantes2);
-			/*******************************************************************/
+			ImprimirResultados();
 
 			t = t + dt;
 
-			for (int i = 0; i < N2; i++)
+			for (int i = 0; i < CCT; i++)
 			{
 				y_ant[i] = y[i];
 				vel_ant[i] = vel[i];
@@ -1327,10 +1328,10 @@ void ImprimirMatrizes(void)
 
 	// Matriz massa geral
 	fprintf(matrizes, "\nK_G: {");
-	for (int i = 0; i < NGL2; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		fprintf(matrizes, "{");
-		for (int j = 0; j < NGL2; j++)
+		for (int j = 0; j < NGLT; j++)
 		{
 			fprintf(matrizes, "%Lg, ", K_G[i][j]);
 		}
@@ -1340,10 +1341,10 @@ void ImprimirMatrizes(void)
 
 	// Matriz rigidez geral
 	fprintf(matrizes, "\nM_G: {");
-	for (int i = 0; i < NGL2; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		fprintf(matrizes, "{");
-		for (int j = 0; j < NGL2; j++)
+		for (int j = 0; j < NGLT; j++)
 		{
 			fprintf(matrizes, "%Lg, ", M_G[i][j]);
 		}
@@ -1353,10 +1354,10 @@ void ImprimirMatrizes(void)
 
 	// Matriz amortecimento
 	fprintf(matrizes, "\nC: {");
-	for (int i = 0; i < NGL2; i++)
+	for (int i = 0; i < NGLT; i++)
 	{
 		fprintf(matrizes, "{");
-		for (int j = 0; j < NGL2; j++)
+		for (int j = 0; j < NGLT; j++)
 		{
 			fprintf(matrizes, "%Lg, ", C[i][j]);
 		}
@@ -1405,12 +1406,29 @@ void ImprimirMatrizes(void)
 
 	fclose(matrizes);
 }
+/*******************************************************************/
+void ImprimirConstantesDeIntegracao(void)
+{
+	FILE* constantes;
+
+	constantes = fopen("constantes-de-integracao.txt", "w");
+
+	fprintf(constantes, "a0 = %Lg", a0);
+	fprintf(constantes, "\na1 = %Lg", a1);
+	fprintf(constantes, "\na2 = %Lg", a2);
+	fprintf(constantes, "\na3 = %Lg", a3);
+	fprintf(constantes, "\na4 = %Lg", a4);
+	fprintf(constantes, "\na5 = %Lg", a5);
+	fprintf(constantes, "\na6 = %Lg", a6);
+	fprintf(constantes, "\na7 = %Lg", a7);
+
+	fclose(constantes);
+}
 
 /***********************************************************************/
 /* Programa Principal */
 main()
 {
-	int i, jb, jn, jp;
 	PI = 4 * atan(1);            /*numero PI*/
 	alfa = 1.0 / 4.0;
 	gama = 1.0 / 2.0;
@@ -1421,20 +1439,7 @@ main()
 	output = fopen("LINEAR.dat", "w");			/* external filename */
 	frequencia = fopen("freq.dat", "w");
 
-	int cont = 0;
-	N = (nEl + 1) * gl;
-
-	for (i = 0; i < (N + N / 2.0); i++)
-	{
-		if (cc[i] == 0)
-		{
-			cont += 1;
-		}
-	}
-
-	N2 = ((N + N / 2.0) - cont);
-
-	// Matrizes Massa, Rigidez e Amortecimento (C)
+	// Matrizes Massa, Rigidez e Amortecimento
 	MatrizRigidez_estrutura();
 	MatrizRigidez_piezo();
 	MatrizMassa_estrutura();
@@ -1449,16 +1454,11 @@ main()
 
 	CondicoesContorno();
 
-	RigidezEquivalente();
-	MatrizP2a();
-	MatrizP3a();
-	MatrizP4a();
-
 	ImprimirMatrizes();
 
 	int nbif = (int)((Wf - Wi) / dW) + 1;
 
-	for (jb = 0; jb < nbif; jb++)
+	for (int jb = 0; jb < nbif; jb++)
 	{
 		W = Wi + (jb * dW);
 		printf("W = %g\n", W);
@@ -1474,9 +1474,11 @@ main()
 
 		if (t == 0)
 		{
-			for (i = 0; i < 3 * ((N + N / 2.0) - cont); i++)
+			for (int i = 0; i < CCT; i++)
 			{
 				y[i] = y_ant[i] = 0;
+				vel[i] = vel_ant[i] = 0;
+				acel[i] = acel_ant[i] = 0;
 			}
 		}
 
@@ -1488,6 +1490,13 @@ main()
 		a5 = (dt / 2) * ((gama / alfa) - 2);
 		a6 = dt * (1 - gama);
 		a7 = gama * dt;
+
+		ImprimirConstantesDeIntegracao();
+
+		RigidezEquivalente();
+		MatrizP2a();
+		MatrizP3a();
+		MatrizP4a();
 
 		solucao();
 	}

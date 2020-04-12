@@ -7,17 +7,17 @@ constante de elasticidade
 dimensao transversal da barra e do piezo
 25e-3 3e-3 25e-3 0.267e-3 0.5 0.5
 Condicoes contorno piezoeletrico
-0 1
+1 1
 modulo de elasticidade da estrutura
-2e11
-2e11
+70e9
+70e9
 modulo de elasticidade do piezoeletrico
 63e9
 63e9
 Vetor Forcamento
-0 0 100 0 0 0 0 0
+0 0 5 0 0 0 0 0
 Condicoes contorno
-0 1 1 1 0 1 0 1 1
+0 1 1 1 0 1 1 1 1
 numero de periodos
 0 100 30 1
 valor frequencia

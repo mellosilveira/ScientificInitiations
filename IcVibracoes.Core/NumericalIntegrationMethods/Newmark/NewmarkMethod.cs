@@ -85,21 +85,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
                 if (input.AngularFrequency != 0)
                 {
-                    input.DeltaTime = Math.PI * 2 / input.AngularFrequency / input.Parameter.PeriodDivision;
+                    input.DeltaTime = (Math.PI * 2 / input.AngularFrequency) / input.Parameter.PeriodDivision;
                 }
                 else
                 {
                     input.DeltaTime = Math.PI * 2 / input.Parameter.PeriodDivision;
                 }
 
-                a0 = 1 / (Constant.Beta * Math.Pow(input.DeltaTime, 2));
-                a1 = Constant.Gama / (Constant.Beta * input.DeltaTime);
-                a2 = 1 / (Constant.Beta * input.DeltaTime);
-                a3 = 1 / (2 * Constant.Beta) - 1;
-                a4 = (Constant.Gama / Constant.Beta) - 1;
-                a5 = (input.DeltaTime / 2) * ((Constant.Beta / Constant.Beta) - 2);
-                a6 = input.DeltaTime * (1 - Constant.Gama);
-                a7 = Constant.Gama * input.DeltaTime;
+                this.CalculateIngrationContants(input.DeltaTime);
 
                 try
                 {
@@ -277,6 +270,18 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             }
 
             return Task.FromResult(equivalentHardness);
+        }
+
+        public void CalculateIngrationContants(double deltaTime)
+        {
+            a0 = 1 / (Constant.Beta * Math.Pow(deltaTime, 2));
+            a1 = Constant.Gama / (Constant.Beta * deltaTime);
+            a2 = 1 / (Constant.Beta * deltaTime);
+            a3 = 1 / (2 * Constant.Beta) - 1;
+            a4 = (Constant.Gama / Constant.Beta) - 1;
+            a5 = (deltaTime / 2) * ((Constant.Gama / Constant.Beta) - 2);
+            a6 = deltaTime * (1 - Constant.Gama);
+            a7 = Constant.Gama* deltaTime;
         }
     }
 }

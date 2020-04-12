@@ -6,6 +6,7 @@ using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Methods.AuxiliarOperations;
 using Moq;
+using System;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
@@ -93,6 +94,7 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             this._newmarkMethodInput = new NewmarkMethodInput
             {
                 Parameter = this._methodParameter,
+                AngularFrequency = this._methodParameter.InitialAngularFrequency,
                 NumberOfTrueBoundaryConditions = numberOfrueBoundaryConditions,
                 Force = this._force,
                 Mass = this._mass,
@@ -109,21 +111,54 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             this._acceleration = new double[numberOfrueBoundaryConditions];
 
             this._equivalentHardness = new double[numberOfrueBoundaryConditions, numberOfrueBoundaryConditions]
-            {
-                { 90, -270, 45, 0, 0, 0 },
-                { -270, 2528.78, 92.1953, 362.195, 0, 0 },
-                { 45, 92.1953, 210.732, 60.3659, 1.60557e-07, -1.60557e-07 },
-                { 0, 362.195, 60.3659, 120.732, -1.60557e-07, 1.60557e-07 },
-                { 0, 0, 1.60557e-07, -1.60557e-07, -6.8633e-07, 6.8633e-07 },
-                { 0, 0, -1.60557e-07, 1.60557e-07, 6.8633e-07, -6.8633e-07 }
+            { 
+                { 90.179, -268.85, 44.8676, 0, 0, 0 },
+                { -268.85, 2589.02, 92.5356, 360.847, 0, 0 },
+                { 44.8676, 92.5356, 211.121, 60.2106, 1.6056e-07, -1.6056e-07 },
+                { 0, 360.847, 60.2106, 120.942, -1.6056e-07, 1.6056e-07 },
+                { 0, 0, 1.6056e-07, -1.6056e-07, -6.86341e-07, 6.86341e-07 },
+                { 0, 0, -1.6056e-07, 1.6056e-07, 6.86341e-07, -6.86341e-07 }
             };
 
             this._equivalentForce = new double[numberOfrueBoundaryConditions] { 0, 100, 0, 0, 0, 0, };
         }
 
+        [Fact(DisplayName = @"Feature: CalculateIngrationContants | Given: Valid delta time. | When: Invoke. | Should: Execute correctly.")]
+        public void CalculateIngrationContants_Should_ExecuteCorrectly()
+        {
+            // Arrange
+            double expected_a0 = 253.303;
+            double expected_a1 = 15.9155;
+            double expected_a2 = 31.831;
+            double expected_a3 = 1;
+            double expected_a4 = 1;
+            double expected_a5 = 0;
+            double expected_a6 = 0.0628319;
+            double expected_a7 = 0.0628319;
+
+            double deltaTime = (Math.PI * 2 / this._newmarkMethodInput.AngularFrequency) / this._newmarkMethodInput.Parameter.PeriodDivision;
+
+            // Act
+            this._operation.CalculateIngrationContants(deltaTime);
+
+            // Assert
+            this._operation.a0.Should().BeApproximately(expected_a0, precision: 5e-4);
+            this._operation.a1.Should().BeApproximately(expected_a1, precision: 5e-5);
+            this._operation.a2.Should().BeApproximately(expected_a2, precision: 5e-4);
+            this._operation.a3.Should().Be(expected_a3);
+            this._operation.a4.Should().Be(expected_a4);
+            this._operation.a5.Should().Be(expected_a5);
+            this._operation.a6.Should().BeApproximately(expected_a6, precision: 5e-8);
+            this._operation.a7.Should().BeApproximately(expected_a7, precision: 5e-8);
+        }
+
         [Fact(DisplayName = @"Feature: CalculateEquivalentHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculateEquivalentHardness_Should_ExecuteCorrectly()
         {
+            // Arrange
+            double deltaTime = (Math.PI * 2 / this._newmarkMethodInput.AngularFrequency) / this._newmarkMethodInput.Parameter.PeriodDivision;
+            this._operation.CalculateIngrationContants(deltaTime);
+
             // Act
             var result = await this._operation.CalculateEquivalentHardness(this._mass, this._hardness, this._damping, numberOfrueBoundaryConditions);
 
@@ -140,6 +175,10 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
         [Fact(DisplayName = @"Feature: CalculateEquivalentForce | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
         public async void CalculateEquivalentForce_Should_ExecuteCorrectly()
         {
+            // Arrange
+            double deltaTime = (Math.PI * 2 / this._newmarkMethodInput.AngularFrequency) / this._newmarkMethodInput.Parameter.PeriodDivision;
+            this._operation.CalculateIngrationContants(deltaTime);
+
             // Act
             var result = await this._operation.CalculateEquivalentForce(this._newmarkMethodInput, this._previousDisplacement, this._previousVelocity, this._previousAcceleration);
 

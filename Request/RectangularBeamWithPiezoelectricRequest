@@ -48,5 +48,5 @@
     "InitialAngularFrequency": 30
   },
   "Author": "Bruno Silveira",
-  "AnalysisExplanation": "Vibration analysis in a single fixed beam with piezoelectric in its end with a pulsative force (Value: 5N, frequency: 30Hz) in the end."
+  "analysisType": "Beam with piezoelectric."
 }

@@ -389,10 +389,18 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         public async void CalculateDamping_Should_ExecuteCorrectly()
         {
             // Arrange
+            double[,] mass = await this._operation.CalculateMass(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            double[,] equivalentMass = await this._operation.CalculateEquivalentMass(mass, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+
+            double[,] hardness = await this._operation.CalculateHardness(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            double[,] piezoelectricElectromechanicalCoupling = await this._operation.CalculatePiezoelectricElectromechanicalCoupling(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            double[,] piezoelectricCapacitance = await this._operation.CalculatePiezoelectricCapacitance(this._beamWithPiezoelectric);
+            double[,] equivalentHardness = await this._operation.CalculateEquivalentHardness(hardness, piezoelectricElectromechanicalCoupling, piezoelectricCapacitance, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+
             this._precision = 5e-3;
 
             // Act
-            var result = await this._operation.CalculateDamping(this._equivalentMassMatrix, this._equivalentHardnessMatrix);
+            var result = await this._operation.CalculateDamping(equivalentMass, equivalentHardness);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; i++)
