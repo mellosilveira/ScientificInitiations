@@ -17,10 +17,5 @@ namespace IcVibracoes.DataContracts
         /// A simple analysis explanation .
         /// </summary>
         public string AnalysisExplanation { get; set; }
-
-        /// <summary>
-        /// The analysis results for all angular frequency analyzed.
-        /// </summary>
-        public List<Analysis> AnalysisResults { get; set; }
     }
 }

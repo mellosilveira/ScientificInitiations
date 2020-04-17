@@ -5,7 +5,6 @@ using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Methods.AuxiliarOperations;
-using Moq;
 using System;
 using Xunit;
 

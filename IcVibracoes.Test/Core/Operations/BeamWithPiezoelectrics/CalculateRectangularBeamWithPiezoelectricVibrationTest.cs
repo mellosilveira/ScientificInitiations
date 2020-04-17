@@ -11,10 +11,10 @@ using IcVibracoes.Core.Mapper.Profiles.Rectangular;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Characteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.Core.Operations.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
-using IcVibracoes.DataContracts.CalculateVibration.BeamWithPiezoelectric;
+using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
 using IcVibracoes.Methods.AuxiliarOperations;
 using System.Collections.Generic;
 using Xunit;
@@ -54,7 +54,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
         private readonly NewmarkMethodParameter _methodParameter;
         private readonly NewmarkMethodInput _newmarkMethodInput;
         private readonly CalculateRectangularBeamWithPiezoelectricVibration _operation;
-        private readonly CalculateBeamWithPiezoelectricVibrationRequest<RectangularProfile> _request;
+        private readonly BeamWithPiezoelectricRequest<RectangularProfile> _request;
 
         private double _precision;
 
@@ -121,7 +121,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
                 InitialAngularFrequency = 0.5
             };
 
-            this._request = new CalculateBeamWithPiezoelectricVibrationRequest<RectangularProfile>
+            this._request = new BeamWithPiezoelectricRequest<RectangularProfile>
             {
                 AnalysisType = "Teste",
                 Author = "Teste",

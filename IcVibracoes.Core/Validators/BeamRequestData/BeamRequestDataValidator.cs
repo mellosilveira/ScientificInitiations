@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.DataContracts;
-using IcVibracoes.DataContracts.CalculateVibration;
+using IcVibracoes.DataContracts.FiniteElements;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.BeamRequestData
@@ -13,7 +13,7 @@ namespace IcVibracoes.Core.Validators.BeamRequestData
     /// <typeparam name="TProfile"></typeparam>
     public abstract class BeamRequestDataValidator<TBeamData, TProfile> : IBeamRequestDataValidator<TBeamData, TProfile>
         where TProfile : Profile, new()
-        where TBeamData : IBeamRequestData<TProfile>
+        where TBeamData : FiniteElementsRequestData<TProfile>
     {
         /// <summary>
         /// Validates the beam request data.
