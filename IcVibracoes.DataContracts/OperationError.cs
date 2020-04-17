@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IcVibracoes.DataContracts
+﻿namespace IcVibracoes.DataContracts
 {
     public sealed class OperationError
     {
