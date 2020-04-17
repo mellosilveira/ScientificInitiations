@@ -9,4 +9,11 @@
     <ProjectReference Include="..\IcVibracoes.DataContracts\IcVibracoes.DataContracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Operations\RigidBody\CalculateVibration\OneDegreeFreedom\" />
+    <Folder Include="Operations\RigidBody\CalculateVibration\TwoDegreesFreedom\" />
+    <Folder Include="Operations\RigidBody\CompareResults\OneDegreeFreedom\" />
+    <Folder Include="Operations\RigidBody\CompareResults\TwoDegreesFreedom\" />
+  </ItemGroup>
+
 </Project>

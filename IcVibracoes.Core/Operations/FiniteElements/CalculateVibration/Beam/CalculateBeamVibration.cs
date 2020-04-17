@@ -19,7 +19,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
     /// It's responsible to calculate the vibration in a beam.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamVibration<TProfile> : CalculateVibration<BeamRequest<TProfile>, BeamRequestData<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
+    public abstract class CalculateBeamVibration<TProfile> : CalculateVibration_FiniteElements<BeamRequest<TProfile>, BeamRequestData<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
         where TProfile : Profile, new()
     {
         private readonly IMappingResolver _mappingResolver;

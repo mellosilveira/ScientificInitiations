@@ -18,6 +18,11 @@ namespace IcVibracoes.DataContracts.RigidBody
         public List<double> DampingRatio { get; set; }
 
         /// <summary>
+        /// The force applied in the main object.
+        /// </summary>
+        public double Force { get; set; }
+
+        /// <summary>
         /// Initial displacement to the analysis.
         /// </summary>
         public double InitialDisplacement { get; set; }
