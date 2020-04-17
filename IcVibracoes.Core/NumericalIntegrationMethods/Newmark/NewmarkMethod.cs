@@ -6,8 +6,6 @@ using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.DataContracts;
 using IcVibracoes.Methods.AuxiliarOperations;
 using System;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
@@ -32,7 +30,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         private readonly INewmarkMethodValidator _validator;
 
         /// <summary>
-        /// Class construtor.
+        /// Class constructor.
         /// </summary>
         /// <param name="arrayOperation"></param>
         public NewmarkMethod(
@@ -40,9 +38,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             IAuxiliarOperation auxiliarOperation,
             INewmarkMethodValidator validator)
         {
-            this._arrayOperation = arrayOperation ?? throw new ArgumentNullException("", nameof(IArrayOperation));
-            this._auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException("", nameof(IAuxiliarOperation));
-            this._validator = validator ?? throw new ArgumentNullException("", nameof(INewmarkMethodValidator));
+            this._arrayOperation = arrayOperation ?? throw new ArgumentNullException(nameof(IArrayOperation), $"'{nameof(IArrayOperation)}' cannot be null in '{this.GetType().Name}'.");
+            this._auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException(nameof(IAuxiliarOperation), $"'{nameof(IAuxiliarOperation)}' cannot be null in '{this.GetType().Name}'.");
+            this._validator = validator ?? throw new ArgumentNullException(nameof(INewmarkMethodValidator), $"'{nameof(INewmarkMethodValidator)}' cannot be null in '{this.GetType().Name}'.");
         }
 
         /// <summary>
