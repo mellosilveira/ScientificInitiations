@@ -25,8 +25,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "programs in C", "programs in C", "{F12DE005-F3F9-4976-84AC-87C850BE83B4}"
 	ProjectSection(SolutionItems) = preProject
 		Programs in C\final version\dados_piezo.inp = Programs in C\final version\dados_piezo.inp
-		Programs in C\final version\NEWMARK_com_P2.CPP = Programs in C\final version\NEWMARK_com_P2.CPP
 		Programs in C\final version\Piezoeletrico_Newmark.CPP = Programs in C\final version\Piezoeletrico_Newmark.CPP
+		Programs in C\final version\runge_kutta_1gl.CPP = Programs in C\final version\runge_kutta_1gl.CPP
+		Programs in C\final version\runge_kutta_2gl.cpp = Programs in C\final version\runge_kutta_2gl.cpp
+		Programs in C\programapiezo\sem_piezo_15_04.cpp = Programs in C\programapiezo\sem_piezo_15_04.cpp
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{69DC91C4-15E5-46D3-A0D1-820C174221E8}"
