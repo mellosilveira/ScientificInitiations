@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace IcVibracoes.Methods.AuxiliarOperations
+namespace IcVibracoes.Core.AuxiliarOperations
 {
     /// <summary>
     /// It contains auxiliar operations to the solve specific problems in the project.
@@ -141,7 +141,7 @@ namespace IcVibracoes.Methods.AuxiliarOperations
                 path = Path.Combine(previousPath, "Solutions", $"{analysisType}_w0={Math.Round(initialAngularFrequency, 2)}_wf={finalAngularFrequency}_nEl={numberOfElements}.csv");
             }
 
-            if(File.Exists(path))
+            if (File.Exists(path))
             {
                 throw new IOException($"File already exist. File name: {Path.GetFileName(path)}.");
             }

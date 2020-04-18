@@ -1,16 +1,17 @@
 ﻿using IcVibracoes.Common.Classes;
 using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles;
-using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.Characteristics;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
-using IcVibracoes.Methods.AuxiliarOperations;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam

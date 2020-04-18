@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Beams;
 using System;
 using System.Threading.Tasks;
 

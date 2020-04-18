@@ -7,12 +7,12 @@ namespace IcVibracoes.DataContracts.FiniteElements
     /// It represents the request content of Finite Elements operations.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    /// <typeparam name="TBeamData"></typeparam>
-    public abstract class FiniteElementsRequest<TProfile, TBeamData> : OperationRequestBase
+    /// <typeparam name="TRequestData"></typeparam>
+    public abstract class FiniteElementsRequest<TProfile, TRequestData> : OperationRequestBase
         where TProfile : Profile, new()
-        where TBeamData : FiniteElementsRequestData<TProfile>
+        where TRequestData : FiniteElementsRequestData<TProfile>
     {
-        public TBeamData BeamData { get; set; }
+        public TRequestData BeamData { get; set; }
 
         public NewmarkMethodParameter MethodParameterData { get; set; }
     }

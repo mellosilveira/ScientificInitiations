@@ -1,4 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Rectangular;
@@ -6,7 +7,6 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles.Rectangular;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
-using IcVibracoes.Methods.AuxiliarOperations;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Rectangular
 {

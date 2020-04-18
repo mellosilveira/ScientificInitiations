@@ -1,4 +1,4 @@
-﻿namespace IcVibracoes.Core.Models.Characteristics
+﻿namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
     /// <summary>
     /// It represents the geometric property used for calculations.

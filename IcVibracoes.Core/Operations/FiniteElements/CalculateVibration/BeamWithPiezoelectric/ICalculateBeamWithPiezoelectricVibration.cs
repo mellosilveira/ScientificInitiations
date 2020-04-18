@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
 

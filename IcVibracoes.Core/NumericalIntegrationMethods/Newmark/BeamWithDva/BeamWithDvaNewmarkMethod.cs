@@ -1,7 +1,7 @@
-﻿using IcVibracoes.Core.Calculator.ArrayOperations;
+﻿using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.Methods.AuxiliarOperations;
 using System;
 using System.Threading.Tasks;
 

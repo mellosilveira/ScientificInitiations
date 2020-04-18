@@ -1,6 +1,7 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.Characteristics;
+using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using System;
 using System.Threading.Tasks;
 

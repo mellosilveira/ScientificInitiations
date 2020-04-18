@@ -1,7 +1,7 @@
 ﻿using System;
 using static IcVibracoes.Common.Enum;
 
-namespace IcVibracoes.Core.Models.Characteristics
+namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
     /// <summary>
     /// It contains the necessary informations about whatever material.

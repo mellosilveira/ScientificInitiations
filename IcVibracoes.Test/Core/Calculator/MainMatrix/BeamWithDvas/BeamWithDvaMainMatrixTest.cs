@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva;
-using IcVibracoes.Core.Models.Characteristics;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using Moq;
 using Xunit;
 

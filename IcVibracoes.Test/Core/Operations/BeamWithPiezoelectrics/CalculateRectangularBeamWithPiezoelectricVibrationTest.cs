@@ -2,20 +2,21 @@
 using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Classes;
 using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular;
 using IcVibracoes.Core.Mapper.Profiles.Rectangular;
-using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.Characteristics;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
-using IcVibracoes.Methods.AuxiliarOperations;
 using System.Collections.Generic;
 using Xunit;
 

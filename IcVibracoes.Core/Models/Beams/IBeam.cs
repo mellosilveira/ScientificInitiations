@@ -1,7 +1,8 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models.Characteristics;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 
-namespace IcVibracoes.Core.Models
+namespace IcVibracoes.Core.Models.Beams
 {
     /// <summary>
     /// It represents the beam abstract object.

@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models.Characteristics;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Mapper.Profiles

@@ -1,11 +1,11 @@
 ﻿using IcVibracoes.Common.Classes;
 using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.DTO.Input;
-using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
-using IcVibracoes.Methods.AuxiliarOperations;
 using System;
 using System.Threading.Tasks;
 

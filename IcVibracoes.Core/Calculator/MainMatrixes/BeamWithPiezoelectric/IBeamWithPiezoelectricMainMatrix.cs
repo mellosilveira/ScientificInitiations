@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
-using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Beams;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric

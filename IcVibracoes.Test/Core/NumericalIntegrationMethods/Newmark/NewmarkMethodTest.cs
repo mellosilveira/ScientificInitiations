@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using IcVibracoes.Common.Classes;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.Methods.AuxiliarOperations;
 using System;
 using Xunit;
 

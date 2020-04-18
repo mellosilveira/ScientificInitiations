@@ -1,4 +1,5 @@
 using IcVibracoes.Calculator.GeometricProperties;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
@@ -22,7 +23,6 @@ using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiez
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
-using IcVibracoes.Methods.AuxiliarOperations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.DataContracts.FiniteElements;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration

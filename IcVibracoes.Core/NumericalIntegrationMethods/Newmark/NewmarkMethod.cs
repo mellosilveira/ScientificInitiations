@@ -1,10 +1,10 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.DataContracts.FiniteElements;
-using IcVibracoes.Methods.AuxiliarOperations;
 using System;
 using System.Threading.Tasks;
 

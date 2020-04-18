@@ -2,7 +2,9 @@
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.Characteristics;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using Moq;
 using Xunit;
 

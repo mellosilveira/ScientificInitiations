@@ -1,11 +1,11 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.Profiles.Circular;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
-using IcVibracoes.Methods.AuxiliarOperations;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Circular
 {

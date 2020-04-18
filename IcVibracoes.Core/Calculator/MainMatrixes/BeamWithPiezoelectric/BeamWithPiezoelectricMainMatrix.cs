@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.Beams;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
