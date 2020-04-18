@@ -16,6 +16,8 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
         private const int degreesFreedomMaximum = 6;
         private const int numberOfrueBoundaryConditions = 6;
 
+        private double _precision;
+        
         private readonly IAuxiliarOperation _auxiliarOperation;
         private readonly INewmarkMethodValidator _newmarkMethodValidator;
         private readonly IArrayOperation _arrayOperation;
@@ -23,7 +25,6 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
 
         private readonly NewmarkMethodParameter _methodParameter;
         private readonly NewmarkMethodInput _newmarkMethodInput;
-        private readonly double _precision;
         private readonly double[] _previousDisplacement;
         private readonly double[] _previousVelocity;
         private readonly double[] _previousAcceleration;
@@ -157,6 +158,8 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             // Arrange
             double deltaTime = (Math.PI * 2 / this._newmarkMethodInput.AngularFrequency) / this._newmarkMethodInput.Parameter.PeriodDivision;
             this._operation.CalculateIngrationContants(deltaTime);
+
+            this._precision = 5e-3;
 
             // Act
             var result = await this._operation.CalculateEquivalentHardness(this._mass, this._hardness, this._damping, numberOfrueBoundaryConditions);

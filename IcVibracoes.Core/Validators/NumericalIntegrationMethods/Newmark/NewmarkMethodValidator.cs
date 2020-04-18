@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Core.DTO.Input;
-using IcVibracoes.DataContracts;
+using IcVibracoes.DataContracts.FiniteElements;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
@@ -16,7 +16,7 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public async Task<bool> ValidateParameters(NewmarkMethodInput input, OperationResponseBase response)
+        public async Task<bool> ValidateParameters(NewmarkMethodInput input, FiniteElementsResponse response)
         {
             int massLength = input.Mass.Length;
             int hardnessLength = input.Hardness.Length;
@@ -67,7 +67,7 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         /// <param name="mass"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        protected Task<bool> ValidateMass(double[,] mass, uint numberOfTrueBoundaryConditions, OperationResponseBase response)
+        protected Task<bool> ValidateMass(double[,] mass, uint numberOfTrueBoundaryConditions, FiniteElementsResponse response)
         {
             if (mass == null)
             {
@@ -103,7 +103,7 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        protected Task<bool> ValidadeHardness(double[,] hardness, uint numberOfTrueBoundaryConditions, OperationResponseBase response)
+        protected Task<bool> ValidadeHardness(double[,] hardness, uint numberOfTrueBoundaryConditions, FiniteElementsResponse response)
         {
             if (hardness == null)
             {
@@ -139,7 +139,7 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        protected Task<bool> ValidadeDamping(double[,] damping, uint numberOfTrueBoundaryConditions, OperationResponseBase response)
+        protected Task<bool> ValidadeDamping(double[,] damping, uint numberOfTrueBoundaryConditions, FiniteElementsResponse response)
         {
             if (damping == null)
             {
@@ -175,7 +175,7 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        protected Task<bool> ValidateForce(double[] force, uint numberOfTrueBoundaryConditions, OperationResponseBase response)
+        protected Task<bool> ValidateForce(double[] force, uint numberOfTrueBoundaryConditions, FiniteElementsResponse response)
         {
             if (force == null)
             {

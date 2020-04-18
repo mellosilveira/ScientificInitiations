@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Common.Profiles;
-using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElements;
 using System.Threading.Tasks;
 
@@ -21,7 +20,7 @@ namespace IcVibracoes.Core.Validators.BeamRequestData
         /// <param name="beamData"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public virtual Task<bool> ValidateBeamData(TBeamData beamData, OperationResponseBase response)
+        public virtual Task<bool> ValidateBeamData(TBeamData beamData, FiniteElementsResponse response)
         {
             if (beamData.NumberOfElements < 1)
             {

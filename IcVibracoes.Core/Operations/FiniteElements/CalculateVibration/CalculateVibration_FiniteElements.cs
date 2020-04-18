@@ -18,7 +18,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
     /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
-    public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam> : OperationBase<TRequest, FiniteElementsResponse>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam>
+    public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam> : OperationBase<TRequest, FiniteElementsResponse, FiniteElementsResponseData>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam>
         where TProfile : Profile, new()
         where TRequestData : FiniteElementsRequestData<TProfile>, new()
         where TRequest : FiniteElementsRequest<TProfile, TRequestData>

@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.DTO.Input;
-using IcVibracoes.DataContracts;
+using IcVibracoes.DataContracts.FiniteElements;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
@@ -15,6 +15,6 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        Task<bool> ValidateParameters(NewmarkMethodInput input, OperationResponseBase response);
+        Task<bool> ValidateParameters(NewmarkMethodInput input, FiniteElementsResponse response);
     }
 }

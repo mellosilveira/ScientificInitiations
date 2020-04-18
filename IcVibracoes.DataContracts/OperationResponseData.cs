@@ -1,7 +1,4 @@
-﻿using IcVibracoes.Common.Classes;
-using System.Collections.Generic;
-
-namespace IcVibracoes.DataContracts
+﻿namespace IcVibracoes.DataContracts
 {
     /// <summary>
     /// It represents the 'data' content of all operation response.
@@ -14,7 +11,7 @@ namespace IcVibracoes.DataContracts
         public string Author { get; set; }
 
         /// <summary>
-        /// A simple analysis explanation .
+        /// A simple analysis explanation.
         /// </summary>
         public string AnalysisExplanation { get; set; }
     }

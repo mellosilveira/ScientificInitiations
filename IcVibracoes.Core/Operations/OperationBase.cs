@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations
 {
-    public abstract class OperationBase<TRequest, TResponse> : IOperationBase<TRequest, TResponse>
-        where TRequest: OperationRequestBase
-        where TResponse: OperationResponseBase, new() 
+    public abstract class OperationBase<TRequest, TResponse, TResponseData> : IOperationBase<TRequest, TResponse, TResponseData>
+        where TRequest : OperationRequestBase
+        where TResponse : OperationResponseBase<TResponseData>, new()
+        where TResponseData : OperationResponseData
     {
         public async Task<TResponse> Process(TRequest request)
         {
@@ -15,7 +16,7 @@ namespace IcVibracoes.Core.Operations
             try
             {
                 response = await ValidateOperation(request);
-                if(!response.Success)
+                if (!response.Success)
                 {
                     return response;
                 }

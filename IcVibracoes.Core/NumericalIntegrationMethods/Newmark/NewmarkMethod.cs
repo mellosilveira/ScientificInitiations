@@ -3,7 +3,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.DataContracts;
+using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.Methods.AuxiliarOperations;
 using System;
 using System.Threading.Tasks;
@@ -50,7 +50,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="response"></param>
         /// <param name="analysisType"></param>
         /// <returns></returns>
-        public async Task CalculateResponse(NewmarkMethodInput input, OperationResponseBase response, string analysisType, uint numberOfElements)
+        public async Task CalculateResponse(NewmarkMethodInput input, FiniteElementsResponse response, string analysisType, uint numberOfElements)
         {
             if (!await this._validator.ValidateParameters(input, response))
             {

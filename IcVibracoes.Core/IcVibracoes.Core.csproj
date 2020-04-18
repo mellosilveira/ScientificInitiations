@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Operations\RigidBody\CalculateVibration\OneDegreeFreedom\" />
     <Folder Include="Operations\RigidBody\CalculateVibration\TwoDegreesFreedom\" />
     <Folder Include="Operations\RigidBody\CompareResults\OneDegreeFreedom\" />
     <Folder Include="Operations\RigidBody\CompareResults\TwoDegreesFreedom\" />

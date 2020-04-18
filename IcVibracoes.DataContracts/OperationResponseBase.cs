@@ -3,7 +3,8 @@ using System.Linq;
 
 namespace IcVibracoes.DataContracts
 {
-    public class OperationResponseBase
+    public class OperationResponseBase<TResponseData>
+        where TResponseData : OperationResponseData
     {
         public OperationResponseBase()
         {
@@ -14,7 +15,7 @@ namespace IcVibracoes.DataContracts
 
         public List<OperationError> Errors { get; }
 
-        public OperationResponseData Data { get; set; }
+        public TResponseData Data { get; set; }
 
         public void AddError(OperationError operationError)
         {

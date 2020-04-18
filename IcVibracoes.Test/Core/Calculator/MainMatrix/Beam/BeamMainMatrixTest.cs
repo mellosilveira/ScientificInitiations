@@ -20,12 +20,12 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
         protected double[,] _hardnessMatrix;
         protected double[,] _elementHardnessMatrix;
         protected double[,] _dampingMatrix;
+        protected double _precision;
 
         protected readonly bool[] _boundaryConditionsVector;
         protected readonly T _operation;
         protected readonly double _elementLength;
         protected readonly double[] _forceVector;
-        protected readonly double _precision;
 
         protected Beam<TProfile> _beam;
 
@@ -129,9 +129,10 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
                 Profile = new TProfile()
             };
 
-            // Arrange
             double[,] mass = await this._operation.CalculateMass(this._beam, degreesFreedomMaximum);
             double[,] hardness = await this._operation.CalculateHardness(this._beam, degreesFreedomMaximum);
+
+            this._precision = 5e-3;
 
             // Act 
             var result = await this._operation.CalculateDamping(mass, hardness);

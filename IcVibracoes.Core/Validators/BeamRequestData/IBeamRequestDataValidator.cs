@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElements;
 using System.Threading.Tasks;
 
@@ -20,6 +19,6 @@ namespace IcVibracoes.Core.Validators.BeamRequestData
         /// <param name="beamData"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        Task<bool> ValidateBeamData(TBeamData beamData, OperationResponseBase response);
+        Task<bool> ValidateBeamData(TBeamData beamData, FiniteElementsResponse response);
     }
 }
