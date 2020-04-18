@@ -3,5 +3,7 @@
     /// <summary>
     /// It contains the response content of Rigid Body operation.
     /// </summary>
-    public class RigidBodyResponse : OperationResponseBase<RigidBodyResponseData> { }
+    public abstract class RigidBodyResponse<TResponseData> : OperationResponseBase<TResponseData> 
+        where TResponseData : RigidBodyResponseData
+    { }
 }
