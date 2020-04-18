@@ -19,11 +19,11 @@ namespace IcVibracoes.Controllers
     public class FiniteElementsController : ControllerBase
     {
         [HttpPost("rectangular")]
-        public async Task<ActionResult<FiniteElementsResponse>> Calculate(
+        public async Task<ActionResult<FiniteElementsResponse>> CalculateVibration(
             [FromServices] ICalculateRectangularBeamVibration calculateVibration,
             [FromBody] BeamRequest<RectangularProfile> request)
         {
-            FiniteElementsResponse response = await calculateVibration.Process(request);
+            FiniteElementsResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if (!response.Success)
             {
@@ -34,11 +34,11 @@ namespace IcVibracoes.Controllers
         }
 
         [HttpPost("rectangular/dynamic-vibration-absorber")]
-        public async Task<ActionResult<FiniteElementsResponse>> Calculate(
+        public async Task<ActionResult<FiniteElementsResponse>> CalculateVibration(
             [FromServices] ICalculateRectangularBeamWithDvaVibration calculateVibration,
             [FromBody] BeamWithDvaRequest<RectangularProfile> request)
         {
-            FiniteElementsResponse response = await calculateVibration.Process(request);
+            FiniteElementsResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if (!response.Success)
             {
@@ -49,11 +49,11 @@ namespace IcVibracoes.Controllers
         }
 
         [HttpPost("rectangular/piezoelectric")]
-        public async Task<ActionResult<FiniteElementsResponse>> Calculate(
+        public async Task<ActionResult<FiniteElementsResponse>> CalculateVibration(
             [FromServices] ICalculateRectangularBeamWithPiezoelectricVibration calculateVibration,
             [FromBody] BeamWithPiezoelectricRequest<RectangularProfile> request)
         {
-            FiniteElementsResponse response = await calculateVibration.Process(request);
+            FiniteElementsResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if (!response.Success)
             {
@@ -64,11 +64,11 @@ namespace IcVibracoes.Controllers
         }
 
         [HttpPost("circular")]
-        public async Task<ActionResult<FiniteElementsResponse>> Calculate(
+        public async Task<ActionResult<FiniteElementsResponse>> CalculateVibration(
             [FromServices] ICalculateCircularBeamVibration calculateVibration,
             [FromBody] BeamRequest<CircularProfile> request)
         {
-            FiniteElementsResponse response = await calculateVibration.Process(request);
+            FiniteElementsResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if (!response.Success)
             {
@@ -79,11 +79,11 @@ namespace IcVibracoes.Controllers
         }
 
         [HttpPost("circular/dynamic-vibration-absorber")]
-        public async Task<ActionResult<FiniteElementsResponse>> Calculate(
+        public async Task<ActionResult<FiniteElementsResponse>> CalculateVibration(
             [FromServices] ICalculateCircularBeamWithDvaVibration calculateVibration,
             [FromBody] BeamWithDvaRequest<CircularProfile> request)
         {
-            FiniteElementsResponse response = await calculateVibration.Process(request);
+            FiniteElementsResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if(!response.Success)
             {
@@ -94,11 +94,11 @@ namespace IcVibracoes.Controllers
         }
 
         [HttpPost("circular/piezoelectric")]
-        public async Task<ActionResult<FiniteElementsResponse>> Calculate(
+        public async Task<ActionResult<FiniteElementsResponse>> CalculateVibration(
             [FromServices] ICalculateCircularBeamWithPiezoelectricVibration calculateVibration,
             [FromBody] BeamWithPiezoelectricRequest<CircularProfile> request)
         {
-            FiniteElementsResponse response = await calculateVibration.Process(request);
+            FiniteElementsResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if (!response.Success)
             {

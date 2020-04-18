@@ -1,9 +1,10 @@
-﻿using IcVibracoes.DataContracts.RigidBody;
-using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
+﻿using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom
 {
-    internal interface ICalculateVibrationToOneDegreeFreedom : IOperationBase<OneDegreeFreedomRequest, RigidBodyResponse, RigidBodyResponseData>
-    {
-    }
+    /// <summary>
+    /// It is responsible to calculate the vibration for a rigid body with one degrees freedom case.
+    /// </summary>
+    public interface ICalculateVibrationToOneDegreeFreedom : IOperationBase<OneDegreeFreedomRequest, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>
+    { }
 }
