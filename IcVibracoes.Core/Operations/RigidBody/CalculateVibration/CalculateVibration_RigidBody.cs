@@ -24,25 +24,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <param name="input"></param>
         /// <param name="time"></param>
         /// <param name="y"></param>
-        /// <param name="angularFrequency"></param>
         /// <returns></returns>
         public abstract Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y);
-
-        protected override Task<TResponse> ProcessOperation(TRequest request)
-        {
-            var result = new TResponse();
-
-            // Chamar runge-kutta
-            // Runge-kutta usará a equação de movimento calculada nesta classe.
-
-            return Task.FromResult(result);
-        }
-
-        protected override Task<TResponse> ValidateOperation(TRequest request)
-        {
-            var result = new TResponse();
-
-            return Task.FromResult(result);
-        }
     }
 }

@@ -24,7 +24,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <param name="input"></param>
         /// <param name="time"></param>
         /// <param name="y"></param>
-        /// <param name="angularFrequency"></param>
         /// <returns></returns>
         Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y);
     }
