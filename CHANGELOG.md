@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## URNELEASED
 ### Changed
 - Classes and folder name from CalculateVibration to FiniteElements operations.
+### Fixed
+- Inheritances, classes and folders name and folder organization.
 ### Added
 - Separation to finite element analysis.
 - Rigid body analysis.
+- Runge Kutta Forth Order numerical integration method.
 
 ## [1.3.0] - 2020-04-16
 ### Changed

@@ -1,4 +1,7 @@
-﻿using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
+﻿using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.Models;
+using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
+using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom
@@ -6,21 +9,29 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with two degrees freedom case.
     /// </summary>
-    public class CalculateVibrationToTwoDegreesFreedom : OperationBase<TwoDegreesFreedomRequest, TwoDegreesFreedomResponse, TwoDegreesFreedomResponseData>, ICalculateVibrationToTwoDegreesFreedom
+    public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesFreedomRequest, TwoDegreesFreedomRequestData, TwoDegreesFreedomResponse, TwoDegreesFreedomResponseData>, ICalculateVibrationToTwoDegreesFreedom
     {
-        public CalculateVibrationToTwoDegreesFreedom()
+        public override Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
+            double[] result = new double[Constant.NumberOfRigidBody_1DF_Variables];
 
-        }
+            // wn - Natural angular frequency
+            double wn = Math.Sqrt(input.Hardness / input.Mass);
+            double secondaryWn = Math.Sqrt(input.SecondaryHardness / input.SecondaryMass);
 
-        protected override Task<TwoDegreesFreedomResponse> ProcessOperation(TwoDegreesFreedomRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+            double damping = input.DampingRatio * 2 * input.Mass * wn;
+            double secondaryDamping = input.DampingRatio * 2 * input.SecondaryMass * secondaryWn;
 
-        protected override Task<TwoDegreesFreedomResponse> ValidateOperation(TwoDegreesFreedomRequest request)
-        {
-            throw new System.NotImplementedException();
+            // Velocity of primary object.
+            result[0] = y[2];
+            // Velocity of secondary object.
+            result[1] = y[3];
+            // Acceleration of primary object.
+            result[2] = ((input.Force * Math.Sin(input.AngularFrequency * time)) - ((input.Hardness + input.SecondaryHardness) * y[0] - input.SecondaryHardness * y[1] + (damping + secondaryDamping) * y[2] - secondaryDamping * y[3])) / input.Mass;
+            // Acceleration of secondary object.
+            result[3] = (input.SecondaryHardness * (y[0] - y[1]) + secondaryDamping * (y[2] - y[3])) / input.SecondaryMass;
+            
+            return Task.FromResult(result);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations
 {
+    // TODO: Refatorar 
     public abstract class OperationBase<TRequest, TResponse, TResponseData> : IOperationBase<TRequest, TResponse, TResponseData>
         where TRequest : OperationRequestBase
         where TResponse : OperationResponseBase<TResponseData>, new()
@@ -13,6 +14,7 @@ namespace IcVibracoes.Core.Operations
         {
             TResponse response = new TResponse();
 
+            // TODO: Remover o try-catch
             try
             {
                 response = await ValidateOperation(request);

@@ -28,7 +28,7 @@ namespace IcVibracoes.Controllers
             return Ok(response);
         }
 
-        [HttpPost("one-degree-freedom")]
+        [HttpPost("two-degree-freedom")]
         public async Task<ActionResult<TwoDegreesFreedomResponse>> CalculateVibration(
             [FromServices] ICalculateVibrationToTwoDegreesFreedom calculateVibration,
             [FromBody] TwoDegreesFreedomRequest request)

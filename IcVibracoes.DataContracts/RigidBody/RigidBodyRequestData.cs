@@ -10,6 +10,7 @@ namespace IcVibracoes.DataContracts.RigidBody
         /// <summary>
         /// List of damping ratio of system.
         /// For each value in the list, it is made a new analysis.
+        /// Damping ratio represents the relation between damping by critical damping.
         /// If it is equals to zero, the vibration is harmonic.
         /// If it is greather than zero and less than 1, the vibration is underdamped.
         /// If it is equals to one, the vibration is critical damped.
@@ -18,18 +19,28 @@ namespace IcVibracoes.DataContracts.RigidBody
         public List<double> DampingRatio { get; set; }
 
         /// <summary>
+        /// The time-step to be used in the numerical integration method.
+        /// </summary>
+        public double TimeStep { get; set; }
+
+        /// <summary>
+        /// Initial angular frequency of the analysis.
+        /// </summary>
+        public double InitialAngularFrequency { get; set; }
+
+        /// <summary>
+        /// Angular frequency step of the analysis.
+        /// </summary>
+        public double AndularFrequencyStep { get; set; }
+
+        /// <summary>
+        /// Final angular frequency of the analysis.
+        /// </summary>
+        public double FinalAngularFrequency { get; set; }
+
+        /// <summary>
         /// The force applied in the main object.
         /// </summary>
         public double Force { get; set; }
-
-        /// <summary>
-        /// Initial displacement to the analysis.
-        /// </summary>
-        public double InitialDisplacement { get; set; }
-
-        /// <summary>
-        /// Initial velocity to the analysis.
-        /// </summary>
-        public double InitialVelocity { get; set; }
     }
 }

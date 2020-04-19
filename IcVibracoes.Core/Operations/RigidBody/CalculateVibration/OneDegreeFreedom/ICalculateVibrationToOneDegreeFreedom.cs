@@ -5,6 +5,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with one degrees freedom case.
     /// </summary>
-    public interface ICalculateVibrationToOneDegreeFreedom : IOperationBase<OneDegreeFreedomRequest, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>
+    public interface ICalculateVibrationToOneDegreeFreedom : ICalculateVibration_RigidBody<OneDegreeFreedomRequest, OneDegreeFreedomRequestData, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>
     { }
 }

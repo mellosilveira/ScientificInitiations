@@ -14,12 +14,16 @@ using IcVibracoes.Core.Mapper.Profiles.Circular;
 using IcVibracoes.Core.Mapper.Profiles.Rectangular;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva;
+using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.OneDegreeFreedom;
+using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.TwoDegreeFreedom;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Circular;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Rectangular;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom;
+using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
@@ -63,12 +67,20 @@ namespace IcVibracoes
             services.AddScoped<IPiezoelectricCircularProfileMapper, PiezoelectricCircularProfileMapper>();
             services.AddScoped<IPiezoelectricRectangularProfileMapper, PiezoelectricRectangularProfileMapper>();
 
-            // NewmarkNumericalIntegration
+            // Newmark Numerical Integration
             services.AddScoped<INewmarkMethod, NewmarkMethod>();
             services.AddScoped<IBeamWithDvaNewmarkMethod, BeamWithDvaNewmarkMethod>();
 
+            // Runge Kutta Forth Order Numerical Integration
+            services.AddScoped<IRungeKuttaForthOrderMethod_1DF, RungeKuttaForthOrderMethod_1DF>();
+            services.AddScoped<IRungeKuttaForthOrderMethod_2DF, RungeKuttaForthOrderMethod_2DF>();
+
             // Auxiliar Operations
             services.AddScoped<IAuxiliarOperation, AuxiliarOperation>();
+            
+            // Rigid Body Operations
+            services.AddScoped<ICalculateVibrationToOneDegreeFreedom, CalculateVibrationToOneDegreeFreedom>();
+            services.AddScoped<ICalculateVibrationToTwoDegreesFreedom, CalculateVibrationToTwoDegreesFreedom>();
 
             // Beam Operations
             services.AddScoped<ICalculateCircularBeamVibration, CalculateCircularBeamVibration>();

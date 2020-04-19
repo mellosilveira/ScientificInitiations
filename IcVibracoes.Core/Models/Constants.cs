@@ -54,5 +54,15 @@
         /// Size of piezoelectric element size.
         /// </summary>
         public const int PiezoelectricDegreesFreedomElement = 2;
+
+        /// <summary>
+        /// Number of variables in a one degree freedom rigid body analysis.
+        /// </summary>
+        public const int NumberOfRigidBody_1DF_Variables = 2;
+
+        /// <summary>
+        /// Number of variables in a two degrees freedom rigid body analysis.
+        /// </summary>
+        public const int NumberOfRigidBody_2DF_Variables = 4;
     }
 }

@@ -42,17 +42,17 @@ double  f(double x, double y[], int i, double w)
 
 /* Algoritmo de Runge Kutta 4a. ordem */
 
-void runge4(double x, double y[], double step, double w)
+void runge4(double t, double y[], double step, double w)
 {
 	double h = step / 2.0,			/* the midpoint */
 		t1[N], t2[N], t3[N],		/* temporary storage arrays */
 		k1[N], k2[N], k3[N], k4[N];	/* for Runge-Kutta */
 	int i;
 
-	for (i = 0; i < N; i++) t1[i] = y[i] + 0.5 * (k1[i] = step * f(x, y, i, w));
-	for (i = 0; i < N; i++) t2[i] = y[i] + 0.5 * (k2[i] = step * f(x + h, t1, i, w));
-	for (i = 0; i < N; i++) t3[i] = y[i] + (k3[i] = step * f(x + h, t2, i, w));
-	for (i = 0; i < N; i++) k4[i] = step * f(x + step, t3, i, w);
+	for (i = 0; i < N; i++) t1[i] = y[i] + 0.5 * (k1[i] = step * f(t, y, i, w));
+	for (i = 0; i < N; i++) t2[i] = y[i] + 0.5 * (k2[i] = step * f(t + h, t1, i, w));
+	for (i = 0; i < N; i++) t3[i] = y[i] + (k3[i] = step * f(t + h, t2, i, w));
+	for (i = 0; i < N; i++) k4[i] = step * f(t + step, t3, i, w);
 
 	for (i = 0; i < N; i++) y[i] += (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]) / 6.0;
 }
