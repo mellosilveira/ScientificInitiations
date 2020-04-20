@@ -13,7 +13,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
     {
         public override Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
-            double[] result = new double[Constant.NumberOfRigidBody_1DF_Variables];
+            double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
             // wn - Natural angular frequency
             double wn = Math.Sqrt(input.Hardness / input.Mass);

@@ -15,12 +15,7 @@ namespace IcVibracoes.DataContracts
 
         public List<OperationError> Errors { get; }
 
-        public List<TResponseData> Datas { get; set; }
-
-        public void AddError(OperationError operationError)
-        {
-            Errors.Add(operationError);
-        }
+        public TResponseData Data { get; set; }
 
         public void AddError(string code, string message)
         {

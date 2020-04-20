@@ -16,5 +16,25 @@ namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom
         /// The mechanical properties of the secondary object that will be analyzed.
         /// </summary>
         public MechanicalProperties SecondaryObjectMechanicalProperties { get; set; }
+
+        /// <summary>
+        /// The initial displacement for primary object.
+        /// </summary>
+        public double PrimaryInitialDisplacement { get; set; }
+
+        /// <summary>
+        /// The initial velocity for primary object.
+        /// </summary>
+        public double PrimaryInitialVelocity { get; set; }
+
+        /// <summary>
+        /// The initial displacement for secondary object.
+        /// </summary>
+        public double SecondaryInitialDisplacement { get; set; }
+
+        /// <summary>
+        /// The initial velocity for secondary object.
+        /// </summary>
+        public double SecondaryInitialVelocity { get; set; }
     }
 }

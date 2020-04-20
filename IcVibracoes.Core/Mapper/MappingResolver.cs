@@ -1,6 +1,10 @@
 ﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Core.DTO;
+using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
+using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Mapper
@@ -66,6 +70,52 @@ namespace IcVibracoes.Core.Mapper
             }
 
             return Task.FromResult(electricalCharge);
+        }
+
+        /// <summary>
+        /// Builds the input 'data' of differential equation of motion.
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <returns></returns>
+        public Task<DifferentialEquationOfMotionInput> BuildFrom(TwoDegreesFreedomRequestData requestData)
+        {
+            if (requestData == null || requestData.MainObjectMechanicalProperties == null || requestData.SecondaryObjectMechanicalProperties == null)
+            {
+                return null;
+            }
+
+            return Task.FromResult(new DifferentialEquationOfMotionInput
+            {
+                AngularFrequency = requestData.AndularFrequencyStep,
+                DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
+                Force = requestData.Force,
+                Hardness = requestData.MainObjectMechanicalProperties.Hardness,
+                Mass = requestData.MainObjectMechanicalProperties.Mass,
+                SecondaryHardness = requestData.SecondaryObjectMechanicalProperties.Hardness,
+                SecondaryMass = requestData.SecondaryObjectMechanicalProperties.Mass
+            });
+        }
+
+        /// <summary>
+        /// Builds the input 'data' of differential equation of motion.
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <returns></returns>
+        public Task<DifferentialEquationOfMotionInput> BuildFrom(OneDegreeFreedomRequestData requestData)
+        {
+            if(requestData == null || requestData.MechanicalProperties == null)
+            {
+                return null;
+            }
+
+            return Task.FromResult(new DifferentialEquationOfMotionInput
+            {
+                AngularFrequency = requestData.AndularFrequencyStep,
+                DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
+                Force = requestData.Force,
+                Hardness = requestData.MechanicalProperties.Hardness,
+                Mass = requestData.MechanicalProperties.Mass
+            });
         }
     }
 }

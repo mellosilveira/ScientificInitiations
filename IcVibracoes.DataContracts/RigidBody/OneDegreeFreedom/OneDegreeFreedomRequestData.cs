@@ -11,5 +11,15 @@ namespace IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom
         /// The mechanical properties of the object that will be analyzed.
         /// </summary>
         public MechanicalProperties MechanicalProperties { get; set; }
+
+        /// <summary>
+        /// The initial displacement.
+        /// </summary>
+        public double InitialDisplacement { get; set; }
+
+        /// <summary>
+        /// The initial velocity.
+        /// </summary>
+        public double InitialVelocity { get; set; }
     }
 }

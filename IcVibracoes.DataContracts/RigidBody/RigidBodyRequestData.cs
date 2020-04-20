@@ -16,12 +16,22 @@ namespace IcVibracoes.DataContracts.RigidBody
         /// If it is equals to one, the vibration is critical damped.
         /// If it is greather than 1, the vibration is overdamped.
         /// </summary>
-        public List<double> DampingRatio { get; set; }
+        public List<double> DampingRatioList { get; set; }
 
         /// <summary>
         /// The time-step to be used in the numerical integration method.
         /// </summary>
         public double TimeStep { get; set; }
+
+        /// <summary>
+        /// The initial time in the analysis.
+        /// </summary>
+        public double InitialTime { get; set; }
+
+        /// <summary>
+        /// The final time in the analysis.
+        /// </summary>
+        public double FinalTime { get; set; }
 
         /// <summary>
         /// Initial angular frequency of the analysis.
