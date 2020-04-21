@@ -11,6 +11,6 @@
         /// The type of analysis. 
         /// Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
         /// </summary>
-        public string AnalysisType { get; set; }
+        public virtual string AnalysisType { get; }
     }
 }

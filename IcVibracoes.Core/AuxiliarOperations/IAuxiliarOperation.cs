@@ -1,4 +1,6 @@
-﻿namespace IcVibracoes.Core.AuxiliarOperations
+﻿using IcVibracoes.DataContracts.RigidBody;
+
+namespace IcVibracoes.Core.AuxiliarOperations
 {
     /// <summary>
     /// It contains auxiliar operations to the solve specific problems in the project.

@@ -8,5 +8,13 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric
     /// <typeparam name="TProfile"></typeparam>
     public class BeamWithPiezoelectricRequest<TProfile> : FiniteElementsRequest<TProfile, PiezoelectricRequestData<TProfile>>
         where TProfile : Profile, new()
-    { }
+    {
+        public override string AnalysisType 
+        {
+            get
+            {
+                return "FiniteElements_BeamWithPiezoelectric";
+            }
+        }
+    }
 }

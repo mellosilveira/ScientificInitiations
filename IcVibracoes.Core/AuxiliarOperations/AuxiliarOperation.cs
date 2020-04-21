@@ -134,11 +134,11 @@ namespace IcVibracoes.Core.AuxiliarOperations
 
             if (finalAngularFrequency == null)
             {
-                path = Path.Combine(previousPath, "Solutions", $"{analysisType}_w0={Math.Round(initialAngularFrequency, 2)}_nEl={numberOfElements}.csv");
+                path = Path.Combine(previousPath, "Solutions", $"{analysisType.Trim()}_w0={Math.Round(initialAngularFrequency, 2)}_nEl={numberOfElements}.csv");
             }
             else
             {
-                path = Path.Combine(previousPath, "Solutions", $"{analysisType}_w0={Math.Round(initialAngularFrequency, 2)}_wf={finalAngularFrequency}_nEl={numberOfElements}.csv");
+                path = Path.Combine(previousPath, "Solutions", $"{analysisType.Trim()}_w0={Math.Round(initialAngularFrequency, 2)}_wf={finalAngularFrequency}_nEl={numberOfElements}.csv");
             }
 
             if (File.Exists(path))

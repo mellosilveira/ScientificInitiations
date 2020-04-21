@@ -9,5 +9,12 @@ namespace IcVibracoes.DataContracts.FiniteElements.Beam
     public class BeamRequest<TProfile> : FiniteElementsRequest<TProfile, BeamRequestData<TProfile>>
         where TProfile : Profile, new()
     {
+        public override string AnalysisType 
+        {
+            get 
+            {
+                return "FiniteElements_Beam";
+            }
+        }
     }
 }

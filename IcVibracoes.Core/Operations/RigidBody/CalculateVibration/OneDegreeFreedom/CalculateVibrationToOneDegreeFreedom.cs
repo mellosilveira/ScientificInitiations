@@ -1,9 +1,11 @@
-﻿using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.Mapper;
+﻿using IcVibracoes.Common.ErrorCodes;
+using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.OneDegreeFreedom;
 using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
 using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom
@@ -13,17 +15,58 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
     /// </summary>
     public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeFreedomRequest, OneDegreeFreedomRequestData, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>, ICalculateVibrationToOneDegreeFreedom
     {
-        private readonly IMappingResolver _mappingResolver;
-        private readonly IRungeKuttaForthOrderMethod_1DF _rungeKutta;
-
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="rungeKutta"></param>
         public CalculateVibrationToOneDegreeFreedom(
-            IMappingResolver mappingResolver, 
-            IRungeKuttaForthOrderMethod_1DF rungeKutta)
+            IRungeKuttaForthOrderMethod_1DF rungeKutta) 
+            : base(rungeKutta)
+        { }
+
+        /// <summary>
+        /// Builds the input of differential equation of motion.
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <returns></returns>
+        public override Task<DifferentialEquationOfMotionInput> BuildDifferentialEquationOfMotionInput(OneDegreeFreedomRequestData requestData)
         {
-            this._mappingResolver = mappingResolver;
-            this._rungeKutta = rungeKutta;
+            if (requestData == null || requestData.MechanicalProperties == null)
+            {
+                return null;
+            }
+
+            return Task.FromResult(new DifferentialEquationOfMotionInput
+            {
+                AngularFrequency = requestData.AndularFrequencyStep,
+                DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
+                Force = requestData.Force,
+                Hardness = requestData.MechanicalProperties.Hardness,
+                Mass = requestData.MechanicalProperties.Mass
+            });
         }
 
+        /// <summary>
+        /// Builds the vector with the initial conditions to analysis.
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <returns></returns>
+        public override Task<double[]> BuildInitialConditions(OneDegreeFreedomRequestData requestData)
+        {
+            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]
+            {
+                requestData.InitialDisplacement,
+                requestData.InitialVelocity
+            });
+        }
+
+        /// <summary>
+        /// Calculates the value of the differential equation of motion for a specific time, based on the force and angular frequency that are passed.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public override Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
@@ -40,43 +83,35 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
             return Task.FromResult(result);
         }
 
-        protected override async Task<OneDegreeFreedomResponse> ProcessOperation(OneDegreeFreedomRequest request)
+        /// <summary>
+        /// Create a path to the files with the analysis solution.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="requestData"></param>
+        /// <param name="analysisType"></param>
+        /// <param name="dampingRatio"></param>
+        /// <param name="angularFrequency"></param>
+        /// <returns></returns>
+        public override Task<string> CreateSolutionPath(OneDegreeFreedomResponse response, OneDegreeFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
         {
-            var response = new OneDegreeFreedomResponse();
+            string path = Directory.GetCurrentDirectory();
 
-            double time = request.Data.InitialTime;
-            double timeStep = request.Data.TimeStep;
-            double finalTime = request.Data.FinalTime;
+            string folderName = Path.GetFileName(path);
 
-            DifferentialEquationOfMotionInput input = await this._mappingResolver.BuildFrom(request.Data);
+            string previousPath = path.Substring(0, path.Length - folderName.Length);
 
-            // Parallel.Foreach
-            foreach (var dampingRatio in request.Data.DampingRatioList)
+            path = Path.Combine(
+                previousPath,
+                "Solutions/RigidBody/OneDegreeFreedom",
+                $"{analysisType.Trim()}_m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Hardness}_w={Math.Round(angularFrequency, 2)}_dampingRatio={dampingRatio}.csv");
+
+            if (File.Exists(path))
             {
-                while (time <= finalTime)
-                {
-                    double[] y = new double[Constant.NumberOfRigidBodyVariables_1DF]
-                    {
-                        request.Data.InitialDisplacement,
-                        request.Data.InitialVelocity
-                    };
-
-                    y = await this._rungeKutta.ExecuteMethod(input, timeStep, time, y);
-
-                    
-
-                    time += timeStep;
-                }
+                response.AddError(ErrorCode.OperationError, $"File already exist in path '{path}'.");
+                return null;
             }
 
-            return response;
-        }
-
-        protected override Task<OneDegreeFreedomResponse> ValidateOperation(OneDegreeFreedomRequest request)
-        {
-            var response = new OneDegreeFreedomResponse();
-
-            return Task.FromResult(response);
+            return Task.FromResult(path);
         }
     }
 }
