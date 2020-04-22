@@ -55,35 +55,35 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         }
 
         /// <summary>
-        /// Responsible to calculate the hardness matrix of the beam.
+        /// Responsible to calculate the stiffness matrix of the beam.
         /// </summary>
-        /// <param name="beamHardness"></param>
-        /// <param name="dvaHardness"></param>
+        /// <param name="beamStiffness"></param>
+        /// <param name="dvaStiffness"></param>
         /// <param name="dvaNodePositions"></param>
         /// <returns></returns>
-        public async Task<double[,]> CalculateHardnessWithDva(double[,] beamHardness, double[] dvaHardness, uint[] dvaNodePositions)
+        public async Task<double[,]> CalculateStiffnessWithDva(double[,] beamStiffness, double[] dvaStiffness, uint[] dvaNodePositions)
         {
-            double[,] hardnessWithDva = new double[beamHardness.GetLength(0) + dvaHardness.Length, beamHardness.GetLength(1) + dvaHardness.Length];
+            double[,] stiffnessWithDva = new double[beamStiffness.GetLength(0) + dvaStiffness.Length, beamStiffness.GetLength(1) + dvaStiffness.Length];
 
-            beamHardness = await this._arrayOperation.AddValue(beamHardness, dvaHardness, dvaNodePositions, "Beam Hardness");
+            beamStiffness = await this._arrayOperation.AddValue(beamStiffness, dvaStiffness, dvaNodePositions, "Beam Stiffness");
 
-            for (int i = 0; i < beamHardness.GetLength(0); i++)
+            for (int i = 0; i < beamStiffness.GetLength(0); i++)
             {
-                for (int j = 0; j < beamHardness.GetLength(1); j++)
+                for (int j = 0; j < beamStiffness.GetLength(1); j++)
                 {
-                    hardnessWithDva[i, j] = beamHardness[i, j];
+                    stiffnessWithDva[i, j] = beamStiffness[i, j];
                 }
             }
 
-            for (int i = 0; i < dvaHardness.Length; i++)
+            for (int i = 0; i < dvaStiffness.Length; i++)
             {
-                hardnessWithDva[dvaNodePositions[i], dvaNodePositions[i]] += dvaHardness[i];
-                hardnessWithDva[i + beamHardness.GetLength(0), i + beamHardness.GetLength(0)] = dvaHardness[i];
-                hardnessWithDva[dvaNodePositions[i], i + beamHardness.GetLength(0)] = -dvaHardness[i];
-                hardnessWithDva[i + beamHardness.GetLength(0), dvaNodePositions[i]] = -dvaHardness[i];
+                stiffnessWithDva[dvaNodePositions[i], dvaNodePositions[i]] += dvaStiffness[i];
+                stiffnessWithDva[i + beamStiffness.GetLength(0), i + beamStiffness.GetLength(0)] = dvaStiffness[i];
+                stiffnessWithDva[dvaNodePositions[i], i + beamStiffness.GetLength(0)] = -dvaStiffness[i];
+                stiffnessWithDva[i + beamStiffness.GetLength(0), dvaNodePositions[i]] = -dvaStiffness[i];
             }
 
-            return hardnessWithDva;
+            return stiffnessWithDva;
         }
 
         /// <summary>

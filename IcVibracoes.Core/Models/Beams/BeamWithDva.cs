@@ -14,9 +14,9 @@ namespace IcVibracoes.Core.Models.Beams
         public double[] DvaMasses { get; set; }
 
         /// <summary>
-        /// Hardness of each DVA.
+        /// Stiffness of each DVA.
         /// </summary>
-        public double[] DvaHardnesses { get; set; }
+        public double[] DvaStiffnesses { get; set; }
 
         /// <summary>
         /// Node position of each DVA.

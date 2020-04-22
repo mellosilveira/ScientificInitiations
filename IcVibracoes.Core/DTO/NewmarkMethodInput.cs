@@ -13,9 +13,9 @@ namespace IcVibracoes.Core.DTO.Input
         public double[,] Mass { get; set; }
 
         /// <summary>
-        /// Hardness matrix of the object that is analyzed.
+        /// Stiffness matrix of the object that is analyzed.
         /// </summary>
-        public double[,] Hardness { get; set; }
+        public double[,] Stiffness { get; set; }
 
         /// <summary>
         /// Damping matrix of the object that is analyzed.

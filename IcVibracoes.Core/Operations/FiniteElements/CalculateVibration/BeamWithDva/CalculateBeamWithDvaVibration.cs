@@ -76,13 +76,13 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             int i = 0;
 
             double[] dvaMasses = new double[request.BeamData.Dvas.Count];
-            double[] dvaHardnesses = new double[request.BeamData.Dvas.Count];
+            double[] dvaStiffnesses = new double[request.BeamData.Dvas.Count];
             uint[] dvaNodePositions = new uint[request.BeamData.Dvas.Count];
 
             foreach (DynamicVibrationAbsorber dva in request.BeamData.Dvas)
             {
                 dvaMasses[i] = dva.DvaMass;
-                dvaHardnesses[i] = dva.DvaHardness;
+                dvaStiffnesses[i] = dva.DvaStiffness;
                 dvaNodePositions[i] = dva.DvaNodePosition;
                 i += 1;
             }
@@ -109,7 +109,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
                 Material = MaterialFactory.Create(request.BeamData.Material),
                 NumberOfElements = request.BeamData.NumberOfElements,
                 Profile = request.BeamData.Profile,
-                DvaHardnesses = dvaHardnesses,
+                DvaStiffnesses = dvaStiffnesses,
                 DvaMasses = dvaMasses,
                 DvaNodePositions = dvaNodePositions
             };
@@ -138,13 +138,13 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             // Main matrixes to create input.
             double[,] mass = await _beamMainMatrix.CalculateMass(beam, degreesFreedomMaximum);
 
-            double[,] hardness = await _beamMainMatrix.CalculateHardness(beam, degreesFreedomMaximum);
+            double[,] stiffness = await _beamMainMatrix.CalculateStiffness(beam, degreesFreedomMaximum);
 
             double[,] massWithDva = await _mainMatrix.CalculateMassWithDva(mass, beam.DvaMasses, beam.DvaNodePositions);
 
-            double[,] hardnessWithDva = await _mainMatrix.CalculateHardnessWithDva(hardness, beam.DvaHardnesses, beam.DvaNodePositions);
+            double[,] stiffnessWithDva = await _mainMatrix.CalculateStiffnessWithDva(stiffness, beam.DvaStiffnesses, beam.DvaNodePositions);
 
-            double[,] dampingWithDva = await _mainMatrix.CalculateDamping(massWithDva, hardnessWithDva);
+            double[,] dampingWithDva = await _mainMatrix.CalculateDamping(massWithDva, stiffnessWithDva);
 
             double[] forces = beam.Forces;
 
@@ -153,7 +153,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             {
                 Mass = _auxiliarOperation.ApplyBondaryConditions(massWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
-                Hardness = _auxiliarOperation.ApplyBondaryConditions(hardnessWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
+                Stiffness = _auxiliarOperation.ApplyBondaryConditions(stiffnessWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
                 Damping = _auxiliarOperation.ApplyBondaryConditions(dampingWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 

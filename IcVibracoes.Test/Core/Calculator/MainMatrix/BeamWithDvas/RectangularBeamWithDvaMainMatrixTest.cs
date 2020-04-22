@@ -12,10 +12,10 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
         public RectangularBeamWithDvaMainMatrixTest()
         {
             base.MassMatrix = new double[DegreesFreedomMaximum, DegreesFreedomMaximum];
-            base.HardnessMatrix = new double[DegreesFreedomMaximum, DegreesFreedomMaximum];
+            base.StiffnessMatrix = new double[DegreesFreedomMaximum, DegreesFreedomMaximum];
 
             base.MassWithDvaMatrix = new double[DegreesFreedomMaximum + NumberOfDvas, DegreesFreedomMaximum + NumberOfDvas];
-            base.HardnessWithDvaMatrix = new double[DegreesFreedomMaximum + NumberOfDvas, DegreesFreedomMaximum + NumberOfDvas];
+            base.StiffnessWithDvaMatrix = new double[DegreesFreedomMaximum + NumberOfDvas, DegreesFreedomMaximum + NumberOfDvas];
         }
     }
 }

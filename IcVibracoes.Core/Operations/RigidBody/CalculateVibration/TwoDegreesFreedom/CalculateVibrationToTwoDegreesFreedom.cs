@@ -44,9 +44,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
                 AngularFrequency = requestData.AndularFrequencyStep,
                 DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
                 Force = requestData.Force,
-                Hardness = requestData.MainObjectMechanicalProperties.Hardness,
+                Stiffness = requestData.MainObjectMechanicalProperties.Stiffness,
                 Mass = requestData.MainObjectMechanicalProperties.Mass,
-                SecondaryHardness = requestData.SecondaryObjectMechanicalProperties.Hardness,
+                SecondaryStiffness = requestData.SecondaryObjectMechanicalProperties.Stiffness,
                 SecondaryMass = requestData.SecondaryObjectMechanicalProperties.Mass
             });
         }
@@ -79,8 +79,8 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
             // wn - Natural angular frequency
-            double wn = Math.Sqrt(input.Hardness / input.Mass);
-            double secondaryWn = Math.Sqrt(input.SecondaryHardness / input.SecondaryMass);
+            double wn = Math.Sqrt(input.Stiffness / input.Mass);
+            double secondaryWn = Math.Sqrt(input.SecondaryStiffness / input.SecondaryMass);
 
             double damping = input.DampingRatio * 2 * input.Mass * wn;
             double secondaryDamping = input.DampingRatio * 2 * input.SecondaryMass * secondaryWn;
@@ -90,9 +90,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
             // Velocity of secondary object.
             result[1] = y[3];
             // Acceleration of primary object.
-            result[2] = ((input.Force * Math.Sin(input.AngularFrequency * time)) - ((input.Hardness + input.SecondaryHardness) * y[0] - input.SecondaryHardness * y[1] + (damping + secondaryDamping) * y[2] - secondaryDamping * y[3])) / input.Mass;
+            result[2] = ((input.Force * Math.Sin(input.AngularFrequency * time)) - ((input.Stiffness + input.SecondaryStiffness) * y[0] - input.SecondaryStiffness * y[1] + (damping + secondaryDamping) * y[2] - secondaryDamping * y[3])) / input.Mass;
             // Acceleration of secondary object.
-            result[3] = (input.SecondaryHardness * (y[0] - y[1]) + secondaryDamping * (y[2] - y[3])) / input.SecondaryMass;
+            result[3] = (input.SecondaryStiffness * (y[0] - y[1]) + secondaryDamping * (y[2] - y[3])) / input.SecondaryMass;
 
             return Task.FromResult(result);
         }
@@ -108,7 +108,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
             path = Path.Combine(
                 previousPath,
                 "Solutions/RigidBody/TwoDegreesFreedom",
-                $"{analysisType.Trim()}_m1={requestData.MainObjectMechanicalProperties.Mass}_k1={requestData.MainObjectMechanicalProperties.Hardness}_m2={requestData.SecondaryObjectMechanicalProperties.Mass}_k2={requestData.SecondaryObjectMechanicalProperties.Hardness}_w={Math.Round(angularFrequency, 2)}_dampingRatio={dampingRatio}.csv");
+                $"{analysisType.Trim()}_m1={requestData.MainObjectMechanicalProperties.Mass}_k1={requestData.MainObjectMechanicalProperties.Stiffness}_m2={requestData.SecondaryObjectMechanicalProperties.Mass}_k2={requestData.SecondaryObjectMechanicalProperties.Stiffness}_w={Math.Round(angularFrequency, 2)}_dampingRatio={dampingRatio}.csv");
 
             if (File.Exists(path))
             {

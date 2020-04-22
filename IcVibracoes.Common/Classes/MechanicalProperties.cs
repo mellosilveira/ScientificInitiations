@@ -11,8 +11,8 @@
         public double Mass { get; set; }
 
         /// <summary>
-        /// The hardness of the analyzed object.
+        /// The stiffness of the analyzed object.
         /// </summary>
-        public double Hardness { get; set; }
+        public double Stiffness { get; set; }
     }
 }

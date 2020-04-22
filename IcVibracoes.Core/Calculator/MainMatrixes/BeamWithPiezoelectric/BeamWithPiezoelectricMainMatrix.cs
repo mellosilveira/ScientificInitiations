@@ -65,73 +65,73 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         }
 
         /// <summary>
-        /// It's responsible to calculate piezoelectric hardness matrix.
+        /// It's responsible to calculate piezoelectric stiffness matrix.
         /// </summary>
         /// <param name="beamWithPiezoelectric"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        public async Task<double[,]> CalculateHardness(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum)
+        public async Task<double[,]> CalculateStiffness(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum)
         {
             uint numberOfElements = beamWithPiezoelectric.NumberOfElements;
             uint dfe = Constant.DegreesFreedomElement;
 
-            double[,] hardness = new double[degreesFreedomMaximum, degreesFreedomMaximum];
+            double[,] stiffness = new double[degreesFreedomMaximum, degreesFreedomMaximum];
 
             double elementLength = beamWithPiezoelectric.Length / numberOfElements;
 
             for (uint n = 0; n < numberOfElements; n++)
             {
-                double[,] piezoelectricElementHardness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
-                double[,] beamElementHardness = await base.CalculateElementHardness(beamWithPiezoelectric.GeometricProperty.MomentOfInertia[n], beamWithPiezoelectric.Material.YoungModulus, elementLength);
+                double[,] piezoelectricElementStiffness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
+                double[,] beamElementStiffness = await base.CalculateElementStiffness(beamWithPiezoelectric.GeometricProperty.MomentOfInertia[n], beamWithPiezoelectric.Material.YoungModulus, elementLength);
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
-                    piezoelectricElementHardness = await this.CalculatePiezoelectricElementHardness(beamWithPiezoelectric.ElasticityConstant, beamWithPiezoelectric.PiezoelectricGeometricProperty.MomentOfInertia[n], elementLength);
+                    piezoelectricElementStiffness = await this.CalculatePiezoelectricElementStiffness(beamWithPiezoelectric.ElasticityConstant, beamWithPiezoelectric.PiezoelectricGeometricProperty.MomentOfInertia[n], elementLength);
                 }
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
                 {
                     for (uint j = (dfe / 2) * n; j < (dfe / 2) * n + dfe; j++)
                     {
-                        hardness[i, j] += beamElementHardness[i - (dfe / 2) * n, j - (dfe / 2) * n] + piezoelectricElementHardness[i - (dfe / 2) * n, j - (dfe / 2) * n];
+                        stiffness[i, j] += beamElementStiffness[i - (dfe / 2) * n, j - (dfe / 2) * n] + piezoelectricElementStiffness[i - (dfe / 2) * n, j - (dfe / 2) * n];
                     }
                 }
             }
 
-            return hardness;
+            return stiffness;
         }
 
         /// <summary>
-        /// It's responsible to calculate piezoelectric element hardness matrix.
+        /// It's responsible to calculate piezoelectric element stiffness matrix.
         /// </summary>
         /// <param name="elasticityConstant"></param>
         /// <param name="momentOfInertia"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculatePiezoelectricElementHardness(double elasticityConstant, double momentOfInertia, double length)
+        public Task<double[,]> CalculatePiezoelectricElementStiffness(double elasticityConstant, double momentOfInertia, double length)
         {
-            double[,] elementHardness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
+            double[,] elementStiffness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
 
             double constant = momentOfInertia * elasticityConstant / Math.Pow(length, 3);
 
-            elementHardness[0, 0] = 12 * constant;
-            elementHardness[0, 1] = 6 * length * constant;
-            elementHardness[0, 2] = -12 * constant;
-            elementHardness[0, 3] = 6 * length * constant;
-            elementHardness[1, 0] = 6 * length * constant;
-            elementHardness[1, 1] = 4 * Math.Pow(length, 2) * constant;
-            elementHardness[1, 2] = -(6 * length * constant);
-            elementHardness[1, 3] = 2 * Math.Pow(length, 2) * constant;
-            elementHardness[2, 0] = -(12 * constant);
-            elementHardness[2, 1] = -(6 * length * constant);
-            elementHardness[2, 2] = 12 * constant;
-            elementHardness[2, 3] = -(6 * length * constant);
-            elementHardness[3, 0] = 6 * length * constant;
-            elementHardness[3, 1] = 2 * Math.Pow(length, 2) * constant;
-            elementHardness[3, 2] = -(6 * length * constant);
-            elementHardness[3, 3] = 4 * Math.Pow(length, 2) * constant;
+            elementStiffness[0, 0] = 12 * constant;
+            elementStiffness[0, 1] = 6 * length * constant;
+            elementStiffness[0, 2] = -12 * constant;
+            elementStiffness[0, 3] = 6 * length * constant;
+            elementStiffness[1, 0] = 6 * length * constant;
+            elementStiffness[1, 1] = 4 * Math.Pow(length, 2) * constant;
+            elementStiffness[1, 2] = -(6 * length * constant);
+            elementStiffness[1, 3] = 2 * Math.Pow(length, 2) * constant;
+            elementStiffness[2, 0] = -(12 * constant);
+            elementStiffness[2, 1] = -(6 * length * constant);
+            elementStiffness[2, 2] = 12 * constant;
+            elementStiffness[2, 3] = -(6 * length * constant);
+            elementStiffness[3, 0] = 6 * length * constant;
+            elementStiffness[3, 1] = 2 * Math.Pow(length, 2) * constant;
+            elementStiffness[3, 2] = -(6 * length * constant);
+            elementStiffness[3, 3] = 4 * Math.Pow(length, 2) * constant;
 
-            return Task.FromResult(elementHardness);
+            return Task.FromResult(elementStiffness);
         }
 
         /// <summary>
@@ -245,21 +245,21 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         }
 
         /// <summary>
-        /// It's responsible to calculate equivalent hardness matrix.
+        /// It's responsible to calculate equivalent stiffness matrix.
         /// </summary>
-        /// <param name="hardness"></param>
+        /// <param name="stiffness"></param>
         /// <param name="piezoelectricElectromechanicalCoupling"></param>
         /// <param name="piezoelectricCapacitance"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <param name="piezoelectricDegreesFreedomMaximum"></param>
         /// <returns></returns>
-        public async Task<double[,]> CalculateEquivalentHardness(double[,] hardness, double[,] piezoelectricElectromechanicalCoupling, double[,] piezoelectricCapacitance, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum)
+        public async Task<double[,]> CalculateEquivalentStiffness(double[,] stiffness, double[,] piezoelectricElectromechanicalCoupling, double[,] piezoelectricCapacitance, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum)
         {
             uint matrixSize = degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum;
 
             double[,] piezoelectricElectromechanicalCouplingTransposed = await this._arrayOperation.TransposeMatrix(piezoelectricElectromechanicalCoupling);
 
-            double[,] equivalentHardness = new double[matrixSize, matrixSize];
+            double[,] equivalentStiffness = new double[matrixSize, matrixSize];
 
             for (uint i = 0; i < matrixSize; i++)
             {
@@ -267,24 +267,24 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                 {
                     if (i < degreesFreedomMaximum && j < degreesFreedomMaximum)
                     {
-                        equivalentHardness[i, j] = hardness[i, j];
+                        equivalentStiffness[i, j] = stiffness[i, j];
                     }
                     else if (i < degreesFreedomMaximum && j >= degreesFreedomMaximum)
                     {
-                        equivalentHardness[i, j] = piezoelectricElectromechanicalCoupling[i, j - degreesFreedomMaximum];
+                        equivalentStiffness[i, j] = piezoelectricElectromechanicalCoupling[i, j - degreesFreedomMaximum];
                     }
                     else if (i >= degreesFreedomMaximum && j < degreesFreedomMaximum)
                     {
-                        equivalentHardness[i, j] = piezoelectricElectromechanicalCouplingTransposed[i - degreesFreedomMaximum, j];
+                        equivalentStiffness[i, j] = piezoelectricElectromechanicalCouplingTransposed[i - degreesFreedomMaximum, j];
                     }
                     else if (i >= degreesFreedomMaximum && j >= degreesFreedomMaximum)
                     {
-                        equivalentHardness[i, j] = piezoelectricCapacitance[i - degreesFreedomMaximum, j - degreesFreedomMaximum];
+                        equivalentStiffness[i, j] = piezoelectricCapacitance[i - degreesFreedomMaximum, j - degreesFreedomMaximum];
                     }
                 }
             }
 
-            return equivalentHardness;
+            return equivalentStiffness;
         }
 
         /// <summary>

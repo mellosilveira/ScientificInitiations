@@ -17,8 +17,8 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
 
         protected double[,] _massMatrix;
         protected double[,] _elementMassMatrix;
-        protected double[,] _hardnessMatrix;
-        protected double[,] _elementHardnessMatrix;
+        protected double[,] _stiffnessMatrix;
+        protected double[,] _elementStiffnessMatrix;
         protected double[,] _dampingMatrix;
         protected double _precision;
 
@@ -77,34 +77,34 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
             }
         }
 
-        [Fact(DisplayName = @"Feature: CalculateElementHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
-        public async void CalculateElementHardness_Should_ExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: CalculateElementStiffness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculateElementStiffness_Should_ExecuteCorrectly()
         {
             // Act 
-            var result = await this._operation.CalculateElementHardness(this._beamMomentOfInertia, this._beam.Material.YoungModulus, this._elementLength);
+            var result = await this._operation.CalculateElementStiffness(this._beamMomentOfInertia, this._beam.Material.YoungModulus, this._elementLength);
 
             // Assert
             for (int i = 0; i < Constant.DegreesFreedomElement; i++)
             {
                 for (int j = 0; j < Constant.DegreesFreedomElement; j++)
                 {
-                    result[i, j].Should().BeApproximately(_elementHardnessMatrix[i, j], this._precision);
+                    result[i, j].Should().BeApproximately(_elementStiffnessMatrix[i, j], this._precision);
                 }
             }
         }
 
-        [Fact(DisplayName = @"Feature: CalculateHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
-        public async void CalculateHardness_Should_ExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: CalculateStiffness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculateStiffness_Should_ExecuteCorrectly()
         {
             // Act 
-            var result = await this._operation.CalculateHardness(this._beam, degreesFreedomMaximum);
+            var result = await this._operation.CalculateStiffness(this._beam, degreesFreedomMaximum);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
             {
                 for (int j = 0; j < degreesFreedomMaximum; j++)
                 {
-                    result[i, j].Should().BeApproximately(_hardnessMatrix[i, j], this._precision);
+                    result[i, j].Should().BeApproximately(_stiffnessMatrix[i, j], this._precision);
                 }
             }
         }
@@ -130,12 +130,12 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
             };
 
             double[,] mass = await this._operation.CalculateMass(this._beam, degreesFreedomMaximum);
-            double[,] hardness = await this._operation.CalculateHardness(this._beam, degreesFreedomMaximum);
+            double[,] stiffness = await this._operation.CalculateStiffness(this._beam, degreesFreedomMaximum);
 
             this._precision = 5e-3;
 
             // Act 
-            var result = await this._operation.CalculateDamping(mass, hardness);
+            var result = await this._operation.CalculateDamping(mass, stiffness);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)

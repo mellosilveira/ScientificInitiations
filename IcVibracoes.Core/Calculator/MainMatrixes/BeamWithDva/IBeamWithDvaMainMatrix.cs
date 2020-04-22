@@ -21,13 +21,13 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         Task<double[,]> CalculateMassWithDva(double[,] beamMass, double[] dvaMasses, uint[] dvaNodePositions);
 
         /// <summary>
-        /// Responsible to calculate the hardness matrix of the beam.
+        /// Responsible to calculate the stiffness matrix of the beam.
         /// </summary>
-        /// <param name="beamHardness"></param>
-        /// <param name="dvaHardness"></param>
+        /// <param name="beamStiffness"></param>
+        /// <param name="dvaStiffness"></param>
         /// <param name="dvaNodePositions"></param>
         /// <returns></returns>
-        Task<double[,]> CalculateHardnessWithDva(double[,] beamHardness, double[] dvaHardness, uint[] dvaNodePositions);
+        Task<double[,]> CalculateStiffnessWithDva(double[,] beamStiffness, double[] dvaStiffness, uint[] dvaNodePositions);
 
         /// <summary>
         /// Responsible to calculate the bondary conditions matrix of the beam with dynamic vibration absorbers.

@@ -43,7 +43,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
                 AngularFrequency = requestData.AndularFrequencyStep,
                 DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
                 Force = requestData.Force,
-                Hardness = requestData.MechanicalProperties.Hardness,
+                Stiffness = requestData.MechanicalProperties.Stiffness,
                 Mass = requestData.MechanicalProperties.Mass
             });
         }
@@ -74,13 +74,13 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
             // wn - Natural angular frequency
-            double wn = Math.Sqrt(input.Hardness / input.Mass);
+            double wn = Math.Sqrt(input.Stiffness / input.Mass);
             double damping = input.DampingRatio * 2 * input.Mass * wn;
 
             // Velocity of primary object.
             result[0] = y[1];
             // Acceleration of primary object.
-            result[1] = (input.Force * Math.Sin(input.AngularFrequency * time) - (damping * y[1]) - (input.Hardness * y[0])) / input.Mass;
+            result[1] = (input.Force * Math.Sin(input.AngularFrequency * time) - (damping * y[1]) - (input.Stiffness * y[0])) / input.Mass;
 
             return Task.FromResult(result);
         }
@@ -105,7 +105,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
             path = Path.Combine(
                 previousPath,
                 "Solutions/RigidBody/OneDegreeFreedom",
-                $"{analysisType.Trim()}_m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Hardness}_w={Math.Round(angularFrequency, 2)}_dampingRatio={dampingRatio}.csv");
+                $"{analysisType.Trim()}_m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Stiffness}_w={Math.Round(angularFrequency, 2)}_dampingRatio={dampingRatio}.csv");
 
             if (File.Exists(path))
             {

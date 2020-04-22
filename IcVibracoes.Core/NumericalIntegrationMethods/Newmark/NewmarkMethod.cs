@@ -178,12 +178,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <returns></returns>
         public async Task<double[]> CalculateDisplacement(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
-            double[,] equivalentHardness = await CalculateEquivalentHardness(input.Mass, input.Hardness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
-            double[,] inversedEquivalentHardness = await this._arrayOperation.InverseMatrix(equivalentHardness, nameof(equivalentHardness)).ConfigureAwait(false);
+            double[,] equivalentStiffness = await CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
+            double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
 
             double[] equivalentForce = await CalculateEquivalentForce(input, previousDisplacement, previousVelocity, previousAcceleration).ConfigureAwait(false);
 
-            return await this._arrayOperation.Multiply(inversedEquivalentHardness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentHardness)}");
+            return await this._arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentStiffness)}");
         }
 
         /// <summary>
@@ -248,26 +248,26 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         }
 
         /// <summary>
-        /// Calculates the equivalent hardness to calculate the displacement in Newmark method.
+        /// Calculates the equivalent stiffness to calculate the displacement in Newmark method.
         /// </summary>
         /// <param name="mass"></param>
         /// <param name="damping"></param>
-        /// <param name="hardness"></param>
+        /// <param name="stiffness"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculateEquivalentHardness(double[,] mass, double[,] hardness, double[,] damping, uint numberOfTrueBoundaryConditions)
+        public Task<double[,]> CalculateEquivalentStiffness(double[,] mass, double[,] stiffness, double[,] damping, uint numberOfTrueBoundaryConditions)
         {
-            double[,] equivalentHardness = new double[numberOfTrueBoundaryConditions, numberOfTrueBoundaryConditions];
+            double[,] equivalentStiffness = new double[numberOfTrueBoundaryConditions, numberOfTrueBoundaryConditions];
 
             for (int i = 0; i < numberOfTrueBoundaryConditions; i++)
             {
                 for (int j = 0; j < numberOfTrueBoundaryConditions; j++)
                 {
-                    equivalentHardness[i, j] = a0 * mass[i, j] + a1 * damping[i, j] + hardness[i, j];
+                    equivalentStiffness[i, j] = a0 * mass[i, j] + a1 * damping[i, j] + stiffness[i, j];
                 }
             }
 
-            return Task.FromResult(equivalentHardness);
+            return Task.FromResult(equivalentStiffness);
         }
 
         public void CalculateIngrationContants(double deltaTime)

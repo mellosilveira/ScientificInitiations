@@ -21,21 +21,21 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         Task<double[,]> CalculateMass(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum);
 
         /// <summary>
-        /// It's responsible to calculate piezoelectric hardness matrix.
+        /// It's responsible to calculate piezoelectric stiffness matrix.
         /// </summary>
         /// <param name="beamWithPiezoelectric"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        Task<double[,]> CalculateHardness(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum);
+        Task<double[,]> CalculateStiffness(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum);
         
         /// <summary>
-        /// It's responsible to calculate piezoelectric element hardness matrix.
+        /// It's responsible to calculate piezoelectric element stiffness matrix.
         /// </summary>
         /// <param name="momentInertia"></param>
         /// <param name="elasticityConstant"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        Task<double[,]> CalculatePiezoelectricElementHardness(double momentInertia, double elasticityConstant, double length);
+        Task<double[,]> CalculatePiezoelectricElementStiffness(double momentInertia, double elasticityConstant, double length);
 
         /// <summary>
         /// It's responsible to calculate piezoelectric electromechanical coupling matrix.
@@ -77,15 +77,15 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         Task<double[,]> CalculateEquivalentMass(double[,] mass, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum);
 
         /// <summary>
-        /// It's responsible to calculate equivalent hardness matrix.
+        /// It's responsible to calculate equivalent stiffness matrix.
         /// </summary>
-        /// <param name="hardness"></param>
+        /// <param name="stiffness"></param>
         /// <param name="piezoelectricElectromechanicalCoupling"></param>
         /// <param name="piezoelectricCapacitance"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <param name="piezoelectricDegreesFreedomMaximum"></param>
         /// <returns></returns>
-        Task<double[,]> CalculateEquivalentHardness(double[,] hardness, double[,] piezoelectricElectromechanicalCoupling, double[,] piezoelectricCapacitance, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum);
+        Task<double[,]> CalculateEquivalentStiffness(double[,] stiffness, double[,] piezoelectricElectromechanicalCoupling, double[,] piezoelectricCapacitance, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum);
 
         /// <summary>
         /// It's rewsponsible to build the bondary condition matrix.

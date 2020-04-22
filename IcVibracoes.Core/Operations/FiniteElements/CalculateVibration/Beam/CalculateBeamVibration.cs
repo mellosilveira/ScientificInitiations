@@ -116,9 +116,9 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
             // Main matrixes to create input.
             double[,] mass = await _mainMatrix.CalculateMass(beam, degreesFreedomMaximum);
 
-            double[,] hardness = await _mainMatrix.CalculateHardness(beam, degreesFreedomMaximum);
+            double[,] stiffness = await _mainMatrix.CalculateStiffness(beam, degreesFreedomMaximum);
 
-            double[,] damping = await _mainMatrix.CalculateDamping(mass, hardness);
+            double[,] damping = await _mainMatrix.CalculateDamping(mass, stiffness);
 
             double[] forces = beam.Forces;
 
@@ -127,7 +127,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
             {
                 Mass = _auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Hardness = _auxiliarOperation.ApplyBondaryConditions(hardness, bondaryCondition, numberOfTrueBoundaryConditions),
+                Stiffness = _auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
 
                 Damping = _auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
 

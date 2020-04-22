@@ -166,7 +166,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             // Main matrixes to create input.
             double[,] mass = await _mainMatrix.CalculateMass(beam, degreesFreedomMaximum);
 
-            double[,] hardness = await _mainMatrix.CalculateHardness(beam, degreesFreedomMaximum);
+            double[,] stiffness = await _mainMatrix.CalculateStiffness(beam, degreesFreedomMaximum);
 
             double[,] piezoelectricElectromechanicalCoupling = await _mainMatrix.CalculatePiezoelectricElectromechanicalCoupling(beam, degreesFreedomMaximum);
 
@@ -174,9 +174,9 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
 
             double[,] equivalentMass = await _mainMatrix.CalculateEquivalentMass(mass, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
 
-            double[,] equivalentHardness = await _mainMatrix.CalculateEquivalentHardness(hardness, piezoelectricElectromechanicalCoupling, piezoelectricCapacitance, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+            double[,] equivalentStiffness = await _mainMatrix.CalculateEquivalentStiffness(stiffness, piezoelectricElectromechanicalCoupling, piezoelectricCapacitance, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
 
-            double[,] damping = await _mainMatrix.CalculateDamping(equivalentMass, equivalentHardness);
+            double[,] damping = await _mainMatrix.CalculateDamping(equivalentMass, equivalentStiffness);
 
             double[] force = beam.Forces;
 
@@ -189,7 +189,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             {
                 Mass = _auxiliarOperation.ApplyBondaryConditions(equivalentMass, bondaryConditions, numberOfTrueBoundaryConditions),
 
-                Hardness = _auxiliarOperation.ApplyBondaryConditions(equivalentHardness, bondaryConditions, numberOfTrueBoundaryConditions),
+                Stiffness = _auxiliarOperation.ApplyBondaryConditions(equivalentStiffness, bondaryConditions, numberOfTrueBoundaryConditions),
 
                 Damping = _auxiliarOperation.ApplyBondaryConditions(damping, bondaryConditions, numberOfTrueBoundaryConditions),
 

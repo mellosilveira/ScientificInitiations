@@ -15,10 +15,10 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
         private const int NumberOfDvas = 1;
 
         protected double[,] MassMatrix { get; set; }
-        protected double[,] HardnessMatrix { get; set; }
+        protected double[,] StiffnessMatrix { get; set; }
 
         protected double[,] MassWithDvaMatrix { get; set; }
-        protected double[,] HardnessWithDvaMatrix { get; set; }
+        protected double[,] StiffnessWithDvaMatrix { get; set; }
 
 
         private readonly Mock<T> _operationMock;
@@ -26,7 +26,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
         private readonly bool[] _boundaryConditions;
 
         private readonly double[] _dvaMasses;
-        private readonly double[] _dvaHardnesses;
+        private readonly double[] _dvaStiffnesses;
         private readonly uint[] _dvaNodePositions;
 
         private readonly double _precision;
@@ -36,7 +36,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
             this._operationMock = new Mock<T>();
 
             this._dvaMasses = new double[NumberOfDvas] { 0.012 };
-            this._dvaHardnesses = new double[NumberOfDvas] { 201869.25 };
+            this._dvaStiffnesses = new double[NumberOfDvas] { 201869.25 };
             this._dvaNodePositions = new uint[NumberOfDvas] { 1 };
 
             // Bondary conditions for a beam that is pinned in both fastenings.
@@ -64,21 +64,21 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
             }
         }
 
-        [Fact(DisplayName = @"Feature: CalculateHardnessWithDva | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
-        public async void CalculateHardnessWithDva_Should_ExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: CalculateStiffnessWithDva | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculateStiffnessWithDva_Should_ExecuteCorrectly()
         {
             // Arrange
             int size = DegreesFreedomMaximum + NumberOfDvas;
 
             // Act
-            var result = await this._operationMock.Object.CalculateHardnessWithDva(HardnessMatrix, this._dvaHardnesses, this._dvaNodePositions);
+            var result = await this._operationMock.Object.CalculateStiffnessWithDva(StiffnessMatrix, this._dvaStiffnesses, this._dvaNodePositions);
 
             // Assert
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    result[i, j].Should().BeApproximately(HardnessWithDvaMatrix[i, j], this._precision);
+                    result[i, j].Should().BeApproximately(StiffnessWithDvaMatrix[i, j], this._precision);
                 }
             }
         }

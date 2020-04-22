@@ -19,23 +19,23 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         public async Task<bool> ValidateParameters(NewmarkMethodInput input, FiniteElementsResponse response)
         {
             int massLength = input.Mass.Length;
-            int hardnessLength = input.Hardness.Length;
+            int stiffnessLength = input.Stiffness.Length;
             int dampingLength = input.Damping.Length;
             int forceLength = input.Force.Length;
 
             bool isMassValid = await this.ValidateMass(input.Mass, input.NumberOfTrueBoundaryConditions, response).ConfigureAwait(false);
-            bool isHardnessValid = await this.ValidadeHardness(input.Hardness, input.NumberOfTrueBoundaryConditions, response).ConfigureAwait(false);
+            bool isStiffnessValid = await this.ValidadeStiffness(input.Stiffness, input.NumberOfTrueBoundaryConditions, response).ConfigureAwait(false);
             bool isDampingValid = await this.ValidadeDamping(input.Damping, input.NumberOfTrueBoundaryConditions, response).ConfigureAwait(false);
             bool isForceValid = await this.ValidateForce(input.Force, input.NumberOfTrueBoundaryConditions, response).ConfigureAwait(false);
 
-            if (isMassValid != true || isHardnessValid != true || isDampingValid != true || isForceValid != true)
+            if (isMassValid != true || isStiffnessValid != true || isDampingValid != true || isForceValid != true)
             {
                 return false;
             }
 
-            if (massLength != hardnessLength || massLength != dampingLength || hardnessLength != dampingLength)
+            if (massLength != stiffnessLength || massLength != dampingLength || stiffnessLength != dampingLength)
             {
-                response.AddError(ErrorCode.NewmarkMethodInput, $"Length of mass: {massLength}, hardness: {hardnessLength} and damping: {dampingLength} must be equal.");
+                response.AddError(ErrorCode.NewmarkMethodInput, $"Length of mass: {massLength}, stiffness: {stiffnessLength} and damping: {dampingLength} must be equal.");
             }
 
             if (input.Mass.GetLength(0) < forceLength)
@@ -43,9 +43,9 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
                 response.AddError(ErrorCode.NewmarkMethod, $"Length of force vector cannot be greather than number of lines in Mass matrix.");
             }
 
-            if (input.Hardness.GetLength(0) < forceLength)
+            if (input.Stiffness.GetLength(0) < forceLength)
             {
-                response.AddError(ErrorCode.NewmarkMethod, $"Length of force vector cannot be greather than number of lines in Hardness matrix.");
+                response.AddError(ErrorCode.NewmarkMethod, $"Length of force vector cannot be greather than number of lines in Stiffness matrix.");
             }
 
             if (input.Damping.GetLength(0) < forceLength)
@@ -97,34 +97,34 @@ namespace IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark
         }
 
         /// <summary>
-        /// Validate the hardness matrix.
+        /// Validate the stiffness matrix.
         /// </summary>
-        /// <param name="hardness"></param>
+        /// <param name="stiffness"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        protected Task<bool> ValidadeHardness(double[,] hardness, uint numberOfTrueBoundaryConditions, FiniteElementsResponse response)
+        protected Task<bool> ValidadeStiffness(double[,] stiffness, uint numberOfTrueBoundaryConditions, FiniteElementsResponse response)
         {
-            if (hardness == null)
+            if (stiffness == null)
             {
-                response.AddError(ErrorCode.NullArgument, "Hardness can't be null.");
+                response.AddError(ErrorCode.NullArgument, "Stiffness can't be null.");
 
                 return Task.FromResult(false);
             }
 
-            int hardnessRow = hardness.GetLength(0);
-            int hardnessColumn = hardness.GetLength(1);
+            int stiffnessRow = stiffness.GetLength(0);
+            int stiffnessColumn = stiffness.GetLength(1);
 
-            if (hardnessRow != hardnessColumn)
+            if (stiffnessRow != stiffnessColumn)
             {
-                response.AddError(ErrorCode.NewmarkMethodInput, $"Hardness matrix must be a square matrix. Sizes: {hardnessRow}x{hardnessColumn}.");
+                response.AddError(ErrorCode.NewmarkMethodInput, $"Stiffness matrix must be a square matrix. Sizes: {stiffnessRow}x{stiffnessColumn}.");
 
                 return Task.FromResult(false);
             }
 
-            if (hardnessRow < numberOfTrueBoundaryConditions || hardnessColumn < numberOfTrueBoundaryConditions)
+            if (stiffnessRow < numberOfTrueBoundaryConditions || stiffnessColumn < numberOfTrueBoundaryConditions)
             {
-                response.AddError(ErrorCode.NewmarkMethodInput, $"Sizes of hardness matrix must be at least equals to {numberOfTrueBoundaryConditions}. Hardness sizes: {hardnessRow}x{hardnessColumn}.");
+                response.AddError(ErrorCode.NewmarkMethodInput, $"Sizes of stiffness matrix must be at least equals to {numberOfTrueBoundaryConditions}. Stiffness sizes: {stiffnessRow}x{stiffnessColumn}.");
 
                 return Task.FromResult(false);
             }

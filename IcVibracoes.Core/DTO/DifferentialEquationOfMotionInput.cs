@@ -13,9 +13,9 @@
 
         /// <summary>
         /// Unity: N/m (Newton per meter).
-        /// Hardness of primary object.
+        /// Stiffness of primary object.
         /// </summary>
-        public double Hardness { get; set; }
+        public double Stiffness { get; set; }
 
         /// <summary>
         /// Unity: kg (kilogram).
@@ -25,9 +25,9 @@
 
         /// <summary>
         /// Unity: N/m (Newton per meter).
-        /// Hardness of secondary object.
+        /// Stiffness of secondary object.
         /// </summary>
-        public double SecondaryHardness { get; set; }
+        public double SecondaryStiffness { get; set; }
 
         /// <summary>
         /// The force applied in the analyzed system.

@@ -11,9 +11,9 @@
         public double DvaMass { get; set; }
 
         /// <summary>
-        /// Hardness of DVA.
+        /// Stiffness of DVA.
         /// </summary>
-        public double DvaHardness { get; set; }
+        public double DvaStiffness { get; set; }
 
         /// <summary>
         /// Node position of DVA.

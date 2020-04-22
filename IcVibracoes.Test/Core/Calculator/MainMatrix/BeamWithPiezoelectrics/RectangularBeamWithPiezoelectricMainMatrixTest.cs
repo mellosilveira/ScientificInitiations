@@ -33,9 +33,9 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         private readonly double[,] _massMatrix;
         private readonly double[,] _equivalentMassMatrix;
 
-        private readonly double[,] _piezoelectricElementHardnessMatrix;
-        private readonly double[,] _hardnessMatrix;
-        private readonly double[,] _equivalentHardnessMatrix;
+        private readonly double[,] _piezoelectricElementStiffnessMatrix;
+        private readonly double[,] _stiffnessMatrix;
+        private readonly double[,] _equivalentStiffnessMatrix;
 
         private readonly double[,] _piezoelectricElementElectromechanicalCouplingMatrix;
         private readonly double[,] _piezoelectricElectromechanicalCouplingMatrix;
@@ -117,7 +117,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
                 { 0.000000, 0.000000, -0.005346, -0.000617, -0.009047, 0.000822 }
             };
 
-            this._piezoelectricElementHardnessMatrix = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement]
+            this._piezoelectricElementStiffnessMatrix = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement]
             {
                 { 368.781296, 92.195324, -368.781296, 92.195324 },
                 { 92.195324, 30.731775, -92.195324, 15.365887 },
@@ -125,7 +125,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
                 { 92.195324, 15.365887, -92.195324, 30.731775 }
             };
 
-            this._hardnessMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum]
+            this._stiffnessMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum]
             {
                 { 1080.000000, 270.000000, -1080.000000, 270.000000, 0.000000, 0.000000 },
                 { 270.000000, 90.000000, -270.000000, 45.000000, 0.000000, 0.000000 },
@@ -179,7 +179,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
             };
             
-            this._equivalentHardnessMatrix = new double[degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum, degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum]
+            this._equivalentStiffnessMatrix = new double[degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum, degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum]
             { 
                 { 1080, 270, -1080, 270, 0, 0, 0, 0, 0 },
                 { 270, 90, -270, 45, 0, 0, 0, 0, 0 },
@@ -243,34 +243,34 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             }
         }
 
-        [Fact(DisplayName = @"Feature: CalculateHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
-        public async void CalculateHardness_Should_ExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: CalculateStiffness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculateStiffness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateHardness(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            var result = await this._operation.CalculateStiffness(this._beamWithPiezoelectric, degreesFreedomMaximum);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
             {
                 for (int j = 0; j < degreesFreedomMaximum; j++)
                 {
-                    result[i, j].Should().BeApproximately(this._hardnessMatrix[i, j], this._precision);
+                    result[i, j].Should().BeApproximately(this._stiffnessMatrix[i, j], this._precision);
                 }
             }
         }
 
-        [Fact(DisplayName = @"Feature: CalculatePiezoelectricElementHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
-        public async void CalculatePiezoelectricElementHardness_Should_ExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: CalculatePiezoelectricElementStiffness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculatePiezoelectricElementStiffness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculatePiezoelectricElementHardness(this._beamWithPiezoelectric.ElasticityConstant, this._piezoelectricMomentOfInertia, this._elementLength);
+            var result = await this._operation.CalculatePiezoelectricElementStiffness(this._beamWithPiezoelectric.ElasticityConstant, this._piezoelectricMomentOfInertia, this._elementLength);
 
             // Assert
             for (int i = 0; i < Constant.DegreesFreedomElement; i++)
             {
                 for (int j = 0; j < Constant.DegreesFreedomElement; j++)
                 {
-                    result[i, j].Should().BeApproximately(this._piezoelectricElementHardnessMatrix[i, j], this._precision);
+                    result[i, j].Should().BeApproximately(this._piezoelectricElementStiffnessMatrix[i, j], this._precision);
                 }
             }
         }
@@ -367,21 +367,21 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             }
         }
 
-        [Fact(DisplayName = @"Feature: CalculateEquivalentHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
-        public async void CalculateEquivalentHardness_Should_ExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: CalculateEquivalentStiffness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculateEquivalentStiffness_Should_ExecuteCorrectly()
         {
             // Arrange
             this._precision = 5e-3;
 
             // Act
-            var result = await this._operation.CalculateEquivalentHardness(this._hardnessMatrix, this._piezoelectricElectromechanicalCouplingMatrix, this._piezoelectricCapacitanceMatrix, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+            var result = await this._operation.CalculateEquivalentStiffness(this._stiffnessMatrix, this._piezoelectricElectromechanicalCouplingMatrix, this._piezoelectricCapacitanceMatrix, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; i++)
             {
                 for (int j = 0; j < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; j++)
                 {
-                    result[i, j].Should().BeApproximately(this._equivalentHardnessMatrix[i, j], this._precision);
+                    result[i, j].Should().BeApproximately(this._equivalentStiffnessMatrix[i, j], this._precision);
                 }
             }
         }
@@ -393,15 +393,15 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             double[,] mass = await this._operation.CalculateMass(this._beamWithPiezoelectric, degreesFreedomMaximum);
             double[,] equivalentMass = await this._operation.CalculateEquivalentMass(mass, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
 
-            double[,] hardness = await this._operation.CalculateHardness(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            double[,] stiffness = await this._operation.CalculateStiffness(this._beamWithPiezoelectric, degreesFreedomMaximum);
             double[,] piezoelectricElectromechanicalCoupling = await this._operation.CalculatePiezoelectricElectromechanicalCoupling(this._beamWithPiezoelectric, degreesFreedomMaximum);
             double[,] piezoelectricCapacitance = await this._operation.CalculatePiezoelectricCapacitance(this._beamWithPiezoelectric);
-            double[,] equivalentHardness = await this._operation.CalculateEquivalentHardness(hardness, piezoelectricElectromechanicalCoupling, piezoelectricCapacitance, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+            double[,] equivalentStiffness = await this._operation.CalculateEquivalentStiffness(stiffness, piezoelectricElectromechanicalCoupling, piezoelectricCapacitance, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
 
             this._precision = 5e-3;
 
             // Act
-            var result = await this._operation.CalculateDamping(equivalentMass, equivalentHardness);
+            var result = await this._operation.CalculateDamping(equivalentMass, equivalentStiffness);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; i++)

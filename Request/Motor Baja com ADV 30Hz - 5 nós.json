@@ -3,12 +3,12 @@
     "dvas": [
       {
         "dvaMass": 0.012,
-        "dvaHardness": 201869.25,
+        "dvaStiffness": 201869.25,
         "dvaNodePosition": 1
       },
       {
         "dvaMass": 0.012,
-        "dvaHardness": 80747.7,
+        "dvaStiffness": 80747.7,
         "dvaNodePosition": 3
       }
     ],

@@ -34,9 +34,9 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
         private readonly double[] _force;
         private readonly double[] _equivalentForce;
         private readonly double[,] _mass;
-        private readonly double[,] _hardness;
+        private readonly double[,] _stiffness;
         private readonly double[,] _damping;
-        private readonly double[,] _equivalentHardness;
+        private readonly double[,] _equivalentStiffness;
 
         public NewmarkMethodTest()
         {
@@ -71,7 +71,7 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
                 { 0, 0, 0, 0, 0, 0 }
             };
 
-            this._hardness = new double[numberOfrueBoundaryConditions, numberOfrueBoundaryConditions]
+            this._stiffness = new double[numberOfrueBoundaryConditions, numberOfrueBoundaryConditions]
             {
                 { 90, -270, 45, 0, 0, 0 },
                 { -270, 2528.78, 92.1953, 362.195, 0, 0 },
@@ -98,7 +98,7 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
                 NumberOfTrueBoundaryConditions = numberOfrueBoundaryConditions,
                 Force = this._force,
                 Mass = this._mass,
-                Hardness = this._hardness,
+                Stiffness = this._stiffness,
                 Damping = this._damping
             };
 
@@ -110,7 +110,7 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             this._velocity = new double[numberOfrueBoundaryConditions];
             this._acceleration = new double[numberOfrueBoundaryConditions];
 
-            this._equivalentHardness = new double[numberOfrueBoundaryConditions, numberOfrueBoundaryConditions]
+            this._equivalentStiffness = new double[numberOfrueBoundaryConditions, numberOfrueBoundaryConditions]
             { 
                 { 90.179, -268.85, 44.8676, 0, 0, 0 },
                 { -268.85, 2589.02, 92.5356, 360.847, 0, 0 },
@@ -152,8 +152,8 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             this._operation.a7.Should().BeApproximately(expected_a7, precision: 5e-8);
         }
 
-        [Fact(DisplayName = @"Feature: CalculateEquivalentHardness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
-        public async void CalculateEquivalentHardness_Should_ExecuteCorrectly()
+        [Fact(DisplayName = @"Feature: CalculateEquivalentStiffness | Given: Valid parameters. | When: Invoke. | Should: Execute correctly.")]
+        public async void CalculateEquivalentStiffness_Should_ExecuteCorrectly()
         {
             // Arrange
             double deltaTime = (Math.PI * 2 / this._newmarkMethodInput.AngularFrequency) / this._newmarkMethodInput.Parameter.PeriodDivision;
@@ -162,14 +162,14 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             this._precision = 5e-3;
 
             // Act
-            var result = await this._operation.CalculateEquivalentHardness(this._mass, this._hardness, this._damping, numberOfrueBoundaryConditions);
+            var result = await this._operation.CalculateEquivalentStiffness(this._mass, this._stiffness, this._damping, numberOfrueBoundaryConditions);
 
             // Assert
             for (int i = 0; i < numberOfrueBoundaryConditions; i++)
             {
                 for (int j = 0; j < numberOfrueBoundaryConditions; j++)
                 {
-                    result[i, j].Should().BeApproximately(this._equivalentHardness[i, j], this._precision);
+                    result[i, j].Should().BeApproximately(this._equivalentStiffness[i, j], this._precision);
                 }
             }
         }

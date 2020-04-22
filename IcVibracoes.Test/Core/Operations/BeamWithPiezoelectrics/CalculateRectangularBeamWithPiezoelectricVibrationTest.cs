@@ -46,7 +46,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
         private readonly double _piezoelectricMomentOfInertia;
         private readonly double[] _equivalentForce;
         private readonly double[,] _mass;
-        private readonly double[,] _hardness;
+        private readonly double[,] _stiffness;
         private readonly double[,] _damping;
         private readonly RectangularProfile _beamProfile;
         private readonly RectangularProfile _piezoelectricProfile;
@@ -198,7 +198,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
                 { 0, 0, 0, 0, 0, 0 }
             };
 
-            this._hardness = new double[numberOfBoundaryConditionsTrue, numberOfBoundaryConditionsTrue]
+            this._stiffness = new double[numberOfBoundaryConditionsTrue, numberOfBoundaryConditionsTrue]
             { 
                 { 90, -270, 45, 0, 0, 0 },
                 { -270, 2528.78, 92.1953, 362.195, 0, 0 },
@@ -224,7 +224,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
                 NumberOfTrueBoundaryConditions = numberOfBoundaryConditionsTrue,
                 Force = this._equivalentForce,
                 Mass = this._mass,
-                Hardness = this._hardness,
+                Stiffness = this._stiffness,
                 Damping = this._damping
             };
         }
@@ -277,7 +277,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
                 for (int j = 0; j < numberOfBoundaryConditionsTrue; j++)
                 {
                     result.Mass[i, j].Should().BeApproximately(this._mass[i,j], precision: 5e-7);
-                    result.Hardness[i, j].Should().BeApproximately(this._hardness[i,j], precision: 5e-3);
+                    result.Stiffness[i, j].Should().BeApproximately(this._stiffness[i,j], precision: 5e-3);
                     result.Damping[i, j].Should().BeApproximately(this._damping[i,j], precision: 5e-9);
                 }
             }

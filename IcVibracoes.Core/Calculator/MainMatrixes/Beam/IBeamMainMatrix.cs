@@ -30,30 +30,30 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         Task<double[,]> CalculateMass(Beam<TProfile> beam, uint degreesFreedomMaximum);
 
         /// <summary>
-        /// It's responsible to calculate the beam element hardness matrix.
+        /// It's responsible to calculate the beam element stiffness matrix.
         /// </summary>
         /// <param name="momentInertia"></param>
         /// <param name="youngModulus"></param>
         /// <param name="elementLength"></param>
         /// <returns></returns>
-        Task<double[,]> CalculateElementHardness(double momentInertia, double youngModulus, double elementLength);
+        Task<double[,]> CalculateElementStiffness(double momentInertia, double youngModulus, double elementLength);
 
         /// <summary>
-        /// Responsible to calculate the beam hardness matrix.
+        /// Responsible to calculate the beam stiffness matrix.
         /// </summary>
         /// <param name="beam"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        Task<double[,]> CalculateHardness(Beam<TProfile> beam, uint degreesFreedomMaximum);
+        Task<double[,]> CalculateStiffness(Beam<TProfile> beam, uint degreesFreedomMaximum);
 
         /// <summary>
         /// It's responsible to calculate the damping matrix.
         /// </summary>
         /// <param name="mass"></param>
-        /// <param name="hardness"></param>
+        /// <param name="stiffness"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        Task<double[,]> CalculateDamping(double[,] mass, double[,] hardness);
+        Task<double[,]> CalculateDamping(double[,] mass, double[,] stiffness);
 
         /// <summary>
         /// It's rewsponsible to build the bondary condition matrix.

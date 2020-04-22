@@ -32,8 +32,8 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
 
             base._elementMassMatrix = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
             base._massMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum];
-            base._elementHardnessMatrix = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
-            base._hardnessMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum];
+            base._elementStiffnessMatrix = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
+            base._stiffnessMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum];
             base._dampingMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum];
         }
     }

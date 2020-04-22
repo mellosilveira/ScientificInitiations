@@ -22,7 +22,7 @@ namespace IcVibracoes.Test.Core.Calculator
         private readonly double[,] _addedValuesInMatrix1;
         private readonly double[] _mergedVector1Vetor2;
         private readonly double[] _multipliedMatrix1Vector1;
-        private readonly double[,] _equivalentHardness;
+        private readonly double[,] _equivalentStiffness;
 
         private uint[] _elementPositions;
 
@@ -43,7 +43,7 @@ namespace IcVibracoes.Test.Core.Calculator
             this._multipliedMatrix1Vector1 = new double[arraySize] { 10, 31, 19, 16 };
             this._transposedMatrix1 = new double[arraySize, arraySize] { { 1, 2, 3, 2 }, { 1, 5, 5, 5 }, { 1, 1, 2, 0 }, { 1, 4, 0, 1 } };
 
-            this._equivalentHardness = new double[,]
+            this._equivalentStiffness = new double[,]
             {
                 { 90, -270, 45, 0, 0, 0 },
                 { -270, 2528.78, 92.1953, 362.195, 0, 0 },

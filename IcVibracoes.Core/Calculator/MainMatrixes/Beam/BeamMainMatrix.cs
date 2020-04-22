@@ -78,96 +78,96 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         }
 
         /// <summary>
-        /// Responsible to calculate the hardness matrix of the beam element.
+        /// Responsible to calculate the stiffness matrix of the beam element.
         /// </summary>
         /// <param name="momentOfInertia"></param>
         /// <param name="youngModulus"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculateElementHardness(double momentOfInertia, double youngModulus, double length)
+        public Task<double[,]> CalculateElementStiffness(double momentOfInertia, double youngModulus, double length)
         {
-            double[,] elementHardness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
+            double[,] elementStiffness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
 
             double constant = momentOfInertia * youngModulus / Math.Pow(length, 3);
 
-            elementHardness[0, 0] = 12 * constant;
-            elementHardness[0, 1] = 6 * length * constant;
-            elementHardness[0, 2] = -12 * constant;
-            elementHardness[0, 3] = 6 * length * constant;
-            elementHardness[1, 0] = 6 * length * constant;
-            elementHardness[1, 1] = 4 * Math.Pow(length, 2) * constant;
-            elementHardness[1, 2] = -(6 * length * constant);
-            elementHardness[1, 3] = 2 * Math.Pow(length, 2) * constant;
-            elementHardness[2, 0] = -(12 * constant);
-            elementHardness[2, 1] = -(6 * length * constant);
-            elementHardness[2, 2] = 12 * constant;
-            elementHardness[2, 3] = -(6 * length * constant);
-            elementHardness[3, 0] = 6 * length * constant;
-            elementHardness[3, 1] = 2 * Math.Pow(length, 2) * constant;
-            elementHardness[3, 2] = -(6 * length * constant);
-            elementHardness[3, 3] = 4 * Math.Pow(length, 2) * constant;
+            elementStiffness[0, 0] = 12 * constant;
+            elementStiffness[0, 1] = 6 * length * constant;
+            elementStiffness[0, 2] = -12 * constant;
+            elementStiffness[0, 3] = 6 * length * constant;
+            elementStiffness[1, 0] = 6 * length * constant;
+            elementStiffness[1, 1] = 4 * Math.Pow(length, 2) * constant;
+            elementStiffness[1, 2] = -(6 * length * constant);
+            elementStiffness[1, 3] = 2 * Math.Pow(length, 2) * constant;
+            elementStiffness[2, 0] = -(12 * constant);
+            elementStiffness[2, 1] = -(6 * length * constant);
+            elementStiffness[2, 2] = 12 * constant;
+            elementStiffness[2, 3] = -(6 * length * constant);
+            elementStiffness[3, 0] = 6 * length * constant;
+            elementStiffness[3, 1] = 2 * Math.Pow(length, 2) * constant;
+            elementStiffness[3, 2] = -(6 * length * constant);
+            elementStiffness[3, 3] = 4 * Math.Pow(length, 2) * constant;
 
-            return Task.FromResult(elementHardness);
+            return Task.FromResult(elementStiffness);
         }
 
         /// <summary>
-        /// Responsible to calculate the hardness matrix of the beam.
+        /// Responsible to calculate the stiffness matrix of the beam.
         /// </summary>
         /// <param name="beam"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        public async Task<double[,]> CalculateHardness(Beam<TProfile> beam, uint degreesFreedomMaximum)
+        public async Task<double[,]> CalculateStiffness(Beam<TProfile> beam, uint degreesFreedomMaximum)
         {
             uint numberOfElements = beam.NumberOfElements;
             uint dfe = Constant.DegreesFreedomElement;
 
-            double[,] hardness = new double[degreesFreedomMaximum, degreesFreedomMaximum];
+            double[,] stiffness = new double[degreesFreedomMaximum, degreesFreedomMaximum];
 
             double length = beam.Length / numberOfElements;
 
             for (uint n = 0; n < numberOfElements; n++)
             {
-                double[,] elementHardness = await this.CalculateElementHardness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, length);
+                double[,] elementStiffness = await this.CalculateElementStiffness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, length);
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
                 {
                     for (uint j = (dfe / 2) * n; j < (dfe / 2) * n + dfe; j++)
                     {
-                        hardness[i, j] += elementHardness[i - (dfe / 2) * n, j - (dfe / 2) * n];
+                        stiffness[i, j] += elementStiffness[i - (dfe / 2) * n, j - (dfe / 2) * n];
                     }
                 }
             }
 
-            return hardness;
+            return stiffness;
         }
 
         /// <summary>
         /// It's responsible to calculate the damping matrix.
         /// </summary>
         /// <param name="mass"></param>
-        /// <param name="hardness"></param>
+        /// <param name="stiffness"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculateDamping(double[,] mass, double[,] hardness)
+        public Task<double[,]> CalculateDamping(double[,] mass, double[,] stiffness)
         {
             int massRow = mass.GetLength(0);
             int massColumn = mass.GetLength(1);
-            int hardnessRow = mass.GetLength(0);
-            int hardnessColumn = mass.GetLength(1);
+            int stiffnessRow = mass.GetLength(0);
+            int stiffnessColumn = mass.GetLength(1);
 
             if (massRow != massColumn)
             {
                 throw new Exception($"Mass must be a square matrix.");
             }
 
-            if (hardnessRow != hardnessColumn)
+            if (stiffnessRow != stiffnessColumn)
             {
-                throw new Exception($"Hardness must be a square matrix.");
+                throw new Exception($"Stiffness must be a square matrix.");
             }
 
-            if (massRow != hardnessRow || massColumn != hardnessColumn)
+            if (massRow != stiffnessRow || massColumn != stiffnessColumn)
             {
-                throw new Exception($"Mass sizes: {massRow}x{massColumn} must be equals to hardness sizes: {hardnessRow}x{hardnessColumn}.");
+                throw new Exception($"Mass sizes: {massRow}x{massColumn} must be equals to stiffness sizes: {stiffnessRow}x{stiffnessColumn}.");
             }
 
             int size = massRow;
@@ -178,7 +178,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
             {
                 for (int j = 0; j < size; j++)
                 {
-                    damping[i, j] = Constant.Mi * mass[i, j] + Constant.Alpha * hardness[i, j];
+                    damping[i, j] = Constant.Mi * mass[i, j] + Constant.Alpha * stiffness[i, j];
                 }
             }
 

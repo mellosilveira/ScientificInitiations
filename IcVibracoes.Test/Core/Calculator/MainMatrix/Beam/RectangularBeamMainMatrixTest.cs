@@ -48,7 +48,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
                 { 0.000000, 0.000000, -0.004556, -0.000526, -0.007710, 0.000701 }
             };
             
-            base._elementHardnessMatrix = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement]
+            base._elementStiffnessMatrix = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement]
             {
                 { 1080.000000, 270.000000, -1080.000000, 270.000000 },
                 { 270.000000, 90.000000, -270.000000, 45.000000 },
@@ -56,7 +56,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
                 { 270.000000, 45.000000, -270.000000, 90.000000 }
             };
 
-            base._hardnessMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum]
+            base._stiffnessMatrix = new double[degreesFreedomMaximum, degreesFreedomMaximum]
             {
                 { 1080.000000, 270.000000, -1080.000000, 270.000000, 0.000000, 0.000000 },
                 { 270.000000, 90.000000, -270.000000, 45.000000, 0.000000, 0.000000 },
