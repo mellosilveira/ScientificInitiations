@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\IcVibracoes.Common\IcVibracoes.Common.csproj" />
     <ProjectReference Include="..\IcVibracoes.DataContracts\IcVibracoes.DataContracts.csproj" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts.RigidBody;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
@@ -16,7 +17,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
     public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> : OperationBase<TRequest, TResponse, TResponseData>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
-        where TResponseData : RigidBodyResponseData
+        where TResponseData : RigidBodyResponseData, new()
         where TResponse : RigidBodyResponse<TResponseData>, new()
     {
         private readonly IAuxiliarOperation _auxiliarOperation;
@@ -25,10 +26,13 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <summary>
         /// Class constructor.
         /// </summary>
+        /// <param name="auxiliarOperation"></param>
         /// <param name="rungeKutta"></param>
         public CalculateVibration_RigidBody(
+            IAuxiliarOperation auxiliarOperation,
             IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> rungeKutta)
         {
+            this._auxiliarOperation = auxiliarOperation;
             this._rungeKutta = rungeKutta;
         }
 
@@ -69,7 +73,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
         protected override async Task<TResponse> ProcessOperation(TRequest request)
         {
-            var response = new TResponse();
+            var response = new TResponse
+            {
+                Data = new TResponseData()
+            };
+
+            double[] y = await this.BuildInitialConditions(request.Data);
+            response.Data.Results = new Dictionary<double, double[]>
+            {
+                { request.Data.InitialTime, y}
+            };
 
             double time = request.Data.InitialTime;
             double timeStep = request.Data.TimeStep;
@@ -90,13 +103,13 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                 {
                     string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, dampingRatio, w);
 
-                    while (time < finalTime)
+                    while (time <= finalTime)
                     {
-                        double[] y = await this.BuildInitialConditions(request.Data);
-
                         y = await this._rungeKutta.ExecuteMethod(input, timeStep, time, y);
 
                         this._auxiliarOperation.WriteInFile(time, y, path);
+
+                        response.Data.Results.Add(time, y);
 
                         time += timeStep;
                     }

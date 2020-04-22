@@ -11,7 +11,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForth
     public abstract class RungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> : IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
-        where TResponseData : RigidBodyResponseData
+        where TResponseData : RigidBodyResponseData, new()
         where TResponse : RigidBodyResponse<TResponseData>, new()
     {
         private readonly ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> _operation;

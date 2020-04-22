@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
     public interface ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> : IOperationBase<TRequest, TResponse, TResponseData>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
-        where TResponseData : RigidBodyResponseData
+        where TResponseData : RigidBodyResponseData, new()
         where TResponse : RigidBodyResponse<TResponseData>, new()
     {
         /// <summary>

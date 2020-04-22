@@ -10,7 +10,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForth
     public interface IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
-        where TResponseData : RigidBodyResponseData
+        where TResponseData : RigidBodyResponseData, new()
         where TResponse : RigidBodyResponse<TResponseData>, new()
     {
         /// <summary>

@@ -39,9 +39,9 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
             IProfileValidator<TProfile> profileValidator,
             IAuxiliarOperation auxiliarOperation)
         {
-            _newmarkMethod = newmarkMethod;
-            _profileValidator = profileValidator;
-            _auxiliarOperation = auxiliarOperation;
+            this._newmarkMethod = newmarkMethod;
+            this._profileValidator = profileValidator;
+            this._auxiliarOperation = auxiliarOperation;
         }
 
         /// <summary>
@@ -65,13 +65,13 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
 
             try
             {
-                uint degreesFreedomMaximum = _auxiliarOperation.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements);
+                uint degreesFreedomMaximum = this._auxiliarOperation.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements);
 
                 TBeam beam = await BuildBeam(request, degreesFreedomMaximum);
 
                 NewmarkMethodInput input = await CreateInput(beam, request.MethodParameterData, degreesFreedomMaximum);
 
-                await _newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements);
+                await this._newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements);
 
                 return response;
             }
@@ -92,7 +92,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         {
             FiniteElementsResponse response = new FiniteElementsResponse();
 
-            bool isProfileValid = await _profileValidator.Execute(request.BeamData.Profile, response);
+            bool isProfileValid = await this._profileValidator.Execute(request.BeamData.Profile, response);
 
             //bool isBeamDataValid;
 
