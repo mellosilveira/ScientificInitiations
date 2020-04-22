@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models.BeamCharacteristics;
-using IcVibracoes.Core.Models.BeamCharacteristics;
 
 namespace IcVibracoes.Core.Models.Beams
 {

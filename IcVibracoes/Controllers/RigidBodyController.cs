@@ -3,9 +3,6 @@ using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom
 using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Controllers

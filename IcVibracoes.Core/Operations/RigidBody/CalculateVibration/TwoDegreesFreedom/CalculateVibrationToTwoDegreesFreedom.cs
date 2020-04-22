@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.TwoDegreeFreedom;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
 using System;
@@ -19,10 +19,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
         /// <summary>
         /// Class constructor.
         /// </summary>
+        /// <param name="auxiliarOperation"></param>
         /// <param name="rungeKutta"></param>
         public CalculateVibrationToTwoDegreesFreedom(
+            IAuxiliarOperation auxiliarOperation,
             IRungeKuttaForthOrderMethod_2DF rungeKutta)
-            : base(rungeKutta)
+            : base(auxiliarOperation, rungeKutta)
         { }
 
         /// <summary>

@@ -26,30 +26,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForth
             this._operation = operation;
         }
 
-        public async Task<TResponse> CalculateResponse(TRequest request, int numberOfEquations)
-        {
-            var response = new TResponse();
-
-            double time = request.Data.InitialTime;
-            double dt = request.Data.TimeStep;
-            double finalTime = request.Data.FinalTime;
-
-            // Parallel.Foreach
-            foreach (var dampingRatio in request.Data.DampingRatioList)
-            {
-                while (time <= finalTime)
-                {
-                    double[] y = new double[numberOfEquations];
-
-
-
-                    time += dt;
-                }
-            }
-
-            return response;
-        }
-
         /// <summary>
         /// Calculates the response of the Runge Kutta Forth Order numerical integration.
         /// </summary>

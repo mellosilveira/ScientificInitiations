@@ -1,4 +1,5 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
+using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.OneDegreeFreedom;
@@ -18,10 +19,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// <summary>
         /// Class constructor.
         /// </summary>
+        /// <param name="auxiliarOperation"></param>
         /// <param name="rungeKutta"></param>
         public CalculateVibrationToOneDegreeFreedom(
-            IRungeKuttaForthOrderMethod_1DF rungeKutta) 
-            : base(rungeKutta)
+            IAuxiliarOperation auxiliarOperation,
+            IRungeKuttaForthOrderMethod_1DF rungeKutta) : base(auxiliarOperation, rungeKutta)
         { }
 
         /// <summary>

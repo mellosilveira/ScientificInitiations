@@ -11,7 +11,6 @@ using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular;
 using IcVibracoes.Core.Mapper.Profiles.Rectangular;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
@@ -124,7 +123,6 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
 
             this._request = new BeamWithPiezoelectricRequest<RectangularProfile>
             {
-                AnalysisType = "Teste",
                 Author = "Teste",
                 BeamData = new PiezoelectricRequestData<RectangularProfile>
                 {

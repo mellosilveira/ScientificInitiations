@@ -85,7 +85,7 @@ namespace IcVibracoes.Controllers
         {
             FiniteElementsResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
-            if(!response.Success)
+            if (!response.Success)
             {
                 return BadRequest(response);
             }

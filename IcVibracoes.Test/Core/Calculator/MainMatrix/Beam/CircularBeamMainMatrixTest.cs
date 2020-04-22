@@ -3,7 +3,6 @@ using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.Core.Models.BeamCharacteristics;
 
 namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
 {

@@ -4,8 +4,6 @@ using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.Core.Models.BeamCharacteristics;
-using Moq;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
