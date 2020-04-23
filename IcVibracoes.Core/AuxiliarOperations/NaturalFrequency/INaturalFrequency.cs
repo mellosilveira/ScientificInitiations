@@ -1,9 +1,9 @@
 ﻿using IcVibracoes.DataContracts;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.NaturalAngularFrequency
+namespace IcVibracoes.Core.AuxiliarOperations.NaturalFrequency
 {
-    public interface INaturalAngularFrequency
+    public interface INaturalFrequency
     {
         Task<double[]> Calculate<TResponse, TResponseData>(TResponse response, double[,] mass, double[,] stiffness)
             where TResponse : OperationResponseBase<TResponseData>

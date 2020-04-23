@@ -2,9 +2,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.NaturalAngularFrequency
+namespace IcVibracoes.Core.AuxiliarOperations.NaturalFrequency
 {
-    public class NaturalAngularFrequency : INaturalAngularFrequency
+    public class NaturalFrequency : INaturalFrequency
     {
         public Task<double[]> Calculate<TResponse, TResponseData>(TResponse response, double[,] mass, double[,] stiffness)
             where TResponseData : OperationResponseData
