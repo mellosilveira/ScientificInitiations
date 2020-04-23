@@ -23,5 +23,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.NaturalAngularFrequency
 
             return Task.FromResult(naturalAngularFrequency);
         }
+
+
     }
 }
