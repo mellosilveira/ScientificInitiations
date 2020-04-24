@@ -69,7 +69,7 @@ namespace IcVibracoes.Common.ExtensionMethods
             return result;
         }
 
-        public static List<double[]> ConvertColumnsToList(this double[,] matrix)
+        public static List<double[]> ConvertToListByColumns(this double[,] matrix)
         {
             List<double[]> result = new List<double[]>();
 
@@ -105,6 +105,30 @@ namespace IcVibracoes.Common.ExtensionMethods
             }
 
             return Math.Sqrt(result);
+        }
+
+        public static double GetMaxValueBelowMainDiagonal(this double[][] matrix)
+        {
+            // Get first value in the matrix below the main diagonal to initiate the comparison.
+            double maxValue = matrix[1][0];
+
+            // Begins in the second line.
+            for (int i = 1; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    // Values below main diagonal.
+                    if (i > j)
+                    {
+                        if (maxValue < matrix[i][j])
+                        {
+                            maxValue = matrix[i][j];
+                        }
+                    }
+                }
+            }
+
+            return maxValue;
         }
     }
 }

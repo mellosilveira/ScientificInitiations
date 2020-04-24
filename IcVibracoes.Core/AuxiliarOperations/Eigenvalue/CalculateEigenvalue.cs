@@ -100,46 +100,78 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
         /// <returns></returns>
         public async Task<double[]> QR_Decomposition(double[,] matrix, double tolerance)
         {
-            List<double[]> aVectors = matrix.ConvertColumnsToList();
-            int size = aVectors.Count;
+            List<double[]> matrixA = matrix.ConvertToListByColumns();
+            int size = matrixA.Count;
 
-            var uVectors = new List<double[]>();
-            var eVectors = new List<double[]>();
+            var vectorsU = new List<double[]>();
+            var vectorsE = new List<double[]>();
 
-            for (int i = 0; i < size; i++)
+            do
             {
-                double[] uVector = aVectors[i];
 
-                for (int j = i - 1; j < 0; j--)
+                for (int i = 0; i < size; i++)
                 {
-                    double[] projection = await this.CalculateProjection(aVectors[i], uVectors[j]);
-                    uVector = await this._arrayOperation.Subtract(uVector, projection);
+                    double[] vectorU = matrixA[i];
+
+                    for (int j = i - 1; j < 0; j--)
+                    {
+                        double[] projection = await this.CalculateProjection(matrixA[i], vectorsU[j]);
+                        vectorU = await this._arrayOperation.Subtract(vectorU, projection);
+                    }
+
+                    double uNorm = vectorU.CalculateVectorNorm();
+
+                    vectorsU.Add(vectorU);
+                    vectorsE.Add(vectorU.DivideEachElement(uNorm));
                 }
 
-                double uNorm = uVector.CalculateVectorNorm();
-
-                uVectors.Add(uVector);
-                eVectors.Add(uVector.DivideEachElement(uNorm));
-            }
-
-            for (int i = 0; i < size; i++)
-            {
-                double[] aVector = new double[size];
-
-                for (int j = 0; j < size; j++)
+                for (int i = 0; i < size; i++)
                 {
-                    double innerProduct = await this._arrayOperation.CalculateInnerProduct(eVectors[j], aVectors[i]);
+                    double[] aVector = new double[size];
 
-                    aVector = await this._arrayOperation.Sum(eVectors[j].MultiplyEachElement(innerProduct), aVector);
+                    for (int j = 0; j < size; j++)
+                    {
+                        double innerProduct = await this._arrayOperation.CalculateInnerProduct(vectorsE[j], matrixA[i]);
+
+                        aVector = await this._arrayOperation.Sum(vectorsE[j].MultiplyEachElement(innerProduct), aVector);
+                    }
+
+                    matrixA[i] = aVector;
                 }
 
-                aVectors[i] = aVector;
+                double[,] matrixQ = new double[size, size];
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 0; j < size; j++)
+                    {
+                        matrixQ[i, j] = vectorsE[i][j];
+                    }
+                }
+
+                double[,] matrixR = new double[size, size];
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 0; j < size; j++)
+                    {
+                        if (i <= j)
+                        {
+                            matrixQ[i, j] = await this._arrayOperation.CalculateInnerProduct(vectorsE[i], matrixA[j]);
+                        }
+                        else
+                        {
+                            matrixR[i, j] = 0;
+                        }
+                    }
+                }
+
+                matrixA = (await this._arrayOperation.Multiply(matrixR, matrixQ)).ConvertToListByColumns();
             }
+            while (matrixA.ToArray().GetMaxValueBelowMainDiagonal() > tolerance);
 
             double[] eigenvalues = new double[size];
-            for(int i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
             {
-                eigenvalues[i] = await this._arrayOperation.CalculateInnerProduct(eVectors[i], aVectors[i]);
+                eigenvalues[i] = matrixA[i][i];
             }
 
             return eigenvalues;
