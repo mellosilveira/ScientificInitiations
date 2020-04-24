@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IcVibracoes.DataContracts;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.ArrayOperations
@@ -39,6 +41,23 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
             }
 
             return Task.FromResult(matrixToAdd);
+        }
+
+        /// <summary>
+        /// It's responsible to calculate the inner product between two matrixes.
+        /// </summary>
+        /// <param name="vector1"></param>
+        /// <param name="vector2"></param>
+        /// <returns></returns>
+        public Task<double> CalculateInnerProduct(double[] vector1, double[] vector2)
+        {
+            double result = 0;
+            for (int i = 0; i < vector1.Length; i++)
+            {
+                result += vector1[i] * vector2[i];
+            }
+
+            return Task.FromResult(result);
         }
 
         /// <summary>
@@ -242,6 +261,57 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         }
 
         /// <summary>
+        /// It's responsible to multiplicate two matrixes.
+        /// </summary>
+        /// <param name="matrix1"></param>
+        /// <param name="matrix2"></param>
+        /// <returns></returns>
+        public Task<double[,]> Multiply(double[,] matrix1, double[,] matrix2)
+        {
+            int rows1 = matrix1.GetLength(0);
+            int columns2 = matrix2.GetLength(1);
+
+            double[,] result = new double[rows1, columns2];
+
+            for (int i = 0; i < rows1; i++)
+            {
+                for (int j = 0; j < columns2; j++)
+                {
+                    double sum = 0;
+
+                    for (int k = 0; k < rows1; k++)
+                    {
+                        sum += matrix1[i, k] * matrix2[k, j];
+                    }
+
+                    result[i, j] = sum;
+                }
+            }
+
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// It's responsible to subtract two vectors.
+        /// </summary>
+        /// <param name="vector1"></param>
+        /// <param name="vector2"></param>
+        /// <returns></returns>
+        public Task<double[]> Subtract(double[] vector1, double[] vector2)
+        {
+            int size = vector1.Length;
+
+            double[] result = new double[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                result[i] = vector1[i] - vector2[i];
+            }
+
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
         /// It's responsible to sum three vectors.
         /// </summary>
         /// <param name="vector1"></param>
@@ -268,6 +338,26 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
             }
 
             return Task.FromResult(vectorSum);
+        }
+
+        /// <summary>
+        /// It1s responsible to sum two vectors.
+        /// </summary>
+        /// <param name="vector1"></param>
+        /// <param name="vector2"></param>
+        /// <returns></returns>
+        public Task<double[]> Sum(double[] vector1, double[] vector2)
+        {
+            int size = vector1.Length;
+
+            double[] result = new double[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                result[i] = vector1[i] + vector2[i];
+            }
+
+            return Task.FromResult(result);
         }
 
         /// <summary>

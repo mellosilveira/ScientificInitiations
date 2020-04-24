@@ -15,6 +15,14 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         Task<double[,]> AddValue(double[,] matrixToAdd, double[] values, uint[] nodePositions, string matrixName);
 
         /// <summary>
+        /// It's responsible to calculate the inner product between two matrixes.
+        /// </summary>
+        /// <param name="vector1"></param>
+        /// <param name="vector2"></param>
+        /// <returns></returns>
+        Task<double> CalculateInnerProduct(double[] vector1, double[] vector2);
+
+        /// <summary>
         /// It's responsible to create a vector with an unique value in all positions with a size that is informed.
         /// </summary>
         /// <param name="value"></param>
@@ -59,6 +67,22 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         Task<double[]> Multiply(double[,] matrix, double[] vector, string arraysName);
 
         /// <summary>
+        /// It's responsible to multiplicate a matrix and a vector.
+        /// </summary>
+        /// <param name="matrix1"></param>
+        /// <param name="matrix2"></param>
+        /// <returns></returns>
+        Task<double[,]> Multiply(double[,] matrix1, double[,] matrix2);
+
+        /// <summary>
+        /// It's responsible to subtract two vectors.
+        /// </summary>
+        /// <param name="vector1"></param>
+        /// <param name="vector2"></param>
+        /// <returns></returns>
+        Task<double[]> Subtract(double[] vector1, double[] vector2);
+
+        /// <summary>
         /// It's responsible to sum three vectors.
         /// </summary>
         /// <param name="vector1"></param>
@@ -66,6 +90,14 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="vector3"></param>
         /// <param name="vectorsName"></param>
         Task<double[]> Sum(double[] vector1, double[] vector2, double[] vector3, string vectorsName);
+
+        /// <summary>
+        /// It's responsible to sum two vectors.
+        /// </summary>
+        /// <param name="vector1"></param>
+        /// <param name="vector2"></param>
+        /// <returns></returns>
+        Task<double[]> Sum(double[] vector1, double[] vector2);
 
         /// <summary>
         /// It's responsible to calculate the transposed matrix of a informed matrix.

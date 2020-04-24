@@ -1,4 +1,7 @@
-﻿namespace IcVibracoes.Common.ExtensionMethods
+﻿using System;
+using System.Collections.Generic;
+
+namespace IcVibracoes.Common.ExtensionMethods
 {
     public static class VectorExtension
     {
@@ -30,24 +33,16 @@
             return minValue;
         }
 
-        /// <summary>
-        /// Get the first index of value.
-        /// If index don't exist returns -1.
-        /// </summary>
-        /// <param name="vector"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static int IndexOf(this double[] vector, double value)
+        public static double[] MultiplyEachElement(this double[] vector, double value)
         {
+            double[] result = new double[vector.Length];
+
             for (int i = 0; i < vector.Length; i++)
             {
-                if (vector[i] == value)
-                {
-                    return i;
-                }
+                result[i] = vector[i] * value;
             }
 
-            return -1;
+            return result;
         }
 
         public static double[] Divide(this double[] vector, double[] vectorToDivide)
@@ -72,6 +67,44 @@
             }
 
             return result;
+        }
+
+        public static List<double[]> ConvertColumnsToList(this double[,] matrix)
+        {
+            List<double[]> result = new List<double[]>();
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                var aux = new double[matrix.GetLength(1)];
+
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    aux[j] = matrix[j, i];
+                }
+
+                result.AddRange(new List<double[]> { aux });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calculates the norm of a vector.
+        /// Equation:
+        ///     norm = sqrt(vector[0]² + vector[1]² + ... + vector[n]²)
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public static double CalculateVectorNorm(this double[] vector)
+        {
+            double result = 0;
+
+            for (int i = 0; i < vector.Length; i++)
+            {
+                result += Math.Pow(vector[i], 2);
+            }
+
+            return Math.Sqrt(result);
         }
     }
 }
