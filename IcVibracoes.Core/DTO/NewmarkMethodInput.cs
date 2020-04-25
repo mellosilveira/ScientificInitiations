@@ -28,6 +28,11 @@ namespace IcVibracoes.Core.DTO.Input
         public double[] Force { get; set; }
 
         /// <summary>
+        /// Original force vector applied in the object.
+        /// </summary>
+        public double[] OriginalForce { get; set; }
+
+        /// <summary>
         /// Time step.
         /// </summary>
         public double TimeStep { get; set; }

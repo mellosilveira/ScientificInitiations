@@ -96,12 +96,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         {
             double time = input.Parameter.InitialTime;
 
-            double[] force = new double[input.NumberOfTrueBoundaryConditions];
-            for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
-            {
-                force[i] = input.Force[i];
-            }
-
             double[] y = new double[input.NumberOfTrueBoundaryConditions];
             double[] yPre = new double[input.NumberOfTrueBoundaryConditions];
 
@@ -120,7 +114,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                     for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
                     {
                         // Force can't initiate in 0 (?)
-                        input.Force[i] = force[i] * Math.Cos(input.AngularFrequency * time);
+                        input.Force[i] = input.OriginalForce[i] * Math.Cos(input.AngularFrequency * time);
                     }
 
                     if (time != 0)
@@ -192,18 +186,18 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <summary>
         /// Calculates the equivalent aceleration to calculate the equivalent force.
         /// </summary>
-        /// <param name="displacement"></param>
-        /// <param name="velocity"></param>
-        /// <param name="acceleration"></param>
+        /// <param name="previousDisplacement"></param>
+        /// <param name="previousVelocity"></param>
+        /// <param name="previousAcceleration"></param>
         /// <param name="numberOfTrueBondaryConditions"></param>
         /// <returns></returns>
-        public Task<double[]> CalculateEquivalentAcceleration(double[] displacement, double[] velocity, double[] acceleration, uint numberOfTrueBondaryConditions)
+        public Task<double[]> CalculateEquivalentAcceleration(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBondaryConditions)
         {
             double[] equivalentAcceleration = new double[numberOfTrueBondaryConditions];
 
             for (int i = 0; i < numberOfTrueBondaryConditions; i++)
             {
-                equivalentAcceleration[i] = a0 * displacement[i] + a2 * velocity[i] + a3 * acceleration[i];
+                equivalentAcceleration[i] = a0 * previousDisplacement[i] + a2 * previousVelocity[i] + a3 * previousAcceleration[i];
             }
 
             return Task.FromResult(equivalentAcceleration);
@@ -252,16 +246,16 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             return Task.FromResult(equivalentStiffness);
         }
 
-        public void CalculateIngrationContants(double deltaTime)
+        public void CalculateIngrationContants(double stepTime)
         {
-            a0 = 1 / (Constant.Beta * Math.Pow(deltaTime, 2));
-            a1 = Constant.Gama / (Constant.Beta * deltaTime);
-            a2 = 1 / (Constant.Beta * deltaTime);
+            a0 = 1 / (Constant.Beta * Math.Pow(stepTime, 2));
+            a1 = Constant.Gama / (Constant.Beta * stepTime);
+            a2 = 1 / (Constant.Beta * stepTime);
             a3 = 1 / (2 * Constant.Beta) - 1;
             a4 = (Constant.Gama / Constant.Beta) - 1;
-            a5 = (deltaTime / 2) * ((Constant.Gama / Constant.Beta) - 2);
-            a6 = deltaTime * (1 - Constant.Gama);
-            a7 = Constant.Gama * deltaTime;
+            a5 = (stepTime / 2) * ((Constant.Gama / Constant.Beta) - 2);
+            a6 = stepTime * (1 - Constant.Gama);
+            a7 = Constant.Gama * stepTime;
         }
 
         //public Task<bool> ValidateTimeStep()

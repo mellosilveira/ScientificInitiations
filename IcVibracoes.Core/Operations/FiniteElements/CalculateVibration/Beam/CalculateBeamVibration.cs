@@ -131,7 +131,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
 
                 Damping = this._auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Force = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
+                OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 
