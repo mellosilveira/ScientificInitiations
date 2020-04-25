@@ -17,13 +17,13 @@ namespace IcVibracoes.Core.Operations
             // TODO: Remover o try-catch
             try
             {
-                response = await ValidateOperation(request);
+                response = await ValidateOperation(request).ConfigureAwait(false);
                 if (!response.Success)
                 {
                     return response;
                 }
 
-                response = await ProcessOperation(request);
+                response = await ProcessOperation(request).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

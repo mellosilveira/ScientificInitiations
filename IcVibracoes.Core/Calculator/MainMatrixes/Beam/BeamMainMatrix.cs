@@ -63,7 +63,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
 
             for (uint n = 0; n < numberOfElements; n++)
             {
-                double[,] elementMass = await this.CalculateElementMass(beam.GeometricProperty.Area[n], beam.Material.SpecificMass, length);
+                double[,] elementMass = await this.CalculateElementMass(beam.GeometricProperty.Area[n], beam.Material.SpecificMass, length).ConfigureAwait(false);
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
                 {
@@ -127,7 +127,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
 
             for (uint n = 0; n < numberOfElements; n++)
             {
-                double[,] elementStiffness = await this.CalculateElementStiffness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, length);
+                double[,] elementStiffness = await this.CalculateElementStiffness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, length).ConfigureAwait(false);
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
                 {

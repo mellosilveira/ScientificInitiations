@@ -1,5 +1,7 @@
-﻿using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom;
+﻿using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
+using IcVibracoes.Core.DTO;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
+using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.TwoDegreeFreedom
 {
@@ -8,12 +10,21 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForth
     /// </summary>
     public class RungeKuttaForthOrderMethod_2DF : RungeKuttaForthOrderMethod<TwoDegreesFreedomRequest, TwoDegreesFreedomRequestData, TwoDegreesFreedomResponse, TwoDegreesFreedomResponseData>, IRungeKuttaForthOrderMethod_2DF
     {
+        private readonly ICalculateDifferentialEquationOfMotion _calculate;
+
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="operation"></param>
+        /// <param name="calculate"></param>
         public RungeKuttaForthOrderMethod_2DF(
-            ICalculateVibrationToTwoDegreesFreedom operation) : base(operation)
-        { }
+            ICalculateDifferentialEquationOfMotion calculate)
+        {
+            this._calculate = calculate;
+        }
+
+        public override async Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
+        {
+            return await this._calculate.CalculateForTwoDegreesOfFreedom(input, time, y).ConfigureAwait(false);
+        }
     }
 }

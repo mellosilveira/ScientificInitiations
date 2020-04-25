@@ -17,8 +17,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
     /// </summary>
     public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesFreedomRequest, TwoDegreesFreedomRequestData, TwoDegreesFreedomResponse, TwoDegreesFreedomResponseData>, ICalculateVibrationToTwoDegreesFreedom
     {
-        private readonly INaturalFrequency _naturalFrequency;
-
         /// <summary>
         /// Class constructor.
         /// </summary>
@@ -26,12 +24,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
         /// <param name="rungeKutta"></param>
         public CalculateVibrationToTwoDegreesFreedom(
             IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod_2DF rungeKutta,
-            INaturalFrequency naturalFrequency)
+            IRungeKuttaForthOrderMethod_2DF rungeKutta)
             : base(auxiliarOperation, rungeKutta)
-        {
-            this._naturalFrequency = naturalFrequency;
-        }
+        { }
 
         /// <summary>
         /// Builds the input of differential equation of motion.
@@ -71,37 +66,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
                 requestData.SecondaryInitialDisplacement,
                 requestData.SecondaryInitialVelocity
             });
-        }
-
-        /// <summary>
-        /// Calculates the value of the differential equation of motion for a specific time, based on the force and angular frequency that are passed.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="time"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public override async Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
-        {
-            double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
-
-            // wn - Natural angular frequency
-            double wn = await this._naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
-            double secondaryWn = await this._naturalFrequency.Calculate(input.SecondaryMass, input.SecondaryStiffness).ConfigureAwait(false);
-
-            double damping = input.DampingRatio * 2 * input.Mass * wn;
-            double secondaryDamping = input.DampingRatio * 2 * input.SecondaryMass * secondaryWn;
-
-            // Velocity of primary object.
-            result[0] = y[2];
-            // Velocity of secondary object.
-            result[1] = y[3];
-            // Acceleration of primary object.
-            result[2] = ((input.Force * Math.Sin(input.AngularFrequency * time)) - ((input.Stiffness + input.SecondaryStiffness) * y[0] - input.SecondaryStiffness * y[1] + (damping + secondaryDamping) * y[2] - secondaryDamping * y[3])) / input.Mass;
-            // Acceleration of secondary object.
-            result[3] = (input.SecondaryStiffness * (y[0] - y[1]) + secondaryDamping * (y[2] - y[3])) / input.SecondaryMass;
-
-            return result;
-        }
+        }        
 
         public override Task<string> CreateSolutionPath(TwoDegreesFreedomResponse response, TwoDegreesFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
         {

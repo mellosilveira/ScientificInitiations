@@ -37,11 +37,11 @@ namespace IcVibracoes.Core.Mapper.BeamProfiles.Rectangular
         {
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            double area = await this._calculateGeometricProperty.CalculateArea(profile.Height, profile.Width, profile.Thickness);
-            double momentOfInertia = await this._calculateGeometricProperty.CalculateMomentOfInertia(profile.Height, profile.Width, profile.Thickness);
+            double area = await this._calculateGeometricProperty.CalculateArea(profile.Height, profile.Width, profile.Thickness).ConfigureAwait(false);
+            double momentOfInertia = await this._calculateGeometricProperty.CalculateMomentOfInertia(profile.Height, profile.Width, profile.Thickness).ConfigureAwait(false);
 
-            geometricProperty.Area = await this._arrayOperation.CreateVector(area, degreesFreedomMaximum, nameof(area));
-            geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, degreesFreedomMaximum, nameof(momentOfInertia));
+            geometricProperty.Area = await this._arrayOperation.CreateVector(area, degreesFreedomMaximum, nameof(area)).ConfigureAwait(false);
+            geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, degreesFreedomMaximum, nameof(momentOfInertia)).ConfigureAwait(false);
 
             return geometricProperty;
         }

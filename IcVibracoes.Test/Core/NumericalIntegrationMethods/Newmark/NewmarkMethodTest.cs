@@ -158,7 +158,7 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             this._precision = 5e-3;
 
             // Act
-            var result = await this._operation.CalculateEquivalentStiffness(this._mass, this._stiffness, this._damping, numberOfrueBoundaryConditions);
+            var result = await this._operation.CalculateEquivalentStiffness(this._mass, this._stiffness, this._damping, numberOfrueBoundaryConditions).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < numberOfrueBoundaryConditions; i++)
@@ -178,7 +178,7 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
             this._operation.CalculateIngrationContants(deltaTime);
 
             // Act
-            var result = await this._operation.CalculateEquivalentForce(this._newmarkMethodInput, this._previousDisplacement, this._previousVelocity, this._previousAcceleration);
+            var result = await this._operation.CalculateEquivalentForce(this._newmarkMethodInput, this._previousDisplacement, this._previousVelocity, this._previousAcceleration).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < numberOfrueBoundaryConditions; i++)

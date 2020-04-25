@@ -215,7 +215,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             var result = await this._operation.CalculateElementMass(
                 this._beamWithPiezoelectric.PiezoelectricGeometricProperty.Area[1],
                 this._beamWithPiezoelectric.PiezoelectricSpecificMass,
-                this._elementLength);
+                this._elementLength).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < Constant.DegreesFreedomElement; i++)
@@ -231,7 +231,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         public async void CalculateMass_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateMass(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            var result = await this._operation.CalculateMass(this._beamWithPiezoelectric, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
@@ -247,7 +247,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         public async void CalculateStiffness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateStiffness(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            var result = await this._operation.CalculateStiffness(this._beamWithPiezoelectric, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
@@ -263,7 +263,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         public async void CalculatePiezoelectricElementStiffness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculatePiezoelectricElementStiffness(this._beamWithPiezoelectric.ElasticityConstant, this._piezoelectricMomentOfInertia, this._elementLength);
+            var result = await this._operation.CalculatePiezoelectricElementStiffness(this._beamWithPiezoelectric.ElasticityConstant, this._piezoelectricMomentOfInertia, this._elementLength).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < Constant.DegreesFreedomElement; i++)
@@ -282,7 +282,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             this._precision = 1e-12;
 
             // Act
-            var result = await this._operation.CalculatePiezoelectricElectromechanicalCoupling(this._beamWithPiezoelectric, degreesFreedomMaximum);
+            var result = await this._operation.CalculatePiezoelectricElectromechanicalCoupling(this._beamWithPiezoelectric, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
@@ -301,7 +301,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             this._precision = 1e-12;
 
             // Act
-            var result = await this._operation.CalculatePiezoelectricElementElectromechanicalCoupling(this._beamWithPiezoelectric);
+            var result = await this._operation.CalculatePiezoelectricElementElectromechanicalCoupling(this._beamWithPiezoelectric).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < Constant.DegreesFreedomElement; i++)
@@ -320,7 +320,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             this._precision = 1e-12;
 
             // Act
-            var result = await this._operation.CalculatePiezoelectricCapacitance(this._beamWithPiezoelectric);
+            var result = await this._operation.CalculatePiezoelectricCapacitance(this._beamWithPiezoelectric).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < piezoelectricDegreesFreedomMaximum; i++)
@@ -339,7 +339,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             this._precision = 1e-12;
 
             // Act
-            var result = await this._operation.CalculateElementPiezoelectricCapacitance(this._beamWithPiezoelectric, elementIndex: 1);
+            var result = await this._operation.CalculateElementPiezoelectricCapacitance(this._beamWithPiezoelectric, elementIndex: 1).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < Constant.PiezoelectricDegreesFreedomElement; i++)
@@ -355,7 +355,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         public async void CalculateEquivalentMass_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateEquivalentMass(this._massMatrix, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+            var result = await this._operation.CalculateEquivalentMass(this._massMatrix, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; i++)
@@ -374,7 +374,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
             this._precision = 5e-3;
 
             // Act
-            var result = await this._operation.CalculateEquivalentStiffness(this._stiffnessMatrix, this._piezoelectricElectromechanicalCouplingMatrix, this._piezoelectricCapacitanceMatrix, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+            var result = await this._operation.CalculateEquivalentStiffness(this._stiffnessMatrix, this._piezoelectricElectromechanicalCouplingMatrix, this._piezoelectricCapacitanceMatrix, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; i++)
@@ -390,18 +390,18 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         public async void CalculateDamping_Should_ExecuteCorrectly()
         {
             // Arrange
-            double[,] mass = await this._operation.CalculateMass(this._beamWithPiezoelectric, degreesFreedomMaximum);
-            double[,] equivalentMass = await this._operation.CalculateEquivalentMass(mass, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+            double[,] mass = await this._operation.CalculateMass(this._beamWithPiezoelectric, degreesFreedomMaximum).ConfigureAwait(false);
+            double[,] equivalentMass = await this._operation.CalculateEquivalentMass(mass, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum).ConfigureAwait(false);
 
-            double[,] stiffness = await this._operation.CalculateStiffness(this._beamWithPiezoelectric, degreesFreedomMaximum);
-            double[,] piezoelectricElectromechanicalCoupling = await this._operation.CalculatePiezoelectricElectromechanicalCoupling(this._beamWithPiezoelectric, degreesFreedomMaximum);
-            double[,] piezoelectricCapacitance = await this._operation.CalculatePiezoelectricCapacitance(this._beamWithPiezoelectric);
-            double[,] equivalentStiffness = await this._operation.CalculateEquivalentStiffness(stiffness, piezoelectricElectromechanicalCoupling, piezoelectricCapacitance, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum);
+            double[,] stiffness = await this._operation.CalculateStiffness(this._beamWithPiezoelectric, degreesFreedomMaximum).ConfigureAwait(false);
+            double[,] piezoelectricElectromechanicalCoupling = await this._operation.CalculatePiezoelectricElectromechanicalCoupling(this._beamWithPiezoelectric, degreesFreedomMaximum).ConfigureAwait(false);
+            double[,] piezoelectricCapacitance = await this._operation.CalculatePiezoelectricCapacitance(this._beamWithPiezoelectric).ConfigureAwait(false);
+            double[,] equivalentStiffness = await this._operation.CalculateEquivalentStiffness(stiffness, piezoelectricElectromechanicalCoupling, piezoelectricCapacitance, degreesFreedomMaximum, piezoelectricDegreesFreedomMaximum).ConfigureAwait(false);
 
             this._precision = 5e-3;
 
             // Act
-            var result = await this._operation.CalculateDamping(equivalentMass, equivalentStiffness);
+            var result = await this._operation.CalculateDamping(equivalentMass, equivalentStiffness).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum; i++)
@@ -417,7 +417,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithPiezoelectrics
         public async void CalculatePiezoelectricBondaryCondition_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculatePiezoelectricBondaryCondition(this._beamWithPiezoelectric.NumberOfElements, this._beamWithPiezoelectric.ElementsWithPiezoelectric);
+            var result = await this._operation.CalculatePiezoelectricBondaryCondition(this._beamWithPiezoelectric.NumberOfElements, this._beamWithPiezoelectric.ElementsWithPiezoelectric).ConfigureAwait(false);
 
             // Assert
             result.Should().BeEquivalentTo(this._piezoelectricBoundaryConditions);

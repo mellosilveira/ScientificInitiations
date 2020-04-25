@@ -40,13 +40,13 @@ namespace IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular
         {
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            double uniqueArea = await this._calculateGeometricProperty.CalculateArea(piezoelectricProfile.Height, piezoelectricProfile.Width, null);
+            double uniqueArea = await this._calculateGeometricProperty.CalculateArea(piezoelectricProfile.Height, piezoelectricProfile.Width, null).ConfigureAwait(false);
             double area = uniqueArea * numberOfPiezoelectricsPerElements;
             
-            double momentOfInertia = await this._calculateGeometricProperty.CalculatePiezoelectricMomentOfInertia(piezoelectricProfile.Height, piezoelectricProfile.Width, beamProfile.Height, numberOfPiezoelectricsPerElements);
+            double momentOfInertia = await this._calculateGeometricProperty.CalculatePiezoelectricMomentOfInertia(piezoelectricProfile.Height, piezoelectricProfile.Width, beamProfile.Height, numberOfPiezoelectricsPerElements).ConfigureAwait(false);
 
-            geometricProperty.Area = await this._arrayOperation.CreateVector(area, numberOfElements, elementsWithPiezoelectric, nameof(area));
-            geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, numberOfElements, elementsWithPiezoelectric, nameof(momentOfInertia));
+            geometricProperty.Area = await this._arrayOperation.CreateVector(area, numberOfElements, elementsWithPiezoelectric, nameof(area)).ConfigureAwait(false);
+            geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, numberOfElements, elementsWithPiezoelectric, nameof(momentOfInertia)).ConfigureAwait(false);
 
             return geometricProperty;
         }

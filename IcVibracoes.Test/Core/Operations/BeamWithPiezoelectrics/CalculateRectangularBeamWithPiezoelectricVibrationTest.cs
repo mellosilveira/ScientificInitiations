@@ -229,7 +229,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
         public async void BuildBeam_Given_DimensionsOfProfile_Should_ExecuteCorrectly()
         {
             // Act 
-            var result = await this._operation.BuildBeam(this._request, degreesFreedomMaximum);
+            var result = await this._operation.BuildBeam(this._request, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             result.DielectricConstant.Should().Be(this._beamWithPiezoelectic.DielectricConstant);
@@ -262,7 +262,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
         public async void CreateInput_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CreateInput(this._beamWithPiezoelectic, this._methodParameter, degreesFreedomMaximum);
+            var result = await this._operation.CreateInput(this._beamWithPiezoelectic, this._methodParameter, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             result.Parameter.Should().BeEquivalentTo(this._methodParameter);

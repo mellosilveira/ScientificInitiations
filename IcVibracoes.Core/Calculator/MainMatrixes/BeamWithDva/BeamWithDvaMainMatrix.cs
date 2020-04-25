@@ -35,7 +35,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         {
             double[,] massWithDva = new double[beamMass.GetLength(0) + dvaMasses.Length, beamMass.GetLength(1) + dvaMasses.Length];
 
-            beamMass = await this._arrayOperation.AddValue(beamMass, dvaMasses, dvaNodePositions, "Beam Mass");
+            beamMass = await this._arrayOperation.AddValue(beamMass, dvaMasses, dvaNodePositions, "Beam Mass").ConfigureAwait(false);
 
             for (int i = 0; i < beamMass.GetLength(0); i++)
             {
@@ -65,7 +65,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         {
             double[,] stiffnessWithDva = new double[beamStiffness.GetLength(0) + dvaStiffness.Length, beamStiffness.GetLength(1) + dvaStiffness.Length];
 
-            beamStiffness = await this._arrayOperation.AddValue(beamStiffness, dvaStiffness, dvaNodePositions, "Beam Stiffness");
+            beamStiffness = await this._arrayOperation.AddValue(beamStiffness, dvaStiffness, dvaNodePositions, "Beam Stiffness").ConfigureAwait(false);
 
             for (int i = 0; i < beamStiffness.GetLength(0); i++)
             {

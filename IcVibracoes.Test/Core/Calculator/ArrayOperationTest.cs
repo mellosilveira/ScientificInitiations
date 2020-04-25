@@ -61,7 +61,7 @@ namespace IcVibracoes.Test.Core.Calculator
             double[,] matrixToAdd = this._matrix1;
 
             // Act
-            double[,] result = await this._operation.AddValue(matrixToAdd, this._valuesToAdd, this._nodePositions, "teste");
+            double[,] result = await this._operation.AddValue(matrixToAdd, this._valuesToAdd, this._nodePositions, "teste").ConfigureAwait(false);
 
             // Assert
             result.Should().NotBeEmpty();
@@ -76,7 +76,7 @@ namespace IcVibracoes.Test.Core.Calculator
             uint[] nodePositions = new uint[3] { 0, 1, 2 };
 
             // Act
-            Func<Task<double[,]>> act = async () => await this._operation.AddValue(this._matrix1, values, nodePositions, "teste");
+            Func<Task<double[,]>> act = async () => await this._operation.AddValue(this._matrix1, values, nodePositions, "teste").ConfigureAwait(false);
 
             // Assert
             act.Should().Throw<ArgumentException>();
@@ -89,7 +89,7 @@ namespace IcVibracoes.Test.Core.Calculator
             uint[] nodePositions = new uint[2] { 5, 6 };
 
             // Act
-            Func<Task<double[,]>> act = async () => await this._operation.AddValue(this._matrix1, this._valuesToAdd, nodePositions, "teste");
+            Func<Task<double[,]>> act = async () => await this._operation.AddValue(this._matrix1, this._valuesToAdd, nodePositions, "teste").ConfigureAwait(false);
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
@@ -104,7 +104,7 @@ namespace IcVibracoes.Test.Core.Calculator
             double value = random.NextDouble();
 
             // Act
-            double[] result = await this._operation.CreateVector(value, arraySize, "test");
+            double[] result = await this._operation.CreateVector(value, arraySize, "test").ConfigureAwait(false);
 
             // Assert
             result.Should().NotBeNull();
@@ -121,7 +121,7 @@ namespace IcVibracoes.Test.Core.Calculator
                 Random random = new Random();
                 double value = random.NextDouble();
 
-                return await this._operation.CreateVector(value, size: 0, "teste");
+                return await this._operation.CreateVector(value, size: 0, "teste").ConfigureAwait(false);
             };
 
             // Assert
@@ -137,7 +137,7 @@ namespace IcVibracoes.Test.Core.Calculator
                 Random random = new Random();
                 double value = random.NextDouble();
 
-                return await this._operation.CreateVector(value, size: 0, this._elementPositions, "teste");
+                return await this._operation.CreateVector(value, size: 0, this._elementPositions, "teste").ConfigureAwait(false);
             };
 
             // Assert
@@ -153,7 +153,7 @@ namespace IcVibracoes.Test.Core.Calculator
             double value = random.NextDouble();
 
             // Act
-            Func<Task<double[]>> act = async () => await this._operation.CreateVector(value, arraySize, this._elementPositions, "teste");
+            Func<Task<double[]>> act = async () => await this._operation.CreateVector(value, arraySize, this._elementPositions, "teste").ConfigureAwait(false);
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
@@ -168,7 +168,7 @@ namespace IcVibracoes.Test.Core.Calculator
             double[] expected = new double[arraySize] { value, value, 0, 0 };
 
             // Act
-            var result = await this._operation.CreateVector(value, arraySize, this._elementPositions, "teste");
+            var result = await this._operation.CreateVector(value, arraySize, this._elementPositions, "teste").ConfigureAwait(false);
 
             // Assert
             result.Should().NotBeNull();
@@ -180,7 +180,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void InverseMatrix_ValidMatrix_ShouldExecuteCorrectly()
         {
             // Act
-            double[,] result = await this._operation.InverseMatrix(this._matrix1, "Inverse Test");
+            double[,] result = await this._operation.InverseMatrix(this._matrix1, "Inverse Test").ConfigureAwait(false);
 
             // Assert
             result.Should().NotBeEmpty();
@@ -203,7 +203,7 @@ namespace IcVibracoes.Test.Core.Calculator
             double[,] matrix = new double[2, 3];
 
             // Act
-            Func<Task<double[,]>> act = async () => await this._operation.InverseMatrix(matrix, "teste");
+            Func<Task<double[,]>> act = async () => await this._operation.InverseMatrix(matrix, "teste").ConfigureAwait(false);
 
             // Assert
             act.Should().Throw<ArgumentException>();
@@ -213,7 +213,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void MergeVectors_Shoudl_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.MergeVectors(this._vector1, this._vector2);
+            var result = await this._operation.MergeVectors(this._vector1, this._vector2).ConfigureAwait(false);
 
             // Assert
             result.Should().BeEquivalentTo(this._mergedVector1Vetor2);
@@ -223,7 +223,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void Multiply_MatrixAndArray_ShouldExecuteCorrectly()
         {
             // Act
-            double[] result = await this._operation.Multiply(this._matrix1, this._vector1, "Multiply Test");
+            double[] result = await this._operation.Multiply(this._matrix1, this._vector1, "Multiply Test").ConfigureAwait(false);
 
             // Assert
             result.Should().NotBeEmpty();
@@ -235,7 +235,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void Sum_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.Sum(this._vector1, this._vector2, this._vector3, "teste");
+            var result = await this._operation.Sum(this._vector1, this._vector2, this._vector3, "teste").ConfigureAwait(false);
 
             // ASsert
             result.Should().BeEquivalentTo(this._sumVector1Vector2Vector3);
@@ -245,7 +245,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void TransposeMatrix_ValidMatrix_ShouldExecuteCorrectly()
         {
             // Act
-            double[,] result = await this._operation.TransposeMatrix(this._matrix1);
+            double[,] result = await this._operation.TransposeMatrix(this._matrix1).ConfigureAwait(false);
 
             // Assert
             result.Should().NotBeEmpty();

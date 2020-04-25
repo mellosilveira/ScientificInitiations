@@ -37,16 +37,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         }
 
         /// <summary>
-        /// Calculates the value of the differential equation of motion for a specific time, based on the force and angular frequency that are passed.
-        /// For each case, with one or two degrees of freedom, there is a different differential equation of motion.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="time"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public abstract Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y);
-
-        /// <summary>
         /// Builds the input of differential equation of motion.
         /// </summary>
         /// <param name="requestData"></param>
@@ -78,7 +68,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                 Data = new TResponseData()
             };
 
-            double[] y = await this.BuildInitialConditions(request.Data);
+            double[] y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
             response.Data.Results = new Dictionary<double, double[]>
             {
                 { request.Data.InitialTime, y}
@@ -101,11 +91,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                 while (w <= wf)
                 {
-                    string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, dampingRatio, w);
+                    string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, dampingRatio, w).ConfigureAwait(false);
 
                     while (time <= finalTime)
                     {
-                        y = await this._rungeKutta.ExecuteMethod(input, timeStep, time, y);
+                        y = await this._rungeKutta.ExecuteMethod(input, timeStep, time, y).ConfigureAwait(false);
 
                         this._auxiliarOperation.WriteInFile(time, y, path);
 

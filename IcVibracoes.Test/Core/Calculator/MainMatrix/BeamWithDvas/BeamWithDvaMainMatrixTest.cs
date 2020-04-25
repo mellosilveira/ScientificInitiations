@@ -52,7 +52,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
             int size = DegreesFreedomMaximum + NumberOfDvas;
 
             // Act
-            var result = await this._operationMock.Object.CalculateMassWithDva(MassMatrix, this._dvaMasses, this._dvaNodePositions);
+            var result = await this._operationMock.Object.CalculateMassWithDva(MassMatrix, this._dvaMasses, this._dvaNodePositions).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < size; i++)
@@ -71,7 +71,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
             int size = DegreesFreedomMaximum + NumberOfDvas;
 
             // Act
-            var result = await this._operationMock.Object.CalculateStiffnessWithDva(StiffnessMatrix, this._dvaStiffnesses, this._dvaNodePositions);
+            var result = await this._operationMock.Object.CalculateStiffnessWithDva(StiffnessMatrix, this._dvaStiffnesses, this._dvaNodePositions).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < size; i++)
@@ -87,7 +87,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.BeamWithDvas
         public async void CalculateBondaryCondition_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operationMock.Object.CalculateBondaryCondition(new Pinned(), new Pinned(), DegreesFreedomMaximum, NumberOfDvas);
+            var result = await this._operationMock.Object.CalculateBondaryCondition(new Pinned(), new Pinned(), DegreesFreedomMaximum, NumberOfDvas).ConfigureAwait(false);
 
             // Assert
             result.Should().BeEquivalentTo(this._boundaryConditions);

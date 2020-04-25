@@ -49,7 +49,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
         public async void CalculateElementMass_Should_ExecuteCorrectly()
         {
             // Act 
-            var result = await this._operation.CalculateElementMass(this._beamArea, this._beam.Material.SpecificMass, this._elementLength);
+            var result = await this._operation.CalculateElementMass(this._beamArea, this._beam.Material.SpecificMass, this._elementLength).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < Constant.DegreesFreedomElement; i++)
@@ -65,7 +65,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
         public async void CalculateMass_Should_ExecuteCorrectly()
         {
             // Act 
-            var result = await this._operation.CalculateMass(this._beam, degreesFreedomMaximum);
+            var result = await this._operation.CalculateMass(this._beam, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
@@ -81,7 +81,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
         public async void CalculateElementStiffness_Should_ExecuteCorrectly()
         {
             // Act 
-            var result = await this._operation.CalculateElementStiffness(this._beamMomentOfInertia, this._beam.Material.YoungModulus, this._elementLength);
+            var result = await this._operation.CalculateElementStiffness(this._beamMomentOfInertia, this._beam.Material.YoungModulus, this._elementLength).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < Constant.DegreesFreedomElement; i++)
@@ -97,7 +97,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
         public async void CalculateStiffness_Should_ExecuteCorrectly()
         {
             // Act 
-            var result = await this._operation.CalculateStiffness(this._beam, degreesFreedomMaximum);
+            var result = await this._operation.CalculateStiffness(this._beam, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
@@ -129,13 +129,13 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
                 Profile = new TProfile()
             };
 
-            double[,] mass = await this._operation.CalculateMass(this._beam, degreesFreedomMaximum);
-            double[,] stiffness = await this._operation.CalculateStiffness(this._beam, degreesFreedomMaximum);
+            double[,] mass = await this._operation.CalculateMass(this._beam, degreesFreedomMaximum).ConfigureAwait(false);
+            double[,] stiffness = await this._operation.CalculateStiffness(this._beam, degreesFreedomMaximum).ConfigureAwait(false);
 
             this._precision = 5e-3;
 
             // Act 
-            var result = await this._operation.CalculateDamping(mass, stiffness);
+            var result = await this._operation.CalculateDamping(mass, stiffness).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < degreesFreedomMaximum; i++)
@@ -151,7 +151,7 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix.Beam
         public async void CalculateBondaryCondition_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateBondaryCondition(this._beam.FirstFastening, this._beam.LastFastening, degreesFreedomMaximum);
+            var result = await this._operation.CalculateBondaryCondition(this._beam.FirstFastening, this._beam.LastFastening, degreesFreedomMaximum).ConfigureAwait(false);
 
             // Assert
             result.Should().BeEquivalentTo(this._boundaryConditionsVector);

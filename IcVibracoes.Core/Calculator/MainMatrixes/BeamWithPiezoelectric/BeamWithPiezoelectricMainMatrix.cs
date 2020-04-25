@@ -45,11 +45,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
             for (uint n = 0; n < numberOfElements; n++)
             {
                 double[,] elementPiezoelectricMass = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
-                double[,] elementBeamMass = await base.CalculateElementMass(beamWithPiezoelectric.GeometricProperty.Area[n], beamWithPiezoelectric.Material.SpecificMass, elementLength);
+                double[,] elementBeamMass = await base.CalculateElementMass(beamWithPiezoelectric.GeometricProperty.Area[n], beamWithPiezoelectric.Material.SpecificMass, elementLength).ConfigureAwait(false);
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
-                    elementPiezoelectricMass = await base.CalculateElementMass(beamWithPiezoelectric.PiezoelectricGeometricProperty.Area[n], beamWithPiezoelectric.PiezoelectricSpecificMass, elementLength);
+                    elementPiezoelectricMass = await base.CalculateElementMass(beamWithPiezoelectric.PiezoelectricGeometricProperty.Area[n], beamWithPiezoelectric.PiezoelectricSpecificMass, elementLength).ConfigureAwait(false);
                 }
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
@@ -82,11 +82,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
             for (uint n = 0; n < numberOfElements; n++)
             {
                 double[,] piezoelectricElementStiffness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
-                double[,] beamElementStiffness = await base.CalculateElementStiffness(beamWithPiezoelectric.GeometricProperty.MomentOfInertia[n], beamWithPiezoelectric.Material.YoungModulus, elementLength);
+                double[,] beamElementStiffness = await base.CalculateElementStiffness(beamWithPiezoelectric.GeometricProperty.MomentOfInertia[n], beamWithPiezoelectric.Material.YoungModulus, elementLength).ConfigureAwait(false);
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
-                    piezoelectricElementStiffness = await this.CalculatePiezoelectricElementStiffness(beamWithPiezoelectric.ElasticityConstant, beamWithPiezoelectric.PiezoelectricGeometricProperty.MomentOfInertia[n], elementLength);
+                    piezoelectricElementStiffness = await this.CalculatePiezoelectricElementStiffness(beamWithPiezoelectric.ElasticityConstant, beamWithPiezoelectric.PiezoelectricGeometricProperty.MomentOfInertia[n], elementLength).ConfigureAwait(false);
                 }
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
@@ -153,7 +153,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
-                    piezoelectricElementElectromechanicalCoupling = await this.CalculatePiezoelectricElementElectromechanicalCoupling(beamWithPiezoelectric);
+                    piezoelectricElementElectromechanicalCoupling = await this.CalculatePiezoelectricElementElectromechanicalCoupling(beamWithPiezoelectric).ConfigureAwait(false);
                 }
 
                 for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
@@ -191,7 +191,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
                 if (beamWithPiezoelectric.ElementsWithPiezoelectric.Contains(n + 1))
                 {
-                    piezoelectricElementCapacitance = await this.CalculateElementPiezoelectricCapacitance(beamWithPiezoelectric, elementIndex: n);
+                    piezoelectricElementCapacitance = await this.CalculateElementPiezoelectricCapacitance(beamWithPiezoelectric, elementIndex: n).ConfigureAwait(false);
                 }
 
                 for (uint i = n; i < n + Constant.PiezoelectricDegreesFreedomElement; i++)
@@ -257,7 +257,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         {
             uint matrixSize = degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum;
 
-            double[,] piezoelectricElectromechanicalCouplingTransposed = await this._arrayOperation.TransposeMatrix(piezoelectricElectromechanicalCoupling);
+            double[,] piezoelectricElectromechanicalCouplingTransposed = await this._arrayOperation.TransposeMatrix(piezoelectricElectromechanicalCoupling).ConfigureAwait(false);
 
             double[,] equivalentStiffness = new double[matrixSize, matrixSize];
 

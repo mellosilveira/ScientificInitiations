@@ -34,8 +34,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
             IArrayOperation arrayOperation,
             IAuxiliarOperation auxiliarOperation)
         {
-            _arrayOperation = arrayOperation ?? throw new ArgumentNullException(nameof(IArrayOperation), $"'{nameof(IArrayOperation)}' cannot be null in '{GetType().Name}'.");
-            _auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException(nameof(IAuxiliarOperation), $"'{nameof(IAuxiliarOperation)}' cannot be null in '{GetType().Name}'.");
+            this._arrayOperation = arrayOperation ?? throw new ArgumentNullException(nameof(IArrayOperation), $"'{nameof(IArrayOperation)}' cannot be null in '{GetType().Name}'.");
+            this._auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException(nameof(IAuxiliarOperation), $"'{nameof(IAuxiliarOperation)}' cannot be null in '{GetType().Name}'.");
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
                 numberOfLoops = 1;
             }
 
-            path = _auxiliarOperation.CreateSolutionPath(analysisType, input.Parameter.InitialAngularFrequency, input.Parameter.FinalAngularFrequency, numberOfElements);
+            path = this._auxiliarOperation.CreateSolutionPath(analysisType, input.Parameter.InitialAngularFrequency, input.Parameter.FinalAngularFrequency, numberOfElements);
 
             //Parallel.For
             for (int i = 0; i < numberOfLoops; i++)
@@ -82,8 +82,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
 
                 CalculateIngrationContants(input.TimeStep);
 
-                _auxiliarOperation.WriteInFile(input.AngularFrequency, path);
-                await Solution(input);
+                this._auxiliarOperation.WriteInFile(input.AngularFrequency, path);
+                await Solution(input).ConfigureAwait(false);
             }
         }
 
@@ -119,7 +119,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
 
                     if (time != 0)
                     {
-                        y = await CalculateDisplacement(input, yPre, velPre, accelPre);
+                        y = await this.CalculateDisplacement(input, yPre, velPre, accelPre).ConfigureAwait(false);
 
                         // Parallel.For
                         for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
@@ -129,7 +129,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
                         }
                     }
 
-                    _auxiliarOperation.WriteInFile(time, y, path);
+                    this._auxiliarOperation.WriteInFile(time, y, path);
 
                     time += input.TimeStep;
 
@@ -154,12 +154,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
         /// <returns></returns>
         public async Task<double[]> CalculateDisplacement(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
-            double[,] equivalentStiffness = await CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
-            double[,] inversedEquivalentStiffness = await _arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
+            double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
+            double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
 
-            double[] equivalentForce = await CalculateEquivalentForce(input, previousDisplacement, previousVelocity, previousAcceleration).ConfigureAwait(false);
+            double[] equivalentForce = await this.CalculateEquivalentForce(input, previousDisplacement, previousVelocity, previousAcceleration).ConfigureAwait(false);
 
-            return await _arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentStiffness)}");
+            return await this._arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentStiffness)}").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -172,13 +172,13 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
         /// <returns></returns>
         public virtual async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
-            double[] equivalentVelocity = await CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
-            double[] equivalentAcceleration = await CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
+            double[] equivalentVelocity = await this.CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
+            double[] equivalentAcceleration = await this.CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
 
-            double[] mass_accel = await _arrayOperation.Multiply(input.Mass, equivalentAcceleration, $"{nameof(input.Mass)} and {nameof(equivalentAcceleration)}");
-            double[] damping_vel = await _arrayOperation.Multiply(input.Damping, equivalentVelocity, $"{nameof(input.Damping)} and {nameof(equivalentVelocity)}");
+            double[] mass_accel = await this._arrayOperation.Multiply(input.Mass, equivalentAcceleration, $"{nameof(input.Mass)} and {nameof(equivalentAcceleration)}").ConfigureAwait(false);
+            double[] damping_vel = await this._arrayOperation.Multiply(input.Damping, equivalentVelocity, $"{nameof(input.Damping)} and {nameof(equivalentVelocity)}").ConfigureAwait(false);
 
-            double[] equivalentForce = await _arrayOperation.Sum(input.Force, mass_accel, damping_vel, $"{nameof(input.Force)}, {nameof(mass_accel)} and {nameof(damping_vel)}");
+            double[] equivalentForce = await this._arrayOperation.Sum(input.Force, mass_accel, damping_vel, $"{nameof(input.Force)}, {nameof(mass_accel)} and {nameof(damping_vel)}").ConfigureAwait(false);
 
             return equivalentForce;
         }

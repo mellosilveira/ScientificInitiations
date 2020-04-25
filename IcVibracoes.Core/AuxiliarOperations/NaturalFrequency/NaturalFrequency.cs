@@ -36,23 +36,23 @@ namespace IcVibracoes.Core.AuxiliarOperations.NaturalFrequency
         /// <returns></returns>
         public async Task<double> CalculateByInversePowerMethod(double[,] mass, double[,] stiffness, double tolerance)
         {
-            double[,] inversedStiffness = await this._arrayOperation.InverseMatrix(stiffness, nameof(stiffness));
+            double[,] inversedStiffness = await this._arrayOperation.InverseMatrix(stiffness, nameof(stiffness)).ConfigureAwait(false);
 
-            double[,] dynamicalMatrix = await this._arrayOperation.Multiply(inversedStiffness, mass);
-            double[,] inversetDynamicalMatrix = await this._arrayOperation.InverseMatrix(dynamicalMatrix, nameof(dynamicalMatrix));
+            double[,] dynamicalMatrix = await this._arrayOperation.Multiply(inversedStiffness, mass).ConfigureAwait(false);
+            double[,] inversetDynamicalMatrix = await this._arrayOperation.InverseMatrix(dynamicalMatrix, nameof(dynamicalMatrix)).ConfigureAwait(false);
 
-            double naturalFrequency = await this._calculateEigenvalue.PowerMethod(inversetDynamicalMatrix, tolerance);
+            double naturalFrequency = await this._calculateEigenvalue.PowerMethod(inversetDynamicalMatrix, tolerance).ConfigureAwait(false);
 
             return naturalFrequency;
         }
 
         public async Task<double[]> CalculateByQRDecomposition(double[,] mass, double[,] stiffness, double tolerance)
         {
-            double[,] inversedStiffness = await this._arrayOperation.InverseMatrix(stiffness, nameof(stiffness));
+            double[,] inversedStiffness = await this._arrayOperation.InverseMatrix(stiffness, nameof(stiffness)).ConfigureAwait(false);
 
-            double[,] dynamicalMatrix = await this._arrayOperation.Multiply(inversedStiffness, mass);
+            double[,] dynamicalMatrix = await this._arrayOperation.Multiply(inversedStiffness, mass).ConfigureAwait(false);
 
-            double[] naturalFrequencies = await this._calculateEigenvalue.QR_Decomposition(dynamicalMatrix, tolerance);
+            double[] naturalFrequencies = await this._calculateEigenvalue.QR_Decomposition(dynamicalMatrix, tolerance).ConfigureAwait(false);
 
             return naturalFrequencies;
         }

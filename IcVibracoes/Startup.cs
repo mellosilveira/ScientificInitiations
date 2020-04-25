@@ -1,5 +1,6 @@
 using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
 using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
 using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
 using IcVibracoes.Core.Calculator.ArrayOperations;
@@ -52,6 +53,7 @@ namespace IcVibracoes
         public void ConfigureServices(IServiceCollection services)
         {
             // Auxiliar Operations
+            services.AddScoped<ICalculateDifferentialEquationOfMotion, CalculateDifferentialEquationOfMotion>();
             services.AddScoped<ICalculateEigenvalue, CalculateEigenvalue>();
             services.AddScoped<INaturalFrequency, NaturalFrequency>();
             services.AddScoped<IAuxiliarOperation, AuxiliarOperation>();
@@ -76,7 +78,7 @@ namespace IcVibracoes
 
             // Mapper
             services.AddScoped<IMappingResolver, MappingResolver>();
-            
+
             // Mapper - Beam Profiles
             services.AddScoped<ICircularProfileMapper, CircularProfileMapper>();
             services.AddScoped<IRectangularProfileMapper, RectangularProfileMapper>();
@@ -84,7 +86,7 @@ namespace IcVibracoes
             // Mapper - Piezoelectric Profiles
             services.AddScoped<IPiezoelectricCircularProfileMapper, PiezoelectricCircularProfileMapper>();
             services.AddScoped<IPiezoelectricRectangularProfileMapper, PiezoelectricRectangularProfileMapper>();
-            
+
             // Numerical Integration Methods - Finite Element - Newmark
             services.AddScoped<INewmarkMethod, NewmarkMethod>();
             services.AddScoped<IBeamWithDvaNewmarkMethod, BeamWithDvaNewmarkMethod>();
@@ -95,7 +97,7 @@ namespace IcVibracoes
             // Numerical Integration Methods - Rigid Body - Runge Kutta Forth Order
             services.AddScoped<IRungeKuttaForthOrderMethod_1DF, RungeKuttaForthOrderMethod_1DF>();
             services.AddScoped<IRungeKuttaForthOrderMethod_2DF, RungeKuttaForthOrderMethod_2DF>();
-            
+
             // Rigid Body Operations
             services.AddScoped<ICalculateVibrationToOneDegreeFreedom, CalculateVibrationToOneDegreeFreedom>();
             services.AddScoped<ICalculateVibrationToTwoDegreesFreedom, CalculateVibrationToTwoDegreesFreedom>();

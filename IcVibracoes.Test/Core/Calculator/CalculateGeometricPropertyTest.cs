@@ -54,7 +54,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateArea_Given_Diameter_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateArea(this._diameter, null);
+            var result = await this._operation.CalculateArea(this._diameter, null).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._circleWithoutThicknessArea, this._precision);
@@ -64,7 +64,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateArea_Given_DiameterAndThickness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateArea(this._diameter, this._diameterThickness);
+            var result = await this._operation.CalculateArea(this._diameter, this._diameterThickness).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._circleWithThicknessArea, this._precision);
@@ -74,7 +74,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateMomentOfInertia_Given_Diameter_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateMomentOfInertia(this._diameter, null);
+            var result = await this._operation.CalculateMomentOfInertia(this._diameter, null).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._circleWithoutThicknessMomentOfInertia, this._precision);
@@ -84,7 +84,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateMomentOfInertia_Given_DiameterAndThickness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateMomentOfInertia(this._diameter, this._diameterThickness);
+            var result = await this._operation.CalculateMomentOfInertia(this._diameter, this._diameterThickness).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._circleWithThicknessMomentOfInertia, this._precision);
@@ -94,7 +94,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateArea_Given_HeightAndWidth_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateArea(this._height, this._width, null);
+            var result = await this._operation.CalculateArea(this._height, this._width, null).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._rectangleWithoutThicknessArea, this._precision);
@@ -104,7 +104,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateArea_Given_HeightAndWidthAndThickness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateArea(this._height, this._width, this._rectangularThickness);
+            var result = await this._operation.CalculateArea(this._height, this._width, this._rectangularThickness).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._rectangleWithThicknessArea, this._precision);
@@ -114,7 +114,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateMomentOfInertia_Given_HeightAndWidth_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateMomentOfInertia(this._height, this._width, null);
+            var result = await this._operation.CalculateMomentOfInertia(this._height, this._width, null).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._rectangleWithoutThicknessMomentOfInertia, this._precision);
@@ -124,7 +124,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculateMomentOfInertia_Given_HeightAndWidthAndThickness_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculateMomentOfInertia(this._height, this._width, this._rectangularThickness);
+            var result = await this._operation.CalculateMomentOfInertia(this._height, this._width, this._rectangularThickness).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._rectangleWithThicknessMomentOfInertia, this._precision);
@@ -134,7 +134,7 @@ namespace IcVibracoes.Test.Core.Calculator
         public async void CalculatePiezoelectricMomentOfInertia_Should_ExecuteCorrectly()
         {
             // Act
-            var result = await this._operation.CalculatePiezoelectricMomentOfInertia(this._piezoelectricHeight, this._width, this._height, numberOfPiezoelectricsPerElement: 2);
+            var result = await this._operation.CalculatePiezoelectricMomentOfInertia(this._piezoelectricHeight, this._width, this._height, numberOfPiezoelectricsPerElement: 2).ConfigureAwait(false);
 
             // Assert
             result.Should().BeApproximately(this._rectanglePiezoelectricMomentOfInertia, this._precision);
