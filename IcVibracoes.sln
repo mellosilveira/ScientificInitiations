@@ -32,15 +32,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "programs in C", "programs i
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{69DC91C4-15E5-46D3-A0D1-820C174221E8}"
-	ProjectSection(SolutionItems) = preProject
-		Request\Motor Baja = Request\Motor Baja
-		Request\Motor Baja 30Hz - 5 nós.json = Request\Motor Baja 30Hz - 5 nós.json
-		Request\Motor Baja 30Hz - 67 nós.json = Request\Motor Baja 30Hz - 67 nós.json
-		Request\Motor Baja com ADV 30Hz - 5 nós.json = Request\Motor Baja com ADV 30Hz - 5 nós.json
-		Request\Motor Baja com ADV 30Hz - 67 nós.json = Request\Motor Baja com ADV 30Hz - 67 nós.json
-		Request\RectangularBeamWithPiezoelectricRequest = Request\RectangularBeamWithPiezoelectricRequest
-		Request\Viga retangular engastada sem piezoeletrico.json = Request\Viga retangular engastada sem piezoeletrico.json
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutions", "solutions", "{FEF4F35F-FDF5-4FAF-937F-6AB5864597C0}"
 	ProjectSection(SolutionItems) = preProject
@@ -57,6 +48,33 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutions", "solutions", "{
 		Solutions\TestSolution.csv = Solutions\TestSolution.csv
 		Solutions\TestSolution.txt = Solutions\TestSolution.txt
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FiniteElement", "FiniteElement", "{5E5F94FA-6B14-4150-A813-DE4FFB6DD6B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Beam", "Beam", "{924A799F-B2BF-4144-A243-C2E42FD09728}"
+	ProjectSection(SolutionItems) = preProject
+		Request\Motor Baja = Request\Motor Baja
+		Request\Motor Baja 30Hz - 5 nós.json = Request\Motor Baja 30Hz - 5 nós.json
+		Request\Motor Baja 30Hz - 67 nós.json = Request\Motor Baja 30Hz - 67 nós.json
+		Request\Viga retangular engastada sem piezoeletrico.json = Request\Viga retangular engastada sem piezoeletrico.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BeamWithDva", "BeamWithDva", "{E486846C-62C9-48F5-B3FD-E86E818D4709}"
+	ProjectSection(SolutionItems) = preProject
+		Request\Motor Baja com ADV 30Hz - 5 nós.json = Request\Motor Baja com ADV 30Hz - 5 nós.json
+		Request\Motor Baja com ADV 30Hz - 67 nós.json = Request\Motor Baja com ADV 30Hz - 67 nós.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BeamWithPiezoelectric", "BeamWithPiezoelectric", "{F291C03A-BD08-4F86-9203-F7FF52846573}"
+	ProjectSection(SolutionItems) = preProject
+		Request\RectangularBeamWithPiezoelectricRequest = Request\RectangularBeamWithPiezoelectricRequest
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RigidBody", "RigidBody", "{531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OneDegreeFreedom", "OneDegreeFreedom", "{01399723-44F7-4CD7-A9DA-6C6D08DCBA71}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TwoDegreesFreedom", "TwoDegreesFreedom", "{E13B645E-D41A-4C77-8954-9039E3A7895B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +112,13 @@ Global
 		{A51C5DAC-DBD2-49A1-89C2-7CBE2BCAC992} = {1486B460-922B-4F74-A69A-DFA452D5A8EC}
 		{5494FC46-A675-47F6-905A-E9591B9D93BA} = {1486B460-922B-4F74-A69A-DFA452D5A8EC}
 		{58549B1B-848D-42AF-8E33-AA996AB99A31} = {1F3797D7-105F-44D1-AF0C-A56FC7BA38B2}
+		{5E5F94FA-6B14-4150-A813-DE4FFB6DD6B3} = {69DC91C4-15E5-46D3-A0D1-820C174221E8}
+		{924A799F-B2BF-4144-A243-C2E42FD09728} = {5E5F94FA-6B14-4150-A813-DE4FFB6DD6B3}
+		{E486846C-62C9-48F5-B3FD-E86E818D4709} = {5E5F94FA-6B14-4150-A813-DE4FFB6DD6B3}
+		{F291C03A-BD08-4F86-9203-F7FF52846573} = {5E5F94FA-6B14-4150-A813-DE4FFB6DD6B3}
+		{531B1A23-CCF5-4749-ACF7-44FC4A3A2F21} = {69DC91C4-15E5-46D3-A0D1-820C174221E8}
+		{01399723-44F7-4CD7-A9DA-6C6D08DCBA71} = {531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}
+		{E13B645E-D41A-4C77-8954-9039E3A7895B} = {531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2DE8892-081F-419C-8CB3-E3D5E29FF51F}
