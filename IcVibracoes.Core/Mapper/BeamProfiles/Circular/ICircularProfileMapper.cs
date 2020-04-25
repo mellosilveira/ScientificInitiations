@@ -1,6 +1,7 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Mapper.BeamProfiles;
 
-namespace IcVibracoes.Core.Mapper.Profiles.Circular
+namespace IcVibracoes.Core.Mapper.BeamProfiles.Circular
 {
     /// <summary>
     /// It's responsible to build a circular profile.

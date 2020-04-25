@@ -4,9 +4,9 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular;
-using IcVibracoes.Core.Mapper.Profiles.Rectangular;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
+using IcVibracoes.Core.Mapper.BeamProfiles.Rectangular;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular
 {

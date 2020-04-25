@@ -3,8 +3,8 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.Profiles.Rectangular;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
+using IcVibracoes.Core.Mapper.BeamProfiles.Rectangular;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular

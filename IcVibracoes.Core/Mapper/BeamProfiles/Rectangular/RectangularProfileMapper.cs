@@ -4,7 +4,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Mapper.Profiles.Rectangular
+namespace IcVibracoes.Core.Mapper.BeamProfiles.Rectangular
 {
     /// <summary>
     /// It's responsible to build a rectangular profile.

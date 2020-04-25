@@ -1,8 +1,9 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Mapper.BeamProfiles;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Mapper.Profiles
+namespace IcVibracoes.Core.Mapper.BeamProfiles
 {
     /// <summary>
     /// It's responsible to build the profile.

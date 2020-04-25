@@ -4,7 +4,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Mapper.Profiles.Circular
+namespace IcVibracoes.Core.Mapper.BeamProfiles.Circular
 {
     /// <summary>
     /// It's responsible to build a circular profile.

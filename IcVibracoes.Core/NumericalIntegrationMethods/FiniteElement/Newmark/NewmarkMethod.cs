@@ -6,7 +6,7 @@ using IcVibracoes.DataContracts.FiniteElements;
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
+namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
 {
     /// <summary>
     /// It's responsible to execute the Newmark numerical integration method to calculate the vibration.
@@ -34,8 +34,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             IArrayOperation arrayOperation,
             IAuxiliarOperation auxiliarOperation)
         {
-            this._arrayOperation = arrayOperation ?? throw new ArgumentNullException(nameof(IArrayOperation), $"'{nameof(IArrayOperation)}' cannot be null in '{this.GetType().Name}'.");
-            this._auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException(nameof(IAuxiliarOperation), $"'{nameof(IAuxiliarOperation)}' cannot be null in '{this.GetType().Name}'.");
+            _arrayOperation = arrayOperation ?? throw new ArgumentNullException(nameof(IArrayOperation), $"'{nameof(IArrayOperation)}' cannot be null in '{GetType().Name}'.");
+            _auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException(nameof(IAuxiliarOperation), $"'{nameof(IAuxiliarOperation)}' cannot be null in '{GetType().Name}'.");
         }
 
         /// <summary>
@@ -57,14 +57,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 numberOfLoops = 1;
             }
 
-            path = this._auxiliarOperation.CreateSolutionPath(analysisType, input.Parameter.InitialAngularFrequency, input.Parameter.FinalAngularFrequency, numberOfElements);
+            path = _auxiliarOperation.CreateSolutionPath(analysisType, input.Parameter.InitialAngularFrequency, input.Parameter.FinalAngularFrequency, numberOfElements);
 
             //Parallel.For
             for (int i = 0; i < numberOfLoops; i++)
             {
                 if (input.Parameter.DeltaAngularFrequency != null)
                 {
-                    input.AngularFrequency = (input.Parameter.InitialAngularFrequency + i * input.Parameter.DeltaAngularFrequency.Value);
+                    input.AngularFrequency = input.Parameter.InitialAngularFrequency + i * input.Parameter.DeltaAngularFrequency.Value;
                 }
                 else
                 {
@@ -73,17 +73,17 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
                 if (input.AngularFrequency != 0)
                 {
-                    input.TimeStep = (Math.PI * 2 / input.AngularFrequency) / input.Parameter.PeriodDivision;
+                    input.TimeStep = Math.PI * 2 / input.AngularFrequency / input.Parameter.PeriodDivision;
                 }
                 else
                 {
                     input.TimeStep = Math.PI * 2 / input.Parameter.PeriodDivision;
                 }
 
-                this.CalculateIngrationContants(input.TimeStep);
+                CalculateIngrationContants(input.TimeStep);
 
-                this._auxiliarOperation.WriteInFile(input.AngularFrequency, path);
-                await this.Solution(input);
+                _auxiliarOperation.WriteInFile(input.AngularFrequency, path);
+                await Solution(input);
             }
         }
 
@@ -124,12 +124,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                         // Parallel.For
                         for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
                         {
-                            accel[i] = (a0 * (y[i] - yPre[i])) - (a2 * velPre[i]) - (a3 * accelPre[i]);
-                            vel[i] = velPre[i] + (a6 * accelPre[i]) + (a7 * accel[i]);
+                            accel[i] = a0 * (y[i] - yPre[i]) - a2 * velPre[i] - a3 * accelPre[i];
+                            vel[i] = velPre[i] + a6 * accelPre[i] + a7 * accel[i];
                         }
                     }
 
-                    this._auxiliarOperation.WriteInFile(time, y, path);
+                    _auxiliarOperation.WriteInFile(time, y, path);
 
                     time += input.TimeStep;
 
@@ -155,11 +155,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         public async Task<double[]> CalculateDisplacement(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
             double[,] equivalentStiffness = await CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
-            double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
+            double[,] inversedEquivalentStiffness = await _arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
 
             double[] equivalentForce = await CalculateEquivalentForce(input, previousDisplacement, previousVelocity, previousAcceleration).ConfigureAwait(false);
 
-            return await this._arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentStiffness)}");
+            return await _arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentStiffness)}");
         }
 
         /// <summary>
@@ -175,10 +175,10 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             double[] equivalentVelocity = await CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
             double[] equivalentAcceleration = await CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
 
-            double[] mass_accel = await this._arrayOperation.Multiply(input.Mass, equivalentAcceleration, $"{nameof(input.Mass)} and {nameof(equivalentAcceleration)}");
-            double[] damping_vel = await this._arrayOperation.Multiply(input.Damping, equivalentVelocity, $"{nameof(input.Damping)} and {nameof(equivalentVelocity)}");
+            double[] mass_accel = await _arrayOperation.Multiply(input.Mass, equivalentAcceleration, $"{nameof(input.Mass)} and {nameof(equivalentAcceleration)}");
+            double[] damping_vel = await _arrayOperation.Multiply(input.Damping, equivalentVelocity, $"{nameof(input.Damping)} and {nameof(equivalentVelocity)}");
 
-            double[] equivalentForce = await this._arrayOperation.Sum(input.Force, mass_accel, damping_vel, $"{nameof(input.Force)}, {nameof(mass_accel)} and {nameof(damping_vel)}");
+            double[] equivalentForce = await _arrayOperation.Sum(input.Force, mass_accel, damping_vel, $"{nameof(input.Force)}, {nameof(mass_accel)} and {nameof(damping_vel)}");
 
             return equivalentForce;
         }
@@ -252,8 +252,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             a1 = Constant.Gama / (Constant.Beta * stepTime);
             a2 = 1 / (Constant.Beta * stepTime);
             a3 = 1 / (2 * Constant.Beta) - 1;
-            a4 = (Constant.Gama / Constant.Beta) - 1;
-            a5 = (stepTime / 2) * ((Constant.Gama / Constant.Beta) - 2);
+            a4 = Constant.Gama / Constant.Beta - 1;
+            a5 = stepTime / 2 * (Constant.Gama / Constant.Beta - 2);
             a6 = stepTime * (1 - Constant.Gama);
             a7 = Constant.Gama * stepTime;
         }

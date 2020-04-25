@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Separation to finite element analysis.
 - Rigid body analysis.
 - Runge Kutta Forth Order numerical integration method.
+- Newmark Beta numerical integration method.
 - Ways to calculate the natural frequency of structures.
 
 ## [1.3.0] - 2020-04-16

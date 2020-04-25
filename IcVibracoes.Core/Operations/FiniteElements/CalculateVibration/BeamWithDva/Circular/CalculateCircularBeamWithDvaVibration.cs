@@ -4,8 +4,8 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.Profiles.Circular;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva;
+using IcVibracoes.Core.Mapper.BeamProfiles.Circular;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark.BeamWithDva;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular
