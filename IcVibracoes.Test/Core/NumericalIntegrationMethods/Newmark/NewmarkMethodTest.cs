@@ -4,7 +4,6 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using System;
 using Xunit;
 
@@ -19,7 +18,6 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
         private double _precision;
         
         private readonly IAuxiliarOperation _auxiliarOperation;
-        private readonly INewmarkMethodValidator _newmarkMethodValidator;
         private readonly IArrayOperation _arrayOperation;
         private readonly NewmarkMethod _operation;
 
@@ -44,12 +42,10 @@ namespace IcVibracoes.Test.Core.NumericalIntegrationMethods.Newmark
 
             this._arrayOperation = new ArrayOperation();
             this._auxiliarOperation = new AuxiliarOperation();
-            this._newmarkMethodValidator = new NewmarkMethodValidator();
 
             this._operation = new NewmarkMethod(
                 this._arrayOperation,
-                this._auxiliarOperation,
-                this._newmarkMethodValidator);
+                this._auxiliarOperation);
 
             this._methodParameter = new NewmarkMethodParameter
             {

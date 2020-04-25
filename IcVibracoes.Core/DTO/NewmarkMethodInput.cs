@@ -28,9 +28,9 @@ namespace IcVibracoes.Core.DTO.Input
         public double[] Force { get; set; }
 
         /// <summary>
-        /// Delta time.
+        /// Time step.
         /// </summary>
-        public double DeltaTime { get; set; }
+        public double TimeStep { get; set; }
 
         /// <summary>
         /// Angular frequency used in the analysis.

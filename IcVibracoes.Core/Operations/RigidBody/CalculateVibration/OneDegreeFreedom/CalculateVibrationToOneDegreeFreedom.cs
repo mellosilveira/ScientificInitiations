@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.OneDegreeFreedom;
@@ -16,15 +17,22 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
     /// </summary>
     public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeFreedomRequest, OneDegreeFreedomRequestData, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>, ICalculateVibrationToOneDegreeFreedom
     {
+        private readonly INaturalFrequency _naturalFrequency;
+
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="auxiliarOperation"></param>
         /// <param name="rungeKutta"></param>
+        /// <param name="naturalFrequency"></param>
         public CalculateVibrationToOneDegreeFreedom(
             IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod_1DF rungeKutta) : base(auxiliarOperation, rungeKutta)
-        { }
+            IRungeKuttaForthOrderMethod_1DF rungeKutta,
+            INaturalFrequency naturalFrequency) 
+            : base(auxiliarOperation, rungeKutta)
+        {
+            this._naturalFrequency = naturalFrequency;
+        }
 
         /// <summary>
         /// Builds the input of differential equation of motion.
@@ -69,12 +77,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
+        public override async Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
             // wn - Natural angular frequency
-            double wn = Math.Sqrt(input.Stiffness / input.Mass);
+            double wn = await this._naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
             double damping = input.DampingRatio * 2 * input.Mass * wn;
 
             // Velocity of primary object.
@@ -82,7 +90,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
             // Acceleration of primary object.
             result[1] = (input.Force * Math.Sin(input.AngularFrequency * time) - (damping * y[1]) - (input.Stiffness * y[0])) / input.Mass;
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>

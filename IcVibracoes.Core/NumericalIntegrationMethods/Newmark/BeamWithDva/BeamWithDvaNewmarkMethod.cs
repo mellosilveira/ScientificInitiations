@@ -1,8 +1,6 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO.Input;
-using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
-using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva
@@ -22,9 +20,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva
         /// <param name="validator"></param>
         public BeamWithDvaNewmarkMethod(
             IArrayOperation arrayOperation,
-            IAuxiliarOperation auxiliarOperation,
-            INewmarkMethodValidator validator)
-            : base(arrayOperation, auxiliarOperation, validator) 
+            IAuxiliarOperation auxiliarOperation)
+            : base(arrayOperation, auxiliarOperation)
         {
             this._arrayOperation = arrayOperation;
         }
@@ -40,21 +37,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva
         /// <returns></returns>
         public override async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration)
         {
-            if (previousDisplacement.Length != input.NumberOfTrueBoundaryConditions)
-            {
-                throw new Exception($"Lenth of displacement: {previousDisplacement.Length} have to be equals to number of true bondary conditions: {input.NumberOfTrueBoundaryConditions}.");
-            }
-
-            if (previousVelocity.Length != input.NumberOfTrueBoundaryConditions)
-            {
-                throw new Exception($"Lenth of velocity: {previousVelocity.Length} have to be equals to number of true bondary conditions: {input.NumberOfTrueBoundaryConditions}.");
-            }
-
-            if (previousAcceleration.Length != input.NumberOfTrueBoundaryConditions)
-            {
-                throw new Exception($"Lenth of acceleration: {previousAcceleration.Length} have to be equals to number of true bondary conditions: {input.NumberOfTrueBoundaryConditions}.");
-            }
-
             double[] equivalentVelocity = await CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
             double[] equivalentAcceleration = await CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
 
@@ -65,15 +47,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark.BeamWithDva
             {
                 for (int j = 0; j < input.NumberOfTrueBoundaryConditions; j++)
                 {
-                    try
-                    {
-                        mass[i, j] = input.Mass[i, j];
-                        damping[i, j] = input.Damping[i, j];
-                    }
-                    catch
-                    {
-                        throw new ArgumentOutOfRangeException($"Error creating mass and damping matrixes. Stoped in position: {i}, {j}.");
-                    }
+                    mass[i, j] = input.Mass[i, j];
+                    damping[i, j] = input.Damping[i, j];
                 }
             }
 

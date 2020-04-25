@@ -24,7 +24,6 @@ using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiez
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom;
 using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom;
-using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using Microsoft.AspNetCore.Builder;
@@ -97,7 +96,6 @@ namespace IcVibracoes
             // Validators
             services.AddScoped<IRectangularProfileValidator, RectangularProfileValidator>();
             services.AddScoped<ICircularProfileValidator, CircularProfileValidator>();
-            services.AddScoped<INewmarkMethodValidator, NewmarkMethodValidator>();
 
             services.AddControllers();
 

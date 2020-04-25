@@ -13,7 +13,6 @@ using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular;
-using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
 using System.Collections.Generic;
@@ -31,7 +30,6 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
         private const double elementLength = 0.5;
 
         private readonly IAuxiliarOperation _auxiliarOperation;
-        private readonly INewmarkMethodValidator _newmarkMethodValidator;
         private readonly IArrayOperation _arrayOperation;
         private readonly INewmarkMethod _newmarkMethod;
         private readonly IMappingResolver _mappingResolver;
@@ -80,13 +78,11 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
             this._piezoelectricMomentOfInertia = 3.5701411E-11;
 
             this._arrayOperation = new ArrayOperation();
-            this._newmarkMethodValidator = new NewmarkMethodValidator();
             this._auxiliarOperation = new AuxiliarOperation();
 
             this._newmarkMethod = new NewmarkMethod(
                 this._arrayOperation,
-                this._auxiliarOperation,
-                this._newmarkMethodValidator);
+                this._auxiliarOperation);
 
             this._mappingResolver = new MappingResolver();
             this._profileValidator = new RectangularProfileValidator();

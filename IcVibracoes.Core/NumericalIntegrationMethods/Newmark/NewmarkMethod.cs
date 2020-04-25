@@ -1,9 +1,7 @@
-﻿using IcVibracoes.Common.ErrorCodes;
-using IcVibracoes.Core.AuxiliarOperations;
+﻿using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Validators.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.DataContracts.FiniteElements;
 using System;
 using System.Threading.Tasks;
@@ -27,7 +25,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
         private readonly IArrayOperation _arrayOperation;
         private readonly IAuxiliarOperation _auxiliarOperation;
-        private readonly INewmarkMethodValidator _validator;
 
         /// <summary>
         /// Class constructor.
@@ -35,12 +32,10 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="arrayOperation"></param>
         public NewmarkMethod(
             IArrayOperation arrayOperation,
-            IAuxiliarOperation auxiliarOperation,
-            INewmarkMethodValidator validator)
+            IAuxiliarOperation auxiliarOperation)
         {
             this._arrayOperation = arrayOperation ?? throw new ArgumentNullException(nameof(IArrayOperation), $"'{nameof(IArrayOperation)}' cannot be null in '{this.GetType().Name}'.");
             this._auxiliarOperation = auxiliarOperation ?? throw new ArgumentNullException(nameof(IAuxiliarOperation), $"'{nameof(IAuxiliarOperation)}' cannot be null in '{this.GetType().Name}'.");
-            this._validator = validator ?? throw new ArgumentNullException(nameof(INewmarkMethodValidator), $"'{nameof(INewmarkMethodValidator)}' cannot be null in '{this.GetType().Name}'.");
         }
 
         /// <summary>
@@ -52,11 +47,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <returns></returns>
         public async Task CalculateResponse(NewmarkMethodInput input, FiniteElementsResponse response, string analysisType, uint numberOfElements)
         {
-            if (!await this._validator.ValidateParameters(input, response))
-            {
-                return;
-            }
-
             int numberOfLoops;
             if (input.Parameter.DeltaAngularFrequency != default)
             {
@@ -83,25 +73,17 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
                 if (input.AngularFrequency != 0)
                 {
-                    input.DeltaTime = (Math.PI * 2 / input.AngularFrequency) / input.Parameter.PeriodDivision;
+                    input.TimeStep = (Math.PI * 2 / input.AngularFrequency) / input.Parameter.PeriodDivision;
                 }
                 else
                 {
-                    input.DeltaTime = Math.PI * 2 / input.Parameter.PeriodDivision;
+                    input.TimeStep = Math.PI * 2 / input.Parameter.PeriodDivision;
                 }
 
-                this.CalculateIngrationContants(input.DeltaTime);
+                this.CalculateIngrationContants(input.TimeStep);
 
-                try
-                {
-                    this._auxiliarOperation.WriteInFile(input.AngularFrequency, path);
-                    await Solution(input);
-                }
-                catch (Exception ex)
-                {
-                    response.AddError(ErrorCode.NewmarkMethod, $"Error executing the solution. {ex.Message}");
-                    return;
-                }
+                this._auxiliarOperation.WriteInFile(input.AngularFrequency, path);
+                await this.Solution(input);
             }
         }
 
@@ -155,7 +137,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
                     this._auxiliarOperation.WriteInFile(time, y, path);
 
-                    time += input.DeltaTime;
+                    time += input.TimeStep;
 
                     for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
                     {
@@ -279,7 +261,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             a4 = (Constant.Gama / Constant.Beta) - 1;
             a5 = (deltaTime / 2) * ((Constant.Gama / Constant.Beta) - 2);
             a6 = deltaTime * (1 - Constant.Gama);
-            a7 = Constant.Gama* deltaTime;
+            a7 = Constant.Gama * deltaTime;
         }
+
+        //public Task<bool> ValidateTimeStep()
+        //{
+
+        //}
     }
 }

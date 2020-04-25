@@ -52,7 +52,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
             do
             {
                 // Step 1  - Calculate z1 using method equation. 
-                double[] z1 = await this._arrayOperation.Multiply(matrix, y0, "Power Method");
+                double[] z1 = await this._arrayOperation.Multiply(matrix, y0, "Power Method").ConfigureAwait(false);
 
                 // Step 2 - Get the max value into vector z1.
                 double alpha1 = z1.GetMaxValue();
@@ -61,7 +61,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                 double[] y1 = z1.DivideEachElement(alpha1);
 
                 // Step 4 - Calculate z2 using method equation.
-                double[] z2 = await this._arrayOperation.Multiply(matrix, y1, "Power Method");
+                double[] z2 = await this._arrayOperation.Multiply(matrix, y1, "Power Method").ConfigureAwait(false);
 
                 //Step 5 - Calculate first value to eigenvalue (lambda1).
                 lambda1 = z2.Divide(y1);
@@ -73,7 +73,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                 double[] y2 = z2.DivideEachElement(alpha2);
 
                 // Step 8 - Calculate vector z3.
-                double[] z3 = await this._arrayOperation.Multiply(matrix, y2, "Power Method");
+                double[] z3 = await this._arrayOperation.Multiply(matrix, y2, "Power Method").ConfigureAwait(false);
 
                 // Step 9 - Calculate second value to eigenvalue (lambda2).
                 lambda2 = z3.Divide(y2);
@@ -86,14 +86,18 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
             }
             while (error.GetMaxValue() > tolerance);
 
-            int indexOfMininimumError = Array.IndexOf(error, error.GetMinValue());
-            double eigenvalue = Array.IndexOf(lambda2, indexOfMininimumError);
+            // Step 11 - Get the eigenvalue with smallest error.
+            int indexOfSmallestError = Array.IndexOf(error, error.GetMinValue());
+            double eigenvalue = Array.IndexOf(lambda2, indexOfSmallestError);
 
             return eigenvalue;
         }
 
         /// <summary>
         /// Calculates the eigenvalues of a matrix using QR Decomposition.
+        /// Logic used:
+        ///     https://sites.icmc.usp.br/andretta/ensino/aulas/sme0301-1-10/AutovaloresFrancis.pdf
+        ///     https://pt.wikipedia.org/wiki/Decomposi%C3%A7%C3%A3o_QR
         /// </summary>
         /// <param name="matrix"></param>
         /// <param name="tolerance"></param>
@@ -108,15 +112,14 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
 
             do
             {
-
                 for (int i = 0; i < size; i++)
                 {
                     double[] vectorU = matrixA[i];
 
                     for (int j = i - 1; j < 0; j--)
                     {
-                        double[] projection = await this.CalculateProjection(matrixA[i], vectorsU[j]);
-                        vectorU = await this._arrayOperation.Subtract(vectorU, projection);
+                        double[] projection = await this.CalculateProjection(matrixA[i], vectorsU[j]).ConfigureAwait(false);
+                        vectorU = await this._arrayOperation.Subtract(vectorU, projection).ConfigureAwait(false);
                     }
 
                     double uNorm = vectorU.CalculateVectorNorm();
@@ -131,9 +134,9 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
 
                     for (int j = 0; j < size; j++)
                     {
-                        double innerProduct = await this._arrayOperation.CalculateInnerProduct(vectorsE[j], matrixA[i]);
+                        double innerProduct = await this._arrayOperation.CalculateInnerProduct(vectorsE[j], matrixA[i]).ConfigureAwait(false);
 
-                        aVector = await this._arrayOperation.Sum(vectorsE[j].MultiplyEachElement(innerProduct), aVector);
+                        aVector = await this._arrayOperation.Sum(vectorsE[j].MultiplyEachElement(innerProduct), aVector).ConfigureAwait(false);
                     }
 
                     matrixA[i] = aVector;
@@ -155,7 +158,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                     {
                         if (i <= j)
                         {
-                            matrixQ[i, j] = await this._arrayOperation.CalculateInnerProduct(vectorsE[i], matrixA[j]);
+                            matrixQ[i, j] = await this._arrayOperation.CalculateInnerProduct(vectorsE[i], matrixA[j]).ConfigureAwait(false);
                         }
                         else
                         {
@@ -164,7 +167,9 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                     }
                 }
 
-                matrixA = (await this._arrayOperation.Multiply(matrixR, matrixQ)).ConvertToListByColumns();
+                double[,] transposedMatrixQ = await this._arrayOperation.TransposeMatrix(matrixQ).ConfigureAwait(false);
+
+                matrixA = (await this._arrayOperation.Multiply(matrixR, transposedMatrixQ).ConfigureAwait(false)).ConvertToListByColumns();
             }
             while (matrixA.ToArray().GetMaxValueBelowMainDiagonal() > tolerance);
 
@@ -187,7 +192,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
         /// <returns></returns>
         private async Task<double[]> CalculateProjection(double[] vector, double[] baseVector)
         {
-            double constant = await this._arrayOperation.CalculateInnerProduct(vector, baseVector) / await this._arrayOperation.CalculateInnerProduct(baseVector, baseVector);
+            double constant = await this._arrayOperation.CalculateInnerProduct(vector, baseVector).ConfigureAwait(false) / await this._arrayOperation.CalculateInnerProduct(baseVector, baseVector).ConfigureAwait(false);
 
             double[] result = baseVector.MultiplyEachElement(constant);
 

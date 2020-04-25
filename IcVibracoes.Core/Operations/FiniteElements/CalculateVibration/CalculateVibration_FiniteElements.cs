@@ -63,24 +63,15 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         {
             FiniteElementsResponse response = new FiniteElementsResponse();
 
-            try
-            {
-                uint degreesFreedomMaximum = this._auxiliarOperation.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements);
+            uint degreesFreedomMaximum = this._auxiliarOperation.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements);
 
-                TBeam beam = await BuildBeam(request, degreesFreedomMaximum);
+            TBeam beam = await BuildBeam(request, degreesFreedomMaximum);
 
-                NewmarkMethodInput input = await CreateInput(beam, request.MethodParameterData, degreesFreedomMaximum);
+            NewmarkMethodInput input = await CreateInput(beam, request.MethodParameterData, degreesFreedomMaximum);
 
-                await this._newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements);
+            await this._newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements);
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.AddError("000", ex.Message);
-
-                return response;
-            }
+            return response;
         }
 
         /// <summary>
