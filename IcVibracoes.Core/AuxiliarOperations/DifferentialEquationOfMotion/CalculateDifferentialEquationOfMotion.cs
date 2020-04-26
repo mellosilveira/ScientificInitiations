@@ -55,7 +55,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
         /// <returns></returns>
         public async Task<double[]> CalculateForTwoDegreesOfFreedom(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
-            double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
+            double[] result = new double[Constant.NumberOfRigidBodyVariables_2DF];
 
             // wn - Natural angular frequency
             double wn = await this._naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);

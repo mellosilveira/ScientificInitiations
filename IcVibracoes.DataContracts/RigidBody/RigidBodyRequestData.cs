@@ -41,7 +41,7 @@ namespace IcVibracoes.DataContracts.RigidBody
         /// <summary>
         /// Angular frequency step of the analysis.
         /// </summary>
-        public double AndularFrequencyStep { get; set; }
+        public double AngularFrequencyStep { get; set; }
 
         /// <summary>
         /// Final angular frequency of the analysis.

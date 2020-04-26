@@ -42,7 +42,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
 
             return Task.FromResult(new DifferentialEquationOfMotionInput
             {
-                AngularFrequency = requestData.AndularFrequencyStep,
+                AngularFrequency = requestData.AngularFrequencyStep,
                 DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
                 Force = requestData.Force,
                 Stiffness = requestData.MainObjectMechanicalProperties.Stiffness,

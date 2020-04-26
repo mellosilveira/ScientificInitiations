@@ -63,18 +63,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
         protected override async Task<TResponse> ProcessOperation(TRequest request)
         {
-            var response = new TResponse
-            {
-                Data = new TResponseData()
-            };
+            var response = new TResponse();
 
-            double[] y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
-            response.Data.Results = new Dictionary<double, double[]>
-            {
-                { request.Data.InitialTime, y}
-            };
-
-            double time = request.Data.InitialTime;
+            double[] initial_y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
             double timeStep = request.Data.TimeStep;
             double finalTime = request.Data.FinalTime;
 
@@ -85,23 +76,39 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             {
                 input.DampingRatio = dampingRatio;
 
+                double dw = request.Data.AngularFrequencyStep;
                 double w = request.Data.InitialAngularFrequency;
-                double dw = request.Data.AndularFrequencyStep;
                 double wf = request.Data.FinalAngularFrequency;
 
                 while (w <= wf)
                 {
-                    string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, dampingRatio, w).ConfigureAwait(false);
+                    input.AngularFrequency = w;
+
+                    string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, input.DampingRatio, w).ConfigureAwait(false);
+
+                    if (path == null)
+                    {
+                        return response;
+                    }
+
+                    double time = request.Data.InitialTime;
+                    double[] y = initial_y;
 
                     while (time <= finalTime)
                     {
-                        y = await this._rungeKutta.ExecuteMethod(input, timeStep, time, y).ConfigureAwait(false);
+                        if (time != request.Data.InitialTime)
+                        {
+                            y = await this._rungeKutta.ExecuteMethod(input, timeStep, time, y).ConfigureAwait(false);
+                        }
 
                         this._auxiliarOperation.WriteInFile(time, y, path);
 
-                        response.Data.Results.Add(time, y);
-
                         time += timeStep;
+                    }
+
+                    if (w == wf)
+                    {
+                        break;
                     }
 
                     w += dw;

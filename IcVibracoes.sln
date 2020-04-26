@@ -73,8 +73,22 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RigidBody", "RigidBody", "{531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OneDegreeFreedom", "OneDegreeFreedom", "{01399723-44F7-4CD7-A9DA-6C6D08DCBA71}"
+	ProjectSection(SolutionItems) = preProject
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TwoDegreesFreedom", "TwoDegreesFreedom", "{E13B645E-D41A-4C77-8954-9039E3A7895B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RigidBody", "RigidBody", "{C48BCEDF-A67D-427D-A65B-B85E0B560729}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OneDegreeFreedom", "OneDegreeFreedom", "{450C0332-86C8-48F5-9774-F257E61F72BA}"
+	ProjectSection(SolutionItems) = preProject
+		Request\RigidBody\OneDegreeFreedom\Dados para 1 GL do TCC Projeto de absorvedores dinâmicos parqa vigas em flexão.json = Request\RigidBody\OneDegreeFreedom\Dados para 1 GL do TCC Projeto de absorvedores dinâmicos parqa vigas em flexão.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TwoDegreesFreedom", "TwoDegreesFreedom", "{5D9BDA15-474D-4D0C-B942-CB742BE49A12}"
+	ProjectSection(SolutionItems) = preProject
+		Request\RigidBody\TwoDegreesFreedom\Dados para 2 GL do TCC Projeto de absorvedores dinâmicos parqa vigas em flexão.json = Request\RigidBody\TwoDegreesFreedom\Dados para 2 GL do TCC Projeto de absorvedores dinâmicos parqa vigas em flexão.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,8 +131,11 @@ Global
 		{E486846C-62C9-48F5-B3FD-E86E818D4709} = {5E5F94FA-6B14-4150-A813-DE4FFB6DD6B3}
 		{F291C03A-BD08-4F86-9203-F7FF52846573} = {5E5F94FA-6B14-4150-A813-DE4FFB6DD6B3}
 		{531B1A23-CCF5-4749-ACF7-44FC4A3A2F21} = {69DC91C4-15E5-46D3-A0D1-820C174221E8}
-		{01399723-44F7-4CD7-A9DA-6C6D08DCBA71} = {531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}
-		{E13B645E-D41A-4C77-8954-9039E3A7895B} = {531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}
+		{01399723-44F7-4CD7-A9DA-6C6D08DCBA71} = {C48BCEDF-A67D-427D-A65B-B85E0B560729}
+		{E13B645E-D41A-4C77-8954-9039E3A7895B} = {C48BCEDF-A67D-427D-A65B-B85E0B560729}
+		{C48BCEDF-A67D-427D-A65B-B85E0B560729} = {FEF4F35F-FDF5-4FAF-937F-6AB5864597C0}
+		{450C0332-86C8-48F5-9774-F257E61F72BA} = {531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}
+		{5D9BDA15-474D-4D0C-B942-CB742BE49A12} = {531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2DE8892-081F-419C-8CB3-E3D5E29FF51F}

@@ -42,7 +42,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
 
             return Task.FromResult(new DifferentialEquationOfMotionInput
             {
-                AngularFrequency = requestData.AndularFrequencyStep,
+                AngularFrequency = requestData.InitialAngularFrequency,
                 DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
                 Force = requestData.Force,
                 Stiffness = requestData.MechanicalProperties.Stiffness,
@@ -75,24 +75,27 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// <returns></returns>
         public override Task<string> CreateSolutionPath(OneDegreeFreedomResponse response, OneDegreeFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
         {
-            string path = Directory.GetCurrentDirectory();
+            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderName = Path.GetFileName(path);
-
-            string previousPath = path.Substring(0, path.Length - folderName.Length);
-
-            path = Path.Combine(
+            string folderPath = Path.Combine(
                 previousPath,
-                "Solutions/RigidBody/OneDegreeFreedom",
-                $"{analysisType.Trim()}_m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Stiffness}_w={Math.Round(angularFrequency, 2)}_dampingRatio={dampingRatio}.csv");
+                $"Solutions/RigidBody/OneDegreeFreedom/m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Stiffness}");
+
+            string fileName = $"{analysisType.Trim()}_m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Stiffness}_dampingRatio={dampingRatio}_w={Math.Round(angularFrequency, 2)}.csv";
+
+            string path = Path.Combine(folderPath, fileName);
+
+            Directory.CreateDirectory(folderPath);
 
             if (File.Exists(path))
             {
-                response.AddError(ErrorCode.OperationError, $"File already exist in path '{path}'.");
-                return null;
+                response.AddError(ErrorCode.OperationError, $"File already exist in path: '{path}'.");
+                return Task.FromResult<string>(null);
             }
-
-            return Task.FromResult(path);
+            else
+            {
+                return Task.FromResult(path);
+            }
         }
     }
 }

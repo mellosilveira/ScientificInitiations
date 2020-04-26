@@ -47,6 +47,5 @@
     "NumberOfPeriods": 10,
     "InitialAngularFrequency": 30
   },
-  "Author": "Bruno Silveira",
-  "analysisType": "Beam with piezoelectric."
+  "Author": "Bruno Silveira"
 }
