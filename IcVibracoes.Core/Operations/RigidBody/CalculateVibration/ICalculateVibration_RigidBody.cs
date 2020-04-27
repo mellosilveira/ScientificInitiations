@@ -23,5 +23,23 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <param name="requestData"></param>
         /// <returns></returns>
         Task<DifferentialEquationOfMotionInput> BuildDifferentialEquationOfMotionInput(TRequestData requestData);
+
+        /// <summary>
+        /// Create a path to the files with the analysis solution.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="requestData"></param>
+        /// <param name="analysisType"></param>
+        /// <param name="dampingRatio"></param>
+        /// <param name="angularFrequency"></param>
+        /// <returns></returns>
+        Task<string> CreateSolutionPath(TResponse response, TRequestData requestData, string analysisType, double dampingRatio, double angularFrequency);
+
+        /// <summary>
+        /// Builds the vector with the initial conditions to analysis.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        Task<double[]> BuildInitialConditions(TRequestData data);
     }
 }
