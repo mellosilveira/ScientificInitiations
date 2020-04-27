@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using IcVibracoes.DataContracts;
+using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.ArrayOperations
 {
@@ -65,6 +66,14 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="arraysName"></param>
         /// <returns></returns>
         Task<double[]> Multiply(double[,] matrix, double[] vector, string arraysName);
+
+        /// <summary>
+        /// It's responsible to multiplicate a matrix and a vector.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        Task<double[]> Multiply(double[,] matrix, double[] vector);
 
         /// <summary>
         /// It's responsible to multiplicate a matrix and a vector.

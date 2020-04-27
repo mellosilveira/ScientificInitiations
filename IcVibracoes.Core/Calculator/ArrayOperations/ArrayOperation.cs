@@ -228,6 +228,37 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <summary>
         /// It's responsible to multiplicate a matrix and a vector.
         /// </summary>
+        /// <typeparam name="TResponseData"></typeparam>
+        /// <param name="response"></param>
+        /// <param name="matrix"></param>
+        /// <param name="vector"></param>
+        /// <param name="arraysName"></param>
+        /// <returns></returns>
+        public Task<double[]> Multiply(double[,] matrix, double[] vector)
+        {
+            int rows1 = matrix.GetLength(0);
+            int columns1 = matrix.GetLength(1);
+
+            double[] vectorMultiplication = new double[rows1];
+
+            for (int i = 0; i < rows1; i++)
+            {
+                double sum = 0;
+
+                for (int j = 0; j < columns1; j++)
+                {
+                    sum += matrix[i, j] * vector[j];
+                }
+
+                vectorMultiplication[i] = sum;
+            }
+
+            return Task.FromResult(vectorMultiplication);
+        }
+
+        /// <summary>
+        /// It's responsible to multiplicate a matrix and a vector.
+        /// </summary>
         /// <param name="matrix"></param>
         /// <param name="vector"></param>
         /// <param name="arraysName"></param>
