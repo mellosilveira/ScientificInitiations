@@ -118,7 +118,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         }
 
         /// <summary>
-        /// It's responsible to inverse a matrix.
+        /// It's responsible to inverse a matrix using the Gauss-Jordan method.
         /// </summary>
         /// <param name="matrix"></param>
         /// <param name="matrixName"></param>
