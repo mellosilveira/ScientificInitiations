@@ -1,4 +1,4 @@
-﻿namespace IcVibracoes.Core.DTO
+﻿namespace IcVibracoes.Core.DTO.InputData
 {
     /// <summary>
     /// It contains the input 'data' to create a differential equation of motion.

@@ -3,7 +3,7 @@ using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric;
-using IcVibracoes.Core.DTO.Input;
+using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.BeamProfiles;
 using IcVibracoes.Core.Mapper.PiezoelectricProfiles;

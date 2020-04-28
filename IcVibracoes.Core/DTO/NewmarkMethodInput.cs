@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Classes;
 
-namespace IcVibracoes.Core.DTO.Input
+namespace IcVibracoes.Core.DTO
 {
     /// <summary>
     /// It contains the input content of newmark method operations.

@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.DTO;
+﻿using IcVibracoes.Core.DTO.InputData;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion

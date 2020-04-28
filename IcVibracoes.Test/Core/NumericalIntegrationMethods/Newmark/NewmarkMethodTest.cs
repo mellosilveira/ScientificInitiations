@@ -2,7 +2,7 @@
 using IcVibracoes.Common.Classes;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.Core.DTO.Input;
+using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 using System;
 using Xunit;

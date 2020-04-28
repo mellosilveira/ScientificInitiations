@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
-using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.TwoDegreeFreedom;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;

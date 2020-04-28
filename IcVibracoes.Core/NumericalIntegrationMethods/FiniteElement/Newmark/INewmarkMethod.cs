@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.DTO.Input;
+﻿using IcVibracoes.Core.DTO;
 using IcVibracoes.DataContracts.FiniteElements;
 using System.Threading.Tasks;
 

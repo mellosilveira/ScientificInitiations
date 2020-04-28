@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
-using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
 using System.Threading.Tasks;
 

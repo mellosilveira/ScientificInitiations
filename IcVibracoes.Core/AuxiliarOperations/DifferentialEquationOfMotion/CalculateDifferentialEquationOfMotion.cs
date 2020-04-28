@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
-using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
 using System;
 using System.Threading.Tasks;

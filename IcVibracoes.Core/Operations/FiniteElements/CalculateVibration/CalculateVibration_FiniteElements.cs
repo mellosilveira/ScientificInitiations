@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.Classes;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.DTO.Input;
+using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
@@ -61,15 +61,21 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
 
         protected override async Task<FiniteElementsResponse> ProcessOperation(TRequest request)
         {
+            //FiniteElementsResponse response = new FiniteElementsResponse();
+
+            //uint degreesFreedomMaximum = this._auxiliarOperation.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements);
+
+            //TBeam beam = await this.BuildBeam(request, degreesFreedomMaximum).ConfigureAwait(false);
+
+            //NewmarkMethodInput input = await this.CreateInput(beam, request.MethodParameterData, degreesFreedomMaximum).ConfigureAwait(false);
+
+            //await this._newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements).ConfigureAwait(false);
+
+            //return response;
+
             FiniteElementsResponse response = new FiniteElementsResponse();
 
-            uint degreesFreedomMaximum = this._auxiliarOperation.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements);
 
-            TBeam beam = await this.BuildBeam(request, degreesFreedomMaximum).ConfigureAwait(false);
-
-            NewmarkMethodInput input = await this.CreateInput(beam, request.MethodParameterData, degreesFreedomMaximum).ConfigureAwait(false);
-
-            await this._newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements).ConfigureAwait(false);
 
             return response;
         }

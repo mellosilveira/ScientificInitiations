@@ -1,33 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace IcVibracoes.Core.DTO
+﻿namespace IcVibracoes.Core.DTO.InputData.FiniteElements
 {
     /// <summary>
-    /// It contains the input 'data' to Newmark-Beta numerical method.
+    /// It contains the input 'data' to Newmark numerical method.
     /// </summary>
-    public class NewmarBetaMethodInput
+    public class NewmarMethodInput : FiniteElementsMethodInput
     {
-        public double[,] Mass { get; set; }
-
-        public double[,] Stiffness { get; set; }
-
-        public double[,] Damping { get; set; }
-
-        public double[] Force { get; set; }
-
-        public List<double> AngularFrequencies { get; set; }
-
-        public uint DegreesOfFreedom { get; set; }
-
-        public double InitialTime
-        {
-            get => 0;
-        }
-
-        public double TimeStep { get; set; }
-
-        public double FinalTime { get; set; }
-
         /// <summary>
         /// Integration constant used in Newmark-Beta method calculations.
         /// Valid values:

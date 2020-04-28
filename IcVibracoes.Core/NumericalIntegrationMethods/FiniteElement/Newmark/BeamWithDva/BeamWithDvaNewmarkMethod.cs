@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.Core.DTO.Input;
+using IcVibracoes.Core.DTO;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark.BeamWithDva

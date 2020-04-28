@@ -5,7 +5,6 @@ using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
-using IcVibracoes.Core.DTO.Input;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular;
 using IcVibracoes.Core.Mapper.BeamProfiles.Rectangular;
@@ -17,6 +16,7 @@ using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
 using System.Collections.Generic;
 using Xunit;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
+using IcVibracoes.Core.DTO;
 
 namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
 {
