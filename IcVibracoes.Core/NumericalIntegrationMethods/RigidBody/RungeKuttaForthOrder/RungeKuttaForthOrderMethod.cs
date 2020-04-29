@@ -30,7 +30,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForth
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task<double[]> ExecuteMethod(DifferentialEquationOfMotionInput input, double timeStep, double time, double[] y)
+        public async Task<double[]> CalculateResult(DifferentialEquationOfMotionInput input, double timeStep, double time, double[] y)
         {
             int arrayLength = y.Length;
 

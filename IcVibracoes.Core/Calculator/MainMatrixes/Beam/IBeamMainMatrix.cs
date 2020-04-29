@@ -62,6 +62,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// <param name="lastFastening"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        Task<bool[]> CalculateBondaryCondition(Fastening firstFastening, Fastening lastFastening, uint degreesFreedomMaximum);
+        Task<bool[]> CalculateBondaryCondition(FasteningType firstFastening, FasteningType lastFastening, uint degreesFreedomMaximum);
     }
 }

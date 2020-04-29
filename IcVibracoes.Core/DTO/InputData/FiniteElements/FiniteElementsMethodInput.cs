@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace IcVibracoes.Core.DTO.InputData.FiniteElements
+﻿namespace IcVibracoes.Core.DTO.InputData.FiniteElements
 {
     /// <summary>
     /// It contains the input 'data' of finite element methods.
@@ -13,9 +11,11 @@ namespace IcVibracoes.Core.DTO.InputData.FiniteElements
 
         public double[,] Damping { get; set; }
 
+        public double[] OriginalForce { get; set; }
+
         public double[] Force { get; set; }
 
-        public List<double> AngularFrequencies { get; set; }
+        public double AngularFrequency { get; set; }
 
         public uint DegreesOfFreedom { get; set; }
 

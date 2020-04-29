@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models.BeamCharacteristics;
+using System.Collections.Generic;
 
 namespace IcVibracoes.Core.Models.Beams
 {
@@ -20,14 +21,10 @@ namespace IcVibracoes.Core.Models.Beams
         public Material Material { get; set; }
 
         /// <summary>
-        /// First fastening. Can be: fixed, pinned and simple.
+        /// The fastenings in the beam.
+        /// The key of IDictionay is the node position.
         /// </summary>
-        public Fastening FirstFastening { get; set; }
-
-        /// <summary>
-        /// Last fastening. Can be: fixed, pinned and simple.
-        /// </summary>
-        public Fastening LastFastening { get; set; }
+        public IDictionary<uint, FasteningType> Fastenings { get; set; }
 
         /// <summary>
         /// Length.

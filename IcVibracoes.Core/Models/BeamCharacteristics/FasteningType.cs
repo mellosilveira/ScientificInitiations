@@ -6,7 +6,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     /// <summary>
     /// It represents the degrees of freedom for a generic fastening.
     /// </summary>
-    public abstract class Fastening
+    public abstract class FasteningType
     {
         public abstract bool LinearDisplacement { get; }
 
@@ -17,7 +17,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     /// <summary>
     /// It represents the degrees of freedom for a fixed type fastening.
     /// </summary>
-    public class Fixed : Fastening
+    public class Fixed : FasteningType
     {
         public override bool LinearDisplacement => false;
 
@@ -28,7 +28,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     /// <summary>
     /// It represents the degrees of freedom for a pinned type fastening.
     /// </summary>
-    public class Pinned : Fastening
+    public class Pinned : FasteningType
     {
         public override bool LinearDisplacement => false;
 
@@ -39,7 +39,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     /// <summary>
     /// It represents the degrees of freedom for a case without fastening.
     /// </summary>
-    public class None : Fastening
+    public class None : FasteningType
     {
         public override bool LinearDisplacement => true;
 
@@ -52,7 +52,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     /// </summary>
     public class FasteningFactory
     {
-        public static Fastening Create(string fastening)
+        public static FasteningType Create(string fastening)
         {
             switch ((Fastenings)Enum.Parse(typeof(Fastenings), fastening, ignoreCase: true))
             {

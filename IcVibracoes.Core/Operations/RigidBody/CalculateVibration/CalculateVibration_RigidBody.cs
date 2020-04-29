@@ -98,7 +98,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                     {
                         if (time != request.Data.InitialTime)
                         {
-                            y = await this._rungeKutta.ExecuteMethod(input, timeStep, time, y).ConfigureAwait(false);
+                            y = await this._rungeKutta.CalculateResult(input, timeStep, time, y).ConfigureAwait(false);
                         }
 
                         this._auxiliarOperation.WriteInFile(time, y, path);

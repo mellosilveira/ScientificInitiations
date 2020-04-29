@@ -48,9 +48,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
         public async Task CalculateResponse(NewmarkMethodInput input, FiniteElementsResponse response, string analysisType, uint numberOfElements)
         {
             int numberOfLoops;
-            if (input.Parameter.DeltaAngularFrequency != default)
+            if (input.Parameter.AngularFrequencyStep != default)
             {
-                numberOfLoops = (int)((input.Parameter.FinalAngularFrequency - input.Parameter.InitialAngularFrequency) / input.Parameter.DeltaAngularFrequency) + 1;
+                numberOfLoops = (int)((input.Parameter.FinalAngularFrequency - input.Parameter.InitialAngularFrequency) / input.Parameter.AngularFrequencyStep) + 1;
             }
             else
             {
@@ -62,9 +62,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
             //Parallel.For
             for (int i = 0; i < numberOfLoops; i++)
             {
-                if (input.Parameter.DeltaAngularFrequency != null)
+                if (input.Parameter.AngularFrequencyStep != null)
                 {
-                    input.AngularFrequency = input.Parameter.InitialAngularFrequency + i * input.Parameter.DeltaAngularFrequency.Value;
+                    input.AngularFrequency = input.Parameter.InitialAngularFrequency + i * input.Parameter.AngularFrequencyStep.Value;
                 }
                 else
                 {

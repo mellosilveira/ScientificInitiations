@@ -163,7 +163,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
 
                 Parameter = new NewmarkMethodParameter
                 {
-                    DeltaAngularFrequency = newmarkMethodParameter.DeltaAngularFrequency,
+                    AngularFrequencyStep = newmarkMethodParameter.AngularFrequencyStep,
                     FinalAngularFrequency = newmarkMethodParameter.FinalAngularFrequency,
                     InitialAngularFrequency = newmarkMethodParameter.InitialAngularFrequency,
                     InitialTime = newmarkMethodParameter.InitialTime,

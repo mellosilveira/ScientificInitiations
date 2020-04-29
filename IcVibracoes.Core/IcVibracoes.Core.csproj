@@ -13,8 +13,4 @@
     <ProjectReference Include="..\IcVibracoes.DataContracts\IcVibracoes.DataContracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\InputData\RigidBody\" />
-  </ItemGroup>
-
 </Project>

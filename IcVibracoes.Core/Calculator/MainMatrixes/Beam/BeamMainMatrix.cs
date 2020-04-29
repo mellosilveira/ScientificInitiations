@@ -192,7 +192,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// <param name="lastFastening"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        public Task<bool[]> CalculateBondaryCondition(Fastening firstFastening, Fastening lastFastening, uint degreesFreedomMaximum)
+        public Task<bool[]> CalculateBondaryCondition(FasteningType firstFastening, FasteningType lastFastening, uint degreesFreedomMaximum)
         {
             bool[] bondaryCondition = new bool[degreesFreedomMaximum];
 

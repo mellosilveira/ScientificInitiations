@@ -21,6 +21,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForth
         /// <param name="y"></param>
         /// <param name="angularFrequency"></param>
         /// <returns></returns>
-        Task<double[]> ExecuteMethod(DifferentialEquationOfMotionInput input, double timeStep, double time, double[] y);
+        Task<double[]> CalculateResult(DifferentialEquationOfMotionInput input, double timeStep, double time, double[] y);
     }
 }

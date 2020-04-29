@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace IcVibracoes.Common
+﻿namespace IcVibracoes.Common
 {
     public class Enum
     {

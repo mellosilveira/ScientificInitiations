@@ -5,7 +5,7 @@ namespace IcVibracoes.DataContracts.RigidBody
     /// <summary>
     /// It represents the 'data' content of Rigid Body request operation.
     /// </summary>
-    public class RigidBodyRequestData
+    public class RigidBodyRequestData : OperationRequestData
     {
         /// <summary>
         /// List of damping ratio of system.

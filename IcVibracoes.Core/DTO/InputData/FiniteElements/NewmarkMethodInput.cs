@@ -3,7 +3,7 @@
     /// <summary>
     /// It contains the input 'data' to Newmark numerical method.
     /// </summary>
-    public class NewmarMethodInput : FiniteElementsMethodInput
+    public class NewmarkMethodInput : FiniteElementsMethodInput
     {
         /// <summary>
         /// Integration constant used in Newmark-Beta method calculations.

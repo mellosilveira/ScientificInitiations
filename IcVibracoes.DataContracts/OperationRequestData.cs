@@ -1,9 +1,6 @@
-﻿namespace IcVibracoes.Common.Classes
+﻿namespace IcVibracoes.DataContracts
 {
-    /// <summary>
-    /// It represents the content of newmark method parameter.
-    /// </summary>
-    public class NewmarkMethodParameter
+    public class OperationRequestData
     {
         /// <summary>
         /// Initial time of analysis.
@@ -13,12 +10,12 @@
         /// <summary>
         /// Divisions on period.
         /// </summary>
-        public uint PeriodDivision { get; set; }
+        public uint StepTime { get; set; }
 
         /// <summary>
         /// Number of periods.
         /// </summary>
-        public uint NumberOfPeriods { get; set; }
+        public uint TimeFinal { get; set; }
 
         /// <summary>
         /// Initial angular frequency. Receive in Hz and convert to rad/s to the calculus.
@@ -28,7 +25,7 @@
         /// <summary>
         /// Delta angular frequency. Receive in Hz and convert to rad/s to the calculus.
         /// </summary>
-        public double? DeltaAngularFrequency { get; set; }
+        public double? AngularFrequencyStep { get; set; }
 
         /// <summary>
         /// Final angular frequency. Receive in Hz and convert to rad/s to the calculus.

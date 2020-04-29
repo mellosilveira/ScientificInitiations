@@ -13,7 +13,5 @@ namespace IcVibracoes.DataContracts.FiniteElements
         where TRequestData : FiniteElementsRequestData<TProfile>
     {
         public TRequestData BeamData { get; set; }
-
-        public NewmarkMethodParameter MethodParameterData { get; set; }
     }
 }

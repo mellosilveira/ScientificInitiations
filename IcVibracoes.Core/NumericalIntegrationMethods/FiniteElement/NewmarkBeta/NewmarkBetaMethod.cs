@@ -1,23 +1,35 @@
 ﻿using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
-using IcVibracoes.DataContracts.FiniteElements;
 using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
 {
+    /// <summary>
+    /// It's responsible to execute the Newmark-Beta numerical integration method to calculate the vibration.
+    /// </summary>
     public class NewmarkBetaMethod : INewmarkBetaMethod
     {
         private readonly IArrayOperation _arrayOperation;
 
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="arrayOperation"></param>
         public NewmarkBetaMethod(
             IArrayOperation arrayOperation)
         {
             this._arrayOperation = arrayOperation;
         }
 
-        public async Task<AnalysisResult> ExecuteMethod(NewmarMethodInput input, AnalysisResult previousResult)
+        /// <summary>
+        /// Executes the Newmark-Beta numerical integration method.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="previousResult"></param>
+        /// <returns></returns>
+        public async Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult)
         {
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
@@ -44,7 +56,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
             };
         }
 
-        private Task<double[,]> CalculateEquivalentStiffness(NewmarMethodInput input)
+        private Task<double[,]> CalculateEquivalentStiffness(NewmarkMethodInput input)
         {
             double[,] equivalentStiffness = new double[input.DegreesOfFreedom, input.DegreesOfFreedom];
 
@@ -62,7 +74,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
             return Task.FromResult(equivalentStiffness);
         }
 
-        private Task<double[,]> CalculateEquivalentDamping(NewmarMethodInput input)
+        private Task<double[,]> CalculateEquivalentDamping(NewmarkMethodInput input)
         {
             double[,] equivalentDamping = new double[input.DegreesOfFreedom, input.DegreesOfFreedom];
 
@@ -80,7 +92,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
             return Task.FromResult(equivalentDamping);
         }
 
-        private Task<double[,]> CalculateEquivalentMass(NewmarMethodInput input)
+        private Task<double[,]> CalculateEquivalentMass(NewmarkMethodInput input)
         {
             double[,] equivalentMass = new double[input.DegreesOfFreedom, input.DegreesOfFreedom];
 
@@ -98,7 +110,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
             return Task.FromResult(equivalentMass);
         }
 
-        private async Task<double[]> CalculateEquivalentForce(NewmarMethodInput input, AnalysisResult previousResult)
+        private async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, AnalysisResult previousResult)
         {
             double[,] equivalentDamping = await this.CalculateEquivalentDamping(input).ConfigureAwait(false);
             double[,] equivalentMass = await this.CalculateEquivalentMass(input).ConfigureAwait(false);

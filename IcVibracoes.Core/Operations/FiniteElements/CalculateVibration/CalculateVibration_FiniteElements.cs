@@ -1,9 +1,12 @@
 ﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Common.ExtensionMethods;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
 using System;
@@ -19,63 +22,89 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
     public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam> : OperationBase<TRequest, FiniteElementsResponse, FiniteElementsResponseData>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam>
-        where TProfile : Profile, new()
         where TRequestData : FiniteElementsRequestData<TProfile>, new()
         where TRequest : FiniteElementsRequest<TProfile, TRequestData>
+        where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
     {
-        private readonly INewmarkMethod _newmarkMethod;
+        private readonly INewmarkBetaMethod _numericalMethod;
         private readonly IProfileValidator<TProfile> _profileValidator;
         private readonly IAuxiliarOperation _auxiliarOperation;
 
         /// <summary>
         /// Class construtor.
         /// </summary>
-        /// <param name="newmarkMethod"></param>
+        /// <param name="newmarkBetaMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
         public CalculateVibration_FiniteElements(
-            INewmarkMethod newmarkMethod,
+            INewmarkBetaMethod newmarkBetaMethod,
             IProfileValidator<TProfile> profileValidator,
             IAuxiliarOperation auxiliarOperation)
         {
-            this._newmarkMethod = newmarkMethod;
+            this._numericalMethod = newmarkBetaMethod;
             this._profileValidator = profileValidator;
             this._auxiliarOperation = auxiliarOperation;
         }
 
         /// <summary>
-        /// It's responsible to build the beam.
+        /// Builds the beam.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesFreedomMaximum);
+        public abstract Task<TBeam> BuildBeam(TRequest request);
 
         /// <summary>
-        /// It's responsible to calculate the input to newmark integration method.
+        /// Calculates the input to newmark integration method.
         /// </summary>
         /// <param name="beam"></param>
-        /// <param name="newmarkMethodParameter"></param>
         /// <returns></returns>
-        public abstract Task<NewmarkMethodInput> CreateInput(TBeam beam, NewmarkMethodParameter newmarkMethodParameter, uint degreesFreedomMaximum);
+        public abstract Task<NewmarkMethodInput> CreateInput(TBeam beam);
+
+        /// <summary>
+        /// Createsthe file path to write the results.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public abstract Task<string> CreatePath(TRequest request);
 
         protected override async Task<FiniteElementsResponse> ProcessOperation(TRequest request)
         {
-            //FiniteElementsResponse response = new FiniteElementsResponse();
-
-            //uint degreesFreedomMaximum = this._auxiliarOperation.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements);
-
-            //TBeam beam = await this.BuildBeam(request, degreesFreedomMaximum).ConfigureAwait(false);
-
-            //NewmarkMethodInput input = await this.CreateInput(beam, request.MethodParameterData, degreesFreedomMaximum).ConfigureAwait(false);
-
-            //await this._newmarkMethod.CalculateResponse(input, response, request.AnalysisType, request.BeamData.NumberOfElements).ConfigureAwait(false);
-
-            //return response;
-
             FiniteElementsResponse response = new FiniteElementsResponse();
 
+            TBeam beam = await this.BuildBeam(request).ConfigureAwait(false);
 
+            NewmarkMethodInput input = await this.CreateInput(beam).ConfigureAwait(false);
+
+            while(input.AngularFrequency <= request.BeamData.FinalAngularFrequency.Value)
+            {
+                double time = input.InitialTime;
+
+                string path = await this.CreatePath(request).ConfigureAwait(false);
+
+                AnalysisResult previousResult = new AnalysisResult
+                {
+                    Displacement = new double[input.DegreesOfFreedom],
+                    Velocity = new double[input.DegreesOfFreedom],
+                    Acceleration = new double[input.DegreesOfFreedom],
+                    Force = input.OriginalForce
+                };
+
+                while(time <= input.FinalTime)
+                {
+                    previousResult.Force = input.OriginalForce.MultiplyEachElement(Math.Cos(input.AngularFrequency * time));
+
+                    AnalysisResult result = await this._numericalMethod.CalculateResult(input, previousResult).ConfigureAwait(false);
+
+                    this._auxiliarOperation.WriteInFile(time, result.Displacement, path);
+
+                    previousResult = result;
+
+                    time += input.TimeStep;
+                }
+
+                input.AngularFrequency += request.BeamData.AngularFrequencyStep.Value;
+            }
 
             return response;
         }

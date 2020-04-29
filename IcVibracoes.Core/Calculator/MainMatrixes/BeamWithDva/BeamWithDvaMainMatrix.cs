@@ -94,7 +94,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         /// <param name="degreesFreedomMaximum"></param>
         /// <param name="numberOfDvas"></param>
         /// <returns></returns>
-        public Task<bool[]> CalculateBondaryCondition(Fastening firstFastening, Fastening lastFastening, uint degreesFreedomMaximum, uint numberOfDvas)
+        public Task<bool[]> CalculateBondaryCondition(FasteningType firstFastening, FasteningType lastFastening, uint degreesFreedomMaximum, uint numberOfDvas)
         {
             uint size = degreesFreedomMaximum + numberOfDvas;
             bool[] bondaryCondition = new bool[size];
