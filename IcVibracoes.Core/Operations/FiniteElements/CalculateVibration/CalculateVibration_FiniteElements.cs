@@ -63,9 +63,12 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         /// <summary>
         /// Createsthe file path to write the results.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="analysisType"></param>
+        /// <param name="angularFrequency"></param>
+        /// <param name="numberOfElements"></param>
+        /// <param name="response"></param>
         /// <returns></returns>
-        public abstract Task<string> CreatePath(TRequest request, FiniteElementsResponse response);
+        public abstract Task<string> CreatePath(string analysisType, double angularFrequency, uint numberOfElements, FiniteElementsResponse response);
 
         protected override async Task<FiniteElementsResponse> ProcessOperation(TRequest request)
         {
@@ -81,7 +84,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
             {
                 double time = input.InitialTime;
 
-                string path = await this.CreatePath(request, response).ConfigureAwait(false);
+                string path = await this.CreatePath(request.AnalysisType, input.AngularFrequency, request.BeamData.NumberOfElements, response).ConfigureAwait(false);
 
                 var previousResult = new AnalysisResult
                 {

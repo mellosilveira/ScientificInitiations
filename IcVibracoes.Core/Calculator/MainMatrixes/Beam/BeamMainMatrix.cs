@@ -202,8 +202,8 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
 
             foreach (KeyValuePair<uint, FasteningType> fastening in fastenings)
             {
-                boundaryCondition[2 * fastening.Key] = fastening.Value.AngularDisplacement;
                 boundaryCondition[2 * fastening.Key] = fastening.Value.LinearDisplacement;
+                boundaryCondition[2 * fastening.Key + 1] = fastening.Value.AngularDisplacement;
             }
 
             return Task.FromResult(boundaryCondition);

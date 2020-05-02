@@ -29,6 +29,16 @@
         public const int DegreesFreedom = 2;
 
         /// <summary>
+        /// Constant used in numerical methods.
+        /// </summary>
+        public const double Beta = 1 / 4;
+
+        /// <summary>
+        /// Constant used in numerical methods.
+        /// </summary>
+        public const double Gama = 1 / 2;
+
+        /// <summary>
         /// Proportionality constant used in the damping calculate. 
         /// It is multiplied by mass matrix.
         /// </summary>

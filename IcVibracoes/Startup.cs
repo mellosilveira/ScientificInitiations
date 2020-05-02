@@ -27,6 +27,7 @@ using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using IcVibracoes.Core.Validators.TimeStep;
+using IcVibracoes.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -113,15 +114,7 @@ namespace IcVibracoes
 
             services.AddControllers();
 
-            ConfigureSwagger(services);
-        }
-
-        private static void ConfigureSwagger(IServiceCollection services)
-        {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IC Vibrations", Version = "v1" });
-            });
+            services.AddSwaggerDocs();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -131,15 +124,7 @@ namespace IcVibracoes
                 app.UseDeveloperExceptionPage();
             }
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "IC Vibration V1");
-            });
+            app.UseSwaggerDocs();
 
             app.UseRouting();
 

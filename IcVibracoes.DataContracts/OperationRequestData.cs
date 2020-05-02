@@ -10,12 +10,12 @@
         /// <summary>
         /// Divisions on period.
         /// </summary>
-        public uint TimeStep { get; set; }
+        public double TimeStep { get; set; }
 
         /// <summary>
         /// Number of periods.
         /// </summary>
-        public uint FinalTime { get; set; }
+        public double FinalTime { get; set; }
 
         /// <summary>
         /// Initial angular frequency. Receive in Hz and convert to rad/s to the calculus.

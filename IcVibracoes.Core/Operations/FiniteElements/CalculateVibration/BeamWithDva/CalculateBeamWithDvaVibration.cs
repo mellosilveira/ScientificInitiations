@@ -4,7 +4,6 @@ using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Mapper;
@@ -163,7 +162,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             return input;
         }
 
-        public override Task<string> CreatePath(BeamWithDvaRequest<TProfile> request, FiniteElementsResponse response)
+        public override Task<string> CreatePath(string analysisType, double angularFrequency, uint numberOfElements, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -171,7 +170,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
                 previousPath,
                 $"Solutions/FiniteElements/BeamWithDva");
 
-            string fileName = $"{request.AnalysisType.Trim()}_w0={Math.Round(request.BeamData.InitialAngularFrequency, 2)}_wf={request.BeamData.FinalAngularFrequency}_nEl={request.BeamData.NumberOfElements}.csv";
+            string fileName = $"{analysisType.Trim()}_w={Math.Round(angularFrequency, 2)}_nEl={numberOfElements}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 

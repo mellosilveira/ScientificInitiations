@@ -26,7 +26,7 @@ namespace IcVibracoes.Core.Mapper
             double[] force = new double[degreesFreedomMaximum];
             foreach (Force applyedForce in forces)
             {
-                force[2 * (applyedForce.NodePosition)] = applyedForce.Value;
+                force[2 * applyedForce.NodePosition] = applyedForce.Value;
             }
 
             return Task.FromResult(force);
@@ -48,7 +48,7 @@ namespace IcVibracoes.Core.Mapper
             double[] electricalCharge = new double[degreesFreedomMaximum];
             foreach (ElectricalCharge eC in electricalCharges)
             {
-                electricalCharge[2 * (eC.NodePosition)] = eC.Value;
+                electricalCharge[2 * eC.NodePosition] = eC.Value;
             }
 
             return Task.FromResult(electricalCharge);
