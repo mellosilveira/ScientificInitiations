@@ -15,10 +15,6 @@
 
         public double[] Force { get; set; }
 
-        public double AngularFrequency { get; set; }
-
-        public uint DegreesOfFreedom { get; set; }
-
         public double InitialTime
         {
             get => 0;
@@ -27,5 +23,13 @@
         public double TimeStep { get; set; }
 
         public double FinalTime { get; set; }
+
+        public uint NumberOfTrueBoundaryConditions { get; set; }
+
+        public double AngularFrequency { get; set; }
+
+        public double AngularFrequencyStep { get; set; }
+
+        public double FinalAngularFrequency { get; set; }
     }
 }

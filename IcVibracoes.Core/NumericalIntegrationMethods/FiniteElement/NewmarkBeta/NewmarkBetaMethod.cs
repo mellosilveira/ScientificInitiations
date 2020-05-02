@@ -38,10 +38,10 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
 
             double[] deltaDisplacement = await this._arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce).ConfigureAwait(false);
 
-            double[] deltaVelocity = new double[input.DegreesOfFreedom];
-            double[] deltaAcceleration = new double[input.DegreesOfFreedom];
+            double[] deltaVelocity = new double[input.NumberOfTrueBoundaryConditions];
+            double[] deltaAcceleration = new double[input.NumberOfTrueBoundaryConditions];
 
-            for (int i = 0; i < input.DegreesOfFreedom; i++)
+            for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
                 deltaVelocity[i] = (input.Gama / (input.Beta * input.TimeStep)) * deltaDisplacement[i] - (input.Gama / input.Beta) * previousResult.Velocity[i] + input.TimeStep * (1 - input.Gama / (2 * input.Beta)) * previousResult.Acceleration[i];
                 deltaAcceleration[i] = (1 / (input.Beta * Math.Pow(input.TimeStep, 2))) * deltaDisplacement[i] - (1 / (input.Beta * input.TimeStep)) * previousResult.Velocity[i] - (1 / (2 * input.Beta)) * previousResult.Acceleration[i];
@@ -58,14 +58,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
 
         private Task<double[,]> CalculateEquivalentStiffness(NewmarkMethodInput input)
         {
-            double[,] equivalentStiffness = new double[input.DegreesOfFreedom, input.DegreesOfFreedom];
+            double[,] equivalentStiffness = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
             double const1 = 1 / (input.Beta * Math.Pow(input.TimeStep, 2));
             double const2 = 1 / (input.Beta * input.TimeStep);
 
-            for (int i = 0; i < input.DegreesOfFreedom; i++)
+            for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
-                for (int j = 0; j < input.DegreesOfFreedom; j++)
+                for (int j = 0; j < input.NumberOfTrueBoundaryConditions; j++)
                 {
                     equivalentStiffness[i, j] = const1 * input.Mass[i, j] + const2 * input.Damping[i, j] + input.Stiffness[i, j];
                 }
@@ -76,14 +76,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
 
         private Task<double[,]> CalculateEquivalentDamping(NewmarkMethodInput input)
         {
-            double[,] equivalentDamping = new double[input.DegreesOfFreedom, input.DegreesOfFreedom];
+            double[,] equivalentDamping = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
             double const1 = 1 / (input.Beta * input.TimeStep);
             double const2 = input.Gama / input.Beta;
 
-            for (int i = 0; i < input.DegreesOfFreedom; i++)
+            for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
-                for (int j = 0; j < input.DegreesOfFreedom; j++)
+                for (int j = 0; j < input.NumberOfTrueBoundaryConditions; j++)
                 {
                     equivalentDamping[i, j] = const1 * input.Mass[i, j] + const2 * input.Damping[i, j];
                 }
@@ -94,14 +94,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
 
         private Task<double[,]> CalculateEquivalentMass(NewmarkMethodInput input)
         {
-            double[,] equivalentMass = new double[input.DegreesOfFreedom, input.DegreesOfFreedom];
+            double[,] equivalentMass = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
             double const1 = 1 / (2 * input.Beta);
             double const2 = input.TimeStep * (1 - (input.Gama / (2 * input.Beta)));
 
-            for (int i = 0; i < input.DegreesOfFreedom; i++)
+            for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
-                for (int j = 0; j < input.DegreesOfFreedom; j++)
+                for (int j = 0; j < input.NumberOfTrueBoundaryConditions; j++)
                 {
                     equivalentMass[i, j] = const1 * input.Mass[i, j] + const2 * input.Damping[i, j];
                 }

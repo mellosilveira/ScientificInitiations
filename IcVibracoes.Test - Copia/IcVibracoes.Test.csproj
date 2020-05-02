@@ -25,12 +25,4 @@
     <ProjectReference Include="..\IcVibracoes.Core\IcVibracoes.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Core\Calculator\MainMatrix\BeamWithDvas\" />
-    <Folder Include="Core\Calculator\MainMatrix\BeamWithPiezoelectrics\" />
-    <Folder Include="Core\Calculator\MainMatrix\Beam\" />
-    <Folder Include="Core\NumericalIntegrationMethods\Newmark\" />
-    <Folder Include="Core\Operations\BeamWithPiezoelectrics\" />
-  </ItemGroup>
-
 </Project>

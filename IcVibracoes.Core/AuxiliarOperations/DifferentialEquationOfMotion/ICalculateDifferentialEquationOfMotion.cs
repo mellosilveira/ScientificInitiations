@@ -24,6 +24,6 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        Task<double[]> CalculateForTwoDegreesOfFreedom(DifferentialEquationOfMotionInput input, double time, double[] y);
+        Task<double[]> CalculateForTwonumberOfElements(DifferentialEquationOfMotionInput input, double time, double[] y);
     }
 }

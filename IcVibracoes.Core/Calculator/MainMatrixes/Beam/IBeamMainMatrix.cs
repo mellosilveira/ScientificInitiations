@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
 {
@@ -58,10 +59,9 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// <summary>
         /// It's rewsponsible to build the bondary condition matrix.
         /// </summary>
-        /// <param name="firstFastening"></param>
-        /// <param name="lastFastening"></param>
+        /// <param name="fastenings"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        Task<bool[]> CalculateBondaryCondition(FasteningType firstFastening, FasteningType lastFastening, uint degreesFreedomMaximum);
+        Task<bool[]> CalculateBondaryCondition(IDictionary<uint, FasteningType> fastenings, uint degreesFreedomMaximum);
     }
 }

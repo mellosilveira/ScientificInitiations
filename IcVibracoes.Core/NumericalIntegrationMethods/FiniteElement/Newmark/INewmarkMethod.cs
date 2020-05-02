@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.DTO;
-using IcVibracoes.DataContracts.FiniteElements;
+using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
@@ -13,9 +13,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
         /// Calculates and write in a file the response matrixes.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="response"></param>
-        /// <param name="analysisType"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task CalculateResponse(NewmarkMethodInput input, FiniteElementsResponse response, string analysisType, uint numberOfElements);
+        Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult);
     }
 }

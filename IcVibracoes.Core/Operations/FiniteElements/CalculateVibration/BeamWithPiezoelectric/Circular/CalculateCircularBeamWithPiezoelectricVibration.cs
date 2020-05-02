@@ -1,12 +1,11 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
+using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Circular;
-using IcVibracoes.Core.Mapper.BeamProfiles.Circular;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles.Circular;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Circular
 {
@@ -18,24 +17,22 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="newmarkMethod"></param>
-        /// <param name="mappingResolver"></param>
+        /// <param name="newmarkBetaMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
-        /// <param name="profileMapper"></param>
-        /// <param name="mainMatrix"></param>
         /// <param name="arrayOperation"></param>
+        /// <param name="geometricProperty"></param>
+        /// <param name="mappingResolver"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateCircularBeamWithPiezoelectricVibration(
-            INewmarkMethod newmarkMethod,
-            IMappingResolver mappingResolver,
+            INewmarkBetaMethod newmarkBetaMethod,
             ICircularProfileValidator profileValidator,
             IAuxiliarOperation auxiliarOperation,
-            ICircularProfileMapper profileMapper,
-            IPiezoelectricCircularProfileMapper piezoelectricProfileMapper,
-            ICircularBeamWithPiezoelectricMainMatrix mainMatrix,
-            IArrayOperation arrayOperation)
-            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation, profileMapper, piezoelectricProfileMapper, mainMatrix, arrayOperation)
-        {
-        }
+            IArrayOperation arrayOperation,
+            ICircularGeometricProperty geometricProperty,
+            IMappingResolver mappingResolver,
+            ICircularBeamWithPiezoelectricMainMatrix mainMatrix)
+            : base(newmarkBetaMethod, profileValidator, auxiliarOperation, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
+        { }
     }
 }

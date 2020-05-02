@@ -1,9 +1,10 @@
-using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
 using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
 using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
 using IcVibracoes.Core.Calculator.ArrayOperations;
+using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
+using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
@@ -11,12 +12,7 @@ using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.BeamProfiles.Circular;
-using IcVibracoes.Core.Mapper.BeamProfiles.Rectangular;
-using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Circular;
-using IcVibracoes.Core.Mapper.PiezoelectricProfiles.Rectangular;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark.BeamWithDva;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.OneDegreeFreedom;
 using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.TwoDegreeFreedom;
@@ -62,7 +58,8 @@ namespace IcVibracoes
             services.AddScoped<IArrayOperation, ArrayOperation>();
 
             // Calculator - Geometric Property
-            services.AddScoped<ICalculateGeometricProperty, CalculateGeometricProperty>();
+            services.AddScoped<ICircularGeometricProperty, CircularGeometricProperty>();
+            services.AddScoped<IRectangularGeometricProperty, RectangularGeometricProperty>();
 
             // Calculator - Main Matrixes - Beam
             services.AddScoped<ICircularBeamMainMatrix, CircularBeamMainMatrix>();
@@ -79,17 +76,8 @@ namespace IcVibracoes
             // Mapper
             services.AddScoped<IMappingResolver, MappingResolver>();
 
-            // Mapper - Beam Profiles
-            services.AddScoped<ICircularProfileMapper, CircularProfileMapper>();
-            services.AddScoped<IRectangularProfileMapper, RectangularProfileMapper>();
-
-            // Mapper - Piezoelectric Profiles
-            services.AddScoped<IPiezoelectricCircularProfileMapper, PiezoelectricCircularProfileMapper>();
-            services.AddScoped<IPiezoelectricRectangularProfileMapper, PiezoelectricRectangularProfileMapper>();
-
             // Numerical Integration Methods - Finite Element - Newmark
             services.AddScoped<INewmarkMethod, NewmarkMethod>();
-            services.AddScoped<IBeamWithDvaNewmarkMethod, BeamWithDvaNewmarkMethod>();
 
             // Numerical Integration Methods - Finite Element - Newmark Beta
             services.AddScoped<INewmarkBetaMethod, NewmarkBetaMethod>();

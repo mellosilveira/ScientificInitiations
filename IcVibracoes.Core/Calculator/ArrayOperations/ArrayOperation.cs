@@ -1,6 +1,4 @@
-﻿using IcVibracoes.DataContracts;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.ArrayOperations
@@ -65,15 +63,9 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// </summary>
         /// <param name="value"></param>
         /// <param name="size"></param>
-        /// <param name="vectorName"></param>
         /// <returns></returns>
-        public Task<double[]> CreateVector(double value, uint size, string vectorName)
+        public Task<double[]> CreateVector(double value, uint size)
         {
-            if (size < 1)
-            {
-                throw new ArgumentException($"Cannot create a matrix with size: {size}. It must be greather or equals to 1.");
-            }
-
             double[] newVector = new double[size];
 
             // Parallel.For
@@ -91,27 +83,14 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="value"></param>
         /// <param name="size"></param>
         /// <param name="elementPositions"></param>
-        /// <param name="vectorName"></param>
         /// <returns></returns>
-        public Task<double[]> CreateVector(double value, uint size, uint[] elementPositions, string vectorName)
+        public Task<double[]> CreateVector(double value, uint size, uint[] elementPositions)
         {
-            if (size < 1)
-            {
-                throw new ArgumentException($"Cannot create a matrix with size: {size}. It must be greather or equals to 1.");
-            }
-
             double[] newVector = new double[size];
 
-            try
+            for (int i = 0; i < elementPositions.Length; i++)
             {
-                for (int i = 0; i < elementPositions.Length; i++)
-                {
-                    newVector[elementPositions[i] - 1] = value;
-                }
-            }
-            catch
-            {
-                throw new ArgumentOutOfRangeException($"Error creating the vector: {vectorName}.");
+                newVector[elementPositions[i] - 1] = value;
             }
 
             return Task.FromResult(newVector);
@@ -228,11 +207,8 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <summary>
         /// It's responsible to multiplicate a matrix and a vector.
         /// </summary>
-        /// <typeparam name="TResponseData"></typeparam>
-        /// <param name="response"></param>
         /// <param name="matrix"></param>
         /// <param name="vector"></param>
-        /// <param name="arraysName"></param>
         /// <returns></returns>
         public Task<double[]> Multiply(double[,] matrix, double[] vector)
         {

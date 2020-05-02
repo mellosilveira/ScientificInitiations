@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Classes;
-using System;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,12 +11,12 @@ namespace IcVibracoes.Core.Mapper
     public class MappingResolver : IMappingResolver
     {
         /// <summary>
-        /// It's responsible to build the force vector.
+        /// This method builds the force vector.
         /// </summary>
         /// <param name="forces"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        public Task<double[]> BuildFrom(List<Force> forces, uint degreesFreedomMaximum)
+        public Task<double[]> BuildForceVector(List<Force> forces, uint degreesFreedomMaximum)
         {
             if (forces == null)
             {
@@ -26,26 +26,19 @@ namespace IcVibracoes.Core.Mapper
             double[] force = new double[degreesFreedomMaximum];
             foreach (Force applyedForce in forces)
             {
-                try
-                {
-                    force[2 * (applyedForce.NodePosition)] = applyedForce.Value;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error creating force matrix. {ex.Message}.");
-                }
+                force[2 * (applyedForce.NodePosition)] = applyedForce.Value;
             }
 
             return Task.FromResult(force);
         }
 
         /// <summary>
-        /// It's responsible to build the electrical charge array.
+        /// This method builds the electrical charge array.
         /// </summary>
         /// <param name="electricalCharges"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        public Task<double[]> BuildFrom(List<ElectricalCharge> electricalCharges, uint degreesFreedomMaximum)
+        public Task<double[]> BuildElectricalChargeVector(List<ElectricalCharge> electricalCharges, uint degreesFreedomMaximum)
         {
             if (electricalCharges == null)
             {
@@ -55,17 +48,27 @@ namespace IcVibracoes.Core.Mapper
             double[] electricalCharge = new double[degreesFreedomMaximum];
             foreach (ElectricalCharge eC in electricalCharges)
             {
-                try
-                {
-                    electricalCharge[2 * (eC.NodePosition)] = eC.Value;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error creating electrical charge matrix. {ex.Message}.");
-                }
+                electricalCharge[2 * (eC.NodePosition)] = eC.Value;
             }
 
             return Task.FromResult(electricalCharge);
+        }
+
+        /// <summary>
+        /// Thid method builds the fastenings of the beam.
+        /// </summary>
+        /// <param name="fastenings"></param>
+        /// <returns></returns>
+        public Task<IDictionary<uint, FasteningType>> BuildFastenings(List<Fastening> fastenings)
+        {
+            IDictionary<uint, FasteningType> beamFastenings = new Dictionary<uint, FasteningType>();
+
+            foreach (var fastening in fastenings)
+            {
+                beamFastenings.Add(fastening.NodePosition, FasteningFactory.Create(fastening.Type));
+            }
+
+            return Task.FromResult(beamFastenings);
         }
     }
 }

@@ -4,6 +4,7 @@ using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
 {
@@ -21,27 +22,27 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// <param name="specificMass"></param>
         /// <param name="elementLength"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculateElementMass(double area, double specificMass, double length)
+        public Task<double[,]> CalculateElementMass(double area, double specificMass, double elementLength)
         {
-            double constant = area * specificMass * length / 420;
-            
+            double constant = area * specificMass * elementLength / 420;
+
             double[,] elementMass = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
             elementMass[0, 0] = 156 * constant;
-            elementMass[0, 1] = 22 * length * constant;
+            elementMass[0, 1] = 22 * elementLength * constant;
             elementMass[0, 2] = 54 * constant;
-            elementMass[0, 3] = -13 * length * constant;
-            elementMass[1, 0] = 22 * length * constant;
-            elementMass[1, 1] = 4 * Math.Pow(length, 2) * constant;
-            elementMass[1, 2] = 13 * length * constant;
-            elementMass[1, 3] = -3 * Math.Pow(length, 2) * constant;
+            elementMass[0, 3] = -13 * elementLength * constant;
+            elementMass[1, 0] = 22 * elementLength * constant;
+            elementMass[1, 1] = 4 * Math.Pow(elementLength, 2) * constant;
+            elementMass[1, 2] = 13 * elementLength * constant;
+            elementMass[1, 3] = -3 * Math.Pow(elementLength, 2) * constant;
             elementMass[2, 0] = 54 * constant;
-            elementMass[2, 1] = 13 * length * constant;
+            elementMass[2, 1] = 13 * elementLength * constant;
             elementMass[2, 2] = 156 * constant;
-            elementMass[2, 3] = -22 * length * constant;
-            elementMass[3, 0] = -13 * length * constant;
-            elementMass[3, 1] = -3 * Math.Pow(length, 2) * constant;
-            elementMass[3, 2] = -22 * length * constant;
-            elementMass[3, 3] = 4 * Math.Pow(length, 2) * constant;
+            elementMass[2, 3] = -22 * elementLength * constant;
+            elementMass[3, 0] = -13 * elementLength * constant;
+            elementMass[3, 1] = -3 * Math.Pow(elementLength, 2) * constant;
+            elementMass[3, 2] = -22 * elementLength * constant;
+            elementMass[3, 3] = 4 * Math.Pow(elementLength, 2) * constant;
 
             return Task.FromResult(elementMass);
         }
@@ -82,30 +83,30 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// </summary>
         /// <param name="momentOfInertia"></param>
         /// <param name="youngModulus"></param>
-        /// <param name="length"></param>
+        /// <param name="elementLength"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculateElementStiffness(double momentOfInertia, double youngModulus, double length)
+        public Task<double[,]> CalculateElementStiffness(double momentOfInertia, double youngModulus, double elementLength)
         {
             double[,] elementStiffness = new double[Constant.DegreesFreedomElement, Constant.DegreesFreedomElement];
 
-            double constant = momentOfInertia * youngModulus / Math.Pow(length, 3);
+            double constant = momentOfInertia * youngModulus / Math.Pow(elementLength, 3);
 
             elementStiffness[0, 0] = 12 * constant;
-            elementStiffness[0, 1] = 6 * length * constant;
+            elementStiffness[0, 1] = 6 * elementLength * constant;
             elementStiffness[0, 2] = -12 * constant;
-            elementStiffness[0, 3] = 6 * length * constant;
-            elementStiffness[1, 0] = 6 * length * constant;
-            elementStiffness[1, 1] = 4 * Math.Pow(length, 2) * constant;
-            elementStiffness[1, 2] = -(6 * length * constant);
-            elementStiffness[1, 3] = 2 * Math.Pow(length, 2) * constant;
+            elementStiffness[0, 3] = 6 * elementLength * constant;
+            elementStiffness[1, 0] = 6 * elementLength * constant;
+            elementStiffness[1, 1] = 4 * Math.Pow(elementLength, 2) * constant;
+            elementStiffness[1, 2] = -(6 * elementLength * constant);
+            elementStiffness[1, 3] = 2 * Math.Pow(elementLength, 2) * constant;
             elementStiffness[2, 0] = -(12 * constant);
-            elementStiffness[2, 1] = -(6 * length * constant);
+            elementStiffness[2, 1] = -(6 * elementLength * constant);
             elementStiffness[2, 2] = 12 * constant;
-            elementStiffness[2, 3] = -(6 * length * constant);
-            elementStiffness[3, 0] = 6 * length * constant;
-            elementStiffness[3, 1] = 2 * Math.Pow(length, 2) * constant;
-            elementStiffness[3, 2] = -(6 * length * constant);
-            elementStiffness[3, 3] = 4 * Math.Pow(length, 2) * constant;
+            elementStiffness[2, 3] = -(6 * elementLength * constant);
+            elementStiffness[3, 0] = 6 * elementLength * constant;
+            elementStiffness[3, 1] = 2 * Math.Pow(elementLength, 2) * constant;
+            elementStiffness[3, 2] = -(6 * elementLength * constant);
+            elementStiffness[3, 3] = 4 * Math.Pow(elementLength, 2) * constant;
 
             return Task.FromResult(elementStiffness);
         }
@@ -146,7 +147,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// </summary>
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
-        /// <param name="size"></param>
         /// <returns></returns>
         public Task<double[,]> CalculateDamping(double[,] mass, double[,] stiffness)
         {
@@ -188,39 +188,25 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// <summary>
         /// It's rewsponsible to build the bondary condition matrix.
         /// </summary>
-        /// <param name="firstFastening"></param>
-        /// <param name="lastFastening"></param>
+        /// <param name="fastenings"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        public Task<bool[]> CalculateBondaryCondition(FasteningType firstFastening, FasteningType lastFastening, uint degreesFreedomMaximum)
+        public Task<bool[]> CalculateBondaryCondition(IDictionary<uint, FasteningType> fastenings, uint degreesFreedomMaximum)
         {
-            bool[] bondaryCondition = new bool[degreesFreedomMaximum];
+            bool[] boundaryCondition = new bool[degreesFreedomMaximum];
 
-            for (uint i = 0; i < degreesFreedomMaximum; i++)
+            for (int i = 0; i < degreesFreedomMaximum; i++)
             {
-                if (i == 0)
-                {
-                    bondaryCondition[i] = firstFastening.LinearDisplacement;
-                }
-                else if (i == degreesFreedomMaximum - 2)
-                {
-                    bondaryCondition[i] = lastFastening.LinearDisplacement;
-                }
-                else if (i == 1)
-                {
-                    bondaryCondition[i] = firstFastening.AngularDisplacement;
-                }
-                else if (i == degreesFreedomMaximum - 1)
-                {
-                    bondaryCondition[i] = lastFastening.AngularDisplacement;
-                }
-                else
-                {
-                    bondaryCondition[i] = true;
-                }
+                boundaryCondition[i] = true;
             }
 
-            return Task.FromResult(bondaryCondition);
+            foreach (KeyValuePair<uint, FasteningType> fastening in fastenings)
+            {
+                boundaryCondition[2 * fastening.Key] = fastening.Value.AngularDisplacement;
+                boundaryCondition[2 * fastening.Key] = fastening.Value.LinearDisplacement;
+            }
+
+            return Task.FromResult(boundaryCondition);
         }
     }
 }

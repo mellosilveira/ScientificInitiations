@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Core.Models;
-using System;
+﻿using System;
 using System.IO;
 
 namespace IcVibracoes.Core.AuxiliarOperations
@@ -70,16 +69,6 @@ namespace IcVibracoes.Core.AuxiliarOperations
             }
 
             return matrixCC;
-        }
-
-        /// <summary>
-        /// Calculates the degrees freedom maximum.
-        /// </summary>
-        /// <param name="numberOfElements"></param>
-        /// <returns></returns>
-        public uint CalculateDegreesFreedomMaximum(uint numberOfElements)
-        {
-            return (numberOfElements + 1) * Constant.NodesPerElement;
         }
 
         /// <summary>

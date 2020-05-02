@@ -1,6 +1,4 @@
-﻿using IcVibracoes.DataContracts.RigidBody;
-
-namespace IcVibracoes.Core.AuxiliarOperations
+﻿namespace IcVibracoes.Core.AuxiliarOperations
 {
     /// <summary>
     /// It contains auxiliar operations to the solve specific problems in the project.
@@ -24,13 +22,6 @@ namespace IcVibracoes.Core.AuxiliarOperations
         /// <param name="size"></param>
         /// <returns></returns>
         double[] ApplyBondaryConditions(double[] vector, bool[] bondaryConditions, uint size);
-
-        /// <summary>
-        /// Calculates the degrees freedom maximum.
-        /// </summary>
-        /// <param name="numberOfElements"></param>
-        /// <returns></returns>
-        uint CalculateDegreesFreedomMaximum(uint numberOfElements);
 
         /// <summary>
         /// Writes the values ​​corresponding to an instant of time in a file.

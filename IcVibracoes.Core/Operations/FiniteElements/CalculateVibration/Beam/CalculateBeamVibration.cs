@@ -1,18 +1,19 @@
-﻿using IcVibracoes.Common.Classes;
+﻿using IcVibracoes.Calculator.GeometricProperties;
+using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
-using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.BeamProfiles;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles;
+using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
@@ -24,99 +25,11 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
     public abstract class CalculateBeamVibration<TProfile> : CalculateVibration_FiniteElements<BeamRequest<TProfile>, BeamRequestData<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
         where TProfile : Profile, new()
     {
-        ///// <summary>
-        ///// Builds the beam object with the profile that is passed.
-        ///// </summary>
-        ///// <param name="request"></param>
-        ///// <param name="degreesFreedomMaximum"></param>
-        ///// <returns></returns>
-        //public async override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesFreedomMaximum)
-        //{
-        //    if (request == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    GeometricProperty geometricProperty = new GeometricProperty();
-
-        //    if (request.BeamData.Profile.Area != default && request.BeamData.Profile.MomentOfInertia != default)
-        //    {
-        //        geometricProperty.Area = await this._arrayOperation.CreateVector(request.BeamData.Profile.Area.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.Profile.Area)).ConfigureAwait(false);
-        //        geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.BeamData.Profile.MomentOfInertia.Value, request.BeamData.NumberOfElements, nameof(request.BeamData.Profile.MomentOfInertia)).ConfigureAwait(false);
-        //    }
-        //    else
-        //    {
-        //        geometricProperty = await this._profileMapper.Execute(request.BeamData.Profile, request.BeamData.NumberOfElements).ConfigureAwait(false);
-        //    }
-
-        //    return new Beam<TProfile>()
-        //    {
-        //        FirstFastening = FasteningFactory.Create(request.BeamData.FirstFastening),
-        //        Forces = await this._mappingResolver.BuildFrom(request.BeamData.Forces, degreesFreedomMaximum).ConfigureAwait(false),
-        //        GeometricProperty = geometricProperty,
-        //        LastFastening = FasteningFactory.Create(request.BeamData.LastFastening),
-        //        Length = request.BeamData.Length,
-        //        Material = MaterialFactory.Create(request.BeamData.Material),
-        //        NumberOfElements = request.BeamData.NumberOfElements,
-        //        Profile = request.BeamData.Profile
-        //    };
-        //}
-
-        ///// <summary>
-        ///// Creates the Newmark method input.
-        ///// </summary>
-        ///// <param name="beam"></param>
-        ///// <param name="newmarkMethodParameter"></param>
-        ///// <param name="degreesFreedomMaximum"></param>
-        ///// <returns></returns>
-        //public async override Task<NewmarkMethodInput> CreateInput(Beam<TProfile> beam, NewmarkMethodParameter newmarkMethodParameter, uint degreesFreedomMaximum)
-        //{
-        //    bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.FirstFastening, beam.LastFastening, degreesFreedomMaximum).ConfigureAwait(false);
-        //    uint numberOfTrueBoundaryConditions = 0;
-
-        //    for (int i = 0; i < degreesFreedomMaximum; i++)
-        //    {
-        //        if (bondaryCondition[i] == true)
-        //        {
-        //            numberOfTrueBoundaryConditions += 1;
-        //        }
-        //    }
-
-        //    // Main matrixes to create input.
-        //    double[,] mass = await this._mainMatrix.CalculateMass(beam, degreesFreedomMaximum).ConfigureAwait(false);
-
-        //    double[,] stiffness = await this._mainMatrix.CalculateStiffness(beam, degreesFreedomMaximum).ConfigureAwait(false);
-
-        //    double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
-
-        //    double[] forces = beam.Forces;
-
-        //    // Creating input.
-        //    NewmarkMethodInput input = new NewmarkMethodInput
-        //    {
-        //        Mass = this._auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
-
-        //        Stiffness = this._auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
-
-        //        Damping = this._auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
-
-        //        OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
-
-        //        NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
-
-        //        Parameter = new NewmarkMethodParameter
-        //        {
-        //            AngularFrequencyStep = newmarkMethodParameter.AngularFrequencyStep,
-        //            FinalAngularFrequency = newmarkMethodParameter.FinalAngularFrequency,
-        //            InitialAngularFrequency = newmarkMethodParameter.InitialAngularFrequency,
-        //            InitialTime = newmarkMethodParameter.InitialTime,
-        //            NumberOfPeriods = newmarkMethodParameter.NumberOfPeriods,
-        //            PeriodDivision = newmarkMethodParameter.PeriodDivision
-        //        }
-        //    };
-
-        //    return input;
-        //}
+        private readonly IAuxiliarOperation _auxiliarOperation;
+        private readonly IArrayOperation _arrayOperation;
+        private readonly IGeometricProperty<TProfile> _geometricProperty;
+        private readonly IMappingResolver _mappingResolver;
+        private readonly IBeamMainMatrix<TProfile> _mainMatrix;
 
         /// <summary>
         /// Class constructor
@@ -127,23 +40,124 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
         public CalculateBeamVibration(
             INewmarkBetaMethod newmarkBetaMethod,
             IProfileValidator<TProfile> profileValidator,
-            IAuxiliarOperation auxiliarOperation)
+            IAuxiliarOperation auxiliarOperation,
+            IArrayOperation arrayOperation,
+            IGeometricProperty<TProfile> geometricProperty,
+            IMappingResolver mappingResolver,
+            IBeamMainMatrix<TProfile> mainMatrix)
             : base(newmarkBetaMethod, profileValidator, auxiliarOperation)
-        { }
-
-        public override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request)
         {
-            throw new System.NotImplementedException();
+            this._auxiliarOperation = auxiliarOperation;
+            this._arrayOperation = arrayOperation;
+            this._geometricProperty = geometricProperty;
+            this._mappingResolver = mappingResolver;
+            this._mainMatrix = mainMatrix;
         }
 
-        public override Task<NewmarkMethodInput> CreateInput(Beam<TProfile> beam)
+        public async override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom)
         {
-            throw new System.NotImplementedException();
+            if (request == null)
+            {
+                return null;
+            }
+
+            GeometricProperty geometricProperty = new GeometricProperty();
+
+            if (request.BeamData.Profile.Area != default && request.BeamData.Profile.MomentOfInertia != default)
+            {
+                geometricProperty.Area = await this._arrayOperation.CreateVector(request.BeamData.Profile.Area.Value, request.BeamData.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.BeamData.Profile.MomentOfInertia.Value, request.BeamData.NumberOfElements).ConfigureAwait(false);
+            }
+            else
+            {
+                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.BeamData.Profile, request.BeamData.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.BeamData.Profile, request.BeamData.NumberOfElements).ConfigureAwait(false);
+            }
+
+            return new Beam<TProfile>()
+            {
+                Fastenings = await this._mappingResolver.BuildFastenings(request.BeamData.Fastenings).ConfigureAwait(false),
+                Forces = await this._mappingResolver.BuildForceVector(request.BeamData.Forces, degreesOfFreedom).ConfigureAwait(false),
+                GeometricProperty = geometricProperty,
+                Length = request.BeamData.Length,
+                Material = MaterialFactory.Create(request.BeamData.Material),
+                NumberOfElements = request.BeamData.NumberOfElements,
+                Profile = request.BeamData.Profile
+            };
         }
 
-        public override Task<string> CreatePath(BeamRequest<TProfile> request)
+        public override async Task<NewmarkMethodInput> CreateInput(Beam<TProfile> beam, BeamRequest<TProfile> request, uint degreesOfFreedom)
         {
-            throw new System.NotImplementedException();
+            bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom).ConfigureAwait(false);
+            uint numberOfTrueBoundaryConditions = 0;
+
+            for (int i = 0; i < degreesOfFreedom; i++)
+            {
+                if (bondaryCondition[i] == true)
+                {
+                    numberOfTrueBoundaryConditions += 1;
+                }
+            }
+
+            // Main matrixes to create input.
+            double[,] mass = await this._mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
+
+            double[,] stiffness = await this._mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
+
+            double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
+
+            double[] forces = beam.Forces;
+
+            // Creating input.
+            NewmarkMethodInput input = new NewmarkMethodInput
+            {
+                Mass = this._auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
+
+                Stiffness = this._auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
+
+                Damping = this._auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
+
+                OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
+
+                NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
+
+                AngularFrequency = request.BeamData.InitialAngularFrequency,
+
+                AngularFrequencyStep = request.BeamData.AngularFrequencyStep,
+
+                FinalAngularFrequency = request.BeamData.FinalAngularFrequency,
+
+                TimeStep = request.BeamData.TimeStep,
+
+                FinalTime = request.BeamData.FinalTime
+            };
+
+            return input;
+        }
+
+        public override Task<string> CreatePath(BeamRequest<TProfile> request, FiniteElementsResponse response)
+        {
+            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+
+            string folderPath = Path.Combine(
+                previousPath,
+                $"Solutions/FiniteElements/Beam");
+
+            string fileName = $"{request.AnalysisType.Trim()}_w0={Math.Round(request.BeamData.InitialAngularFrequency, 2)}_wf={request.BeamData.FinalAngularFrequency}_nEl={request.BeamData.NumberOfElements}.csv";
+
+            string path = Path.Combine(folderPath, fileName);
+
+            Directory.CreateDirectory(folderPath);
+
+            if (File.Exists(path))
+            {
+                response.AddError(ErrorCode.OperationError, $"File already exist in path: '{path}'.");
+                return Task.FromResult<string>(null);
+            }
+            else
+            {
+                return Task.FromResult(path);
+            }
         }
     }
 }

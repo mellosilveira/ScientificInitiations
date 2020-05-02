@@ -10,12 +10,12 @@
         /// <summary>
         /// Divisions on period.
         /// </summary>
-        public uint StepTime { get; set; }
+        public uint TimeStep { get; set; }
 
         /// <summary>
         /// Number of periods.
         /// </summary>
-        public uint TimeFinal { get; set; }
+        public uint FinalTime { get; set; }
 
         /// <summary>
         /// Initial angular frequency. Receive in Hz and convert to rad/s to the calculus.
@@ -25,11 +25,11 @@
         /// <summary>
         /// Delta angular frequency. Receive in Hz and convert to rad/s to the calculus.
         /// </summary>
-        public double? AngularFrequencyStep { get; set; }
+        public double AngularFrequencyStep { get; set; }
 
         /// <summary>
         /// Final angular frequency. Receive in Hz and convert to rad/s to the calculus.
         /// </summary>
-        public double? FinalAngularFrequency { get; set; }
+        public double FinalAngularFrequency { get; set; }
     }
 }

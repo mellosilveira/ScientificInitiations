@@ -12,7 +12,10 @@
         /// 2. 1/4 --> Newmark-Beta method is implicit and unconditionally stable. In this case the acceleration within the time interval [ti, ti+1) is presumed to be constant.
         /// 3. 1/6 --> Newmark-Beta method is identical to the linear acceleration method.
         /// </summary>
-        public double Beta { get; set; }
+        public double Beta 
+        {
+            get => 1 / 4;
+        }
 
         /// <summary>
         /// Integration constant used in Newmark-Beta method calculations.

@@ -35,7 +35,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
         private readonly IMappingResolver _mappingResolver;
         private readonly IRectangularProfileValidator _profileValidator;
         private readonly IRectangularProfileMapper _profileMapper;
-        private readonly ICalculateGeometricProperty _calculateGeometricProperty;
+        private readonly IGeometricProperty _calculateGeometricProperty;
         private readonly IPiezoelectricRectangularProfileMapper _piezoelectricProfileMapper;
         private readonly IRectangularBeamWithPiezoelectricMainMatrix _mainMatrix;
 
@@ -87,7 +87,7 @@ namespace IcVibracoes.Test.Core.Operations.BeamWithPiezoelectrics
             this._mappingResolver = new MappingResolver();
             this._profileValidator = new RectangularProfileValidator();
 
-            this._calculateGeometricProperty = new CalculateGeometricProperty();
+            this._calculateGeometricProperty = new GeometricProperty();
 
             this._piezoelectricProfileMapper = new PiezoelectricRectangularProfileMapper(
                 this._arrayOperation,

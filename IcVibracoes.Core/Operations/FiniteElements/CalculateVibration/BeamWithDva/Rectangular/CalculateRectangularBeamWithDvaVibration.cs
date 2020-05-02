@@ -1,11 +1,10 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
+using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Rectangular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.BeamProfiles.Rectangular;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark.BeamWithDva;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Rectangular
@@ -16,26 +15,24 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
     public class CalculateRectangularBeamWithDvaVibration : CalculateBeamWithDvaVibration<RectangularProfile>, ICalculateRectangularBeamWithDvaVibration
     {
         /// <summary>
-        /// Class construtor.
+        /// Class constructor.
         /// </summary>
-        /// <param name="newmarkMethod"></param>
-        /// <param name="mappingResolver"></param>
+        /// <param name="newmarkBetaMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
-        /// <param name="profileMapper"></param>
-        /// <param name="mainMatrix"></param>
-        /// <param name="beamMainMatrix"></param>
         /// <param name="arrayOperation"></param>
+        /// <param name="geometricProperty"></param>
+        /// <param name="mappingResolver"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateRectangularBeamWithDvaVibration(
-            IBeamWithDvaNewmarkMethod newmarkMethod,
+            INewmarkBetaMethod newmarkBetaMethod, 
+            IRectangularProfileValidator profileValidator, 
+            IAuxiliarOperation auxiliarOperation, 
+            IArrayOperation arrayOperation,
+            IRectangularGeometricProperty geometricProperty, 
             IMappingResolver mappingResolver,
-            IRectangularProfileValidator profileValidator,
-            IAuxiliarOperation auxiliarOperation,
-            IRectangularProfileMapper profileMapper,
-            IRectangularBeamWithDvaMainMatrix mainMatrix,
-            IRectangularBeamMainMatrix beamMainMatrix,
-            IArrayOperation arrayOperation)
-            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation, profileMapper, mainMatrix, beamMainMatrix, arrayOperation)
+            IRectangularBeamWithDvaMainMatrix mainMatrix) 
+            : base(newmarkBetaMethod, profileValidator, auxiliarOperation, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
         {
         }
     }

@@ -7,7 +7,7 @@ namespace IcVibracoes.Test.Core.Calculator
 {
     public class CalculateGeometricPropertyTest
     {
-        private readonly CalculateGeometricProperty _operation;
+        private readonly GeometricProperty _operation;
         private readonly double _circleWithThicknessArea;
         private readonly double _circleWithoutThicknessArea;
         private readonly double _circleWithThicknessMomentOfInertia;
@@ -27,7 +27,7 @@ namespace IcVibracoes.Test.Core.Calculator
 
         public CalculateGeometricPropertyTest()
         {
-            this._operation = new CalculateGeometricProperty();
+            this._operation = new GeometricProperty();
 
             this._precision = 1e-18;
 

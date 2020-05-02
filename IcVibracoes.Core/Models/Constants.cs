@@ -29,16 +29,6 @@
         public const int DegreesFreedom = 2;
 
         /// <summary>
-        /// Constant used in the Newmark numeric integration that indicate the type of integration.
-        /// </summary>
-        public const double Beta = 0.25;
-
-        /// <summary>
-        /// Constant used in the Newmark numeric integration that indicate the type of integration.
-        /// </summary>
-        public const double Gama = 0.5;
-
-        /// <summary>
         /// Proportionality constant used in the damping calculate. 
         /// It is multiplied by mass matrix.
         /// </summary>

@@ -1,11 +1,10 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
+using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.BeamProfiles.Circular;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark.BeamWithDva;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular
@@ -16,26 +15,24 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
     public class CalculateCircularBeamWithDvaVibration : CalculateBeamWithDvaVibration<CircularProfile>, ICalculateCircularBeamWithDvaVibration
     {
         /// <summary>
-        /// Class construtor.
+        /// Class constructor.
         /// </summary>
-        /// <param name="newmarkMethod"></param>
-        /// <param name="mappingResolver"></param>
+        /// <param name="newmarkBetaMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
-        /// <param name="profileMapper"></param>
-        /// <param name="mainMatrix"></param>
-        /// <param name="beamMainMatrix"></param>
         /// <param name="arrayOperation"></param>
+        /// <param name="geometricProperty"></param>
+        /// <param name="mappingResolver"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateCircularBeamWithDvaVibration(
-            IBeamWithDvaNewmarkMethod newmarkMethod,
-            IMappingResolver mappingResolver,
-            ICircularProfileValidator profileValidator,
-            IAuxiliarOperation auxiliarOperation,
-            ICircularProfileMapper profileMapper,
-            ICircularBeamWithDvaMainMatrix mainMatrix,
-            ICircularBeamMainMatrix beamMainMatrix,
-            IArrayOperation arrayOperation)
-            : base(newmarkMethod, mappingResolver, profileValidator, auxiliarOperation, profileMapper, mainMatrix, beamMainMatrix, arrayOperation)
+            INewmarkBetaMethod newmarkBetaMethod,
+            ICircularProfileValidator profileValidator, 
+            IAuxiliarOperation auxiliarOperation, 
+            IArrayOperation arrayOperation,
+            ICircularGeometricProperty geometricProperty, 
+            IMappingResolver mappingResolver, 
+            ICircularBeamWithDvaMainMatrix mainMatrix) 
+            : base(newmarkBetaMethod, profileValidator, auxiliarOperation, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
         {
         }
     }

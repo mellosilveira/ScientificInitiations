@@ -1,10 +1,10 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.ArrayOperations;
+using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Mapper.BeamProfiles.Rectangular;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular
@@ -15,25 +15,24 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rec
     public class CalculateRectangularBeamVibration : CalculateBeamVibration<RectangularProfile>, ICalculateRectangularBeamVibration
     {
         /// <summary>
-        /// Class construtor.
+        /// Class constructor.
         /// </summary>
-        /// <param name="newmarkMethod"></param>
-        /// <param name="mappingResolver"></param>
+        /// <param name="newmarkBetaMethod"></param>
         /// <param name="profileValidator"></param>
-        /// <param name="profileMapper"></param>
         /// <param name="auxiliarOperation"></param>
-        /// <param name="mainMatrix"></param>
         /// <param name="arrayOperation"></param>
+        /// <param name="geometricProperty"></param>
+        /// <param name="mappingResolver"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateRectangularBeamVibration(
-            INewmarkMethod newmarkMethod,
-            IMappingResolver mappingResolver,
+            INewmarkBetaMethod newmarkBetaMethod,
             IRectangularProfileValidator profileValidator,
-            IRectangularProfileMapper profileMapper,
             IAuxiliarOperation auxiliarOperation,
-            IRectangularBeamMainMatrix mainMatrix,
-            IArrayOperation arrayOperation)
-            : base(newmarkMethod, mappingResolver, profileValidator, profileMapper, auxiliarOperation, mainMatrix, arrayOperation)
-        {
-        }
+            IArrayOperation arrayOperation,
+            IRectangularGeometricProperty geometricProperty,
+            IMappingResolver mappingResolver,
+            IRectangularBeamMainMatrix mainMatrix)
+            : base(newmarkBetaMethod, profileValidator, auxiliarOperation, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
+        { }
     }
 }

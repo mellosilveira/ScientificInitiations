@@ -1,4 +1,5 @@
 ﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="forces"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        Task<double[]> BuildFrom(List<Force> forces, uint degreesFreedomMaximum);
+        Task<double[]> BuildForceVector(List<Force> forces, uint degreesFreedomMaximum);
 
         /// <summary>
         /// It's responsible to build the electrical charge vector.
@@ -23,6 +24,13 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="electricalCharges"></param>
         /// <param name="degreesFreedomMaximum"></param>
         /// <returns></returns>
-        Task<double[]> BuildFrom(List<ElectricalCharge> electricalCharges, uint degreesFreedomMaximum);
+        Task<double[]> BuildElectricalChargeVector(List<ElectricalCharge> electricalCharges, uint degreesFreedomMaximum);
+
+        /// <summary>
+        /// Thid method builds the fastenings of the beam.
+        /// </summary>
+        /// <param name="fastenings"></param>
+        /// <returns></returns>
+        Task<IDictionary<uint, FasteningType>> BuildFastenings(List<Fastening> fastenings);
     }
 }

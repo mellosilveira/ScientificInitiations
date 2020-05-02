@@ -1,5 +1,4 @@
-﻿using IcVibracoes.DataContracts;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.ArrayOperations
 {
@@ -28,9 +27,8 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// </summary>
         /// <param name="value"></param>
         /// <param name="size"></param>
-        /// <param name="vectorName"></param>
         /// <returns></returns>
-        Task<double[]> CreateVector(double value, uint size, string vectorName);
+        Task<double[]> CreateVector(double value, uint size);
 
         /// <summary>
         /// It's responsible to create a vector with an unique value in the informed positions with a size that is informed too.
@@ -38,9 +36,8 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <param name="value"></param>
         /// <param name="size"></param>
         /// <param name="positions"></param>
-        /// <param name="vectorName"></param>
         /// <returns></returns>
-        Task<double[]> CreateVector(double value, uint size, uint[] positions, string vectorName);
+        Task<double[]> CreateVector(double value, uint size, uint[] positions);
 
         /// <summary>
         /// It's responsible to inverse a matrix.

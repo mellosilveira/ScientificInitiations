@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models.BeamCharacteristics;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
@@ -84,46 +85,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
             }
 
             return stiffnessWithDva;
-        }
-
-        /// <summary>
-        /// Responsible to calculate the bondary conditions matrix of the beam with dynamic vibration absorbers.
-        /// </summary>
-        /// <param name="firstFastening"></param>
-        /// <param name="lastFastening"></param>
-        /// <param name="degreesFreedomMaximum"></param>
-        /// <param name="numberOfDvas"></param>
-        /// <returns></returns>
-        public Task<bool[]> CalculateBondaryCondition(FasteningType firstFastening, FasteningType lastFastening, uint degreesFreedomMaximum, uint numberOfDvas)
-        {
-            uint size = degreesFreedomMaximum + numberOfDvas;
-            bool[] bondaryCondition = new bool[size];
-
-            for (uint i = 0; i < size; i++)
-            {
-                if (i == 0)
-                {
-                    bondaryCondition[i] = firstFastening.LinearDisplacement;
-                }
-                else if (i == degreesFreedomMaximum - 2)
-                {
-                    bondaryCondition[i] = lastFastening.LinearDisplacement;
-                }
-                else if (i == 1)
-                {
-                    bondaryCondition[i] = firstFastening.AngularDisplacement;
-                }
-                else if (i == degreesFreedomMaximum - 1)
-                {
-                    bondaryCondition[i] = lastFastening.AngularDisplacement;
-                }
-                else
-                {
-                    bondaryCondition[i] = true;
-                }
-            }
-
-            return Task.FromResult(bondaryCondition);
         }
     }
 }
