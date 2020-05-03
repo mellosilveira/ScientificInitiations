@@ -10,6 +10,13 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
     public interface INewmarkBetaMethod
     {
         /// <summary>
+        /// Calculates the result for the initial time.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input);
+
+        /// <summary>
         /// Executes the Newmark-Beta numerical integration method.
         /// </summary>
         /// <param name="input"></param>

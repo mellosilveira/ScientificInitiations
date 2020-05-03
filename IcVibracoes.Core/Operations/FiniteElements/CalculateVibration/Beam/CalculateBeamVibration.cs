@@ -9,6 +9,7 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
@@ -35,18 +36,18 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
         /// <summary>
         /// Class constructor
         /// </summary>
-        /// <param name="newmarkBetaMethod"></param>
+        /// <param name="newmarkMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
         public CalculateBeamVibration(
-            INewmarkBetaMethod newmarkBetaMethod,
+            INewmarkMethod newmarkMethod,
             IProfileValidator<TProfile> profileValidator,
             IAuxiliarOperation auxiliarOperation,
             IArrayOperation arrayOperation,
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamMainMatrix<TProfile> mainMatrix)
-            : base(newmarkBetaMethod, profileValidator, auxiliarOperation)
+            : base(newmarkMethod, profileValidator, auxiliarOperation)
         {
             this._auxiliarOperation = auxiliarOperation;
             this._arrayOperation = arrayOperation;
@@ -150,15 +151,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
 
             Directory.CreateDirectory(folderPath);
 
-            if (File.Exists(path))
-            {
-                response.AddError(ErrorCode.OperationError, $"File already exist in path: '{path}'.");
-                return Task.FromResult<string>(null);
-            }
-            else
-            {
-                return Task.FromResult(path);
-            }
+            return Task.FromResult(path);
         }
     }
 }

@@ -24,7 +24,29 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
         }
 
         /// <summary>
-        /// Executes the Newmark-Beta numerical integration method.
+        /// Calculates the result for the initial time.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input)
+        {
+            // [accel] = ([M]^(-1))*([F] - [K]*[displacement] - [C]*[velocity])
+            // In initial time, displacement and velocity are zero, so, accel could be calculated by:
+            // [accel] = ([M]^(-1))*[F]
+
+            double[,] inversedMass = await this._arrayOperation.InverseMatrix(input.Mass, nameof(input.Mass)).ConfigureAwait(false);
+
+            return new AnalysisResult
+            {
+                Displacement = new double[input.NumberOfTrueBoundaryConditions],
+                Velocity = new double[input.NumberOfTrueBoundaryConditions],
+                Acceleration = await this._arrayOperation.Multiply(inversedMass, input.OriginalForce).ConfigureAwait(false),
+                Force = input.OriginalForce
+            };
+        }
+
+        /// <summary>
+        /// Calculates the result to Newmark-Beta numerical integration method.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="previousResult"></param>

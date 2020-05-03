@@ -23,13 +23,13 @@ namespace IcVibracoes.Core.AuxiliarOperations
 
             count1 = 0;
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 count2 = 0;
 
                 if (bondaryConditions[i] == true)
                 {
-                    for (int j = 0; j < size; j++)
+                    for (int j = 0; j < matrix.GetLength(1); j++)
                     {
                         if (bondaryConditions[j] == true)
                         {
@@ -59,7 +59,7 @@ namespace IcVibracoes.Core.AuxiliarOperations
 
             double[] matrixCC = new double[size];
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < vector.Length; i++)
             {
                 if (bondaryConditions[i] == true)
                 {

@@ -4,6 +4,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Rectangular;
 using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
@@ -17,7 +18,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="newmarkBetaMethod"></param>
+        /// <param name="newmarkMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
         /// <param name="arrayOperation"></param>
@@ -25,14 +26,14 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
         public CalculateRectangularBeamWithDvaVibration(
-            INewmarkBetaMethod newmarkBetaMethod, 
+            INewmarkMethod newmarkMethod, 
             IRectangularProfileValidator profileValidator, 
             IAuxiliarOperation auxiliarOperation, 
             IArrayOperation arrayOperation,
             IRectangularGeometricProperty geometricProperty, 
             IMappingResolver mappingResolver,
             IRectangularBeamWithDvaMainMatrix mainMatrix) 
-            : base(newmarkBetaMethod, profileValidator, auxiliarOperation, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
+            : base(newmarkMethod, profileValidator, auxiliarOperation, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
         {
         }
     }

@@ -73,7 +73,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         Task<double[]> Multiply(double[,] matrix, double[] vector);
 
         /// <summary>
-        /// It's responsible to multiplicate a matrix and a vector.
+        /// It's responsible to multiplicate two matrixes.
         /// </summary>
         /// <param name="matrix1"></param>
         /// <param name="matrix2"></param>

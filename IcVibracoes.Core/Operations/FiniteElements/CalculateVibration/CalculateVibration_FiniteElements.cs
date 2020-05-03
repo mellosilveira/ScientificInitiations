@@ -5,6 +5,7 @@ using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
@@ -26,7 +27,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
     {
-        private readonly INewmarkBetaMethod _numericalMethod;
+        private readonly INewmarkMethod _numericalMethod;
         private readonly IProfileValidator<TProfile> _profileValidator;
         private readonly IAuxiliarOperation _auxiliarOperation;
 
@@ -37,11 +38,11 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
         public CalculateVibration_FiniteElements(
-            INewmarkBetaMethod newmarkBetaMethod,
+            INewmarkMethod newmarkMethod,
             IProfileValidator<TProfile> profileValidator,
             IAuxiliarOperation auxiliarOperation)
         {
-            this._numericalMethod = newmarkBetaMethod;
+            this._numericalMethod = newmarkMethod;
             this._profileValidator = profileValidator;
             this._auxiliarOperation = auxiliarOperation;
         }
@@ -100,13 +101,14 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
 
                     if (time == input.InitialTime)
                     {
+                        //result = await this._numericalMethod.CalculateResultForInitialTime(input).ConfigureAwait(false);
                         result = previousResult;
                     }
                     else
                     {
-                        input.Force = input.OriginalForce.MultiplyEachElement(Math.Cos(input.AngularFrequency * time));
+                        //input.Force = input.OriginalForce.MultiplyEachElement(Math.Cos(input.AngularFrequency * time));
                         
-                        result = await this._numericalMethod.CalculateResult(input, previousResult).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
                     this._auxiliarOperation.WriteInFile(time, result.Displacement, path);

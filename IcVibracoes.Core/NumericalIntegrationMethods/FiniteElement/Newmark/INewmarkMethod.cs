@@ -14,7 +14,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
         /// </summary>
         /// <param name="input"></param>
         /// <param name="previousResult"></param>
+        /// <param name="time"></param>
         /// <returns></returns>
-        Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult);
+        Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult, double time);
     }
 }
