@@ -10,12 +10,12 @@
         /// <summary>
         /// Divisions on period.
         /// </summary>
-        public double TimeStep { get; set; }
+        public double PeriodCount { get; set; }
 
         /// <summary>
         /// Number of periods.
         /// </summary>
-        public double FinalTime { get; set; }
+        public double PeriodDivision { get; set; }
 
         /// <summary>
         /// Initial angular frequency. Receive in Hz and convert to rad/s to the calculus.

@@ -153,11 +153,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
 
                 AngularFrequencyStep = request.BeamData.AngularFrequencyStep,
 
-                FinalAngularFrequency = request.BeamData.FinalAngularFrequency,
-
-                TimeStep = request.BeamData.TimeStep,
-
-                FinalTime = request.BeamData.FinalTime
+                FinalAngularFrequency = request.BeamData.FinalAngularFrequency
             };
 
             return input;
