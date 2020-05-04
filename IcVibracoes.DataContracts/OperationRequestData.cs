@@ -10,12 +10,12 @@
         /// <summary>
         /// Divisions on period.
         /// </summary>
-        public double PeriodCount { get; set; }
+        public uint PeriodCount { get; set; }
 
         /// <summary>
         /// Number of periods.
         /// </summary>
-        public double PeriodDivision { get; set; }
+        public uint PeriodDivision { get; set; }
 
         /// <summary>
         /// Initial angular frequency. Receive in Hz and convert to rad/s to the calculus.

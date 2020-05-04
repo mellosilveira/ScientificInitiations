@@ -1,6 +1,7 @@
 ﻿using IcVibracoes.Common.ExtensionMethods;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Models;
@@ -30,6 +31,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         private readonly INewmarkMethod _numericalMethod;
         private readonly IProfileValidator<TProfile> _profileValidator;
         private readonly IAuxiliarOperation _auxiliarOperation;
+        private readonly ITime _time;
 
         /// <summary>
         /// Class construtor.
@@ -40,11 +42,13 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         public CalculateVibration_FiniteElements(
             INewmarkMethod newmarkMethod,
             IProfileValidator<TProfile> profileValidator,
-            IAuxiliarOperation auxiliarOperation)
+            IAuxiliarOperation auxiliarOperation,
+            ITime time)
         {
             this._numericalMethod = newmarkMethod;
             this._profileValidator = profileValidator;
             this._auxiliarOperation = auxiliarOperation;
+            this._time = time;
         }
 
         /// <summary>
@@ -84,6 +88,8 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
                 double time = input.InitialTime;
+                input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.BeamData.PeriodDivision).ConfigureAwait(false);
+                input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.BeamData.PeriodCount).ConfigureAwait(false);
 
                 string path = await this.CreatePath(request.AnalysisType, input.AngularFrequency, request.BeamData.NumberOfElements, response).ConfigureAwait(false);
 

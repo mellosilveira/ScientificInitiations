@@ -1,8 +1,8 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Classes;
-using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
@@ -10,7 +10,6 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber;
@@ -39,20 +38,21 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
         /// <param name="newmarkMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
+        /// <param name="time"></param>
         /// <param name="arrayOperation"></param>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
-        /// <param name="beamMainMatrix"></param>
         /// <param name="mainMatrix"></param>
         public CalculateBeamWithDvaVibration(
             INewmarkMethod newmarkMethod,
             IProfileValidator<TProfile> profileValidator,
             IAuxiliarOperation auxiliarOperation,
+            ITime time,
             IArrayOperation arrayOperation,
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamWithDvaMainMatrix<TProfile> mainMatrix)
-            : base(newmarkMethod, profileValidator, auxiliarOperation)
+            : base(newmarkMethod, profileValidator, auxiliarOperation, time)
         {
             this._auxiliarOperation = auxiliarOperation;
             this._arrayOperation = arrayOperation;

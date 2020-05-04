@@ -2,6 +2,7 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
 using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
 using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
+using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
@@ -73,6 +74,9 @@ namespace IcVibracoes
             // Calculator - Main Matrixes - Beam with Piezoelectric
             services.AddScoped<ICircularBeamWithPiezoelectricMainMatrix, CircularBeamWithPiezoelectricMainMatrix>();
             services.AddScoped<IRectangularBeamWithPiezoelectricMainMatrix, RectangularBeamWithPiezoelectricMainMatrix>();
+
+            // Calculator - Time
+            services.AddScoped<ITime, Time>();
 
             // Mapper
             services.AddScoped<IMappingResolver, MappingResolver>();
