@@ -1,0 +1,3 @@
+periodCount 
+	1. 40
+	2. 100

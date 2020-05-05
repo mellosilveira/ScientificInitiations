@@ -25,8 +25,9 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
             else
             {
                 double period = 2 * Math.PI / angularFrequency;
+                double stepTime = period / periodDivision;
 
-                return Task.FromResult(period / periodDivision);
+                return Task.FromResult(stepTime);
             }
         }
 
@@ -47,8 +48,9 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
             else
             {
                 double period = 2 * Math.PI / angularFrequency;
+                double finalTime = period * periodCount;
 
-                return Task.FromResult(period / periodCount);
+                return Task.FromResult(finalTime);
             }
         }
     }

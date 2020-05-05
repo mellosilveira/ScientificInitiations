@@ -189,13 +189,13 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam
         /// It's rewsponsible to build the bondary condition matrix.
         /// </summary>
         /// <param name="fastenings"></param>
-        /// <param name="degreesFreedomMaximum"></param>
+        /// <param name="degreesOfFreedom"></param>
         /// <returns></returns>
-        public Task<bool[]> CalculateBondaryCondition(IDictionary<uint, FasteningType> fastenings, uint degreesFreedomMaximum)
+        public Task<bool[]> CalculateBondaryCondition(IDictionary<uint, FasteningType> fastenings, uint degreesOfFreedom)
         {
-            bool[] boundaryCondition = new bool[degreesFreedomMaximum];
+            bool[] boundaryCondition = new bool[degreesOfFreedom];
 
-            for (int i = 0; i < degreesFreedomMaximum; i++)
+            for (int i = 0; i < degreesOfFreedom; i++)
             {
                 boundaryCondition[i] = true;
             }

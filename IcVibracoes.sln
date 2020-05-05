@@ -39,21 +39,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FiniteElement", "FiniteElem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Beam", "Beam", "{924A799F-B2BF-4144-A243-C2E42FD09728}"
 	ProjectSection(SolutionItems) = preProject
-		Request\Motor Baja = Request\Motor Baja
-		Request\Motor Baja 30Hz - 5 nós.json = Request\Motor Baja 30Hz - 5 nós.json
-		Request\Motor Baja 30Hz - 67 nós.json = Request\Motor Baja 30Hz - 67 nós.json
-		Request\Viga retangular engastada sem piezoeletrico.json = Request\Viga retangular engastada sem piezoeletrico.json
+		Request\FiniteElements\Beam\Motor Baja 30Hz - 5 nós.json = Request\FiniteElements\Beam\Motor Baja 30Hz - 5 nós.json
+		Request\FiniteElements\Beam\Motor Baja 30Hz - 67 nós.json = Request\FiniteElements\Beam\Motor Baja 30Hz - 67 nós.json
+		Request\FiniteElements\Beam\Motor Baja.json = Request\FiniteElements\Beam\Motor Baja.json
+		Request\FiniteElements\Beam\Request extraido da tese sobre piezoelétrico - sem piezoelétrico.json = Request\FiniteElements\Beam\Request extraido da tese sobre piezoelétrico - sem piezoelétrico.json
+		Request\FiniteElements\Beam\Viga retangular engastada sem piezoeletrico.json = Request\FiniteElements\Beam\Viga retangular engastada sem piezoeletrico.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BeamWithDva", "BeamWithDva", "{E486846C-62C9-48F5-B3FD-E86E818D4709}"
 	ProjectSection(SolutionItems) = preProject
-		Request\Motor Baja com ADV 30Hz - 5 nós.json = Request\Motor Baja com ADV 30Hz - 5 nós.json
-		Request\Motor Baja com ADV 30Hz - 67 nós.json = Request\Motor Baja com ADV 30Hz - 67 nós.json
+		Request\FiniteElements\BeamWithDva\Motor Baja com ADV 30Hz - 5 nós.json = Request\FiniteElements\BeamWithDva\Motor Baja com ADV 30Hz - 5 nós.json
+		Request\FiniteElements\BeamWithDva\Motor Baja com ADV 30Hz - 67 nós.json = Request\FiniteElements\BeamWithDva\Motor Baja com ADV 30Hz - 67 nós.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BeamWithPiezoelectric", "BeamWithPiezoelectric", "{F291C03A-BD08-4F86-9203-F7FF52846573}"
 	ProjectSection(SolutionItems) = preProject
-		Request\RectangularBeamWithPiezoelectricRequest = Request\RectangularBeamWithPiezoelectricRequest
+		Request\FiniteElements\BeamWithPiezoelectric\RectangularBeamWithPiezoelectricRequest.json = Request\FiniteElements\BeamWithPiezoelectric\RectangularBeamWithPiezoelectricRequest.json
+		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta.json
+		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos no início.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos no início.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RigidBody", "RigidBody", "{531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}"

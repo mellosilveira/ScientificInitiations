@@ -145,9 +145,9 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
 
                 Damping = this._auxiliarOperation.ApplyBondaryConditions(dampingWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
-                OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
+                OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
-                NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
+                NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length,
 
                 AngularFrequency = request.BeamData.InitialAngularFrequency,
 
