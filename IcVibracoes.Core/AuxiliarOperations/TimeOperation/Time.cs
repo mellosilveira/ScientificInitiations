@@ -9,7 +9,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
     public class Time : ITime
     {
         /// <summary>
-        /// Calculates the time step.
+        /// Calculates the time step for finite element analysis.
         /// </summary>
         /// <param name="angularFrequency"></param>
         /// <param name="periodDivision"></param>
@@ -32,7 +32,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
         }
 
         /// <summary>
-        /// Calculates the final time.
+        /// Calculates the final time for finite element analysis.
         /// </summary>
         /// <param name="angularFrequency"></param>
         /// <param name="periodCount"></param>

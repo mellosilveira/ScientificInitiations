@@ -24,7 +24,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForth
 
         public override async Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
-            return await this._calculate.CalculateForOneDegreeOfFreedom(input, time, y).ConfigureAwait(false);
+            return await this._calculate.ExecuteForOneDegreeOfFreedom(input, time, y).ConfigureAwait(false);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateForOneDegreeOfFreedom(DifferentialEquationOfMotionInput input, double time, double[] y)
+        public async Task<double[]> ExecuteForOneDegreeOfFreedom(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
@@ -53,7 +53,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateForTwonumberOfElements(DifferentialEquationOfMotionInput input, double time, double[] y)
+        public async Task<double[]> ExecuteForTwoDegreedOfFreedom(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_2DF];
 
