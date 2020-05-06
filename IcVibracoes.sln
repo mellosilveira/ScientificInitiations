@@ -55,6 +55,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BeamWithPiezoelectric", "BeamWithPiezoelectric", "{F291C03A-BD08-4F86-9203-F7FF52846573}"
 	ProjectSection(SolutionItems) = preProject
 		Request\FiniteElements\BeamWithPiezoelectric\RectangularBeamWithPiezoelectricRequest.json = Request\FiniteElements\BeamWithPiezoelectric\RectangularBeamWithPiezoelectricRequest.json
+		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta - 48 elementos.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta - 48 elementos.json
 		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta.json
 		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos no início.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos no início.json
 	EndProjectSection
