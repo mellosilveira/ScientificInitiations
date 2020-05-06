@@ -5,7 +5,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular

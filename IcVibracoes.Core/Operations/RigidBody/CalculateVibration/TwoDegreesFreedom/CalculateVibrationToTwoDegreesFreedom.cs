@@ -3,7 +3,7 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder.TwoDegreeFreedom;
+using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
 using System;
 using System.IO;

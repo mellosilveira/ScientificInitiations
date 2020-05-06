@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.DTO.InputData;
-using IcVibracoes.Core.NumericalIntegrationMethods.RigidBody.RungeKuttaForthOrder;
+using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts.RigidBody;
 using System.Collections.Generic;
 using System.Threading.Tasks;

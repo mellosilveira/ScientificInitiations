@@ -2,7 +2,7 @@
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
+namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
 {
     /// <summary>
     /// It's responsible to execute the Newmark-Beta numerical integration method to calculate the vibration.

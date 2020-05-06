@@ -4,7 +4,7 @@ using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
+namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
 {
     /// <summary>
     /// It's responsible to execute the Newmark-Beta numerical integration method to calculate the vibration.
@@ -65,8 +65,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
 
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
-                deltaVelocity[i] = (input.Gama / (input.Beta * input.TimeStep)) * deltaDisplacement[i] - (input.Gama / input.Beta) * previousResult.Velocity[i] + input.TimeStep * (1 - input.Gama / (2 * input.Beta)) * previousResult.Acceleration[i];
-                deltaAcceleration[i] = (1 / (input.Beta * Math.Pow(input.TimeStep, 2))) * deltaDisplacement[i] - (1 / (input.Beta * input.TimeStep)) * previousResult.Velocity[i] - (1 / (2 * input.Beta)) * previousResult.Acceleration[i];
+                deltaVelocity[i] = input.Gama / (input.Beta * input.TimeStep) * deltaDisplacement[i] - input.Gama / input.Beta * previousResult.Velocity[i] + input.TimeStep * (1 - input.Gama / (2 * input.Beta)) * previousResult.Acceleration[i];
+                deltaAcceleration[i] = 1 / (input.Beta * Math.Pow(input.TimeStep, 2)) * deltaDisplacement[i] - 1 / (input.Beta * input.TimeStep) * previousResult.Velocity[i] - 1 / (2 * input.Beta) * previousResult.Acceleration[i];
             }
 
             return new AnalysisResult
@@ -119,7 +119,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
             double[,] equivalentMass = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
             double const1 = 1 / (2 * input.Beta);
-            double const2 = input.TimeStep * (1 - (input.Gama / (2 * input.Beta)));
+            double const2 = input.TimeStep * (1 - input.Gama / (2 * input.Beta));
 
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
@@ -140,7 +140,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.NewmarkBeta
             double[] damping_vel = await this._arrayOperation.Multiply(equivalentDamping, previousResult.Velocity).ConfigureAwait(false);
             double[] mass_accel = await this._arrayOperation.Multiply(equivalentMass, previousResult.Acceleration).ConfigureAwait(false);
             double[] deltaForce = await this._arrayOperation.Subtract(input.Force, previousResult.Force).ConfigureAwait(false);
-            
+
             double[] equivalentForce = await this._arrayOperation.Sum(deltaForce, damping_vel, mass_accel, $"{nameof(deltaForce)}, {nameof(damping_vel)} and {nameof(mass_accel)}").ConfigureAwait(false);
 
             return equivalentForce;

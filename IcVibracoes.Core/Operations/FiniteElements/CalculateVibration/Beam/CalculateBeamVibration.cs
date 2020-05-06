@@ -8,7 +8,7 @@ using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.Beam;

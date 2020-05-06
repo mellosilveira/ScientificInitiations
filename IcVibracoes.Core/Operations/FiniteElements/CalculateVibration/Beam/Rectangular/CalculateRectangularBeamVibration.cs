@@ -5,7 +5,7 @@ using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular

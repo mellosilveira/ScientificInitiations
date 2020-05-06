@@ -1,11 +1,10 @@
-﻿using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.Calculator.ArrayOperations;
+﻿using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
+namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 {
     /// <summary>
     /// It's responsible to execute the Newmark numerical integration method to calculate the vibration.
@@ -23,18 +22,15 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
         public string path;
 
         private readonly IArrayOperation _arrayOperation;
-        private readonly IAuxiliarOperation _auxiliarOperation;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="arrayOperation"></param>
         public NewmarkMethod(
-            IArrayOperation arrayOperation,
-            IAuxiliarOperation auxiliarOperation)
+            IArrayOperation arrayOperation)
         {
             this._arrayOperation = arrayOperation;
-            this._auxiliarOperation = auxiliarOperation;
         }
 
         public async Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult, double time)
@@ -47,7 +43,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.FiniteElement.Newmark
                 Force = previousResult.Force
             };
 
-            this.CalculateIngrationContants(input);
+            CalculateIngrationContants(input);
 
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
