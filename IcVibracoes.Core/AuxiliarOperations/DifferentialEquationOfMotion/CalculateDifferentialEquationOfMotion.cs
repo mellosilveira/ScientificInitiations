@@ -41,7 +41,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
             // Velocity of primary object.
             result[0] = y[1];
             // Acceleration of primary object.
-            result[1] = (input.Force * Math.Sin(input.AngularFrequency * time) - (damping * y[1]) - (input.Stiffness * y[0])) / input.Mass;
+            result[1] = (input.Force * Math.Cos(input.AngularFrequency * time) - (damping * y[1]) - (input.Stiffness * y[0])) / input.Mass;
 
             return result;
         }
@@ -69,7 +69,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
             // Velocity of secondary object.
             result[1] = y[3];
             // Acceleration of primary object.
-            result[2] = ((input.Force * Math.Sin(input.AngularFrequency * time)) - ((input.Stiffness + input.SecondaryStiffness) * y[0] - input.SecondaryStiffness * y[1] + (damping + secondaryDamping) * y[2] - secondaryDamping * y[3])) / input.Mass;
+            result[2] = ((input.Force * Math.Cos(input.AngularFrequency * time)) - ((input.Stiffness + input.SecondaryStiffness) * y[0] - input.SecondaryStiffness * y[1] + (damping + secondaryDamping) * y[2] - secondaryDamping * y[3])) / input.Mass;
             // Acceleration of secondary object.
             result[3] = (input.SecondaryStiffness * (y[0] - y[1]) + secondaryDamping * (y[2] - y[3])) / input.SecondaryMass;
 

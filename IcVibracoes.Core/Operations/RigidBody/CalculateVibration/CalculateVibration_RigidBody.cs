@@ -84,12 +84,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                 while (w <= wf)
                 {
-                    double timeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, request.Data.PeriodDivision).ConfigureAwait(false);
-                    double finalTime = await this._time.CalculateFinalTime(input.Mass, input.Stiffness, request.Data.PeriodCount).ConfigureAwait(false);
+                    double timeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
+                    double finalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
 
                     input.AngularFrequency = w;
 
-                    string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, input.DampingRatio, w).ConfigureAwait(false);
+                    string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, input.DampingRatio, input.AngularFrequency).ConfigureAwait(false);
 
                     if (path == null)
                     {
@@ -98,15 +98,13 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                     double time = request.Data.InitialTime;
                     double[] y = initial_y;
+                    this._auxiliarOperation.WriteInFile(time, y, path);
 
                     while (time <= finalTime)
                     {
-                        if (time != request.Data.InitialTime)
-                        {
-                            y = await this._rungeKutta.CalculateResult(input, timeStep, time, y).ConfigureAwait(false);
-                        }
+                        y = await this._rungeKutta.CalculateResult(input, timeStep, time, y).ConfigureAwait(false);
 
-                        this._auxiliarOperation.WriteInFile(time, y, path);
+                        this._auxiliarOperation.WriteInFile(time + timeStep, y, path);
 
                         time += timeStep;
                     }

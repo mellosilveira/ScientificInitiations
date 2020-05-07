@@ -29,17 +29,9 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
         /// <param name="periodDivision"></param>
+        /// <param name="angularFrequency"></param>
         /// <returns></returns>
-        Task<double> CalculateTimeStep(double mass, double stiffness, uint periodDivision);
-     
-        /// <summary>
-        /// Calculates the final time for Runge Kutta Forth Order Method.
-        /// </summary>
-        /// <param name="mass"></param>
-        /// <param name="stiffness"></param>
-        /// <param name="periodCount"></param>
-        /// <returns></returns>
-        Task<double> CalculateFinalTime(double mass, double stiffness, uint periodCount);
+        Task<double> CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision);
 
         /// <summary>
         /// Calculates the natural period for rigid body analysis.

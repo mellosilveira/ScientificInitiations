@@ -69,29 +69,22 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
         /// <param name="stiffness"></param>
         /// <param name="periodDivision"></param>
         /// <returns></returns>
-        public async Task<double> CalculateTimeStep(double mass, double stiffness, uint periodDivision)
+        public async Task<double> CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision)
         {
             double naturalPeriod = await this.CalculateNaturalPeriod(mass, stiffness).ConfigureAwait(false);
 
-            double stepTime = naturalPeriod / periodDivision;
+            double period = 2 * Math.PI / angularFrequency;
+            double timeStep = period / periodDivision;
 
-            return stepTime;
-        }
-
-        /// <summary>
-        /// Calculates the final time for Runge Kutta Forth Order Method.
-        /// </summary>
-        /// <param name="mass"></param>
-        /// <param name="stiffness"></param>
-        /// <param name="periodCount"></param>
-        /// <returns></returns>
-        public async Task<double> CalculateFinalTime(double mass, double stiffness, uint periodCount)
-        {
-            double naturalPeriod = await this.CalculateNaturalPeriod(mass, stiffness).ConfigureAwait(false);
-
-            double finalTime = naturalPeriod * periodCount;
-
-            return finalTime;
+            // Natural time is divided by 10, because it's the maximum value to time step accepted in Runge Kutta Forth Order Method.
+            if (timeStep < naturalPeriod / 10)
+            {
+                return timeStep;
+            }
+            else
+            {
+                return naturalPeriod / periodDivision;
+            }
         }
 
         /// <summary>

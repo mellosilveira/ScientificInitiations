@@ -7,15 +7,37 @@
     "initialDisplacement": 0,
     "initialVelocity": 0,
     "dampingRatioList": [
-      0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.5,2
+      0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1,
+      1.5,
+      2
     ],
-    "timeStep": 0.01,
+    "force": 10,
     "initialTime": 0,
-    "finalTime": 40,
+    "periodCount": 10,
+    "periodDivision": 10,
     "initialAngularFrequency": 0,
     "angularFrequencyStep": 1,
-    "finalAngularFrequency": 30,
-    "force": 10
+    "finalAngularFrequency": 30
   },
   "author": "Bruno Silveira"
 }
