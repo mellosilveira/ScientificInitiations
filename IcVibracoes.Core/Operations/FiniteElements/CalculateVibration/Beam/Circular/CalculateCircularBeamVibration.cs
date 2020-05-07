@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
-using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Mapper;

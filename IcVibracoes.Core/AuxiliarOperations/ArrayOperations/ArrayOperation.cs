@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Calculator.ArrayOperations
+namespace IcVibracoes.Core.AuxiliarOperations.ArrayOperations
 {
     /// <summary>
     /// It contains the methods to execute every vector operations.
@@ -18,7 +18,7 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
         /// <returns></returns>
         public Task<double[,]> AddValue(double[,] matrixToAdd, double[] values, uint[] nodePositions, string matrixName)
         {
-            if (!int.Equals(values.Length, nodePositions.Length))
+            if (!Equals(values.Length, nodePositions.Length))
             {
                 throw new ArgumentException($"Error adding values in {matrixName}. The matrixes lenght {nameof(values)}: {values.Length} and {nameof(nodePositions)}: {nodePositions.Length} must be the same.");
             }
@@ -152,8 +152,8 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
                     // Parallel.For
                     for (int j = 0; j < n; j++)
                     {
-                        matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
-                        matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);
+                        matrix[k, j] = matrix[k, j] - p * matrix[i, j];
+                        matrizInv[k, j] = matrizInv[k, j] - p * matrizInv[i, j];
                     }
                 }
             }
@@ -168,8 +168,8 @@ namespace IcVibracoes.Core.Calculator.ArrayOperations
                     // Parallel.For
                     for (int j = n - 1; j >= 0; j--)
                     {
-                        matrix[k, j] = matrix[k, j] - (p * matrix[i, j]);
-                        matrizInv[k, j] = matrizInv[k, j] - (p * matrizInv[i, j]);
+                        matrix[k, j] = matrix[k, j] - p * matrix[i, j];
+                        matrizInv[k, j] = matrizInv[k, j] - p * matrizInv[i, j];
                     }
                 }
             }

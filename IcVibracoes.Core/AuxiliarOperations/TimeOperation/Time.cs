@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
+using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
@@ -8,6 +9,13 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
     /// </summary>
     public class Time : ITime
     {
+        private readonly INaturalFrequency _naturalFrequency;
+
+        public Time(INaturalFrequency naturalFrequency)
+        {
+            this._naturalFrequency = naturalFrequency;
+        }
+
         /// <summary>
         /// Calculates the time step for finite element analysis.
         /// </summary>
@@ -52,6 +60,53 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
 
                 return Task.FromResult(finalTime);
             }
+        }
+
+        /// <summary>
+        /// Calculates the time step for Runge Kutta Forth Order Method.
+        /// </summary>
+        /// <param name="mass"></param>
+        /// <param name="stiffness"></param>
+        /// <param name="periodDivision"></param>
+        /// <returns></returns>
+        public async Task<double> CalculateTimeStep(double mass, double stiffness, uint periodDivision)
+        {
+            double naturalPeriod = await this.CalculateNaturalPeriod(mass, stiffness).ConfigureAwait(false);
+
+            double stepTime = naturalPeriod / periodDivision;
+
+            return stepTime;
+        }
+
+        /// <summary>
+        /// Calculates the final time for Runge Kutta Forth Order Method.
+        /// </summary>
+        /// <param name="mass"></param>
+        /// <param name="stiffness"></param>
+        /// <param name="periodCount"></param>
+        /// <returns></returns>
+        public async Task<double> CalculateFinalTime(double mass, double stiffness, uint periodCount)
+        {
+            double naturalPeriod = await this.CalculateNaturalPeriod(mass, stiffness).ConfigureAwait(false);
+
+            double finalTime = naturalPeriod * periodCount;
+
+            return finalTime;
+        }
+
+        /// <summary>
+        /// Calculates the natural period for rigid body analysis.
+        /// </summary>
+        /// <param name="mass"></param>
+        /// <param name="stiffness"></param>
+        /// <returns></returns>
+        public async Task<double> CalculateNaturalPeriod(double mass, double stiffness)
+        {
+            double naturalFrequency = await this._naturalFrequency.Calculate(mass, stiffness).ConfigureAwait(false);
+
+            double naturalPeriod = 2 * Math.PI / naturalFrequency;
+
+            return naturalPeriod;
         }
     }
 }

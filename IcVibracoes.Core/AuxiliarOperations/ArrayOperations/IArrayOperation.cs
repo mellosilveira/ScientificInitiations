@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Calculator.ArrayOperations
+namespace IcVibracoes.Core.AuxiliarOperations.ArrayOperations
 {
     public interface IArrayOperation
     {

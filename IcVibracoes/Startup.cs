@@ -1,9 +1,9 @@
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
 using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
 using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
 using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
-using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;

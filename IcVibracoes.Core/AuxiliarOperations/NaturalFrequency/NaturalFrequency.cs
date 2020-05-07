@@ -1,8 +1,6 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
-using IcVibracoes.Core.Calculator.ArrayOperations;
-using IcVibracoes.DataContracts;
+﻿using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
+using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.AuxiliarOperations.NaturalFrequency

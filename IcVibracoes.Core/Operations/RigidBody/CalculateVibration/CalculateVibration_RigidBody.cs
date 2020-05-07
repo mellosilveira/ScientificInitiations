@@ -1,4 +1,5 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts.RigidBody;
@@ -22,6 +23,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
     {
         private readonly IAuxiliarOperation _auxiliarOperation;
         private readonly IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> _rungeKutta;
+        private readonly ITime _time;
 
         /// <summary>
         /// Class constructor.
@@ -30,10 +32,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <param name="rungeKutta"></param>
         public CalculateVibration_RigidBody(
             IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> rungeKutta)
+            IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> rungeKutta,
+            ITime time)
         {
             this._auxiliarOperation = auxiliarOperation;
             this._rungeKutta = rungeKutta;
+            this._time = time;
         }
 
         /// <summary>
@@ -66,8 +70,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             var response = new TResponse();
 
             double[] initial_y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
-            double timeStep = request.Data.TimeStep;
-            double finalTime = request.Data.FinalTime;
 
             DifferentialEquationOfMotionInput input = await this.BuildDifferentialEquationOfMotionInput(request.Data).ConfigureAwait(false);
 
@@ -82,6 +84,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                 while (w <= wf)
                 {
+                    double timeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, request.Data.PeriodDivision).ConfigureAwait(false);
+                    double finalTime = await this._time.CalculateFinalTime(input.Mass, input.Stiffness, request.Data.PeriodCount).ConfigureAwait(false);
+
                     input.AngularFrequency = w;
 
                     string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, input.DampingRatio, w).ConfigureAwait(false);

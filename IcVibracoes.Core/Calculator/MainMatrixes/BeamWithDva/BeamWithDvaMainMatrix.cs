@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Calculator.ArrayOperations;
+using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Collections.Generic;

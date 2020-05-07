@@ -2,8 +2,8 @@
 using IcVibracoes.Common.Classes;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
-using IcVibracoes.Core.Calculator.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Mapper;

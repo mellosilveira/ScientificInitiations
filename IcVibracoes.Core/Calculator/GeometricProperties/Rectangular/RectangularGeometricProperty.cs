@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Calculator.ArrayOperations;
+using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
 using System;
 using System.Threading.Tasks;
 
