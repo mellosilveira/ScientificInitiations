@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## UNRELEASED
+## [2.0.0] - 2020-05-07
 ### Changed
 - Classes and folder name from CalculateVibration to FiniteElements operations.
 ### Fixed
@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Runge Kutta Forth Order numerical integration method.
 - Newmark Beta numerical integration method.
 - Ways to calculate the natural frequency of structures.
+- Ways to calculate the time step and final time.
 
 ## [1.3.0] - 2020-04-16
 ### Changed
