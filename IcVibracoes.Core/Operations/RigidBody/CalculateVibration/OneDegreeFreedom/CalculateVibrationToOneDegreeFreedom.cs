@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
+using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_1DF;
@@ -22,10 +22,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// </summary>
         /// <param name="auxiliarOperation"></param>
         /// <param name="rungeKutta"></param>
+        /// <param name="time"></param>
         public CalculateVibrationToOneDegreeFreedom(
             IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod_1DF rungeKutta)
-            : base(auxiliarOperation, rungeKutta)
+            IRungeKuttaForthOrderMethod_1DF rungeKutta,
+            ITime time)
+            : base(auxiliarOperation, rungeKutta, time)
         { }
 
         /// <summary>
