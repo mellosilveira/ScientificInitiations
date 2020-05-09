@@ -3,6 +3,7 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
 using System;
@@ -47,6 +48,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
                 AngularFrequency = requestData.AngularFrequencyStep,
                 DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
                 Force = requestData.Force,
+                ForceType = ForceTypeFactory.Create(requestData.ForceType),
                 Stiffness = requestData.MainObjectMechanicalProperties.Stiffness,
                 Mass = requestData.MainObjectMechanicalProperties.Mass,
                 SecondaryStiffness = requestData.SecondaryObjectMechanicalProperties.Stiffness,

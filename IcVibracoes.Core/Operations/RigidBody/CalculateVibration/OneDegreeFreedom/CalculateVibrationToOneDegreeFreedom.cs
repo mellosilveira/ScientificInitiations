@@ -3,6 +3,7 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_1DF;
 using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
 using System;
@@ -47,6 +48,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
                 AngularFrequency = requestData.InitialAngularFrequency,
                 DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
                 Force = requestData.Force,
+                ForceType = ForceTypeFactory.Create(requestData.ForceType),
                 Stiffness = requestData.MechanicalProperties.Stiffness,
                 Mass = requestData.MechanicalProperties.Mass
             });

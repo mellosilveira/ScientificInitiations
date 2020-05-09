@@ -19,12 +19,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.Rigi
         public RungeKuttaForthOrderMethod_1DF(
             ICalculateDifferentialEquationOfMotion calculate)
         {
-            _calculate = calculate;
+            this._calculate = calculate;
         }
 
         public override async Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
-            return await _calculate.ExecuteForOneDegreeOfFreedom(input, time, y).ConfigureAwait(false);
+            return await this._calculate.ExecuteForOneDegreeOfFreedom(input, time, y).ConfigureAwait(false);
         }
     }
 }

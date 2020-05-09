@@ -91,4 +91,11 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
             return isMaterialValid;
         }
     }
+
+    public enum Materials
+    {
+        Steel1020,
+        Steel4130,
+        Aluminum
+    }
 }

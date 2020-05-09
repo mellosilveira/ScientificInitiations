@@ -1,4 +1,6 @@
-﻿namespace IcVibracoes.Core.DTO.InputData
+﻿using IcVibracoes.Core.Models.BeamCharacteristics;
+
+namespace IcVibracoes.Core.DTO.InputData
 {
     /// <summary>
     /// It contains the input 'data' to create a differential equation of motion.
@@ -33,6 +35,12 @@
         /// The force applied in the analyzed system.
         /// </summary>
         public double Force { get; set; }
+
+        /// <summary>
+        /// The type of the force.
+        /// Can be harmonic or impact.
+        /// </summary>
+        public ForceType ForceType { get; set; }
 
         /// <summary>
         /// Unity: Hz (Hertz).

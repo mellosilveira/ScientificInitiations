@@ -1,5 +1,4 @@
 ﻿using System;
-using static IcVibracoes.Common.Enum;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
@@ -64,5 +63,12 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
 
             throw new Exception($"Invalid fastening: {fastening}.");
         }
+    }
+
+    public enum Fastenings
+    {
+        None,
+        Pinned,
+        Fixed,
     }
 }

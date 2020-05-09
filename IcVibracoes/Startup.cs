@@ -2,6 +2,7 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
 using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
+using IcVibracoes.Core.AuxiliarOperations.ForceOperation;
 using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
 using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
@@ -51,10 +52,11 @@ namespace IcVibracoes
         public void ConfigureServices(IServiceCollection services)
         {
             // Auxiliar Operations
+            services.AddScoped<IAuxiliarOperation, AuxiliarOperation>();
             services.AddScoped<ICalculateDifferentialEquationOfMotion, CalculateDifferentialEquationOfMotion>();
             services.AddScoped<ICalculateEigenvalue, CalculateEigenvalue>();
+            services.AddScoped<IForceOperation, ForceOperation>();
             services.AddScoped<INaturalFrequency, NaturalFrequency>();
-            services.AddScoped<IAuxiliarOperation, AuxiliarOperation>();
 
             // Calculator - Array Operation
             services.AddScoped<IArrayOperation, ArrayOperation>();
