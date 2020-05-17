@@ -81,7 +81,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
-                equivalentForce[i] = input.OriginalForce[i] * Math.Cos(input.AngularFrequency * time) + mass_accel[i] + damping_vel[i];
+                equivalentForce[i] = input.OriginalForce[i] * Math.Sin(input.AngularFrequency * time) + mass_accel[i] + damping_vel[i];
             }
 
             return equivalentForce;
