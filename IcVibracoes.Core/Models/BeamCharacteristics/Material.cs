@@ -1,5 +1,4 @@
 ﻿using System;
-using static IcVibracoes.Common.Enum;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
 {

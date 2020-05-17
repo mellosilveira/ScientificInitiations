@@ -70,6 +70,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RigidBody", "RigidBody", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OneDegreeFreedom", "OneDegreeFreedom", "{450C0332-86C8-48F5-9774-F257E61F72BA}"
 	ProjectSection(SolutionItems) = preProject
+		Request\RigidBody\OneDegreeFreedom\Dados para 1 GL do TCC Projeto de absorvedores dinâmicos para vigas em flexão - força de impacto.json = Request\RigidBody\OneDegreeFreedom\Dados para 1 GL do TCC Projeto de absorvedores dinâmicos para vigas em flexão - força de impacto.json
 		Request\RigidBody\OneDegreeFreedom\Dados para 1 GL do TCC Projeto de absorvedores dinâmicos parqa vigas em flexão.json = Request\RigidBody\OneDegreeFreedom\Dados para 1 GL do TCC Projeto de absorvedores dinâmicos parqa vigas em flexão.json
 	EndProjectSection
 EndProject

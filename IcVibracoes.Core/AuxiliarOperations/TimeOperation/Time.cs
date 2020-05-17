@@ -49,7 +49,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
         {
             if (angularFrequency == 0)
             {
-                double finalTime = 2 * Math.PI * periodCount;
+                double finalTime = 2 * Math.PI;
 
                 return Task.FromResult(finalTime);
             }

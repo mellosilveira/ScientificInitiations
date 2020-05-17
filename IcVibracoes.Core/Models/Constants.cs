@@ -42,7 +42,7 @@
         /// Proportionality constant used in the damping calculate. 
         /// It is multiplied by mass matrix.
         /// </summary>
-        public const double Alpha = 1e-6;
+        public const double Alpha = 1e-5;
 
         /// <summary>
         /// Proportionality constant used in the damping calculate. 

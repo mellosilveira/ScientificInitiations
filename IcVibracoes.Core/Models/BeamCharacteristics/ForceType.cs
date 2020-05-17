@@ -18,7 +18,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     {
         public static ForceType Create(string forceType)
         {
-            switch ((ForceType)Enum.Parse(typeof(Fastenings), forceType, ignoreCase: true))
+            switch ((ForceType)Enum.Parse(typeof(ForceType), forceType, ignoreCase: true))
             {
                 case ForceType.Harmonic: return ForceType.Harmonic;
                 case ForceType.Impact: return ForceType.Impact;

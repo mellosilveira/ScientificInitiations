@@ -23,7 +23,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.ForceOperation
 
             if (forceType == ForceType.Harmonic)
             {
-                force = originalForce * Math.Cos(angularFrequency * time);
+                force = originalForce * Math.Sin(angularFrequency * time);
             }
             else if (forceType == ForceType.Impact)
             {
