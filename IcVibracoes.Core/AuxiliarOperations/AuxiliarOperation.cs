@@ -77,7 +77,8 @@ namespace IcVibracoes.Core.AuxiliarOperations
         /// <param name="time"></param>
         /// <param name="values"></param>
         /// <param name="path"></param>
-        public void WriteInFile(double time, double[] values, string path)
+        /// <param name="degreesOfFreedom"></param>
+        public void WriteInFile(double time, double[] values, string path, uint degreesOfFreedom)
         {
             using (StreamWriter streamWriter = new StreamWriter(path, true))
             {
@@ -90,52 +91,6 @@ namespace IcVibracoes.Core.AuxiliarOperations
 
                 streamWriter.Write(streamWriter.NewLine);
             }
-        }
-
-        /// <summary>
-        /// Writes the angular frequency in a file to start calculating the solution.
-        /// </summary>
-        /// <param name="angularFrequency"></param>
-        /// <param name="path"></param>
-        public void WriteInFile(double angularFrequency, string path)
-        {
-            using (StreamWriter streamWriter = new StreamWriter(path, true))
-            {
-                streamWriter.WriteLine($"Angular frequency: {angularFrequency}");
-            }
-        }
-
-        /// <summary>
-        /// Create a path to the files with the analysis solution.
-        /// </summary>
-        /// <param name="analysisType"></param>
-        /// <param name="initialAngularFrequency"></param>
-        /// <param name="finalAngularFrequency"></param>
-        /// <param name="numberOfElements"></param>
-        /// <returns></returns>
-        public string CreateSolutionPath(string analysisType, double initialAngularFrequency, double? finalAngularFrequency, uint numberOfElements)
-        {
-            string path = Directory.GetCurrentDirectory();
-
-            string folderName = Path.GetFileName(path);
-
-            string previousPath = path.Substring(0, path.Length - folderName.Length);
-
-            if (finalAngularFrequency == null)
-            {
-                path = Path.Combine(previousPath, "Solutions", $"{analysisType.Trim()}_w0={Math.Round(initialAngularFrequency, 2)}_nEl={numberOfElements}.csv");
-            }
-            else
-            {
-                path = Path.Combine(previousPath, "Solutions", $"{analysisType.Trim()}_w0={Math.Round(initialAngularFrequency, 2)}_wf={finalAngularFrequency}_nEl={numberOfElements}.csv");
-            }
-
-            if (File.Exists(path))
-            {
-                throw new IOException($"File already exist. File name: {Path.GetFileName(path)}.");
-            }
-
-            return path;
         }
     }
 }
