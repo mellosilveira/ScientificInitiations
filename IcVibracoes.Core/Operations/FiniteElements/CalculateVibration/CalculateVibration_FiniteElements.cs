@@ -113,7 +113,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
                         result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
-                    this._auxiliarOperation.WriteInFile(time, result.Displacement, path);
+                    this._auxiliarOperation.WriteInFile(time, result.Displacement, path, degreesOfFreedom);
 
                     previousResult = result;
 
