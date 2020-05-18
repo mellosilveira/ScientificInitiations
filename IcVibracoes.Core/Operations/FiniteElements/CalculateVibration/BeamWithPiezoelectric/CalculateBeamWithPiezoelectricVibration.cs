@@ -15,6 +15,7 @@ using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric
@@ -196,15 +197,15 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             return input;
         }
 
-        public override Task<string> CreatePath(string analysisType, double angularFrequency, uint numberOfElements, FiniteElementsResponse response)
+        public override Task<string> CreatePath(BeamWithPiezoelectricRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string folderPath = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithPiezoelectric/nEl={numberOfElements}");
+                $"Solutions/FiniteElements/BeamWithPiezoelectric/{request.BeamData.Profile.GetType().Name}/nEl={request.BeamData.NumberOfElements}/Piezoelectric {Regex.Replace(request.BeamData.PiezoelectricPosition, @"\s", "")}");
 
-            string fileName = $"{analysisType.Trim()}_w={Math.Round(angularFrequency, 2)}_nEl={numberOfElements}.csv";
+            string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.BeamData.NumberOfElements}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 

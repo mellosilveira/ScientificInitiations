@@ -1,4 +1,6 @@
-﻿namespace IcVibracoes.Common.Profiles
+﻿using System;
+
+namespace IcVibracoes.Common.Profiles
 {
     /// <summary>
     /// It represents content in common between the profiles.

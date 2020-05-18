@@ -15,7 +15,7 @@
     "elementsWithPiezoelectric": [
       1,2,3,4
     ],
-    "piezoelectricPosition": "UpAndDown",
+    "piezoelectricPosition": "Down",
     "piezoelectricProfile": {
       "height": 0.267e-3,
       "width": 25e-3

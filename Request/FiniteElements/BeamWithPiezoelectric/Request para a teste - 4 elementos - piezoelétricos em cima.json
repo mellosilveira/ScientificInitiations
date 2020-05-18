@@ -46,7 +46,7 @@
     "forceType": "Harmonic",
     "initialTime": 0,
     "periodCount": 10,
-    "periodDivision": 10,
+    "periodDivision": 30,
     "initialAngularFrequency": 10,
     "angularFrequencyStep": 1,
     "finalAngularFrequency": 90

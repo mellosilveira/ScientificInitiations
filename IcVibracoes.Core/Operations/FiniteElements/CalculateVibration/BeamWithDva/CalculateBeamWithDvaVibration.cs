@@ -159,15 +159,15 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             return input;
         }
 
-        public override Task<string> CreatePath(string analysisType, double angularFrequency, uint numberOfElements, FiniteElementsResponse response)
+        public override Task<string> CreatePath(BeamWithDvaRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string folderPath = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithDva");
+                $"Solutions/FiniteElements/BeamWithDva/{request.BeamData.Profile}/nEl={request.BeamData.NumberOfElements}");
 
-            string fileName = $"{analysisType.Trim()}_w={Math.Round(angularFrequency, 2)}_nEl={numberOfElements}.csv";
+            string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.BeamData.NumberOfElements}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 

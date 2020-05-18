@@ -58,6 +58,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BeamWithPiezoelectric", "Be
 		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta - 48 elementos.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta - 48 elementos.json
 		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos na ponta.json
 		Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos no início.json = Request\FiniteElements\BeamWithPiezoelectric\Request extraido da tese sobre piezoeletrico com piezoelétricos no início.json
+		Request\FiniteElements\BeamWithPiezoelectric\Request para a teste - 4 elementos - piezoelétricos em cima e em baixo.json = Request\FiniteElements\BeamWithPiezoelectric\Request para a teste - 4 elementos - piezoelétricos em cima e em baixo.json
+		Request\FiniteElements\BeamWithPiezoelectric\Request para a teste - 4 elementos - piezoelétricos em cima.json = Request\FiniteElements\BeamWithPiezoelectric\Request para a teste - 4 elementos - piezoelétricos em cima.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RigidBody", "RigidBody", "{531B1A23-CCF5-4749-ACF7-44FC4A3A2F21}"

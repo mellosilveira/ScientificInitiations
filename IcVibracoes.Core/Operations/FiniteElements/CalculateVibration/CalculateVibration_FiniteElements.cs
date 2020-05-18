@@ -63,14 +63,13 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         public abstract Task<NewmarkMethodInput> CreateInput(TBeam beam, TRequest request, uint degreesOfFreedom);
 
         /// <summary>
-        /// Createsthe file path to write the results.
+        /// Creates the file path to write the results.
         /// </summary>
-        /// <param name="analysisType"></param>
-        /// <param name="angularFrequency"></param>
-        /// <param name="numberOfElements"></param>
+        /// <param name="request"></param>
+        /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public abstract Task<string> CreatePath(string analysisType, double angularFrequency, uint numberOfElements, FiniteElementsResponse response);
+        public abstract Task<string> CreatePath(TRequest request, NewmarkMethodInput input, FiniteElementsResponse response);
 
         protected override async Task<FiniteElementsResponse> ProcessOperation(TRequest request)
         {
@@ -88,7 +87,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
                 input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.BeamData.PeriodDivision).ConfigureAwait(false);
                 input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.BeamData.PeriodCount).ConfigureAwait(false);
 
-                string path = await this.CreatePath(request.AnalysisType, input.AngularFrequency, request.BeamData.NumberOfElements, response).ConfigureAwait(false);
+                string path = await this.CreatePath(request, input, response).ConfigureAwait(false);
 
                 var previousResult = new AnalysisResult
                 {
