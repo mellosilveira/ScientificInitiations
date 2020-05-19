@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## UNRELEASED
 ### Added
+- Calculation of the maximum value of the analysis.
 - A single way to calculate the final time.
 ### Fixed
 - Time step calculation for Runge Kutta Forth Order method.

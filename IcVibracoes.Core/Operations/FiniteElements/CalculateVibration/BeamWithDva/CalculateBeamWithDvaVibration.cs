@@ -160,15 +160,32 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
             return input;
         }
 
-        public override Task<string> CreatePath(BeamWithDvaRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
+        public override Task<string> CreateSolutionPath(BeamWithDvaRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string folderPath = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithDva/{request.BeamData.Profile}/nEl={request.BeamData.NumberOfElements}");
+                $"Solutions/FiniteElements/BeamWithDva/{request.BeamData.Profile.GetType().Name}/nEl={request.BeamData.NumberOfElements}");
 
             string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.BeamData.NumberOfElements}.csv";
+
+            string path = Path.Combine(folderPath, fileName);
+
+            Directory.CreateDirectory(folderPath);
+
+            return Task.FromResult(path);
+        }
+
+        public override Task<string> CreateMaxValuesPath(BeamWithDvaRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
+        {
+            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+
+            string folderPath = Path.Combine(
+                previousPath,
+                $"Solutions/FiniteElements/BeamWithDva/MaxValues");
+
+            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_{request.BeamData.Profile.GetType().Name}_NumberOfDvas={request.BeamData.Dvas.Count}_w0={Math.Round(request.BeamData.InitialAngularFrequency, 2)}_wf={Math.Round(request.BeamData.FinalAngularFrequency, 2)}_nEl={request.BeamData.NumberOfElements}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 
