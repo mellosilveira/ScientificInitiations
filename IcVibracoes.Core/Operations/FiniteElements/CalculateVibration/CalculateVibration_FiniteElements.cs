@@ -109,11 +109,10 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
                     else
                     {
                         //input.Force = input.OriginalForce.MultiplyEachElement(Math.Cos(input.AngularFrequency * time));
-                        
                         result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
-                    this._auxiliarOperation.WriteInFile(time, result.Displacement, path, degreesOfFreedom);
+                    this._auxiliarOperation.WriteInFile(time, result.Displacement, path);
 
                     previousResult = result;
 

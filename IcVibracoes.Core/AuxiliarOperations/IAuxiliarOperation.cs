@@ -29,7 +29,6 @@
         /// <param name="time"></param>
         /// <param name="values"></param>
         /// <param name="path"></param>
-        /// <param name="degreesOfFreedom"></param>
-        void WriteInFile(double time, double[] values, string path, uint degreesOfFreedom);
+        void WriteInFile(double time, double[] values, string path);
     }
 }

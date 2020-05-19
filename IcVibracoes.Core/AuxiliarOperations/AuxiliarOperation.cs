@@ -79,53 +79,20 @@ namespace IcVibracoes.Core.AuxiliarOperations
         /// <param name="time"></param>
         /// <param name="values"></param>
         /// <param name="path"></param>
-        /// <param name="degreesOfFreedom"></param>
-        public void WriteInFile(double time, double[] values, string path, uint degreesOfFreedom)
+        public void WriteInFile(double time, double[] values, string path)
         {
             int length = values.Length;
 
-            if (length == degreesOfFreedom)
+            using (StreamWriter streamWriter = new StreamWriter(path, true))
             {
-                using (StreamWriter streamWriter = new StreamWriter(path, true))
+                streamWriter.Write(string.Format("{0}; ", time));
+
+                for (int i = 0; i < length ; i++)
                 {
-                    streamWriter.Write(string.Format("{0}; ", time));
-
-                    for (int i = 0; i < length / 2; i++)
-                    {
-                        streamWriter.Write(string.Format("{0}; ", values[2 * i]));
-                    }
-
-                    for (int i = 0; i < length / 2; i++)
-                    {
-                        streamWriter.Write(string.Format("{0}; ", values[2 * i + 1]));
-                    }
-
-                    streamWriter.Write(streamWriter.NewLine);
+                    streamWriter.Write(string.Format("{0}; ", values[i]));
                 }
-            }
-            else if (length > degreesOfFreedom)
-            {
-                using (StreamWriter streamWriter = new StreamWriter(path, true))
-                {
-                    streamWriter.Write(string.Format("{0}; ", time));
 
-                    for (int i = 0; i < degreesOfFreedom / 2; i++)
-                    {
-                        streamWriter.Write(string.Format("{0}; ", values[2 * i]));
-                    }
-
-                    for (int i = 0; i < degreesOfFreedom / 2; i++)
-                    {
-                        streamWriter.Write(string.Format("{0}; ", values[2 * i + 1]));
-                    }
-
-                    for (uint i = degreesOfFreedom; i < length; i++)
-                    {
-                        streamWriter.Write(string.Format("{0}; ", values[i]));
-                    }
-
-                    streamWriter.Write(streamWriter.NewLine);
-                }
+                streamWriter.Write(streamWriter.NewLine);
             }
         }
     }

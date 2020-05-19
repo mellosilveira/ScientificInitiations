@@ -4,6 +4,7 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric;
+using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
