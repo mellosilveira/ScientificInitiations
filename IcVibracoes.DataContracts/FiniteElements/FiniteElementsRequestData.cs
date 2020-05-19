@@ -1,6 +1,8 @@
 ﻿using IcVibracoes.Common.Classes;
 using IcVibracoes.Common.Profiles;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace IcVibracoes.DataContracts.FiniteElements
 {
@@ -14,16 +16,21 @@ namespace IcVibracoes.DataContracts.FiniteElements
         /// <summary>
         /// Number of elements in the beam.
         /// </summary>
+        /// <example>1</example>
+        [DefaultValue(1)]
         public uint NumberOfElements { get; set; }
 
         /// <summary>
         /// Beam material.
         /// </summary>
+        /// <example>Steel 1020, Aluminum</example>
+        [MaxLength(20)]
         public string Material { get; set; }
 
         /// <summary>
         /// Beam length.
         /// </summary>
+        [Required]
         public double Length { get; set; }
 
         /// <summary>

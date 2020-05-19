@@ -9,6 +9,7 @@ using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -18,6 +19,15 @@ namespace IcVibracoes.Controllers
     [Route("api/v1/beam")]
     public class FiniteElementsController : ControllerBase
     {
+        /// <summary>
+        /// Creates a new course.
+        /// </summary>
+        /// <param name="request">>Body with data to create a new course</param>
+        /// <returns>A newly created TodoItem</returns>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("rectangular")]
         public async Task<ActionResult<FiniteElementsResponse>> CalculateVibration(
             [FromServices] ICalculateRectangularBeamVibration calculateVibration,

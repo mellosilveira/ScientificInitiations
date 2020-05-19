@@ -1,0 +1,361 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IcVibracoes.DataContracts</name>
+    </assembly>
+    <members>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1">
+            <summary>
+            It represents the request content of CalculateBeamWithDva operation.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequestData`1">
+            <summary>
+            It represents the 'data' content of BeamWithDva request.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequestData`1.Dvas">
+            <summary>
+            List of dynamic vibration absorber.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1">
+            <summary>
+            It represents the request content of CalculatePiezoelectric operations.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1">
+            <summary>
+            It represents the 'data' content of piezoelectric request.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricYoungModulus">
+            <summary>
+            Piezoelectric Young Modulus.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricConstant">
+            <summary>
+            Piezoelectric constant. Variable: d31.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.DielectricConstant">
+            <summary>
+            Dielectric constant. Variable: k33.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.DielectricPermissiveness">
+            <summary>
+            Dielectric permissiveness. Variable: e31.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.ElasticityConstant">
+            <summary>
+            Elasticity value for constant electric field. Variable: c11.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.ElectricalCharges">
+            <summary>
+            Electrical charges on piezoelectric surface.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricSpecificMass">
+            <summary>
+            Piezoelectric specific mass.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.ElementsWithPiezoelectric">
+            <summary>
+            Elements with piezoelectric.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricPosition">
+            <summary>
+            Piezoelectric position on the beam. Can be: up, down, up and down, around.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricProfile">
+            <summary>
+            Piezoelectric profile.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest`1">
+            <summary>
+            It represents the request content of CalculateBeam operations.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequestData`1">
+            <summary>
+            It represents the 'data' content of beam request operation.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`2">
+            <summary>
+            It represents the request content of Finite Elements operations.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+            <typeparam name="TRequestData"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`2.BeamData">
+            <summary>
+            Contains beam data.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1">
+            <summary>
+            It represents the 'data' content of Finite Elements request operation.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.NumberOfElements">
+            <summary>
+            Number of elements in the beam.
+            </summary>
+            <example>1</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Material">
+            <summary>
+            Beam material.
+            </summary>
+            <example>Steel 1020, Aluminum</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Length">
+            <summary>
+            Beam length.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Fastenings">
+            <summary>
+            The beam fastenings.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Forces">
+            <summary>
+            Applied forces in the beam.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Profile">
+            <summary>
+            Beam profile.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsResponse">
+            <summary>
+            It represents the response content of Finite Elements operations.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsResponseData">
+            <summary>
+            It contains the 'data' content of FiniteElement response operation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.Author">
+            <summary>
+            Who made the analysis.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.AnalysisType">
+            <summary>
+            The type of analysis. 
+            Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestData.ForceType">
+            <summary>
+            The force type.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestData.InitialTime">
+            <summary>
+            Initial time of analysis.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestData.PeriodCount">
+            <summary>
+            Number of periods.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestData.PeriodDivision">
+            <summary>
+            Divisions on period.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestData.InitialAngularFrequency">
+            <summary>
+            Initial angular frequency. Receive in Hz and convert to rad/s to the calculus.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestData.AngularFrequencyStep">
+            <summary>
+            Delta angular frequency. Receive in Hz and convert to rad/s to the calculus.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestData.FinalAngularFrequency">
+            <summary>
+            Final angular frequency. Receive in Hz and convert to rad/s to the calculus.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.OperationResponseData">
+            <summary>
+            It represents the 'data' content of all operation response.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseData.Author">
+            <summary>
+            Who made the analysis.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseData.AnalysisExplanation">
+            <summary>
+            A simple analysis explanation.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequest">
+            <summary>
+            It contains the request content of Rigid Body analysis with One Degree Freedom.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData">
+            <summary>
+            It contains the request 'data' content of Rigid Body analysis with One Degree Freedom.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData.MechanicalProperties">
+            <summary>
+            The mechanical properties of the object that will be analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData.InitialDisplacement">
+            <summary>
+            The initial displacement.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData.InitialVelocity">
+            <summary>
+            The initial velocity.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomResponse">
+            <summary>
+            It contains the response content of Rigid Body analysis with One Degree Freedom.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomResponseData">
+            <summary>
+            It contains the response 'data' content of Rigid Body analysis with One Degree Freedom.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest`1">
+            <summary>
+            It contains the request content to Rigid Body operation.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData">
+            <summary>
+            It represents the 'data' content of Rigid Body request operation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData.DampingRatioList">
+            <summary>
+            List of damping ratio of system.
+            For each value in the list, it is made a new analysis.
+            Damping ratio represents the relation between damping by critical damping.
+            If it is equals to zero, the vibration is harmonic.
+            If it is greather than zero and less than 1, the vibration is underdamped.
+            If it is equals to one, the vibration is critical damped.
+            If it is greather than 1, the vibration is overdamped.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData.Force">
+            <summary>
+            The force applied in the main object.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyResponse`1">
+            <summary>
+            It contains the response content of Rigid Body operation.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyResponseData">
+            <summary>
+            It contains the 'data' content of RigidBody response operation.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequest">
+            <summary>
+            It contains the request content of Rigid Body analysis with Two Degree Freedom.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData">
+            <summary>
+            It contains the request 'data' content of Rigid Body analysis with Two Degree Freedom.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.MainObjectMechanicalProperties">
+            <summary>
+            The mechanical properties of the main object that will be analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.SecondaryObjectMechanicalProperties">
+            <summary>
+            The mechanical properties of the secondary object that will be analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.PrimaryInitialDisplacement">
+            <summary>
+            The initial displacement for primary object.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.PrimaryInitialVelocity">
+            <summary>
+            The initial velocity for primary object.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.SecondaryInitialDisplacement">
+            <summary>
+            The initial displacement for secondary object.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.SecondaryInitialVelocity">
+            <summary>
+            The initial velocity for secondary object.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData">
+            <summary>
+            It contains the response 'data' content of Rigid Body analysis with Two Degree Freedom.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.Time">
+            <summary>
+            The time corresponding for each value in that class.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.PrimaryDisplacement">
+            <summary>
+            Displacement of the primary object analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.PrimaryVelocity">
+            <summary>
+            Velocity of the primary object analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.SecondaryDisplacement">
+            <summary>
+            Displacement of the secondary object analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.SecondaryVelocity">
+            <summary>
+            Velocity of the secondary object analyzed.
+            </summary>
+        </member>
+    </members>
+</doc>

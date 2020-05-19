@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IcVibracoes</name>
+    </assembly>
+    <members>
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular.ICalculateRectangularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+            <summary>
+            Creates a new course.
+            </summary>
+            <param name="request">>Body with data to create a new course</param>
+            <returns>A newly created TodoItem</returns>
+            <response code="201">Returns the newly created item</response>
+            <response code="400">If the item is null</response>
+        </member>
+        <member name="M:IcVibracoes.Extensions.ServiceCollectionExtensions.AddSwaggerDocs(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method configures the documentation file for Swagger User Interface.
+            </summary>
+        </member>
+    </members>
+</doc>

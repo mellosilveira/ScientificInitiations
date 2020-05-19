@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
 using System.Reflection;
 
 namespace IcVibracoes.Extensions
@@ -23,6 +25,11 @@ namespace IcVibracoes.Extensions
                     //Description = assemblyDescription,
                     Version = "v1"
                 });
+
+                var xmlApiPath = Path.Combine(AppContext.BaseDirectory, "IcVibracoes.xml");
+                var xmlDataContractPath = Path.Combine(AppContext.BaseDirectory, "IcVibracoes.DataContracts.xml");
+                options.IncludeXmlComments(xmlApiPath);
+                options.IncludeXmlComments(xmlDataContractPath);
             });
 
             return services;

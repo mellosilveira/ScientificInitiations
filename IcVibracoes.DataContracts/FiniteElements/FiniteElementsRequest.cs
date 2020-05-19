@@ -12,6 +12,9 @@ namespace IcVibracoes.DataContracts.FiniteElements
         where TProfile : Profile, new()
         where TRequestData : FiniteElementsRequestData<TProfile>
     {
+        /// <summary>
+        /// Contains beam data.
+        /// </summary>
         public TRequestData BeamData { get; set; }
     }
 }
