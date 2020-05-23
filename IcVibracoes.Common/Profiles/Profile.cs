@@ -10,11 +10,13 @@ namespace IcVibracoes.Common.Profiles
         /// <summary>
         /// Profile area.
         /// </summary>
+        /// <example>1e-4</example>
         public double? Area { get; set; }
 
         /// <summary>
         /// Profile moment of inertia.
         /// </summary>
+        /// <example>8.33e-10</example>
         public double? MomentOfInertia { get; set; }
     }
 }

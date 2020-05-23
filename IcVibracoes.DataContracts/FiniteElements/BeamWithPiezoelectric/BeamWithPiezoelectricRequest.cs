@@ -9,6 +9,9 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric
     public class BeamWithPiezoelectricRequest<TProfile> : FiniteElementsRequest<TProfile, PiezoelectricRequestData<TProfile>>
         where TProfile : Profile, new()
     {
+        /// <summary>
+        /// The analysis type. 
+        /// </summary>
         public override string AnalysisType 
         {
             get

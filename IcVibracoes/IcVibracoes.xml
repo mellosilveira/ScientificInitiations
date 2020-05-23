@@ -4,19 +4,175 @@
         <name>IcVibracoes</name>
     </assembly>
     <members>
+        <member name="T:IcVibracoes.Controllers.FiniteElementsController">
+            <summary>
+            This controller executes analysis using finite elements concepts.
+            The object is divided in elements and the mechanical properties are matricially calculated.
+            </summary>
+        </member>
         <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular.ICalculateRectangularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
             <summary>
-            Creates a new course.
+            Calculates the vibration to a rectangular profile beam.
             </summary>
-            <param name="request">>Body with data to create a new course</param>
-            <returns>A newly created TodoItem</returns>
-            <response code="201">Returns the newly created item</response>
-            <response code="400">If the item is null</response>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Rectangular.ICalculateRectangularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+            <summary>
+            Calculates the vibration to a rectangular profile beam with dynamic vibration absorbers.
+            </summary>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular.ICalculateRectangularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+            <summary>
+            Calculates the vibration to a rectangular profile beam with piezoelectrics.
+            </summary>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Circular.ICalculateCircularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+            <summary>
+            Calculates the vibration to a circular profile beam.
+            </summary>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular.ICalculateCircularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+            <summary>
+            Calculates the vibration to a circular profile beam with dynamic vibration absorbers.
+            </summary>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Circular.ICalculateCircularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+            <summary>
+            Calculates the vibration to a circular profile beam with piezoelectrics.
+            </summary>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="T:IcVibracoes.Controllers.RigidBodyController">
+            <summary>
+            This controller execute analysis using rigid body concepts.
+            The object is considered as a unique body, using the absolut value to mass, stiffness and others mechanical properties.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom.ICalculateVibrationToOneDegreeFreedom,IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequest)">
+            <summary>
+            Calculates the vibration of system with one degree of freedom.
+            </summary>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom.ICalculateVibrationToTwoDegreesFreedom,IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequest)">
+            <summary>
+            Calculates the vibration of system with two degrees of freedom.
+            </summary>
+            <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
+            <param name="request">The request content for this operation.</param>
+            <returns>A file with analysis result.</returns>
+            <response code="201">Returns the newly created file.</response>
+            <response code="400">If some validation do not passed.</response>
+            <response code="501">If some resource is not implemented.</response>
+        </member>
+        <member name="T:IcVibracoes.Extensions.ApplicationBuilderExtensions">
+            <summary>
+            It contains the extensions to the class ApplicationBuilder.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.Extensions.ApplicationBuilderExtensions.UseSwaggerDocs(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds Swagger documentations to ApplicationBuilder.
+            </summary>
+            <param name="app"></param>
+            <returns>The Swagger documentations.</returns>
+        </member>
+        <member name="T:IcVibracoes.Extensions.ServiceCollectionExtensions">
+            <summary>
+            It contains the extensions to the class ServiceCollection.
+            </summary>
         </member>
         <member name="M:IcVibracoes.Extensions.ServiceCollectionExtensions.AddSwaggerDocs(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             This method configures the documentation file for Swagger User Interface.
             </summary>
+        </member>
+        <member name="T:IcVibracoes.Program">
+            <summary>
+            Main application class.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.Program.Main(System.String[])">
+            <summary>
+            The main method of application.
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:IcVibracoes.Program.CreateHostBuilder(System.String[])">
+            <summary>
+            The main method of application to create host builder.
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:IcVibracoes.Startup">
+            <summary>
+            The application startup.
+            It configures the dependecy injection and adds all necessary configuration.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Class constructor.
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="P:IcVibracoes.Startup.Configuration">
+            <summary>
+            The configuration used in application.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:IcVibracoes.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Configures the application dependecies and web hosting environment.
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
         </member>
     </members>
 </doc>

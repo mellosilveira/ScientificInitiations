@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace IcVibracoes.Extensions
 {
+    /// <summary>
+    /// It contains the extensions to the class ServiceCollection.
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
         /// <summary>

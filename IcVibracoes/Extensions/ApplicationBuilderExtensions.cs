@@ -3,8 +3,16 @@ using System.Reflection;
 
 namespace IcVibracoes.Extensions
 {
+    /// <summary>
+    /// It contains the extensions to the class ApplicationBuilder.
+    /// </summary>
     public static class ApplicationBuilderExtensions
     {
+        /// <summary>
+        /// Adds Swagger documentations to ApplicationBuilder.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <returns>The Swagger documentations.</returns>
         public static IApplicationBuilder UseSwaggerDocs(this IApplicationBuilder app)
         {
             string assemblyTitle = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>().Title;

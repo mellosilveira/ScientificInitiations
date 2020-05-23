@@ -13,7 +13,7 @@ namespace IcVibracoes.DataContracts.FiniteElements
         where TRequestData : FiniteElementsRequestData<TProfile>
     {
         /// <summary>
-        /// Contains beam data.
+        /// It represents the 'data' content of Finite Elements request operation.
         /// </summary>
         public TRequestData BeamData { get; set; }
     }

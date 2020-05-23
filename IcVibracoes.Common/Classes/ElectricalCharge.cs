@@ -8,11 +8,13 @@
         /// <summary>
         /// Electrical charge value.
         /// </summary>
+        /// <example></example>
         public double Value { get; set; }
 
         /// <summary>
         /// Electrical charge node position.
         /// </summary>
+        /// <example>0</example>
         public uint NodePosition { get; set; }
     }
 }

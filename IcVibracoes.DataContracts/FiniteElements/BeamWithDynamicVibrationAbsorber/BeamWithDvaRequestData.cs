@@ -2,6 +2,7 @@
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber
 {
@@ -15,6 +16,7 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsor
         /// <summary>
         /// List of dynamic vibration absorber.
         /// </summary>
+        [Required]
         public List<DynamicVibrationAbsorber> Dvas { get; set; }
     }
 }

@@ -5,6 +5,9 @@
     /// </summary>
     public class TwoDegreesFreedomRequest : RigidBodyRequest<TwoDegreesFreedomRequestData> 
     {
+        /// <summary>
+        /// The analysis type. 
+        /// </summary>
         public override string AnalysisType 
         {
             get

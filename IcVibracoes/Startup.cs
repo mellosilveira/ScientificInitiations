@@ -39,16 +39,30 @@ using Microsoft.OpenApi.Models;
 
 namespace IcVibracoes
 {
+    /// <summary>
+    /// The application startup.
+    /// It configures the dependecy injection and adds all necessary configuration.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// The configuration used in application.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             // Auxiliar Operations
@@ -123,6 +137,11 @@ namespace IcVibracoes
             services.AddSwaggerDocs();
         }
 
+        /// <summary>
+        /// Configures the application dependecies and web hosting environment.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

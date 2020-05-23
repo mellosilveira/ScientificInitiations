@@ -16,36 +16,42 @@ namespace IcVibracoes.DataContracts.FiniteElements
         /// <summary>
         /// Number of elements in the beam.
         /// </summary>
-        /// <example>1</example>
-        [DefaultValue(1)]
+        /// <example>2</example>
+        [Required]
         public uint NumberOfElements { get; set; }
 
         /// <summary>
         /// Beam material.
         /// </summary>
-        /// <example>Steel 1020, Aluminum</example>
-        [MaxLength(20)]
+        /// <example>Steel 1020</example>
+        [Required]
         public string Material { get; set; }
 
         /// <summary>
         /// Beam length.
+        /// Unit: m (meter)
         /// </summary>
+        /// <example>0.5</example>
         [Required]
         public double Length { get; set; }
 
         /// <summary>
         /// The beam fastenings.
         /// </summary>
+        [Required]
         public List<Fastening> Fastenings { get; set; }
 
         /// <summary>
         /// Applied forces in the beam.
         /// </summary>
+        [Required]
         public List<Force> Forces { get; set; }
 
         /// <summary>
         /// Beam profile.
         /// </summary>
+        /// <example>RectangularProfile</example>
+        [Required]
         public TProfile Profile { get; set; }
     }
 }
