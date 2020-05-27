@@ -122,8 +122,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
 
                     if (time == input.InitialTime)
                     {
-                        //result = await this._numericalMethod.CalculateResultForInitialTime(input).ConfigureAwait(false);
-                        result = previousResult;
+                        result = await this._numericalMethod.CalculateResultForInitialTime(input, previousResult).ConfigureAwait(false);
                     }
                     else
                     {

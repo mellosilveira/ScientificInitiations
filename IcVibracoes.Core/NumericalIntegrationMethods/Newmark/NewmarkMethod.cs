@@ -33,6 +33,24 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             this._arrayOperation = arrayOperation;
         }
 
+        /// <summary>
+        /// Calculates the result for the initial time.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="previousResult"></param>
+        /// <returns></returns>
+        public Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input, AnalysisResult previousResult)
+        {
+            return Task.FromResult(previousResult);
+        }
+
+        /// <summary>
+        /// Calculates and write in a file the response matrixes.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="previousResult"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
         public async Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult, double time)
         {
             AnalysisResult result = new AnalysisResult

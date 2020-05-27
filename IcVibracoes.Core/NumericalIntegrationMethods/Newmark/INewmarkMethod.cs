@@ -10,6 +10,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
     public interface INewmarkMethod
     {
         /// <summary>
+        /// Calculates the result for the initial time.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="previousResult"></param>
+        /// <returns></returns>
+        Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input, AnalysisResult previousResult);
+
+        /// <summary>
         /// Calculates and write in a file the response matrixes.
         /// </summary>
         /// <param name="input"></param>
