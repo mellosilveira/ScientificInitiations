@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Calculation of the maximum value of the analysis.
 - A single way to calculate the final time.
+- Summaries in Swagger.
+- Solutions for analysis of beam and beam with piezoelectric with 4 elements to be used in poster.
 ### Fixed
 - Time step calculation for Runge Kutta Forth Order method.
 - Separated linear displacement, angular displacement and additional values when write in file.
