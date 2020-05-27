@@ -131,7 +131,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
                         result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
-                    //this._auxiliarOperation.WriteInFile(time, result.Displacement, solutionPath);
+                    this._auxiliarOperation.WriteInFile(time, result.Displacement, solutionPath);
 
                     previousResult = result;
                     maxValuesResult = await this.CompareValues(result, maxValuesResult, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);

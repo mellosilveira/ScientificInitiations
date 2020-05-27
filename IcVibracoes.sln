@@ -43,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Beam", "Beam", "{924A799F-B
 		Request\FiniteElements\Beam\Motor Baja 30Hz - 67 nós.json = Request\FiniteElements\Beam\Motor Baja 30Hz - 67 nós.json
 		Request\FiniteElements\Beam\Motor Baja.json = Request\FiniteElements\Beam\Motor Baja.json
 		Request\FiniteElements\Beam\Request extraido da tese sobre piezoelétrico - sem piezoelétrico.json = Request\FiniteElements\Beam\Request extraido da tese sobre piezoelétrico - sem piezoelétrico.json
+		Request\FiniteElements\Beam\Request para a teste - 4 elementos.json = Request\FiniteElements\Beam\Request para a teste - 4 elementos.json
 		Request\FiniteElements\Beam\Viga retangular engastada sem piezoeletrico.json = Request\FiniteElements\Beam\Viga retangular engastada sem piezoeletrico.json
 	EndProjectSection
 EndProject
