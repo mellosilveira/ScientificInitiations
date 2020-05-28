@@ -10,21 +10,21 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.Rigi
     /// </summary>
     public class RungeKuttaForthOrderMethod_1DF : RungeKuttaForthOrderMethod<OneDegreeFreedomRequest, OneDegreeFreedomRequestData, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>, IRungeKuttaForthOrderMethod_1DF
     {
-        private readonly IDifferentialEquationOfMotion _calculate;
+        private readonly IDifferentialEquationOfMotion _differentialEquationOfMotion;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="calculate"></param>
+        /// <param name="differentialEquationOfMotion"></param>
         public RungeKuttaForthOrderMethod_1DF(
-            IDifferentialEquationOfMotion calculate)
+            IDifferentialEquationOfMotion differentialEquationOfMotion)
         {
-            this._calculate = calculate;
+            this._differentialEquationOfMotion = differentialEquationOfMotion;
         }
 
         public override async Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y)
         {
-            return await this._calculate.ExecuteForOneDegreeOfFreedom(input, time, y).ConfigureAwait(false);
+            return await this._differentialEquationOfMotion.CalculateForOneDegreeOfFreedom(input, time, y).ConfigureAwait(false);
         }
     }
 }

@@ -23,6 +23,9 @@ namespace IcVibracoes.Core.Calculator.Eigenvalue
 
         /// <summary>
         /// Calculates the eigenvalues of a matrix using QR Decomposition.
+        /// Logic used:
+        ///     https://sites.icmc.usp.br/andretta/ensino/aulas/sme0301-1-10/AutovaloresFrancis.pdf
+        ///     https://pt.wikipedia.org/wiki/Decomposi%C3%A7%C3%A3o_QR
         /// </summary>
         /// <param name="matrix"></param>
         /// <param name="tolerance"></param>
