@@ -2,7 +2,7 @@
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a beam with dynamic vibration absorber.

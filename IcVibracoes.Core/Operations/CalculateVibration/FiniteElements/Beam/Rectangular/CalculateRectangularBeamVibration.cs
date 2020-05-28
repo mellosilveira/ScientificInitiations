@@ -2,18 +2,18 @@
 using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
-using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Rectangular;
+using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Rectangular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Rectangular
 {
     /// <summary>
-    /// It's responsible to calculate the vibration in a rectangular beam with dynamic vibration absorber.
+    /// It's responsible to calculate the vibration in a rectangular beam.
     /// </summary>
-    public class CalculateRectangularBeamWithDvaVibration : CalculateBeamWithDvaVibration<RectangularProfile>, ICalculateRectangularBeamWithDvaVibration
+    public class CalculateRectangularBeamVibration : CalculateBeamVibration<RectangularProfile>, ICalculateRectangularBeamVibration
     {
         /// <summary>
         /// Class constructor.
@@ -26,17 +26,16 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
-        public CalculateRectangularBeamWithDvaVibration(
-            INewmarkMethod newmarkMethod, 
-            IRectangularProfileValidator profileValidator, 
+        public CalculateRectangularBeamVibration(
+            INewmarkMethod newmarkMethod,
+            IRectangularProfileValidator profileValidator,
             IAuxiliarOperation auxiliarOperation,
-            ITime time, 
+            ITime time,
             IArrayOperation arrayOperation,
-            IRectangularGeometricProperty geometricProperty, 
+            IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            IRectangularBeamWithDvaMainMatrix mainMatrix) 
+            IRectangularBeamMainMatrix mainMatrix)
             : base(newmarkMethod, profileValidator, auxiliarOperation, time, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
-        {
-        }
+        { }
     }
 }

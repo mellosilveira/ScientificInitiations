@@ -8,7 +8,7 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Circular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Circular
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a circular beam.

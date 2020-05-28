@@ -2,18 +2,18 @@
 using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
-using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
+using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Rectangular
 {
     /// <summary>
-    /// It's responsible to calculate the vibration in a rectangular beam.
+    /// It's responsible to calculate the vibration in a beam with piezoelectric.
     /// </summary>
-    public class CalculateRectangularBeamVibration : CalculateBeamVibration<RectangularProfile>, ICalculateRectangularBeamVibration
+    public class CalculateRectangularBeamWithPiezoelectricVibration : CalculateBeamWithPiezoelectricVibration<RectangularProfile>, ICalculateRectangularBeamWithPiezoelectricVibration
     {
         /// <summary>
         /// Class constructor.
@@ -26,7 +26,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rec
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
-        public CalculateRectangularBeamVibration(
+        public CalculateRectangularBeamWithPiezoelectricVibration(
             INewmarkMethod newmarkMethod,
             IRectangularProfileValidator profileValidator,
             IAuxiliarOperation auxiliarOperation,
@@ -34,7 +34,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rec
             IArrayOperation arrayOperation,
             IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            IRectangularBeamMainMatrix mainMatrix)
+            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix)
             : base(newmarkMethod, profileValidator, auxiliarOperation, time, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
         { }
     }

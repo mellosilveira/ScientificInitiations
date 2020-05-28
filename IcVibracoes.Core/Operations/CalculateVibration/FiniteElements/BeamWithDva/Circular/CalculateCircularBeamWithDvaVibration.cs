@@ -1,19 +1,19 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
-using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
+using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.Core.Validators.Profiles.Rectangular;
+using IcVibracoes.Core.Validators.Profiles.Circular;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Circular
 {
     /// <summary>
-    /// It's responsible to calculate the vibration in a beam with piezoelectric.
+    /// It's responsible to calculate the vibration in a circular beam with dynamic vibration absorber.
     /// </summary>
-    public class CalculateRectangularBeamWithPiezoelectricVibration : CalculateBeamWithPiezoelectricVibration<RectangularProfile>, ICalculateRectangularBeamWithPiezoelectricVibration
+    public class CalculateCircularBeamWithDvaVibration : CalculateBeamWithDvaVibration<CircularProfile>, ICalculateCircularBeamWithDvaVibration
     {
         /// <summary>
         /// Class constructor.
@@ -26,16 +26,17 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
-        public CalculateRectangularBeamWithPiezoelectricVibration(
+        public CalculateCircularBeamWithDvaVibration(
             INewmarkMethod newmarkMethod,
-            IRectangularProfileValidator profileValidator,
+            ICircularProfileValidator profileValidator,
             IAuxiliarOperation auxiliarOperation,
             ITime time,
             IArrayOperation arrayOperation,
-            IRectangularGeometricProperty geometricProperty,
+            ICircularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix)
+            ICircularBeamWithDvaMainMatrix mainMatrix)
             : base(newmarkMethod, profileValidator, auxiliarOperation, time, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
-        { }
+        {
+        }
     }
 }

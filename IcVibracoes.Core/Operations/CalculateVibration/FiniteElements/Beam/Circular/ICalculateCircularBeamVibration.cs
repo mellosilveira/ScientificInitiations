@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Circular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Circular
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a circular beam.

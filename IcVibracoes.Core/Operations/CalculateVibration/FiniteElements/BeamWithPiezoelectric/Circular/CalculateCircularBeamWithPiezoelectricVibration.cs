@@ -2,18 +2,18 @@
 using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
-using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
+using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Circular
 {
     /// <summary>
-    /// It's responsible to calculate the vibration in a circular beam with dynamic vibration absorber.
+    /// It's responsible to calculate the vibration in a circular beam with piezoelectric.
     /// </summary>
-    public class CalculateCircularBeamWithDvaVibration : CalculateBeamWithDvaVibration<CircularProfile>, ICalculateCircularBeamWithDvaVibration
+    public class CalculateCircularBeamWithPiezoelectricVibration : CalculateBeamWithPiezoelectricVibration<CircularProfile>, ICalculateCircularBeamWithPiezoelectricVibration
     {
         /// <summary>
         /// Class constructor.
@@ -26,17 +26,16 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWith
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
-        public CalculateCircularBeamWithDvaVibration(
+        public CalculateCircularBeamWithPiezoelectricVibration(
             INewmarkMethod newmarkMethod,
-            ICircularProfileValidator profileValidator, 
+            ICircularProfileValidator profileValidator,
             IAuxiliarOperation auxiliarOperation,
-            ITime time, 
+            ITime time,
             IArrayOperation arrayOperation,
-            ICircularGeometricProperty geometricProperty, 
-            IMappingResolver mappingResolver, 
-            ICircularBeamWithDvaMainMatrix mainMatrix) 
+            ICircularGeometricProperty geometricProperty,
+            IMappingResolver mappingResolver,
+            ICircularBeamWithPiezoelectricMainMatrix mainMatrix)
             : base(newmarkMethod, profileValidator, auxiliarOperation, time, arrayOperation, geometricProperty, mappingResolver, mainMatrix)
-        {
-        }
+        { }
     }
 }

@@ -2,7 +2,7 @@
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a beam.

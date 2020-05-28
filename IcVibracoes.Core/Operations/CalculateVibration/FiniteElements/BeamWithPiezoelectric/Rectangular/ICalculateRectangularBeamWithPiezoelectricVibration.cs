@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Rectangular
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a beam with piezoelectric.

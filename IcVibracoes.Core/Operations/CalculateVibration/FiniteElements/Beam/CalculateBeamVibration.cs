@@ -4,7 +4,6 @@ using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models.BeamCharacteristics;
@@ -17,7 +16,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a beam.
@@ -54,11 +53,11 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
             IBeamMainMatrix<TProfile> mainMatrix)
             : base(newmarkMethod, profileValidator, auxiliarOperation, time)
         {
-            this._auxiliarOperation = auxiliarOperation;
-            this._arrayOperation = arrayOperation;
-            this._geometricProperty = geometricProperty;
-            this._mappingResolver = mappingResolver;
-            this._mainMatrix = mainMatrix;
+            _auxiliarOperation = auxiliarOperation;
+            _arrayOperation = arrayOperation;
+            _geometricProperty = geometricProperty;
+            _mappingResolver = mappingResolver;
+            _mainMatrix = mainMatrix;
         }
 
         public async override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom)
@@ -72,19 +71,19 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
 
             if (request.Data.Profile.Area != default && request.Data.Profile.MomentOfInertia != default)
             {
-                geometricProperty.Area = await this._arrayOperation.CreateVector(request.Data.Profile.Area.Value, request.Data.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Data.Profile.MomentOfInertia.Value, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await _arrayOperation.CreateVector(request.Data.Profile.Area.Value, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await _arrayOperation.CreateVector(request.Data.Profile.MomentOfInertia.Value, request.Data.NumberOfElements).ConfigureAwait(false);
             }
             else
             {
-                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await _geometricProperty.CalculateArea(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await _geometricProperty.CalculateMomentOfInertia(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
             }
 
             return new Beam<TProfile>()
             {
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Data.Fastenings).ConfigureAwait(false),
-                Forces = await this._mappingResolver.BuildForceVector(request.Data.Forces, degreesOfFreedom).ConfigureAwait(false),
+                Fastenings = await _mappingResolver.BuildFastenings(request.Data.Fastenings).ConfigureAwait(false),
+                Forces = await _mappingResolver.BuildForceVector(request.Data.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Data.Length,
                 Material = MaterialFactory.Create(request.Data.Material),
@@ -95,7 +94,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
 
         public override async Task<NewmarkMethodInput> CreateInput(Beam<TProfile> beam, BeamRequest<TProfile> request, uint degreesOfFreedom)
         {
-            bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom).ConfigureAwait(false);
+            bool[] bondaryCondition = await _mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom).ConfigureAwait(false);
             uint numberOfTrueBoundaryConditions = 0;
 
             for (int i = 0; i < degreesOfFreedom; i++)
@@ -107,24 +106,24 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
             }
 
             // Main matrixes to create input.
-            double[,] mass = await this._mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] mass = await _mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] stiffness = await this._mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] stiffness = await _mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
+            double[,] damping = await _mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
 
             double[] forces = beam.Forces;
 
             // Creating input.
             NewmarkMethodInput input = new NewmarkMethodInput
             {
-                Mass = this._auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
+                Mass = _auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Stiffness = this._auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
+                Stiffness = _auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Damping = this._auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
+                Damping = _auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
+                OriginalForce = _auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 
