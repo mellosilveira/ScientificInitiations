@@ -39,7 +39,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="input"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input, AnalysisResult previousResult)
+        public Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input, FiniteElementResult previousResult)
         {
             return Task.FromResult(previousResult);
         }
@@ -51,9 +51,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousResult"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public async Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult, double time)
+        public async Task<FiniteElementResult> CalculateResult(NewmarkMethodInput input, FiniteElementResult previousResult, double time)
         {
-            AnalysisResult result = new AnalysisResult
+            FiniteElementResult result = new FiniteElementResult
             {
                 Displacement = new double[input.NumberOfTrueBoundaryConditions],
                 Velocity = new double[input.NumberOfTrueBoundaryConditions],

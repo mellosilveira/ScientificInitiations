@@ -28,7 +28,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input)
+        public async Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input)
         {
             // [accel] = ([M]^(-1))*([F] - [K]*[displacement] - [C]*[velocity])
             // In initial time, displacement and velocity are zero, so, accel could be calculated by:
@@ -36,7 +36,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
 
             double[,] inversedMass = await this._arrayOperation.InverseMatrix(input.Mass, nameof(input.Mass)).ConfigureAwait(false);
 
-            return new AnalysisResult
+            return new FiniteElementResult
             {
                 Displacement = new double[input.NumberOfTrueBoundaryConditions],
                 Velocity = new double[input.NumberOfTrueBoundaryConditions],
@@ -51,7 +51,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// <param name="input"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public async Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult)
+        public async Task<FiniteElementResult> CalculateResult(NewmarkMethodInput input, FiniteElementResult previousResult)
         {
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
@@ -69,7 +69,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
                 deltaAcceleration[i] = 1 / (input.Beta * Math.Pow(input.TimeStep, 2)) * deltaDisplacement[i] - 1 / (input.Beta * input.TimeStep) * previousResult.Velocity[i] - 1 / (2 * input.Beta) * previousResult.Acceleration[i];
             }
 
-            return new AnalysisResult
+            return new FiniteElementResult
             {
                 Displacement = await this._arrayOperation.Sum(previousResult.Displacement, deltaDisplacement).ConfigureAwait(false),
                 Velocity = await this._arrayOperation.Sum(previousResult.Velocity, deltaVelocity).ConfigureAwait(false),
@@ -132,7 +132,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             return Task.FromResult(equivalentMass);
         }
 
-        private async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, AnalysisResult previousResult)
+        private async Task<double[]> CalculateEquivalentForce(NewmarkMethodInput input, FiniteElementResult previousResult)
         {
             double[,] equivalentDamping = await this.CalculateEquivalentDamping(input).ConfigureAwait(false);
             double[,] equivalentMass = await this.CalculateEquivalentMass(input).ConfigureAwait(false);

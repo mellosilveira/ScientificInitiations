@@ -127,11 +127,6 @@
             <typeparam name="TProfile"></typeparam>
             <typeparam name="TRequestData"></typeparam>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`2.BeamData">
-            <summary>
-            It represents the 'data' content of Finite Elements request operation.
-            </summary>
-        </member>
         <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1">
             <summary>
             It represents the 'data' content of Finite Elements request operation.
@@ -183,21 +178,26 @@
             It contains the 'data' content of FiniteElement response operation.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.OperationRequestBase">
+        <member name="T:IcVibracoes.DataContracts.OperationRequestBase`1">
             <summary>
             It represents the essencial request content to operations.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.Author">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.Author">
             <summary>
-            Who made the analysis.
+            Who is doing the analysis.
             </summary>
             <example>Bruno Silveira</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.AnalysisType">
             <summary>
             The analysis type. 
             Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.Data">
+            <summary>
+            The main 'data' content of request.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.OperationRequestData">
@@ -313,11 +313,6 @@
         <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest`1">
             <summary>
             It contains the request content to Rigid Body operation.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest`1.Data">
-            <summary>
-            It represents the 'data' content of Rigid Body request operation.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData">

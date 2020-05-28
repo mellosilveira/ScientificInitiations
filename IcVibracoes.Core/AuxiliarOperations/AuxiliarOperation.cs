@@ -79,7 +79,7 @@ namespace IcVibracoes.Core.AuxiliarOperations
         /// <param name="time"></param>
         /// <param name="values"></param>
         /// <param name="path"></param>
-        public void WriteInFile(double time, double[] values, string path)
+        public void Write(double time, double[] values, string path)
         {
             int length = values.Length;
 

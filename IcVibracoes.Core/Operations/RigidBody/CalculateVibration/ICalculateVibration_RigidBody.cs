@@ -11,7 +11,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
     /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
-    public interface ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> : IOperationBase<TRequest, TResponse, TResponseData>
+    public interface ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> : IOperationBase<TRequest, TRequestData, TResponse, TResponseData>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
         where TResponseData : RigidBodyResponseData, new()

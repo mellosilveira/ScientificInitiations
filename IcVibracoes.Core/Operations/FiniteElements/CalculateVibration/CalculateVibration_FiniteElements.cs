@@ -20,7 +20,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
     /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
-    public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam> : OperationBase<TRequest, FiniteElementsResponse, FiniteElementsResponseData>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam>
+    public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam> : OperationBase<TRequest, TRequestData, FiniteElementsResponse, FiniteElementsResponseData>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam>
         where TRequestData : FiniteElementsRequestData<TProfile>, new()
         where TRequest : FiniteElementsRequest<TProfile, TRequestData>
         where TProfile : Profile, new()
@@ -85,7 +85,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         {
             var response = new FiniteElementsResponse();
 
-            uint degreesOfFreedom = await this.CalculateDegreesFreedomMaximum(request.BeamData.NumberOfElements).ConfigureAwait(false);
+            uint degreesOfFreedom = await this.CalculateDegreesFreedomMaximum(request.Data.NumberOfElements).ConfigureAwait(false);
 
             TBeam beam = await this.BuildBeam(request, degreesOfFreedom).ConfigureAwait(false);
 
@@ -94,13 +94,13 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
                 double time = input.InitialTime;
-                input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.BeamData.PeriodDivision).ConfigureAwait(false);
-                input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.BeamData.PeriodCount).ConfigureAwait(false);
+                input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
+                input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
 
                 string solutionPath = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
                 string maxvaluesPath = await this.CreateMaxValuesPath(request, input, response).ConfigureAwait(false);
 
-                var previousResult = new AnalysisResult
+                var previousResult = new FiniteElementResult
                 {
                     Displacement = new double[input.NumberOfTrueBoundaryConditions],
                     Velocity = new double[input.NumberOfTrueBoundaryConditions],
@@ -108,7 +108,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
                     Force = input.OriginalForce
                 };
 
-                var maxValuesResult = new AnalysisResult
+                var maxValuesResult = new FiniteElementResult
                 {
                     Displacement = new double[input.NumberOfTrueBoundaryConditions],
                     Velocity = new double[input.NumberOfTrueBoundaryConditions],
@@ -118,7 +118,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
 
                 while (time <= input.FinalTime)
                 {
-                    AnalysisResult result;
+                    FiniteElementResult result;
 
                     if (time == input.InitialTime)
                     {
@@ -130,7 +130,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
                         result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
-                    this._auxiliarOperation.WriteInFile(time, result.Displacement, solutionPath);
+                    this._auxiliarOperation.Write(time, result.Displacement, solutionPath);
 
                     previousResult = result;
                     maxValuesResult = await this.CompareValues(result, maxValuesResult, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
@@ -138,7 +138,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
                     time += input.TimeStep;
                 }
 
-                this._auxiliarOperation.WriteInFile(input.AngularFrequency, maxValuesResult.Displacement, maxvaluesPath);
+                this._auxiliarOperation.Write(input.AngularFrequency, maxValuesResult.Displacement, maxvaluesPath);
 
                 input.AngularFrequency += input.AngularFrequencyStep;
             }
@@ -163,7 +163,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         /// <param name="maxValuesResult"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        private Task<AnalysisResult> CompareValues(AnalysisResult result, AnalysisResult maxValuesResult, uint length)
+        private Task<FiniteElementResult> CompareValues(FiniteElementResult result, FiniteElementResult maxValuesResult, uint length)
         {
             for (uint i = 0; i < length; i++)
             {
@@ -200,7 +200,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         {
             FiniteElementsResponse response = new FiniteElementsResponse();
 
-            bool isProfileValid = await this._profileValidator.Execute(request.BeamData.Profile, response).ConfigureAwait(false);
+            bool isProfileValid = await this._profileValidator.Execute(request.Data.Profile, response).ConfigureAwait(false);
 
             //bool isBeamDataValid;
 

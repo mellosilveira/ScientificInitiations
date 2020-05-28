@@ -15,7 +15,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
     /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
-    public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> : OperationBase<TRequest, TResponse, TResponseData>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData>
+    public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> : OperationBase<TRequest, TRequestData, TResponse, TResponseData>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
         where TResponseData : RigidBodyResponseData, new()
@@ -98,20 +98,15 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                     double time = request.Data.InitialTime;
                     double[] y = initial_y;
-                    this._auxiliarOperation.WriteInFile(time, y, path);
+                    this._auxiliarOperation.Write(time, y, path);
 
                     while (time <= finalTime)
                     {
                         y = await this._rungeKutta.CalculateResult(input, timeStep, time, y).ConfigureAwait(false);
 
-                        this._auxiliarOperation.WriteInFile(time + timeStep, y, path);
+                        this._auxiliarOperation.Write(time + timeStep, y, path);
 
                         time += timeStep;
-                    }
-
-                    if (w == wf)
-                    {
-                        break;
                     }
 
                     w += dw;

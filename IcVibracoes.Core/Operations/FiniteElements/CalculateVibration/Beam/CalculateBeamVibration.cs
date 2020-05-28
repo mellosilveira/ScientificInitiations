@@ -70,26 +70,26 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
 
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            if (request.BeamData.Profile.Area != default && request.BeamData.Profile.MomentOfInertia != default)
+            if (request.Data.Profile.Area != default && request.Data.Profile.MomentOfInertia != default)
             {
-                geometricProperty.Area = await this._arrayOperation.CreateVector(request.BeamData.Profile.Area.Value, request.BeamData.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.BeamData.Profile.MomentOfInertia.Value, request.BeamData.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await this._arrayOperation.CreateVector(request.Data.Profile.Area.Value, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Data.Profile.MomentOfInertia.Value, request.Data.NumberOfElements).ConfigureAwait(false);
             }
             else
             {
-                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.BeamData.Profile, request.BeamData.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.BeamData.Profile, request.BeamData.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
             }
 
             return new Beam<TProfile>()
             {
-                Fastenings = await this._mappingResolver.BuildFastenings(request.BeamData.Fastenings).ConfigureAwait(false),
-                Forces = await this._mappingResolver.BuildForceVector(request.BeamData.Forces, degreesOfFreedom).ConfigureAwait(false),
+                Fastenings = await this._mappingResolver.BuildFastenings(request.Data.Fastenings).ConfigureAwait(false),
+                Forces = await this._mappingResolver.BuildForceVector(request.Data.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
-                Length = request.BeamData.Length,
-                Material = MaterialFactory.Create(request.BeamData.Material),
-                NumberOfElements = request.BeamData.NumberOfElements,
-                Profile = request.BeamData.Profile
+                Length = request.Data.Length,
+                Material = MaterialFactory.Create(request.Data.Material),
+                NumberOfElements = request.Data.NumberOfElements,
+                Profile = request.Data.Profile
             };
         }
 
@@ -128,11 +128,11 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 
-                AngularFrequency = request.BeamData.InitialAngularFrequency,
+                AngularFrequency = request.Data.InitialAngularFrequency,
 
-                AngularFrequencyStep = request.BeamData.AngularFrequencyStep,
+                AngularFrequencyStep = request.Data.AngularFrequencyStep,
 
-                FinalAngularFrequency = request.BeamData.FinalAngularFrequency
+                FinalAngularFrequency = request.Data.FinalAngularFrequency
             };
 
             return input;
@@ -144,9 +144,9 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
 
             string folderPath = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/Beam/{request.BeamData.Profile.GetType().Name}/nEl={request.BeamData.NumberOfElements}");
+                $"Solutions/FiniteElements/Beam/{request.Data.Profile.GetType().Name}/nEl={request.Data.NumberOfElements}");
 
-            string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.BeamData.NumberOfElements}.csv";
+            string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 
@@ -163,7 +163,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam
                 previousPath,
                 $"Solutions/FiniteElements/Beam/MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_{request.BeamData.Profile.GetType().Name}_w0={Math.Round(request.BeamData.InitialAngularFrequency, 2)}_wf={Math.Round(request.BeamData.FinalAngularFrequency, 2)}_nEl={request.BeamData.NumberOfElements}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_{request.Data.Profile.GetType().Name}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 
