@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Time step calculation for Runge Kutta Forth Order method.
 - Separated linear displacement, angular displacement and additional values when write in file.
+- Folders name and folder organization.
 
 ## [2.0.1] - 2020-05-07
 ### Fixed
