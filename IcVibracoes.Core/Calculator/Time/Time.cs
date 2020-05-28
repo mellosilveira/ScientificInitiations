@@ -1,8 +1,8 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
+﻿using IcVibracoes.Core.Calculator.NaturalFrequency;
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
+namespace IcVibracoes.Core.Calculator.Time
 {
     /// <summary>
     /// It contains operations evolving the time for the analysis.
@@ -13,7 +13,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
 
         public Time(INaturalFrequency naturalFrequency)
         {
-            this._naturalFrequency = naturalFrequency;
+            _naturalFrequency = naturalFrequency;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
         /// <returns></returns>
         public async Task<double> CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision)
         {
-            double naturalPeriod = await this.CalculateNaturalPeriod(mass, stiffness).ConfigureAwait(false);
+            double naturalPeriod = await CalculateNaturalPeriod(mass, stiffness).ConfigureAwait(false);
 
             double period = 2 * Math.PI / angularFrequency;
             double timeStep = period / periodDivision;
@@ -95,7 +95,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
         /// <returns></returns>
         public async Task<double> CalculateNaturalPeriod(double mass, double stiffness)
         {
-            double naturalFrequency = await this._naturalFrequency.Calculate(mass, stiffness).ConfigureAwait(false);
+            double naturalFrequency = await _naturalFrequency.Calculate(mass, stiffness).ConfigureAwait(false);
 
             double naturalPeriod = 2 * Math.PI / naturalFrequency;
 

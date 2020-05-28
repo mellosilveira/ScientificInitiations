@@ -1,16 +1,16 @@
 ﻿using IcVibracoes.Common.ExtensionMethods;
-using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
+using IcVibracoes.Core.ArrayOperations;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
+namespace IcVibracoes.Core.Calculator.Eigenvalue
 {
     /// <summary>
     /// It's responsible to calculate the eigenvalues to a matrix.
     /// It's used in natural frequency calculation.
     /// </summary>
-    public class CalculateEigenvalue : ICalculateEigenvalue
+    public class Eigenvalue : IEigenvalue
     {
         private readonly IArrayOperation _arrayOperation;
 
@@ -18,10 +18,10 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
         /// Class constructor.
         /// </summary>
         /// <param name="arrayOperation"></param>
-        public CalculateEigenvalue(
+        public Eigenvalue(
             IArrayOperation arrayOperation)
         {
-            this._arrayOperation = arrayOperation;
+            _arrayOperation = arrayOperation;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
             do
             {
                 // Step 1  - Calculate z1 using method equation. 
-                double[] z1 = await this._arrayOperation.Multiply(matrix, y0, "Power Method").ConfigureAwait(false);
+                double[] z1 = await _arrayOperation.Multiply(matrix, y0, "Power Method").ConfigureAwait(false);
 
                 // Step 2 - Get the max value into vector z1.
                 double alpha1 = z1.GetMaxValue();
@@ -61,7 +61,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                 double[] y1 = z1.DivideEachElement(alpha1);
 
                 // Step 4 - Calculate z2 using method equation.
-                double[] z2 = await this._arrayOperation.Multiply(matrix, y1, "Power Method").ConfigureAwait(false);
+                double[] z2 = await _arrayOperation.Multiply(matrix, y1, "Power Method").ConfigureAwait(false);
 
                 //Step 5 - Calculate first value to eigenvalue (lambda1).
                 lambda1 = z2.Divide(y1);
@@ -73,7 +73,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                 double[] y2 = z2.DivideEachElement(alpha2);
 
                 // Step 8 - Calculate vector z3.
-                double[] z3 = await this._arrayOperation.Multiply(matrix, y2, "Power Method").ConfigureAwait(false);
+                double[] z3 = await _arrayOperation.Multiply(matrix, y2, "Power Method").ConfigureAwait(false);
 
                 // Step 9 - Calculate second value to eigenvalue (lambda2).
                 lambda2 = z3.Divide(y2);
@@ -118,8 +118,8 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
 
                     for (int j = i - 1; j < 0; j--)
                     {
-                        double[] projection = await this.CalculateProjection(matrixA[i], vectorsU[j]).ConfigureAwait(false);
-                        vectorU = await this._arrayOperation.Subtract(vectorU, projection).ConfigureAwait(false);
+                        double[] projection = await CalculateProjection(matrixA[i], vectorsU[j]).ConfigureAwait(false);
+                        vectorU = await _arrayOperation.Subtract(vectorU, projection).ConfigureAwait(false);
                     }
 
                     double uNorm = vectorU.CalculateVectorNorm();
@@ -134,9 +134,9 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
 
                     for (int j = 0; j < size; j++)
                     {
-                        double innerProduct = await this._arrayOperation.CalculateInnerProduct(vectorsE[j], matrixA[i]).ConfigureAwait(false);
+                        double innerProduct = await _arrayOperation.CalculateInnerProduct(vectorsE[j], matrixA[i]).ConfigureAwait(false);
 
-                        aVector = await this._arrayOperation.Sum(vectorsE[j].MultiplyEachElement(innerProduct), aVector).ConfigureAwait(false);
+                        aVector = await _arrayOperation.Sum(vectorsE[j].MultiplyEachElement(innerProduct), aVector).ConfigureAwait(false);
                     }
 
                     matrixA[i] = aVector;
@@ -158,7 +158,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                     {
                         if (i <= j)
                         {
-                            matrixQ[i, j] = await this._arrayOperation.CalculateInnerProduct(vectorsE[i], matrixA[j]).ConfigureAwait(false);
+                            matrixQ[i, j] = await _arrayOperation.CalculateInnerProduct(vectorsE[i], matrixA[j]).ConfigureAwait(false);
                         }
                         else
                         {
@@ -167,9 +167,9 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
                     }
                 }
 
-                double[,] transposedMatrixQ = await this._arrayOperation.TransposeMatrix(matrixQ).ConfigureAwait(false);
+                double[,] transposedMatrixQ = await _arrayOperation.TransposeMatrix(matrixQ).ConfigureAwait(false);
 
-                matrixA = (await this._arrayOperation.Multiply(matrixR, transposedMatrixQ).ConfigureAwait(false)).ConvertToListByColumns();
+                matrixA = (await _arrayOperation.Multiply(matrixR, transposedMatrixQ).ConfigureAwait(false)).ConvertToListByColumns();
             }
             while (matrixA.ToArray().GetMaxValueBelowMainDiagonal() > tolerance);
 
@@ -192,7 +192,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
         /// <returns></returns>
         private async Task<double[]> CalculateProjection(double[] vector, double[] baseVector)
         {
-            double constant = await this._arrayOperation.CalculateInnerProduct(vector, baseVector).ConfigureAwait(false) / await this._arrayOperation.CalculateInnerProduct(baseVector, baseVector).ConfigureAwait(false);
+            double constant = await _arrayOperation.CalculateInnerProduct(vector, baseVector).ConfigureAwait(false) / await _arrayOperation.CalculateInnerProduct(baseVector, baseVector).ConfigureAwait(false);
 
             double[] result = baseVector.MultiplyEachElement(constant);
 

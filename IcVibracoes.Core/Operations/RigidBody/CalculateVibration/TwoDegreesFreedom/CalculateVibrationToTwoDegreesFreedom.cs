@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
+using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;

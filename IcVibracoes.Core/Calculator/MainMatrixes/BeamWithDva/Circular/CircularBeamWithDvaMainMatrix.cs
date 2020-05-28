@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
+using IcVibracoes.Core.ArrayOperations;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular
 {

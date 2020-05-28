@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
+﻿using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using System;

@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
+﻿using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
 using System.Threading.Tasks;
@@ -10,14 +10,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.Rigi
     /// </summary>
     public class RungeKuttaForthOrderMethod_2DF : RungeKuttaForthOrderMethod<TwoDegreesFreedomRequest, TwoDegreesFreedomRequestData, TwoDegreesFreedomResponse, TwoDegreesFreedomResponseData>, IRungeKuttaForthOrderMethod_2DF
     {
-        private readonly ICalculateDifferentialEquationOfMotion _calculate;
+        private readonly IDifferentialEquationOfMotion _calculate;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="calculate"></param>
         public RungeKuttaForthOrderMethod_2DF(
-            ICalculateDifferentialEquationOfMotion calculate)
+            IDifferentialEquationOfMotion calculate)
         {
             _calculate = calculate;
         }

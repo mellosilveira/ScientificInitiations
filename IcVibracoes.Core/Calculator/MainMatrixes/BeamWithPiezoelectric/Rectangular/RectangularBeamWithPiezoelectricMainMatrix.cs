@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
+using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beams;
 using System;

@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
+﻿using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
 using System.Threading.Tasks;
@@ -10,14 +10,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.Rigi
     /// </summary>
     public class RungeKuttaForthOrderMethod_1DF : RungeKuttaForthOrderMethod<OneDegreeFreedomRequest, OneDegreeFreedomRequestData, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>, IRungeKuttaForthOrderMethod_1DF
     {
-        private readonly ICalculateDifferentialEquationOfMotion _calculate;
+        private readonly IDifferentialEquationOfMotion _calculate;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="calculate"></param>
         public RungeKuttaForthOrderMethod_1DF(
-            ICalculateDifferentialEquationOfMotion calculate)
+            IDifferentialEquationOfMotion calculate)
         {
             this._calculate = calculate;
         }

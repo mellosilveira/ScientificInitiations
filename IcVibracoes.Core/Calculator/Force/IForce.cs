@@ -1,12 +1,12 @@
 ﻿using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.ForceOperation
+namespace IcVibracoes.Core.Calculator.Force
 {
     /// <summary>
     /// It contains additionals operations evolving force.
     /// </summary>
-    public interface IForceOperation
+    public interface IForce
     {
         /// <summary>
         /// Calculates the force for a aspecific time based on its type.

@@ -2,12 +2,12 @@
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.ForceOperation
+namespace IcVibracoes.Core.Calculator.Force
 {
     /// <summary>
     /// It contains additionals operations evolving force.
     /// </summary>
-    public class ForceOperation : IForceOperation
+    public class Force : IForce
     {
         /// <summary>
         /// Calculates the force for a aspecific time based on its type.

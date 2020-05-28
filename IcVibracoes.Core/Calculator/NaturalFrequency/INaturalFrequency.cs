@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.NaturalFrequency
+namespace IcVibracoes.Core.Calculator.NaturalFrequency
 {
     public interface INaturalFrequency
     {

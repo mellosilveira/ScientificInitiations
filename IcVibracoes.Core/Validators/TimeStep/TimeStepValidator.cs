@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
+﻿using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.DataContracts;
 using System;
 using System.Threading.Tasks;

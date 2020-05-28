@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
+using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts.RigidBody;

@@ -1,10 +1,8 @@
+using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion;
-using IcVibracoes.Core.AuxiliarOperations.Eigenvalue;
-using IcVibracoes.Core.AuxiliarOperations.ForceOperation;
-using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
-using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
+using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
+using IcVibracoes.Core.Calculator.Eigenvalue;
+using IcVibracoes.Core.Calculator.Force;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
@@ -13,6 +11,8 @@ using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.Core.Calculator.NaturalFrequency;
+using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
@@ -67,9 +67,9 @@ namespace IcVibracoes
         {
             // Auxiliar Operations
             services.AddScoped<IAuxiliarOperation, AuxiliarOperation>();
-            services.AddScoped<ICalculateDifferentialEquationOfMotion, CalculateDifferentialEquationOfMotion>();
-            services.AddScoped<ICalculateEigenvalue, CalculateEigenvalue>();
-            services.AddScoped<IForceOperation, ForceOperation>();
+            services.AddScoped<IDifferentialEquationOfMotion, DifferentialEquationOfMotion>();
+            services.AddScoped<IEigenvalue, Eigenvalue>();
+            services.AddScoped<IForce, Force>();
             services.AddScoped<INaturalFrequency, NaturalFrequency>();
 
             // Calculator - Array Operation

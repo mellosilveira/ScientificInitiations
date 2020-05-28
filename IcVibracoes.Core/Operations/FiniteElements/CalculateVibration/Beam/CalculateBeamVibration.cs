@@ -1,9 +1,9 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
+using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.InputData.FiniteElements;
 using IcVibracoes.Core.Mapper;

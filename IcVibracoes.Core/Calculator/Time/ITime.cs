@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.TimeOperation
+namespace IcVibracoes.Core.Calculator.Time
 {
     /// <summary>
     /// It contains operations evolving the time for the analysis.

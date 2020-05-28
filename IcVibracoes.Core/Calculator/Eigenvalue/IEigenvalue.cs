@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.Eigenvalue
+namespace IcVibracoes.Core.Calculator.Eigenvalue
 {
     /// <summary>
     /// It's responsible to calculate the eigenvalues to a matrix.
     /// It's used in natural frequency calculation.
     /// </summary>
-    public interface ICalculateEigenvalue
+    public interface IEigenvalue
     {
         /// <summary>
         /// /// Calculates the biggest eigenvalue using Power Method.

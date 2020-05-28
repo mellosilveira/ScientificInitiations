@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.ArrayOperations
+namespace IcVibracoes.Core.ArrayOperations
 {
     /// <summary>
     /// It contains the methods to execute every vector operations.

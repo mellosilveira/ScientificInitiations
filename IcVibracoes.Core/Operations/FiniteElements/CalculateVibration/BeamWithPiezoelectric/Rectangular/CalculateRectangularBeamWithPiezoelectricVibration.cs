@@ -1,9 +1,9 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.AuxiliarOperations.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations.TimeOperation;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;

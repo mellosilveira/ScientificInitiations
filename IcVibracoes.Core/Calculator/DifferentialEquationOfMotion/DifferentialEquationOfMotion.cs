@@ -1,31 +1,31 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.ForceOperation;
-using IcVibracoes.Core.AuxiliarOperations.NaturalFrequency;
+﻿using IcVibracoes.Core.Calculator.Force;
+using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.DTO.InputData;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
+namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
 {
     /// <summary>
     /// It's responsible to calculate the differential equation of motion.
     /// </summary>
-    public class CalculateDifferentialEquationOfMotion : ICalculateDifferentialEquationOfMotion
+    public class DifferentialEquationOfMotion : IDifferentialEquationOfMotion
     {
         private readonly INaturalFrequency _naturalFrequency;
-        private readonly IForceOperation _forceOperation;
+        private readonly IForce _forceOperation;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="naturalFrequency"></param>
-        public CalculateDifferentialEquationOfMotion(
+        public DifferentialEquationOfMotion(
             INaturalFrequency naturalFrequency,
-            IForceOperation forceOperation)
+            IForce forceOperation)
         {
-            this._naturalFrequency = naturalFrequency;
-            this._forceOperation = forceOperation;
+            _naturalFrequency = naturalFrequency;
+            _forceOperation = forceOperation;
         }
 
         /// <summary>
@@ -40,15 +40,15 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
             // wn - Natural angular frequency
-            double wn = await this._naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
+            double wn = await _naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
             double damping = input.DampingRatio * 2 * input.Mass * wn;
 
-            double force = await this._forceOperation.CalculateForceByType(input.Force, input.AngularFrequency, time, input.ForceType).ConfigureAwait(false);
+            double force = await _forceOperation.CalculateForceByType(input.Force, input.AngularFrequency, time, input.ForceType).ConfigureAwait(false);
 
             // Velocity of primary object.
             result[0] = y[1];
             // Acceleration of primary object.
-            result[1] = (force - (damping * y[1]) - (input.Stiffness * y[0])) / input.Mass;
+            result[1] = (force - damping * y[1] - input.Stiffness * y[0]) / input.Mass;
 
             return result;
         }
@@ -65,13 +65,13 @@ namespace IcVibracoes.Core.AuxiliarOperations.DifferentialEquationOfMotion
             double[] result = new double[Constant.NumberOfRigidBodyVariables_2DF];
 
             // wn - Natural angular frequency
-            double wn = await this._naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
-            double secondaryWn = await this._naturalFrequency.Calculate(input.SecondaryMass, input.SecondaryStiffness).ConfigureAwait(false);
+            double wn = await _naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
+            double secondaryWn = await _naturalFrequency.Calculate(input.SecondaryMass, input.SecondaryStiffness).ConfigureAwait(false);
 
             double damping = input.DampingRatio * 2 * input.Mass * wn;
             double secondaryDamping = input.DampingRatio * 2 * input.SecondaryMass * secondaryWn;
 
-            double force = await this._forceOperation.CalculateForceByType(input.Force, input.AngularFrequency, time, input.ForceType).ConfigureAwait(false);
+            double force = await _forceOperation.CalculateForceByType(input.Force, input.AngularFrequency, time, input.ForceType).ConfigureAwait(false);
 
             // Velocity of primary object.
             result[0] = y[2];
