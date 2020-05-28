@@ -8,6 +8,18 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
     public class RigidBodyInput : NumericalMethodInput
     {
         /// <summary>
+        /// Mass of primary object.
+        /// Unity: kg (kilogram).
+        /// </summary>
+        public double Mass { get; set; }
+
+        /// <summary>
+        /// Stiffness of primary object.
+        /// Unity: N/m (Newton per meter).
+        /// </summary>
+        public double Stiffness { get; set; }
+
+        /// <summary>
         /// Unit: dimensionless.
         /// Represents the relation between damping by critical damping.
         /// If it is equals to zero, the vibration is harmonic.

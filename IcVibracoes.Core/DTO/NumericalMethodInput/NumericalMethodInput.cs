@@ -33,6 +33,12 @@
         public double AngularFrequency { get; set; }
 
         /// <summary>
+        /// The initial angular frequency.
+        /// Unit: Hz (Hertz).
+        /// </summary>
+        public double InitialAngularFrequency { get; set; }
+
+        /// <summary>
         /// The angular frequency step.
         /// Unit: Hz (Hertz).
         /// </summary>

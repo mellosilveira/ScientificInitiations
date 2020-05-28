@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 {
     /// <summary>
-    /// It is responsible to calculate the vibration for a rigid body analysis.
+    /// It's responsible to calculate the vibration for a rigid body analysis.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
-    public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData, TInput> : CalculateVibration<TRequest, TRequestData, TResponse, TResponseData, TInput>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData>
+    public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData, TInput> : CalculateVibration<TRequest, TRequestData, TResponse, TResponseData, TInput>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData, TInput>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
         where TResponseData : RigidBodyResponseData, new()
@@ -42,24 +42,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         }
 
         /// <summary>
-        /// Builds the input of differential equation of motion.
-        /// </summary>
-        /// <param name="requestData"></param>
-        /// <returns></returns>
-        public abstract Task<OneDegreeOfFreedomInput> CreateInput(TRequestData requestData);
-
-        /// <summary>
-        /// Create a path to the files with the analysis solution.
-        /// </summary>
-        /// <param name="response"></param>
-        /// <param name="requestData"></param>
-        /// <param name="analysisType"></param>
-        /// <param name="dampingRatio"></param>
-        /// <param name="angularFrequency"></param>
-        /// <returns></returns>
-        public abstract Task<string> CreateSolutionPath(TResponse response, TRequestData requestData, string analysisType, double dampingRatio, double angularFrequency);
-
-        /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
         /// <param name="data"></param>
@@ -72,25 +54,19 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
             double[] initial_y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
 
-            OneDegreeOfFreedomInput input = await this.CreateInput(request.Data).ConfigureAwait(false);
+            TInput input = await this.CreateInput(request).ConfigureAwait(false);
 
             // Parallel.Foreach
             foreach (double dampingRatio in request.Data.DampingRatioList)
             {
                 input.DampingRatio = dampingRatio;
 
-                double dw = request.Data.AngularFrequencyStep;
-                double w = request.Data.InitialAngularFrequency;
-                double wf = request.Data.FinalAngularFrequency;
-
-                while (w <= wf)
+                while (input.AngularFrequency <= input.FinalAngularFrequency)
                 {
-                    double timeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
-                    double finalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
+                    input.TimeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
+                    input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
 
-                    input.AngularFrequency = w;
-
-                    string path = await this.CreateSolutionPath(response, request.Data, request.AnalysisType, input.DampingRatio, input.AngularFrequency).ConfigureAwait(false);
+                    string path = await this.CreateSolutionPath(request.AnalysisType, input, response).ConfigureAwait(false);
 
                     if (path == null)
                     {
@@ -99,18 +75,19 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                     double time = request.Data.InitialTime;
                     double[] y = initial_y;
+
                     this._auxiliarOperation.Write(time, y, path);
 
-                    while (time <= finalTime)
+                    while (time <= input.FinalTime)
                     {
-                        y = await this._rungeKutta.CalculateResult(input, timeStep, time, y).ConfigureAwait(false);
+                        y = await this._rungeKutta.CalculateResult(input, input.TimeStep, time, y).ConfigureAwait(false);
 
-                        this._auxiliarOperation.Write(time + timeStep, y, path);
+                        this._auxiliarOperation.Write(time + input.TimeStep, y, path);
 
-                        time += timeStep;
+                        time += input.TimeStep;
                     }
 
-                    w += dw;
+                    input.AngularFrequency += input.AngularFrequencyStep;
                 }
             }
 

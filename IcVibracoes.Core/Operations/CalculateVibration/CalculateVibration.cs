@@ -19,12 +19,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         where TInput : NumericalMethodInput, new()
     {
         /// <summary>
-        /// Calculates the input to newmark integration method.
+        /// Creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="degreesOfFreedom"></param>
         /// <returns></returns>
-        public abstract Task<TInput> CreateInput(TRequest request, uint degreesOfFreedom);
+        public abstract Task<TInput> CreateInput(TRequest request);
 
         /// <summary>
         /// Creates the file path to write the results.

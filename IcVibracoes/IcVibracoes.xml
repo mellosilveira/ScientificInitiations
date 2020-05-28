@@ -10,7 +10,7 @@
             The object is divided in elements and the mechanical properties are matricially calculated.
             </summary>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular.ICalculateRectangularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Rectangular.ICalculateRectangularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
             <summary>
             Calculates the vibration to a rectangular profile beam.
             </summary>
@@ -21,7 +21,7 @@
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Rectangular.ICalculateRectangularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Rectangular.ICalculateRectangularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
             <summary>
             Calculates the vibration to a rectangular profile beam with dynamic vibration absorbers.
             </summary>
@@ -32,7 +32,7 @@
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular.ICalculateRectangularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Rectangular.ICalculateRectangularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
             <summary>
             Calculates the vibration to a rectangular profile beam with piezoelectrics.
             </summary>
@@ -43,7 +43,7 @@
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Circular.ICalculateCircularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Circular.ICalculateCircularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.CircularProfile})">
             <summary>
             Calculates the vibration to a circular profile beam.
             </summary>
@@ -54,7 +54,7 @@
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular.ICalculateCircularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Circular.ICalculateCircularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.CircularProfile})">
             <summary>
             Calculates the vibration to a circular profile beam with dynamic vibration absorbers.
             </summary>
@@ -65,7 +65,7 @@
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Circular.ICalculateCircularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Circular.ICalculateCircularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.CircularProfile})">
             <summary>
             Calculates the vibration to a circular profile beam with piezoelectrics.
             </summary>
@@ -82,7 +82,7 @@
             The object is considered as a unique body, using the absolut value to mass, stiffness and others mechanical properties.
             </summary>
         </member>
-        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom.ICalculateVibrationToOneDegreeFreedom,IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequest)">
+        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFreedom.ICalculateVibrationToOneDegreeFreedom,IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest)">
             <summary>
             Calculates the vibration of system with one degree of freedom.
             </summary>
@@ -93,7 +93,7 @@
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom.ICalculateVibrationToTwoDegreesFreedom,IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequest)">
+        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom.ICalculateVibrationToTwoDegreesFreedom,IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest)">
             <summary>
             Calculates the vibration of system with two degrees of freedom.
             </summary>

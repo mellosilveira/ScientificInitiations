@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Common.ErrorCodes;
-using IcVibracoes.Core.AuxiliarOperations;
+﻿using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
@@ -32,29 +31,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         { }
 
         /// <summary>
-        /// Builds the input of differential equation of motion.
-        /// </summary>
-        /// <param name="requestData"></param>
-        /// <returns></returns>
-        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequestData requestData)
-        {
-            if (requestData == null || requestData.MechanicalProperties == null)
-            {
-                return null;
-            }
-
-            return Task.FromResult(new OneDegreeOfFreedomInput
-            {
-                AngularFrequency = requestData.InitialAngularFrequency,
-                DampingRatio = requestData.DampingRatioList.FirstOrDefault(),
-                Force = requestData.Force,
-                ForceType = ForceTypeFactory.Create(requestData.ForceType),
-                Stiffness = requestData.MechanicalProperties.Stiffness,
-                Mass = requestData.MechanicalProperties.Mass
-            });
-        }
-
-        /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
         /// <param name="requestData"></param>
@@ -69,37 +45,77 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         }
 
         /// <summary>
-        /// Create a path to the files with the analysis solution.
+        /// Creates the input to numerical integration method.
         /// </summary>
-        /// <param name="response"></param>
-        /// <param name="requestData"></param>
-        /// <param name="analysisType"></param>
-        /// <param name="dampingRatio"></param>
-        /// <param name="angularFrequency"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public override Task<string> CreateSolutionPath(OneDegreeOfFreedomResponse response, OneDegreeOfFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
+        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request)
+        {
+            if (request.Data == null || request.Data.MechanicalProperties == null)
+            {
+                return null;
+            }
+
+            return Task.FromResult(new OneDegreeOfFreedomInput
+            {
+                AngularFrequency = request.Data.InitialAngularFrequency,
+                InitialAngularFrequency = request.Data.InitialAngularFrequency,
+                AngularFrequencyStep = request.Data.AngularFrequencyStep,
+                FinalAngularFrequency = request.Data.FinalAngularFrequency,
+                DampingRatio = request.Data.DampingRatioList.FirstOrDefault(),
+                Force = request.Data.Force,
+                ForceType = ForceTypeFactory.Create(request.Data.ForceType),
+                Stiffness = request.Data.MechanicalProperties.Stiffness,
+                Mass = request.Data.MechanicalProperties.Mass
+            });
+        }
+
+        /// <summary>
+        /// Creates the file path to write the results.
+        /// </summary>
+        /// <param name="analysisType"></param>
+        /// <param name="input"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public override Task<string> CreateSolutionPath(string analysisType, OneDegreeOfFreedomInput input, OneDegreeOfFreedomResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string folderPath = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeFreedom/m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Stiffness}");
+                $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}");
 
-            string fileName = $"{analysisType.Trim()}_m={requestData.MechanicalProperties.Mass}_k={requestData.MechanicalProperties.Stiffness}_dampingRatio={dampingRatio}_w={Math.Round(angularFrequency, 2)}.csv";
+            string fileName = $"{analysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w={Math.Round(input.AngularFrequency, 2)}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 
             Directory.CreateDirectory(folderPath);
 
-            if (File.Exists(path))
-            {
-                response.AddError(ErrorCode.OperationError, $"File already exist in path: '{path}'.");
-                return Task.FromResult<string>(null);
-            }
-            else
-            {
-                return Task.FromResult(path);
-            }
+            return Task.FromResult(path);
+        }
+
+        /// <summary>
+        /// Creates the file path to write the maximum values calculated in the analysis.
+        /// </summary>
+        /// <param name="analysisType"></param>
+        /// <param name="input"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public override Task<string> CreateMaxValuesPath(string analysisType, OneDegreeOfFreedomInput input, OneDegreeOfFreedomResponse response)
+        {
+            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+
+            string folderPath = Path.Combine(
+                previousPath,
+                $"Solutions/RigidBody/OneDegreeFreedom/MaxValues");
+
+            string fileName = $"MaxValues_{analysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w0={Math.Round(input.InitialAngularFrequency, 2)}_wf={Math.Round(input.FinalAngularFrequency)}.csv";
+
+            string path = Path.Combine(folderPath, fileName);
+
+            Directory.CreateDirectory(folderPath);
+
+            return Task.FromResult(path);
         }
     }
 }

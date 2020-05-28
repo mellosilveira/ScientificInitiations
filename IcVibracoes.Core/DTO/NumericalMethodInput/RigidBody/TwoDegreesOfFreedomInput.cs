@@ -6,18 +6,6 @@
     public class TwoDegreesOfFreedomInput : RigidBodyInput
     {
         /// <summary>
-        /// Mass of primary object.
-        /// Unity: kg (kilogram).
-        /// </summary>
-        public double Mass { get; set; }
-
-        /// <summary>
-        /// Stiffness of primary object.
-        /// Unity: N/m (Newton per meter).
-        /// </summary>
-        public double Stiffness { get; set; }
-
-        /// <summary>
         /// Mass of secondary object.
         /// Unity: kg (kilogram).
         /// </summary>
