@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
-using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
+using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF

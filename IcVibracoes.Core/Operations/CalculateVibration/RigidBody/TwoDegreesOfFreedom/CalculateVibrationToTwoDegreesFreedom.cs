@@ -5,18 +5,18 @@ using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF;
-using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
+using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom
+namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom
 {
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with two degrees freedom case.
     /// </summary>
-    public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesFreedomRequest, TwoDegreesFreedomRequestData, TwoDegreesFreedomResponse, TwoDegreesFreedomResponseData>, ICalculateVibrationToTwoDegreesFreedom
+    public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomRequestData, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData>, ICalculateVibrationToTwoDegreesFreedom
     {
         /// <summary>
         /// Class constructor.
@@ -36,7 +36,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public override Task<OneDegreeOfFreedomInput> CreateInput(TwoDegreesFreedomRequestData requestData)
+        public override Task<OneDegreeOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequestData requestData)
         {
             if (requestData == null || requestData.MainObjectMechanicalProperties == null || requestData.SecondaryObjectMechanicalProperties == null)
             {
@@ -61,7 +61,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(TwoDegreesFreedomRequestData requestData)
+        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequestData requestData)
         {
             return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_2DF]
             {
@@ -72,7 +72,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
             });
         }        
 
-        public override Task<string> CreateSolutionPath(TwoDegreesFreedomResponse response, TwoDegreesFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
+        public override Task<string> CreateSolutionPath(TwoDegreesOfFreedomResponse response, TwoDegreesOfFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
         {
             string path = Directory.GetCurrentDirectory();
 

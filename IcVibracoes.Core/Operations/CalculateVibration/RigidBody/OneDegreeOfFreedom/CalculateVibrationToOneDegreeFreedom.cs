@@ -5,18 +5,18 @@ using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_1DF;
-using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
+using IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom
+namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFreedom
 {
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with one degrees freedom case.
     /// </summary>
-    public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeFreedomRequest, OneDegreeFreedomRequestData, OneDegreeFreedomResponse, OneDegreeFreedomResponseData>, ICalculateVibrationToOneDegreeFreedom
+    public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeOfFreedomRequest, OneDegreeOfFreedomRequestData, OneDegreeOfFreedomResponse, OneDegreeOfFreedomResponseData, OneDegreeOfFreedomInput>, ICalculateVibrationToOneDegreeFreedom
     {
         /// <summary>
         /// Class constructor.
@@ -36,7 +36,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeFreedomRequestData requestData)
+        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequestData requestData)
         {
             if (requestData == null || requestData.MechanicalProperties == null)
             {
@@ -59,7 +59,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(OneDegreeFreedomRequestData requestData)
+        public override Task<double[]> BuildInitialConditions(OneDegreeOfFreedomRequestData requestData)
         {
             return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]
             {
@@ -77,7 +77,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// <param name="dampingRatio"></param>
         /// <param name="angularFrequency"></param>
         /// <returns></returns>
-        public override Task<string> CreateSolutionPath(OneDegreeFreedomResponse response, OneDegreeFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
+        public override Task<string> CreateSolutionPath(OneDegreeOfFreedomResponse response, OneDegreeOfFreedomRequestData requestData, string analysisType, double dampingRatio, double angularFrequency)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 

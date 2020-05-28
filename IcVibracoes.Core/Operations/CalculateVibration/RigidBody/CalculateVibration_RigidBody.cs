@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
+using IcVibracoes.Core.Operations.CalculateVibration;
 using IcVibracoes.DataContracts.RigidBody;
 using System.Threading.Tasks;
 
@@ -14,14 +15,15 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
     /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
-    public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData> : OperationBase<TRequest, TRequestData, TResponse, TResponseData>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData>
+    public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData, TInput> : CalculateVibration<TRequest, TRequestData, TResponse, TResponseData, TInput>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData>
         where TRequestData : RigidBodyRequestData
         where TRequest : RigidBodyRequest<TRequestData>
         where TResponseData : RigidBodyResponseData, new()
         where TResponse : RigidBodyResponse<TResponseData>, new()
+        where TInput : RigidBodyInput, new()
     {
         private readonly IAuxiliarOperation _auxiliarOperation;
-        private readonly IRungeKuttaForthOrderMethod _rungeKutta;
+        private readonly IRungeKuttaForthOrderMethod<TInput> _rungeKutta;
         private readonly ITime _time;
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <param name="rungeKutta"></param>
         public CalculateVibration_RigidBody(
             IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod rungeKutta,
+            IRungeKuttaForthOrderMethod<TInput> rungeKutta,
             ITime time)
         {
             this._auxiliarOperation = auxiliarOperation;

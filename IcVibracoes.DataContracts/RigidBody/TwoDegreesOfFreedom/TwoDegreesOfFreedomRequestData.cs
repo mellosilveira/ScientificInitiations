@@ -1,12 +1,12 @@
 ﻿using IcVibracoes.Common.Classes;
 using System.ComponentModel.DataAnnotations;
 
-namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom
+namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom
 {
     /// <summary>
     /// It contains the request 'data' content of Rigid Body analysis with Two Degree Freedom.
     /// </summary>
-    public class TwoDegreesFreedomRequestData : RigidBodyRequestData
+    public class TwoDegreesOfFreedomRequestData : RigidBodyRequestData
     {
         /// <summary>
         /// The mechanical properties of the main object that will be analyzed.

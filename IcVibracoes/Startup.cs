@@ -24,8 +24,8 @@ using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Rectangular;
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Rectangular;
-using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom;
-using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom;
+using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFreedom;
+using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom;
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using IcVibracoes.Core.Validators.TimeStep;

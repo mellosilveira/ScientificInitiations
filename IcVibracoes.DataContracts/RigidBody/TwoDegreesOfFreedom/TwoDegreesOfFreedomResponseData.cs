@@ -1,9 +1,9 @@
-﻿namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom
+﻿namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom
 {
     /// <summary>
     /// It contains the response 'data' content of Rigid Body analysis with Two Degree Freedom.
     /// </summary>
-    public class TwoDegreesFreedomResponseData : RigidBodyResponseData
+    public class TwoDegreesOfFreedomResponseData : RigidBodyResponseData
     {
         /// <summary>
         /// The time corresponding for each value in that class.

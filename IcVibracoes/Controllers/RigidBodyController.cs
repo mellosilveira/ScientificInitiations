@@ -1,7 +1,7 @@
-﻿using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFreedom;
-using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFreedom;
-using IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom;
-using IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom;
+﻿using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFreedom;
+using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom;
+using IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom;
+using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -28,11 +28,11 @@ namespace IcVibracoes.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("one-degree-freedom")]
-        public async Task<ActionResult<OneDegreeFreedomResponse>> CalculateVibration(
+        public async Task<ActionResult<OneDegreeOfFreedomResponse>> CalculateVibration(
             [FromServices] ICalculateVibrationToOneDegreeFreedom calculateVibration,
-            [FromBody] OneDegreeFreedomRequest request)
+            [FromBody] OneDegreeOfFreedomRequest request)
         {
-            OneDegreeFreedomResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
+            OneDegreeOfFreedomResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if (!response.Success)
             {
@@ -55,11 +55,11 @@ namespace IcVibracoes.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("two-degree-freedom")]
-        public async Task<ActionResult<TwoDegreesFreedomResponse>> CalculateVibration(
+        public async Task<ActionResult<TwoDegreesOfFreedomResponse>> CalculateVibration(
             [FromServices] ICalculateVibrationToTwoDegreesFreedom calculateVibration,
-            [FromBody] TwoDegreesFreedomRequest request)
+            [FromBody] TwoDegreesOfFreedomRequest request)
         {
-            TwoDegreesFreedomResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
+            TwoDegreesOfFreedomResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
 
             if (!response.Success)
             {
