@@ -6,7 +6,7 @@ using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.InputData.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;

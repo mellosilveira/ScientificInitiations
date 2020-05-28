@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Common.Classes;
 using IcVibracoes.Common.Profiles;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace IcVibracoes.DataContracts.FiniteElements

@@ -1,4 +1,4 @@
-﻿namespace IcVibracoes.Core.DTO.InputData.FiniteElements
+﻿namespace IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements
 {
     /// <summary>
     /// It contains the input 'data' to Newmark numerical method.

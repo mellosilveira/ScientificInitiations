@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.InputData;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_1DF;
@@ -36,14 +36,14 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public override Task<DifferentialEquationOfMotionInput> CreateInput(OneDegreeFreedomRequestData requestData)
+        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeFreedomRequestData requestData)
         {
             if (requestData == null || requestData.MechanicalProperties == null)
             {
                 return null;
             }
 
-            return Task.FromResult(new DifferentialEquationOfMotionInput
+            return Task.FromResult(new OneDegreeOfFreedomInput
             {
                 AngularFrequency = requestData.InitialAngularFrequency,
                 DampingRatio = requestData.DampingRatioList.FirstOrDefault(),

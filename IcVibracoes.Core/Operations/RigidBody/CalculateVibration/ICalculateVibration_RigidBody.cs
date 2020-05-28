@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.DTO.InputData;
+﻿using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.DataContracts.RigidBody;
 using System.Threading.Tasks;
 
@@ -22,7 +22,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        Task<DifferentialEquationOfMotionInput> CreateInput(TRequestData requestData);
+        Task<OneDegreeOfFreedomInput> CreateInput(TRequestData requestData);
 
         /// <summary>
         /// Create a path to the files with the analysis solution.

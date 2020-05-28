@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.InputData.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using System;
 using System.Threading.Tasks;
 

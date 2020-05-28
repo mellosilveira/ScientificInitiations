@@ -1,9 +1,8 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.InputData;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts.RigidBody;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
@@ -45,7 +44,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public abstract Task<DifferentialEquationOfMotionInput> CreateInput(TRequestData requestData);
+        public abstract Task<OneDegreeOfFreedomInput> CreateInput(TRequestData requestData);
 
         /// <summary>
         /// Create a path to the files with the analysis solution.
@@ -71,7 +70,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
             double[] initial_y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
 
-            DifferentialEquationOfMotionInput input = await this.CreateInput(request.Data).ConfigureAwait(false);
+            OneDegreeOfFreedomInput input = await this.CreateInput(request.Data).ConfigureAwait(false);
 
             // Parallel.Foreach
             foreach (double dampingRatio in request.Data.DampingRatioList)

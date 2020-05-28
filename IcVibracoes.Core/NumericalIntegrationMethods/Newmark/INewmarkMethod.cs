@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.InputData.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
