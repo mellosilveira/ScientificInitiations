@@ -34,7 +34,7 @@ namespace IcVibracoes.Core.Operations.FiniteElements.CalculateVibration
         /// <summary>
         /// Class construtor.
         /// </summary>
-        /// <param name="newmarkBetaMethod"></param>
+        /// <param name="newmarkMethod"></param>
         /// <param name="profileValidator"></param>
         /// <param name="auxiliarOperation"></param>
         public CalculateVibration_FiniteElements(

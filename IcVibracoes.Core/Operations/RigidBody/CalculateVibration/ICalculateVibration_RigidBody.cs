@@ -22,7 +22,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        Task<DifferentialEquationOfMotionInput> BuildDifferentialEquationOfMotionInput(TRequestData requestData);
+        Task<DifferentialEquationOfMotionInput> CreateInput(TRequestData requestData);
 
         /// <summary>
         /// Create a path to the files with the analysis solution.

@@ -22,7 +22,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         where TResponse : RigidBodyResponse<TResponseData>, new()
     {
         private readonly IAuxiliarOperation _auxiliarOperation;
-        private readonly IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> _rungeKutta;
+        private readonly IRungeKuttaForthOrderMethod _rungeKutta;
         private readonly ITime _time;
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <param name="rungeKutta"></param>
         public CalculateVibration_RigidBody(
             IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> rungeKutta,
+            IRungeKuttaForthOrderMethod rungeKutta,
             ITime time)
         {
             this._auxiliarOperation = auxiliarOperation;
@@ -45,7 +45,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public abstract Task<DifferentialEquationOfMotionInput> BuildDifferentialEquationOfMotionInput(TRequestData requestData);
+        public abstract Task<DifferentialEquationOfMotionInput> CreateInput(TRequestData requestData);
 
         /// <summary>
         /// Create a path to the files with the analysis solution.
@@ -71,7 +71,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
             double[] initial_y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
 
-            DifferentialEquationOfMotionInput input = await this.BuildDifferentialEquationOfMotionInput(request.Data).ConfigureAwait(false);
+            DifferentialEquationOfMotionInput input = await this.CreateInput(request.Data).ConfigureAwait(false);
 
             // Parallel.Foreach
             foreach (double dampingRatio in request.Data.DampingRatioList)

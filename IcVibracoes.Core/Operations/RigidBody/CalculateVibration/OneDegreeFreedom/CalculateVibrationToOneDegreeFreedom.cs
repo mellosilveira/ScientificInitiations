@@ -36,7 +36,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeFree
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public override Task<DifferentialEquationOfMotionInput> BuildDifferentialEquationOfMotionInput(OneDegreeFreedomRequestData requestData)
+        public override Task<DifferentialEquationOfMotionInput> CreateInput(OneDegreeFreedomRequestData requestData)
         {
             if (requestData == null || requestData.MechanicalProperties == null)
             {

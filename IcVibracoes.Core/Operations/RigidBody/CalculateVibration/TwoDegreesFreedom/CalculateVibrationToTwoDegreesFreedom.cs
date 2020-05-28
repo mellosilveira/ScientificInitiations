@@ -36,7 +36,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesFre
         /// </summary>
         /// <param name="requestData"></param>
         /// <returns></returns>
-        public override Task<DifferentialEquationOfMotionInput> BuildDifferentialEquationOfMotionInput(TwoDegreesFreedomRequestData requestData)
+        public override Task<DifferentialEquationOfMotionInput> CreateInput(TwoDegreesFreedomRequestData requestData)
         {
             if (requestData == null || requestData.MainObjectMechanicalProperties == null || requestData.SecondaryObjectMechanicalProperties == null)
             {

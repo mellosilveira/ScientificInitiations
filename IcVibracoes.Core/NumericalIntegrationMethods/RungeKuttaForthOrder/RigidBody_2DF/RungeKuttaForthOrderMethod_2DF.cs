@@ -8,7 +8,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.Rigi
     /// <summary>
     /// It is responsible to execute the Runge Kutta Forth Order numerical integration method to calculate vibration in case of two degrees freedom.
     /// </summary>
-    public class RungeKuttaForthOrderMethod_2DF : RungeKuttaForthOrderMethod<TwoDegreesFreedomRequest, TwoDegreesFreedomRequestData, TwoDegreesFreedomResponse, TwoDegreesFreedomResponseData>, IRungeKuttaForthOrderMethod_2DF
+    public class RungeKuttaForthOrderMethod_2DF : RungeKuttaForthOrderMethod, IRungeKuttaForthOrderMethod_2DF
     {
         private readonly IDifferentialEquationOfMotion _differentialEquationOfMotion;
 

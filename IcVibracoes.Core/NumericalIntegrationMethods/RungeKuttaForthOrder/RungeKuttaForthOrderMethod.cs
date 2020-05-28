@@ -7,11 +7,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
     /// <summary>
     /// It is responsible to execute the Runge Kutta Forth Order numerical integration method to calculate vibration.
     /// </summary>
-    public abstract class RungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData> : IRungeKuttaForthOrderMethod<TRequest, TRequestData, TResponse, TResponseData>
-        where TRequestData : RigidBodyRequestData
-        where TRequest : RigidBodyRequest<TRequestData>
-        where TResponseData : RigidBodyResponseData, new()
-        where TResponse : RigidBodyResponse<TResponseData>, new()
+    public abstract class RungeKuttaForthOrderMethod : IRungeKuttaForthOrderMethod
     {
         /// <summary>
         /// Calculates the value of the differential equation of motion for a specific time, based on the force and angular frequency that are passed.
