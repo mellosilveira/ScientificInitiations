@@ -31,18 +31,8 @@
         public double[] Force { get; set; }
 
         /// <summary>
-        /// The number of elements in structure.
-        /// </summary>
-        public uint NumberOfElements { get; set; }
-
-        /// <summary>
         /// The number of true boundary conditions.
         /// </summary>
         public uint NumberOfTrueBoundaryConditions { get; set; }
-
-        /// <summary>
-        /// The structure profile.
-        /// </summary>
-        public string Profile { get; set; }
     }
 }

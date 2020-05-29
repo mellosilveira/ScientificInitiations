@@ -20,11 +20,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
     /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
-    public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam> : OperationBase<TRequest, TRequestData, FiniteElementsResponse, FiniteElementsResponseData>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam>
+    public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam, TInput> : CalculateVibration<TRequest, TRequestData, FiniteElementsResponse, FiniteElementsResponseData, TInput>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam, TInput>
         where TRequestData : FiniteElementsRequestData<TProfile>, new()
         where TRequest : FiniteElementsRequest<TProfile, TRequestData>
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
+        where TInput : NewmarkMethodInput, new()
     {
         private readonly INewmarkMethod _numericalMethod;
         private readonly IProfileValidator<TProfile> _profileValidator;
@@ -43,10 +44,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
             IAuxiliarOperation auxiliarOperation,
             ITime time)
         {
-            _numericalMethod = newmarkMethod;
-            _profileValidator = profileValidator;
-            _auxiliarOperation = auxiliarOperation;
-            _time = time;
+            this._numericalMethod = newmarkMethod;
+            this._profileValidator = profileValidator;
+            this._auxiliarOperation = auxiliarOperation;
+            this._time = time;
         }
 
         /// <summary>
@@ -56,49 +57,20 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         /// <returns></returns>
         public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
 
-        /// <summary>
-        /// Calculates the input to newmark integration method.
-        /// </summary>
-        /// <param name="beam"></param>
-        /// <returns></returns>
-        public abstract Task<NewmarkMethodInput> CreateInput(TBeam beam, TRequest request, uint degreesOfFreedom);
-
-        /// <summary>
-        /// Creates the file path to write the results.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="input"></param>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        public abstract Task<string> CreateSolutionPath(TRequest request, NewmarkMethodInput input, FiniteElementsResponse response);
-
-        /// <summary>
-        /// Creates the file path to write the maximum values calculated in the analysis.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="input"></param>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        public abstract Task<string> CreateMaxValuesPath(TRequest request, NewmarkMethodInput input, FiniteElementsResponse response);
-
         protected override async Task<FiniteElementsResponse> ProcessOperation(TRequest request)
         {
             var response = new FiniteElementsResponse();
 
-            uint degreesOfFreedom = await CalculateDegreesFreedomMaximum(request.Data.NumberOfElements).ConfigureAwait(false);
-
-            TBeam beam = await BuildBeam(request, degreesOfFreedom).ConfigureAwait(false);
-
-            NewmarkMethodInput input = await CreateInput(beam, request, degreesOfFreedom).ConfigureAwait(false);
+            TInput input = await this.CreateInput(request).ConfigureAwait(false);
 
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
                 double time = input.InitialTime;
-                input.TimeStep = await _time.CalculateTimeStep(input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
-                input.FinalTime = await _time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
+                input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
+                input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
 
-                string solutionPath = await CreateSolutionPath(request, input, response).ConfigureAwait(false);
-                string maxvaluesPath = await CreateMaxValuesPath(request, input, response).ConfigureAwait(false);
+                string solutionPath = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
+                string maxvaluesPath = await this.CreateMaxValuesPath(request, input, response).ConfigureAwait(false);
 
                 var previousResult = new FiniteElementResult
                 {
@@ -122,23 +94,23 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
 
                     if (time == input.InitialTime)
                     {
-                        result = await _numericalMethod.CalculateResultForInitialTime(input, previousResult).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResultForInitialTime(input, previousResult).ConfigureAwait(false);
                     }
                     else
                     {
                         //input.Force = input.OriginalForce.MultiplyEachElement(Math.Cos(input.AngularFrequency * time));
-                        result = await _numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
-                    _auxiliarOperation.Write(time, result.Displacement, solutionPath);
+                    this._auxiliarOperation.Write(time, result.Displacement, solutionPath);
 
                     previousResult = result;
-                    maxValuesResult = await CompareValues(result, maxValuesResult, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
+                    maxValuesResult = await this.CompareValues(result, maxValuesResult, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
 
                     time += input.TimeStep;
                 }
 
-                _auxiliarOperation.Write(input.AngularFrequency, maxValuesResult.Displacement, maxvaluesPath);
+                this._auxiliarOperation.Write(input.AngularFrequency, maxValuesResult.Displacement, maxvaluesPath);
 
                 input.AngularFrequency += input.AngularFrequencyStep;
             }
@@ -151,7 +123,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         /// </summary>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        private Task<uint> CalculateDegreesFreedomMaximum(uint numberOfElements)
+        protected Task<uint> CalculateDegreesFreedomMaximum(uint numberOfElements)
         {
             return Task.FromResult((numberOfElements + 1) * Constant.NodesPerElement);
         }
@@ -200,7 +172,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         {
             FiniteElementsResponse response = new FiniteElementsResponse();
 
-            bool isProfileValid = await _profileValidator.Execute(request.Data.Profile, response).ConfigureAwait(false);
+            bool isProfileValid = await this._profileValidator.Execute(request.Data.Profile, response).ConfigureAwait(false);
 
             //bool isBeamDataValid;
 

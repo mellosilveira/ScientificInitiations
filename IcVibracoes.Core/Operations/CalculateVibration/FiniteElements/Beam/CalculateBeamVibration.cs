@@ -22,8 +22,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
     /// It's responsible to calculate the vibration in a beam.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamVibration<TProfile> : CalculateVibration_FiniteElements<BeamRequest<TProfile>, BeamRequestData<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
+    public abstract class CalculateBeamVibration<TProfile, TInput> : CalculateVibration_FiniteElements<BeamRequest<TProfile>, BeamRequestData<TProfile>, TProfile, Beam<TProfile>, TInput>, ICalculateBeamVibration<TProfile, TInput>
         where TProfile : Profile, new()
+        where TInput : NewmarkMethodInput, new()
     {
         private readonly IAuxiliarOperation _auxiliarOperation;
         private readonly IArrayOperation _arrayOperation;
@@ -53,11 +54,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             IBeamMainMatrix<TProfile> mainMatrix)
             : base(newmarkMethod, profileValidator, auxiliarOperation, time)
         {
-            _auxiliarOperation = auxiliarOperation;
-            _arrayOperation = arrayOperation;
-            _geometricProperty = geometricProperty;
-            _mappingResolver = mappingResolver;
-            _mainMatrix = mainMatrix;
+            this._auxiliarOperation = auxiliarOperation;
+            this._arrayOperation = arrayOperation;
+            this._geometricProperty = geometricProperty;
+            this._mappingResolver = mappingResolver;
+            this._mainMatrix = mainMatrix;
         }
 
         public async override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom)
@@ -71,19 +72,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
 
             if (request.Data.Profile.Area != default && request.Data.Profile.MomentOfInertia != default)
             {
-                geometricProperty.Area = await _arrayOperation.CreateVector(request.Data.Profile.Area.Value, request.Data.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await _arrayOperation.CreateVector(request.Data.Profile.MomentOfInertia.Value, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await this._arrayOperation.CreateVector(request.Data.Profile.Area.Value, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Data.Profile.MomentOfInertia.Value, request.Data.NumberOfElements).ConfigureAwait(false);
             }
             else
             {
-                geometricProperty.Area = await _geometricProperty.CalculateArea(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await _geometricProperty.CalculateMomentOfInertia(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
             }
 
             return new Beam<TProfile>()
             {
-                Fastenings = await _mappingResolver.BuildFastenings(request.Data.Fastenings).ConfigureAwait(false),
-                Forces = await _mappingResolver.BuildForceVector(request.Data.Forces, degreesOfFreedom).ConfigureAwait(false),
+                Fastenings = await this._mappingResolver.BuildFastenings(request.Data.Fastenings).ConfigureAwait(false),
+                Forces = await this._mappingResolver.BuildForceVector(request.Data.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Data.Length,
                 Material = MaterialFactory.Create(request.Data.Material),
@@ -92,9 +93,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             };
         }
 
-        public override async Task<NewmarkMethodInput> CreateInput(Beam<TProfile> beam, BeamRequest<TProfile> request, uint degreesOfFreedom)
+        public override async Task<TInput> CreateInput(BeamRequest<TProfile> request)
         {
-            bool[] bondaryCondition = await _mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom).ConfigureAwait(false);
+            uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.Data.NumberOfElements).ConfigureAwait(false);
+
+            Beam<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom);
+
+            bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom).ConfigureAwait(false);
             uint numberOfTrueBoundaryConditions = 0;
 
             for (int i = 0; i < degreesOfFreedom; i++)
@@ -106,24 +111,24 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             }
 
             // Main matrixes to create input.
-            double[,] mass = await _mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] mass = await this._mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] stiffness = await _mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] stiffness = await this._mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] damping = await _mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
+            double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
 
             double[] forces = beam.Forces;
 
             // Creating input.
-            NewmarkMethodInput input = new NewmarkMethodInput
+            TInput input = new TInput
             {
-                Mass = _auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
+                Mass = this._auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Stiffness = _auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
+                Stiffness = this._auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Damping = _auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
+                Damping = this._auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                OriginalForce = _auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
+                OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 
@@ -137,7 +142,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             return input;
         }
 
-        public override Task<string> CreateSolutionPath(BeamRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
+        public override Task<string> CreateSolutionPath(BeamRequest<TProfile> request, TInput input, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -154,7 +159,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             return Task.FromResult(path);
         }
 
-        public override Task<string> CreateMaxValuesPath(BeamRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
+        public override Task<string> CreateMaxValuesPath(BeamRequest<TProfile> request, TInput input, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 

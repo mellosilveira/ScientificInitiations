@@ -32,7 +32,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public abstract Task<string> CreateSolutionPath(string analysisType, TInput input, TResponse response);
+        public abstract Task<string> CreateSolutionPath(TRequest request, TInput input, TResponse response);
 
         /// <summary>
         /// Creates the file path to write the maximum values calculated in the analysis.
@@ -41,6 +41,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public abstract Task<string> CreateMaxValuesPath(string analysisType, TInput input, TResponse response);
+        public abstract Task<string> CreateMaxValuesPath(TRequest request, TInput input, TResponse response);
     }
 }
