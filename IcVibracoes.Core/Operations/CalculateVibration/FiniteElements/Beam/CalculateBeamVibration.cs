@@ -148,7 +148,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
 
             string folderPath = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/Beam/{request.Data.Profile.GetType().Name}/nEl={request.Data.NumberOfElements}");
+                $"Solutions/FiniteElements/Beam/{request.Data.Profile.GetType().Name}/nEl={request.Data.NumberOfElements}/{input.GetType().Name}");
 
             string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 
@@ -165,7 +165,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
 
             string folderPath = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/Beam/MaxValues");
+                $"Solutions/FiniteElements/Beam/MaxValues/{input.GetType().Name}");
 
             string fileName = $"MaxValues_{request.AnalysisType.Trim()}_{request.Data.Profile.GetType().Name}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 

@@ -23,7 +23,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         where TInput : RigidBodyInput, new()
     {
         private readonly IAuxiliarOperation _auxiliarOperation;
-        private readonly IRungeKuttaForthOrderMethod<TInput> _rungeKutta;
+        private readonly IRungeKuttaForthOrderMethod<TInput> _numericalMethod;
         private readonly ITime _time;
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             ITime time)
         {
             this._auxiliarOperation = auxiliarOperation;
-            this._rungeKutta = rungeKutta;
+            this._numericalMethod = rungeKutta;
             this._time = time;
         }
 
@@ -66,7 +66,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                     input.TimeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
                     input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
 
-                    string path = await this.CreateSolutionPath(request.AnalysisType, input, response).ConfigureAwait(false);
+                    string path = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
 
                     if (path == null)
                     {
@@ -80,7 +80,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                     while (time <= input.FinalTime)
                     {
-                        y = await this._rungeKutta.CalculateResult(input, input.TimeStep, time, y).ConfigureAwait(false);
+                        y = await this._numericalMethod.CalculateResult(input, input.TimeStep, time, y).ConfigureAwait(false);
 
                         this._auxiliarOperation.Write(time + input.TimeStep, y, path);
 

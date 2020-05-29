@@ -111,8 +111,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             };
         }
 
-        public override async Task<NewmarkMethodInput> CreateInput(BeamWithDva<TProfile> beam, BeamWithDvaRequest<TProfile> request, uint degreesOfFreedom)
+        public override async Task<TInput> CreateInput(BeamWithDvaRequest<TProfile> request)
         {
+            uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.Data.NumberOfElements).ConfigureAwait(false);
+
+            BeamWithDva<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom).ConfigureAwait(false);
+
             bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom + (uint)beam.DvaNodePositions.Length).ConfigureAwait(false);
             uint numberOfTrueBoundaryConditions = 0;
 
@@ -138,7 +142,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             double[] forces = beam.Forces;
 
             // Creating input.
-            NewmarkMethodInput input = new NewmarkMethodInput
+            TInput input = new TInput
             {
                 Mass = this._auxiliarOperation.ApplyBondaryConditions(massWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
@@ -160,7 +164,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return input;
         }
 
-        public override Task<string> CreateSolutionPath(BeamWithDvaRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
+        public override Task<string> CreateSolutionPath(BeamWithDvaRequest<TProfile> request, TInput input, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -177,7 +181,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return Task.FromResult(path);
         }
 
-        public override Task<string> CreateMaxValuesPath(BeamWithDvaRequest<TProfile> request, NewmarkMethodInput input, FiniteElementsResponse response)
+        public override Task<string> CreateMaxValuesPath(BeamWithDvaRequest<TProfile> request, TInput input, FiniteElementsResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 

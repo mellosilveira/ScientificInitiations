@@ -21,8 +21,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
     public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam, TInput> : CalculateVibration<TRequest, TRequestData, FiniteElementsResponse, FiniteElementsResponseData, TInput>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam, TInput>
-        where TRequestData : FiniteElementsRequestData<TProfile>, new()
         where TRequest : FiniteElementsRequest<TProfile, TRequestData>
+        where TRequestData : FiniteElementsRequestData<TProfile>, new()
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
         where TInput : NewmarkMethodInput, new()
@@ -94,11 +94,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
 
                     if (time == input.InitialTime)
                     {
-                        result = await this._numericalMethod.CalculateResultForInitialTime(input, previousResult).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResultForInitialTime(input).ConfigureAwait(false);
                     }
                     else
                     {
-                        //input.Force = input.OriginalForce.MultiplyEachElement(Math.Cos(input.AngularFrequency * time));
                         result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 

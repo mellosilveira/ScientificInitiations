@@ -28,7 +28,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// <summary>
         /// Creates the file path to write the results.
         /// </summary>
-        /// <param name="analysisType"></param>
+        /// <param name="request"></param>
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
@@ -37,7 +37,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// <summary>
         /// Creates the file path to write the maximum values calculated in the analysis.
         /// </summary>
-        /// <param name="analysisType"></param>
+        /// <param name="request"></param>
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>

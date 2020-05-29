@@ -59,7 +59,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
             return Task.FromResult(new OneDegreeOfFreedomInput
             {
                 AngularFrequency = request.Data.InitialAngularFrequency,
-                InitialAngularFrequency = request.Data.InitialAngularFrequency,
                 AngularFrequencyStep = request.Data.AngularFrequencyStep,
                 FinalAngularFrequency = request.Data.FinalAngularFrequency,
                 DampingRatio = request.Data.DampingRatioList.FirstOrDefault(),
@@ -73,11 +72,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <summary>
         /// Creates the file path to write the results.
         /// </summary>
-        /// <param name="analysisType"></param>
+        /// <param name="request"></param>
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override Task<string> CreateSolutionPath(string analysisType, OneDegreeOfFreedomInput input, OneDegreeOfFreedomResponse response)
+        public override Task<string> CreateSolutionPath(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomInput input, OneDegreeOfFreedomResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -85,7 +84,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
                 previousPath,
                 $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}");
 
-            string fileName = $"{analysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w={Math.Round(input.AngularFrequency, 2)}.csv";
+            string fileName = $"{request.AnalysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w={Math.Round(input.AngularFrequency, 2)}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 
@@ -97,11 +96,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <summary>
         /// Creates the file path to write the maximum values calculated in the analysis.
         /// </summary>
-        /// <param name="analysisType"></param>
+        /// <param name="request"></param>
         /// <param name="input"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override Task<string> CreateMaxValuesPath(string analysisType, OneDegreeOfFreedomInput input, OneDegreeOfFreedomResponse response)
+        public override Task<string> CreateMaxValuesPath(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomInput input, OneDegreeOfFreedomResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -109,7 +108,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
                 previousPath,
                 $"Solutions/RigidBody/OneDegreeFreedom/MaxValues");
 
-            string fileName = $"MaxValues_{analysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w0={Math.Round(input.InitialAngularFrequency, 2)}_wf={Math.Round(input.FinalAngularFrequency)}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency)}.csv";
 
             string path = Path.Combine(folderPath, fileName);
 

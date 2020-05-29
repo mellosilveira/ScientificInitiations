@@ -13,9 +13,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// Calculates the result for the initial time.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input, FiniteElementResult previousResult);
+        Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input);
 
         /// <summary>
         /// Calculates and write in a file the response matrixes.

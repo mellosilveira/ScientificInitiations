@@ -37,11 +37,16 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// Calculates the result for the initial time.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input, FiniteElementResult previousResult)
+        public Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input)
         {
-            return Task.FromResult(previousResult);
+            return Task.FromResult(new FiniteElementResult 
+            {
+                Displacement = new double[input.NumberOfTrueBoundaryConditions],
+                Velocity = new double[input.NumberOfTrueBoundaryConditions],
+                Acceleration = new double[input.NumberOfTrueBoundaryConditions],
+                Force = input.OriginalForce
+            });
         }
 
         /// <summary>
