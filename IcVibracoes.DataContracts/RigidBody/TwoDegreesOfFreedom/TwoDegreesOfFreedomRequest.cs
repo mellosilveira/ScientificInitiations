@@ -1,7 +1,7 @@
 ﻿namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom
 {
     /// <summary>
-    /// It contains the request content of Rigid Body analysis with Two Degree Freedom.
+    /// It contains the request content of Rigid Body analysis with Two Degrees of Freedom.
     /// </summary>
     public class TwoDegreesOfFreedomRequest : RigidBodyRequest<TwoDegreesOfFreedomRequestData> 
     {

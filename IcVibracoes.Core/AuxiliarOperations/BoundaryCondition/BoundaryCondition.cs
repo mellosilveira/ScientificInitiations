@@ -2,6 +2,9 @@
 
 namespace IcVibracoes.Core.AuxiliarOperations.BoundaryCondition
 {
+    /// <summary>
+    /// It's responsible to execute operations using the boundary conditions.
+    /// </summary>
     public class BoundaryCondition : IBoundaryCondition
     {
         /// <summary>

@@ -22,8 +22,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.Rigi
         }
 
         /// <summary>
-        /// Calculates the value of the differential equation of motion for a specific time, based on the force and angular frequency that are passed.
-        /// For each case, with one or two degrees of freedom, there is a different differential equation of motion.
+        /// Calculates the value of the differential equation of motion for a specific time to one degree of freedom, based on the force and angular frequency that are passed.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>

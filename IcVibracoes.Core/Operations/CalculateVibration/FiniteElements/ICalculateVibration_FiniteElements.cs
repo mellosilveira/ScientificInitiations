@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
 {
     /// <summary>
-    /// It's responsible to calculate the beam vibration at all contexts.
+    /// It's responsible to calculate the beam vibration for finite element analysis.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
     public interface ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam, TInput> : ICalculateVibration<TRequest, TRequestData, FiniteElementsResponse, FiniteElementsResponseData, TInput>

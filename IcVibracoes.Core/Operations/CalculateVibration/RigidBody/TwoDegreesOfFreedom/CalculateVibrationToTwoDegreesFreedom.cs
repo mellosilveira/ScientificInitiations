@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom
 {
     /// <summary>
-    /// It is responsible to calculate the vibration for a rigid body with two degrees freedom case.
+    /// It is responsible to calculate the vibration for a rigid body with two degrees freedom.
     /// </summary>
     public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomRequestData, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesFreedom
     {

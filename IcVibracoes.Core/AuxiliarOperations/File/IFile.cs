@@ -1,5 +1,8 @@
 ﻿namespace IcVibracoes.Core.AuxiliarOperations.File
 {
+    /// <summary>
+    /// It's responsible to execute file operations.
+    /// </summary>
     public interface IFile
     {
         /// <summary>

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
 {
     /// <summary>
-    /// It's responsible to calculate the beam vibration at all contexts.
+    /// It's responsible to calculate the beam vibration for finite element analysis.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TRequestData"></typeparam>

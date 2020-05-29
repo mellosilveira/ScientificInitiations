@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom
 {
     /// <summary>
-    /// It contains the request 'data' content of Rigid Body analysis with One Degree Freedom.
+    /// It contains the request 'data' content of Rigid Body analysis with One Degree of Freedom.
     /// </summary>
     public class OneDegreeOfFreedomRequestData : RigidBodyRequestData
     {

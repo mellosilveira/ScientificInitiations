@@ -1,7 +1,7 @@
 ﻿namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
 {
     /// <summary>
-    /// It contains the input 'data' to create a differential equation of motion for two degrees of freedom analysis.
+    /// It contains the input 'data' to two degrees of freedom numerical methods.
     /// </summary>
     public class TwoDegreesOfFreedomInput : RigidBodyInput
     {
