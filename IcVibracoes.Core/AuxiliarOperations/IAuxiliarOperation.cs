@@ -29,6 +29,6 @@
         /// <param name="time"></param>
         /// <param name="values"></param>
         /// <param name="path"></param>
-        void WriteInFile(double time, double[] values, string path);
+        void Write(double time, double[] values, string path);
     }
 }

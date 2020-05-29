@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.InputData.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using System;
 using System.Threading.Tasks;
 
@@ -37,11 +37,16 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// Calculates the result for the initial time.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input, AnalysisResult previousResult)
+        public Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input)
         {
-            return Task.FromResult(previousResult);
+            return Task.FromResult(new FiniteElementResult 
+            {
+                Displacement = new double[input.NumberOfTrueBoundaryConditions],
+                Velocity = new double[input.NumberOfTrueBoundaryConditions],
+                Acceleration = new double[input.NumberOfTrueBoundaryConditions],
+                Force = input.OriginalForce
+            });
         }
 
         /// <summary>
@@ -51,9 +56,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousResult"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public async Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult, double time)
+        public async Task<FiniteElementResult> CalculateResult(NewmarkMethodInput input, FiniteElementResult previousResult, double time)
         {
-            AnalysisResult result = new AnalysisResult
+            FiniteElementResult result = new FiniteElementResult
             {
                 Displacement = new double[input.NumberOfTrueBoundaryConditions],
                 Velocity = new double[input.NumberOfTrueBoundaryConditions],

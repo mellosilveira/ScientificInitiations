@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.DTO.InputData;
+﻿using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.DataContracts.RigidBody;
 using System.Threading.Tasks;
 
@@ -7,7 +7,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
     /// <summary>
     /// It is responsible to execute the Runge Kutta Forth Order numerical integration method to calculate vibration.
     /// </summary>
-    public abstract class RungeKuttaForthOrderMethod : IRungeKuttaForthOrderMethod
+    public abstract class RungeKuttaForthOrderMethod<TInput> : IRungeKuttaForthOrderMethod<TInput>
+        where TInput : RigidBodyInput
     {
         /// <summary>
         /// Calculates the value of the differential equation of motion for a specific time, based on the force and angular frequency that are passed.
@@ -17,7 +18,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public abstract Task<double[]> CalculateDifferencialEquationOfMotion(DifferentialEquationOfMotionInput input, double time, double[] y);
+        public abstract Task<double[]> CalculateDifferencialEquationOfMotion(TInput input, double time, double[] y);
 
         /// <summary>
         /// Calculates the response of the Runge Kutta Forth Order numerical integration.
@@ -27,7 +28,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateResult(DifferentialEquationOfMotionInput input, double timeStep, double time, double[] y)
+        public async Task<double[]> CalculateResult(TInput input, double timeStep, double time, double[] y)
         {
             int arrayLength = y.Length;
 

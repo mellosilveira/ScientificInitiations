@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Core.Calculator.Force;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
-using IcVibracoes.Core.DTO.InputData;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System;
@@ -35,7 +35,7 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateForOneDegreeOfFreedom(DifferentialEquationOfMotionInput input, double time, double[] y)
+        public async Task<double[]> CalculateForOneDegreeOfFreedom(OneDegreeOfFreedomInput input, double time, double[] y)
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
@@ -60,7 +60,7 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateForTwoDegreedOfFreedom(DifferentialEquationOfMotionInput input, double time, double[] y)
+        public async Task<double[]> CalculateForTwoDegreedOfFreedom(TwoDegreesOfFreedomInput input, double time, double[] y)
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_2DF];
 

@@ -1,10 +1,10 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Circular;
-using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.Beam.Rectangular;
-using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Circular;
-using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithDva.Rectangular;
-using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Circular;
-using IcVibracoes.Core.Operations.FiniteElements.CalculateVibration.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Circular;
+using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Rectangular;
+using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Circular;
+using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Rectangular;
+using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Circular;
+using IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber;

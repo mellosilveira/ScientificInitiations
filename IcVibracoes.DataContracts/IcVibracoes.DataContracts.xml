@@ -127,11 +127,6 @@
             <typeparam name="TProfile"></typeparam>
             <typeparam name="TRequestData"></typeparam>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`2.BeamData">
-            <summary>
-            It represents the 'data' content of Finite Elements request operation.
-            </summary>
-        </member>
         <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1">
             <summary>
             It represents the 'data' content of Finite Elements request operation.
@@ -183,21 +178,26 @@
             It contains the 'data' content of FiniteElement response operation.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.OperationRequestBase">
+        <member name="T:IcVibracoes.DataContracts.OperationRequestBase`1">
             <summary>
             It represents the essencial request content to operations.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.Author">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.Author">
             <summary>
-            Who made the analysis.
+            Who is doing the analysis.
             </summary>
             <example>Bruno Silveira</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.AnalysisType">
             <summary>
             The analysis type. 
             Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.Data">
+            <summary>
+            The main 'data' content of request.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.OperationRequestData">
@@ -266,46 +266,46 @@
             A simple analysis explanation.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequest">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest">
             <summary>
             It contains the request content of Rigid Body analysis with One Degree Freedom.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequest.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest.AnalysisType">
             <summary>
             The analysis type. 
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData">
             <summary>
             It contains the request 'data' content of Rigid Body analysis with One Degree Freedom.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData.MechanicalProperties">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData.MechanicalProperties">
             <summary>
             The mechanical properties of the object that will be analyzed.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData.InitialDisplacement">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData.InitialDisplacement">
             <summary>
             The initial displacement.
             Unit: m (meter)
             </summary>
             <example>0</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomRequestData.InitialVelocity">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData.InitialVelocity">
             <summary>
             The initial velocity.
             Unit: m/s (meters per second)
             </summary>
             <example>0</example>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomResponse">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomResponse">
             <summary>
             It contains the response content of Rigid Body analysis with One Degree Freedom.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeFreedom.OneDegreeFreedomResponseData">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomResponseData">
             <summary>
             It contains the response 'data' content of Rigid Body analysis with One Degree Freedom.
             </summary>
@@ -313,11 +313,6 @@
         <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest`1">
             <summary>
             It contains the request content to Rigid Body operation.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest`1.Data">
-            <summary>
-            It represents the 'data' content of Rigid Body request operation.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData">
@@ -355,85 +350,85 @@
             It contains the 'data' content of RigidBody response operation.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequest">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest">
             <summary>
             It contains the request content of Rigid Body analysis with Two Degree Freedom.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequest.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest.AnalysisType">
             <summary>
             The analysis type. 
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData">
             <summary>
             It contains the request 'data' content of Rigid Body analysis with Two Degree Freedom.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.MainObjectMechanicalProperties">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.MainObjectMechanicalProperties">
             <summary>
             The mechanical properties of the main object that will be analyzed.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.SecondaryObjectMechanicalProperties">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.SecondaryObjectMechanicalProperties">
             <summary>
             The mechanical properties of the secondary object that will be analyzed.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.PrimaryInitialDisplacement">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.PrimaryInitialDisplacement">
             <summary>
             The initial displacement for primary object.
             Unit: m (meter)
             </summary>
             <example>0</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.PrimaryInitialVelocity">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.PrimaryInitialVelocity">
             <summary>
             The initial velocity for primary object.
             Unit: m/s (meters per second)
             </summary>
             <example>0</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.SecondaryInitialDisplacement">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.SecondaryInitialDisplacement">
             <summary>
             The initial displacement for secondary object.,
             Unit: m (meter)
             </summary>
             <example>0</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomRequestData.SecondaryInitialVelocity">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.SecondaryInitialVelocity">
             <summary>
             The initial velocity for secondary object.
             Unit: m/s (meters per second)
             </summary>
             <example>0</example>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData">
             <summary>
             It contains the response 'data' content of Rigid Body analysis with Two Degree Freedom.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.Time">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.Time">
             <summary>
             The time corresponding for each value in that class.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.PrimaryDisplacement">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.PrimaryDisplacement">
             <summary>
             Displacement of the primary object analyzed.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.PrimaryVelocity">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.PrimaryVelocity">
             <summary>
             Velocity of the primary object analyzed.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.SecondaryDisplacement">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.SecondaryDisplacement">
             <summary>
             Displacement of the secondary object analyzed.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesFreedom.TwoDegreesFreedomResponseData.SecondaryVelocity">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.SecondaryVelocity">
             <summary>
             Velocity of the secondary object analyzed.
             </summary>

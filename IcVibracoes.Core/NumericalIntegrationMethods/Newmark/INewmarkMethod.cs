@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.InputData.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
@@ -13,9 +13,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// Calculates the result for the initial time.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<AnalysisResult> CalculateResultForInitialTime(NewmarkMethodInput input, AnalysisResult previousResult);
+        Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input);
 
         /// <summary>
         /// Calculates and write in a file the response matrixes.
@@ -24,6 +23,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousResult"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        Task<AnalysisResult> CalculateResult(NewmarkMethodInput input, AnalysisResult previousResult, double time);
+        Task<FiniteElementResult> CalculateResult(NewmarkMethodInput input, FiniteElementResult previousResult, double time);
     }
 }

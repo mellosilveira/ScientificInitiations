@@ -5,10 +5,11 @@ namespace IcVibracoes.DataContracts
     /// <summary>
     /// It represents the essencial request content to operations.
     /// </summary>
-    public class OperationRequestBase
+    public class OperationRequestBase<TRequestData>
+        where TRequestData : OperationRequestData
     {
         /// <summary>
-        /// Who made the analysis.
+        /// Who is doing the analysis.
         /// </summary>
         /// <example>Bruno Silveira</example>
         [Required]
@@ -19,5 +20,11 @@ namespace IcVibracoes.DataContracts
         /// Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
         /// </summary>
         public virtual string AnalysisType { get; }
+
+        /// <summary>
+        /// The main 'data' content of request.
+        /// </summary>
+        [Required]
+        public TRequestData Data { get; set; }
     }
 }
