@@ -74,6 +74,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             GeometricProperty piezoelectricGeometricProperty = new GeometricProperty();
 
             uint numberOfPiezoelectricPerElements = PiezoelectricPositionFactory.Create(request.Data.PiezoelectricPosition);
+            uint[] elementsWithPiezoelectric = request.Data.ElementsWithPiezoelectric ?? this.CreateVectorWithAllElements(request.Data.NumberOfElements);
 
             // Calculating beam geometric properties.
             if (request.Data.Profile.Area != default && request.Data.Profile.MomentOfInertia != default)
@@ -93,12 +94,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
                 double area = request.Data.PiezoelectricProfile.Area.Value * numberOfPiezoelectricPerElements;
                 double momentOfInertia = request.Data.PiezoelectricProfile.MomentOfInertia.Value * numberOfPiezoelectricPerElements;
 
-                piezoelectricGeometricProperty.Area = await this._arrayOperation.CreateVector(area, request.Data.NumberOfElements, request.Data.ElementsWithPiezoelectric).ConfigureAwait(false);
-                piezoelectricGeometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, request.Data.NumberOfElements, request.Data.ElementsWithPiezoelectric).ConfigureAwait(false);
+                piezoelectricGeometricProperty.Area = await this._arrayOperation.CreateVector(area, request.Data.NumberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
+                piezoelectricGeometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, request.Data.NumberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
             }
             else
             {
-                piezoelectricGeometricProperty.Area = await this._geometricProperty.CalculatePiezoelectricArea(request.Data.PiezoelectricProfile, request.Data.NumberOfElements, request.Data.ElementsWithPiezoelectric, numberOfPiezoelectricPerElements).ConfigureAwait(false);
+                piezoelectricGeometricProperty.Area = await this._geometricProperty.CalculatePiezoelectricArea(request.Data.PiezoelectricProfile, request.Data.NumberOfElements, elementsWithPiezoelectric, numberOfPiezoelectricPerElements).ConfigureAwait(false);
                 piezoelectricGeometricProperty.MomentOfInertia = await this._geometricProperty.CalculatePiezoelectricMomentOfInertia(request.Data.PiezoelectricProfile, request.Data.Profile, request.Data.NumberOfElements, request.Data.ElementsWithPiezoelectric, numberOfPiezoelectricPerElements).ConfigureAwait(false);
             }
 
@@ -108,7 +109,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
                 DielectricPermissiveness = request.Data.DielectricPermissiveness,
                 ElasticityConstant = request.Data.ElasticityConstant,
                 ElectricalCharge = new double[request.Data.NumberOfElements + 1],
-                ElementsWithPiezoelectric = request.Data.ElementsWithPiezoelectric,
+                ElementsWithPiezoelectric = elementsWithPiezoelectric,
                 Fastenings = await this._mappingResolver.BuildFastenings(request.Data.Fastenings),
                 Forces = await this._mappingResolver.BuildForceVector(request.Data.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
@@ -234,6 +235,23 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             Directory.CreateDirectory(folderPath);
 
             return Task.FromResult(path);
+        }
+
+        /// <summary>
+        /// This method creates a vector with the number of all elements.
+        /// </summary>
+        /// <param name="numberOfElements"></param>
+        /// <returns></returns>
+        private uint[] CreateVectorWithAllElements(uint numberOfElements)
+        {
+            uint[] vector = new uint[numberOfElements];
+
+            for(uint i = 0; i < numberOfElements; i++)
+            {
+                vector[i] = i + 1;
+            }
+
+            return vector;
         }
     }
 }

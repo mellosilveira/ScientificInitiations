@@ -268,7 +268,7 @@
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest">
             <summary>
-            It contains the request content of Rigid Body analysis with One Degree Freedom.
+            It contains the request content of Rigid Body analysis with One Degree of Freedom.
             </summary>
         </member>
         <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest.AnalysisType">
@@ -278,7 +278,7 @@
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData">
             <summary>
-            It contains the request 'data' content of Rigid Body analysis with One Degree Freedom.
+            It contains the request 'data' content of Rigid Body analysis with One Degree of Freedom.
             </summary>
         </member>
         <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData.MechanicalProperties">
@@ -302,12 +302,12 @@
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomResponse">
             <summary>
-            It contains the response content of Rigid Body analysis with One Degree Freedom.
+            It contains the response content of Rigid Body analysis with One Degree of Freedom.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomResponseData">
             <summary>
-            It contains the response 'data' content of Rigid Body analysis with One Degree Freedom.
+            It contains the response 'data' content of Rigid Body analysis with One Degree of Freedom.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest`1">
@@ -352,7 +352,7 @@
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest">
             <summary>
-            It contains the request content of Rigid Body analysis with Two Degree Freedom.
+            It contains the request content of Rigid Body analysis with Two Degrees of Freedom.
             </summary>
         </member>
         <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest.AnalysisType">
@@ -362,7 +362,7 @@
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData">
             <summary>
-            It contains the request 'data' content of Rigid Body analysis with Two Degree Freedom.
+            It contains the request 'data' content of Rigid Body analysis with Two Degrees of Freedom.
             </summary>
         </member>
         <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.MainObjectMechanicalProperties">
@@ -403,9 +403,14 @@
             </summary>
             <example>0</example>
         </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponse">
+            <summary>
+            It contains the response content of Rigid Body analysis with Two Degrees of Freedom.
+            </summary>
+        </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData">
             <summary>
-            It contains the response 'data' content of Rigid Body analysis with Two Degree Freedom.
+            It contains the response 'data' content of Rigid Body analysis with Two Degrees of Freedom.
             </summary>
         </member>
         <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.Time">

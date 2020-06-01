@@ -68,9 +68,9 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric
 
         /// <summary>
         /// Elements with piezoelectric.
+        /// When it is not passed, is assumed that all elements have piezoelectric, because already exist an endpoint to do a anlysis in a beam without piezoelectric.
         /// </summary>
-        /// <example>1,2</example>
-        [Required]
+        /// <example>1, 2</example>
         public uint[] ElementsWithPiezoelectric { get; set; }
 
         /// <summary>
