@@ -88,8 +88,9 @@
         <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.ElementsWithPiezoelectric">
             <summary>
             Elements with piezoelectric.
+            When it is not passed, is assumed that all elements have piezoelectric, because already exist an endpoint to do a anlysis in a beam without piezoelectric.
             </summary>
-            <example>1,2</example>
+            <example>1, 2</example>
         </member>
         <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricPosition">
             <summary>
