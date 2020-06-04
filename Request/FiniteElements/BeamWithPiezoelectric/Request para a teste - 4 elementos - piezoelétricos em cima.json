@@ -12,9 +12,6 @@
       }
     ],
     "piezoelectricSpecificMass": 7650,
-    "elementsWithPiezoelectric": [
-      1,2,3,4
-    ],
     "piezoelectricPosition": "Up",
     "piezoelectricProfile": {
       "height": 0.267e-3,

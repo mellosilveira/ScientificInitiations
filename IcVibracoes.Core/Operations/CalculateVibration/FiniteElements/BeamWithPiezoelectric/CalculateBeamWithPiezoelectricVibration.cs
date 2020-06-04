@@ -100,7 +100,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             else
             {
                 piezoelectricGeometricProperty.Area = await this._geometricProperty.CalculatePiezoelectricArea(request.Data.PiezoelectricProfile, request.Data.NumberOfElements, elementsWithPiezoelectric, numberOfPiezoelectricPerElements).ConfigureAwait(false);
-                piezoelectricGeometricProperty.MomentOfInertia = await this._geometricProperty.CalculatePiezoelectricMomentOfInertia(request.Data.PiezoelectricProfile, request.Data.Profile, request.Data.NumberOfElements, request.Data.ElementsWithPiezoelectric, numberOfPiezoelectricPerElements).ConfigureAwait(false);
+                piezoelectricGeometricProperty.MomentOfInertia = await this._geometricProperty.CalculatePiezoelectricMomentOfInertia(request.Data.PiezoelectricProfile, request.Data.Profile, request.Data.NumberOfElements, elementsWithPiezoelectric, numberOfPiezoelectricPerElements).ConfigureAwait(false);
             }
 
             return new BeamWithPiezoelectric<TProfile>()
