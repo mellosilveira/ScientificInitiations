@@ -31,5 +31,26 @@ namespace IcVibracoes.Core.AuxiliarOperations.File
                 streamWriter.Write(streamWriter.NewLine);
             }
         }
+
+        /// <summary>
+        /// Writes the values and its names in a file.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="values"></param>
+        /// <param name="path"></param>
+        public void Write(string name, double[] values, string path)
+        {
+            using (StreamWriter streamWriter = new StreamWriter(path, true))
+            {
+                streamWriter.Write($"{name}: ");
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    streamWriter.Write(string.Format("{0}; ", values[i]));
+                }
+
+                streamWriter.Write(streamWriter.NewLine);
+            }
+        }
     }
 }

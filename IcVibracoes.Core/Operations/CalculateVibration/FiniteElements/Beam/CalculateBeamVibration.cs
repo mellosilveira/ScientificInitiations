@@ -1,15 +1,16 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
+using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
+using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
 using System;
@@ -26,7 +27,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
         where TProfile : Profile, new()
         where TInput : NewmarkMethodInput, new()
     {
-        private readonly IAuxiliarOperation _auxiliarOperation;
+        private readonly IBoundaryCondition _boundaryCondition;
         private readonly IArrayOperation _arrayOperation;
         private readonly IGeometricProperty<TProfile> _geometricProperty;
         private readonly IMappingResolver _mappingResolver;
@@ -35,26 +36,28 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="newmarkMethod"></param>
-        /// <param name="profileValidator"></param>
-        /// <param name="auxiliarOperation"></param>
-        /// <param name="time"></param>
+        /// <param name="boundaryCondition"></param>
         /// <param name="arrayOperation"></param>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
+        /// <param name="file"></param>
+        /// <param name="time"></param>
+        /// <param name="newmarkMethod"></param>
+        /// <param name="naturalFrequency"></param>
         public CalculateBeamVibration(
-            INewmarkMethod newmarkMethod,
-            IProfileValidator<TProfile> profileValidator,
-            IAuxiliarOperation auxiliarOperation,
-            ITime time,
+            IBoundaryCondition boundaryCondition,
             IArrayOperation arrayOperation,
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
-            IBeamMainMatrix<TProfile> mainMatrix)
-            : base(newmarkMethod, profileValidator, auxiliarOperation, time)
+            IBeamMainMatrix<TProfile> mainMatrix,
+            IFile file, 
+            ITime time, 
+            INewmarkMethod newmarkMethod, 
+            INaturalFrequency naturalFrequency) 
+            : base(file, time, newmarkMethod, naturalFrequency)
         {
-            this._auxiliarOperation = auxiliarOperation;
+            this._boundaryCondition = boundaryCondition;
             this._arrayOperation = arrayOperation;
             this._geometricProperty = geometricProperty;
             this._mappingResolver = mappingResolver;
@@ -122,13 +125,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             // Creating input.
             TInput input = new TInput
             {
-                Mass = this._auxiliarOperation.ApplyBondaryConditions(mass, bondaryCondition, numberOfTrueBoundaryConditions),
+                Mass = await this._boundaryCondition.Apply(mass, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Stiffness = this._auxiliarOperation.ApplyBondaryConditions(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
+                Stiffness = await this._boundaryCondition.Apply(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                Damping = this._auxiliarOperation.ApplyBondaryConditions(damping, bondaryCondition, numberOfTrueBoundaryConditions),
+                Damping = await this._boundaryCondition.Apply(damping, bondaryCondition, numberOfTrueBoundaryConditions),
 
-                OriginalForce = this._auxiliarOperation.ApplyBondaryConditions(forces, bondaryCondition, numberOfTrueBoundaryConditions),
+                OriginalForce = await this._boundaryCondition.Apply(forces, bondaryCondition, numberOfTrueBoundaryConditions),
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 

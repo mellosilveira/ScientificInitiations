@@ -1,12 +1,12 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.File;
+using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElements;
 using System;
 using System.Threading.Tasks;
@@ -27,27 +27,28 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         where TBeam : IBeam<TProfile>, new()
         where TInput : NewmarkMethodInput, new()
     {
-        private readonly INewmarkMethod _numericalMethod;
-        private readonly IProfileValidator<TProfile> _profileValidator;
-        private readonly IAuxiliarOperation _auxiliarOperation;
+        private readonly IFile _file;
         private readonly ITime _time;
+        private readonly INewmarkMethod _numericalMethod;
+        private readonly INaturalFrequency _naturalFrequency;
 
         /// <summary>
-        /// Class construtor.
+        /// Class constructor.
         /// </summary>
+        /// <param name="file"></param>
+        /// <param name="time"></param>
         /// <param name="newmarkMethod"></param>
-        /// <param name="profileValidator"></param>
-        /// <param name="auxiliarOperation"></param>
+        /// <param name="naturalFrequency"></param>
         public CalculateVibration_FiniteElements(
+            IFile file,
+            ITime time,
             INewmarkMethod newmarkMethod,
-            IProfileValidator<TProfile> profileValidator,
-            IAuxiliarOperation auxiliarOperation,
-            ITime time)
+            INaturalFrequency naturalFrequency)
         {
-            this._numericalMethod = newmarkMethod;
-            this._profileValidator = profileValidator;
-            this._auxiliarOperation = auxiliarOperation;
+            this._file = file;
             this._time = time;
+            this._numericalMethod = newmarkMethod;
+            this._naturalFrequency = naturalFrequency;
         }
 
         /// <summary>
@@ -63,6 +64,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
 
             TInput input = await this.CreateInput(request).ConfigureAwait(false);
 
+            string maxValuesPath = await this.CreateMaxValuesPath(request, input, response).ConfigureAwait(false);
+
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
                 double time = input.InitialTime;
@@ -70,7 +73,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
                 input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
 
                 string solutionPath = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
-                string maxvaluesPath = await this.CreateMaxValuesPath(request, input, response).ConfigureAwait(false);
 
                 var previousResult = new FiniteElementResult
                 {
@@ -101,7 +103,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
                         result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
-                    this._auxiliarOperation.Write(time, result.Displacement, solutionPath);
+                    this._file.Write(time, result.Displacement, solutionPath);
 
                     previousResult = result;
                     maxValuesResult = await this.CompareValues(result, maxValuesResult, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
@@ -109,10 +111,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
                     time += input.TimeStep;
                 }
 
-                this._auxiliarOperation.Write(input.AngularFrequency, maxValuesResult.Displacement, maxvaluesPath);
+                this._file.Write(input.AngularFrequency, maxValuesResult.Displacement, maxValuesPath);
 
                 input.AngularFrequency += input.AngularFrequencyStep;
             }
+
+            double[] naturalFrequencies = await this._naturalFrequency.CalculateByQRDecomposition(input.Mass, input.Stiffness, tolerance: 1e-3).ConfigureAwait(false);
+            this._file.Write("Natural Frequencies", naturalFrequencies, maxValuesPath);
 
             return response;
         }
@@ -170,15 +175,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         protected async override Task<FiniteElementsResponse> ValidateOperation(TRequest request)
         {
             FiniteElementsResponse response = new FiniteElementsResponse();
-
-            bool isProfileValid = await this._profileValidator.Execute(request.Data.Profile, response).ConfigureAwait(false);
-
-            //bool isBeamDataValid;
-
-            if (!isProfileValid)
-            {
-                return response;
-            }
 
             return response;
         }

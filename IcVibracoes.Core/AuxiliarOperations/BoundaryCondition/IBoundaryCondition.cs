@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.BoundaryCondition
         /// <param name="bondaryConditions"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        Task<double[,]> ApplyBondaryConditions(double[,] matrix, bool[] bondaryConditions, uint size);
+        Task<double[,]> Apply(double[,] matrix, bool[] bondaryConditions, uint size);
 
         /// <summary>
         /// Applies the bondary conditions to a vector.
@@ -23,6 +23,6 @@ namespace IcVibracoes.Core.AuxiliarOperations.BoundaryCondition
         /// <param name="bondaryConditions"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        Task<double[]> ApplyBondaryConditions(double[] vector, bool[] bondaryConditions, uint size);
+        Task<double[]> Apply(double[] vector, bool[] bondaryConditions, uint size);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using System;
@@ -20,15 +22,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="auxiliarOperation"></param>
-        /// <param name="rungeKutta"></param>
+        /// <param name="numericalMethod"></param>
+        /// <param name="file"></param>
         /// <param name="time"></param>
         public CalculateVibrationToTwoDegreesFreedom(
-            IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod_2DF rungeKutta,
-            ITime time)
-            : base(auxiliarOperation, rungeKutta, time)
-        { }
+            IRungeKuttaForthOrderMethod_2DF numericalMethod, 
+            IFile file, 
+            ITime time) 
+            : base(numericalMethod, file, time)
+        {
+        }
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.

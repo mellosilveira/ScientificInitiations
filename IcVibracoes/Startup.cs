@@ -1,5 +1,7 @@
 using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations;
+using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
+using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
 using IcVibracoes.Core.Calculator.Eigenvalue;
 using IcVibracoes.Core.Calculator.Force;
@@ -65,71 +67,82 @@ namespace IcVibracoes
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Auxiliar Operations
-            services.AddScoped<IAuxiliarOperation, AuxiliarOperation>();
-            services.AddScoped<IDifferentialEquationOfMotion, DifferentialEquationOfMotion>();
-            services.AddScoped<IEigenvalue, Eigenvalue>();
-            services.AddScoped<IForce, Force>();
-            services.AddScoped<INaturalFrequency, NaturalFrequency>();
-
-            // Calculator - Array Operation
+            // Register Array Operation
             services.AddScoped<IArrayOperation, ArrayOperation>();
 
-            // Calculator - Geometric Property
+            // Register Auxiliar Operations - Boundary Condition
+            services.AddScoped<IBoundaryCondition, BoundaryCondition>();
+
+            // Register Auxiliar Operations - File
+            services.AddScoped<IFile, File>();
+
+            // Register Calculator - Differential Equation of Motion
+            services.AddScoped<IDifferentialEquationOfMotion, DifferentialEquationOfMotion>();
+
+            // Register Calculator - Eigenvalue
+            services.AddScoped<IEigenvalue, Eigenvalue>();
+
+            // Register Calculator - Force
+            services.AddScoped<IForce, Force>();
+
+            // Register Calculator - Geometric Property
             services.AddScoped<ICircularGeometricProperty, CircularGeometricProperty>();
             services.AddScoped<IRectangularGeometricProperty, RectangularGeometricProperty>();
 
-            // Calculator - Main Matrixes - Beam
+            // Register Calculator - Main Matrixes - Beam
             services.AddScoped<ICircularBeamMainMatrix, CircularBeamMainMatrix>();
             services.AddScoped<IRectangularBeamMainMatrix, RectangularBeamMainMatrix>();
 
-            // Calculator - Main Matrixes - Beam with Dynamic Vibration Absorber
+            // Register Calculator - Main Matrixes - Beam with Dynamic Vibration Absorber
             services.AddScoped<ICircularBeamWithDvaMainMatrix, CircularBeamWithDvaMainMatrix>();
             services.AddScoped<IRectangularBeamWithDvaMainMatrix, RectangularBeamWithDvaMainMatrix>();
 
-            // Calculator - Main Matrixes - Beam with Piezoelectric
+            // Register Calculator - Main Matrixes - Beam with Piezoelectric
             services.AddScoped<ICircularBeamWithPiezoelectricMainMatrix, CircularBeamWithPiezoelectricMainMatrix>();
             services.AddScoped<IRectangularBeamWithPiezoelectricMainMatrix, RectangularBeamWithPiezoelectricMainMatrix>();
 
-            // Calculator - Time
+            // Register Calculator - Natural Frequency
+            services.AddScoped<INaturalFrequency, NaturalFrequency>();
+
+            // Register Calculator - Time
             services.AddScoped<ITime, Time>();
 
-            // Mapper
+            // Register Mapper
             services.AddScoped<IMappingResolver, MappingResolver>();
 
-            // Numerical Integration Methods - Finite Element - Newmark
+            // Register Numerical Integration Methods - Finite Element - Newmark
             services.AddScoped<INewmarkMethod, NewmarkMethod>();
 
-            // Numerical Integration Methods - Finite Element - Newmark Beta
+            // Register Numerical Integration Methods - Finite Element - Newmark Beta
             services.AddScoped<INewmarkBetaMethod, NewmarkBetaMethod>();
 
-            // Numerical Integration Methods - Rigid Body - Runge Kutta Forth Order
+            // Register Numerical Integration Methods - Rigid Body - Runge Kutta Forth Order
             services.AddScoped<IRungeKuttaForthOrderMethod_1DF, RungeKuttaForthOrderMethod_1DF>();
             services.AddScoped<IRungeKuttaForthOrderMethod_2DF, RungeKuttaForthOrderMethod_2DF>();
 
-            // Rigid Body Operations
+            // Register Rigid Body Operations
             services.AddScoped<ICalculateVibrationToOneDegreeFreedom, CalculateVibrationToOneDegreeFreedom>();
             services.AddScoped<ICalculateVibrationToTwoDegreesFreedom, CalculateVibrationToTwoDegreesFreedom>();
 
-            // Finite Element Operations - Beam
+            // Register Finite Element Operations - Beam
             services.AddScoped<ICalculateCircularBeamVibration, CalculateCircularBeamVibration>();
             services.AddScoped<ICalculateRectangularBeamVibration, CalculateRectangularBeamVibration>();
 
-            // Finite Element Operations - Beam with Dynamic Vibration Absorber
+            // Register Finite Element Operations - Beam with Dynamic Vibration Absorber
             services.AddScoped<ICalculateCircularBeamWithDvaVibration, CalculateCircularBeamWithDvaVibration>();
             services.AddScoped<ICalculateRectangularBeamWithDvaVibration, CalculateRectangularBeamWithDvaVibration>();
 
-            // Finite Element Operations - Beam with Piezoelectric
+            // Register Finite Element Operations - Beam with Piezoelectric
             services.AddScoped<ICalculateCircularBeamWithPiezoelectricVibration, CalculateCircularBeamWithPiezoelectricVibration>();
             services.AddScoped<ICalculateRectangularBeamWithPiezoelectricVibration, CalculateRectangularBeamWithPiezoelectricVibration>();
 
-            // Validators -  Beam Request Data
+            // Register Validators - Beam Request Data
 
-            // Validators - Profiles
+            // Register Validators - Profiles
             services.AddScoped<IRectangularProfileValidator, RectangularProfileValidator>();
             services.AddScoped<ICircularProfileValidator, CircularProfileValidator>();
 
-            // Validators - Time Step
+            // Register Validators - Time Step
             services.AddScoped<ITimeStepValidator, TimeStepValidator>();
 
             services.AddControllers();

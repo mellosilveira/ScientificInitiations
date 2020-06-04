@@ -10,6 +10,11 @@
             </summary>
             <typeparam name="TProfile"></typeparam>
         </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.AnalysisType">
+            <summary>
+            The analysis type. 
+            </summary>
+        </member>
         <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequestData`1">
             <summary>
             It represents the 'data' content of BeamWithDva request.
@@ -179,6 +184,28 @@
             It contains the 'data' content of FiniteElement response operation.
             </summary>
         </member>
+        <member name="T:IcVibracoes.DataContracts.OperationError">
+            <summary>
+            It contains the content 'data' of the error class used in application.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationError.#ctor(System.String,System.String)">
+            <summary>
+            Class constructor.
+            </summary>
+            <param name="code"></param>
+            <param name="message"></param>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationError.Message">
+            <summary>
+            The erro message.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationError.Code">
+            <summary>
+            The error code.
+            </summary>
+        </member>
         <member name="T:IcVibracoes.DataContracts.OperationRequestBase`1">
             <summary>
             It represents the essencial request content to operations.
@@ -251,6 +278,39 @@
             Unit: Hz (Hertz) or rad/s (radian per second)
             </summary>
             <example>50</example>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.OperationResponseBase`1">
+            <summary>
+            It contains the content of response for all operations.
+            </summary>
+            <typeparam name="TResponseData"></typeparam>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.#ctor">
+            <summary>
+            Class constructor.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Success">
+            <summary>
+            The success status of operation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Errors">
+            <summary>
+            The list of errors.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Data">
+            <summary>
+            It represents the 'data' content of all operation response.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.AddError(System.String,System.String)">
+            <summary>
+            This method add error on list of errors.
+            </summary>
+            <param name="code"></param>
+            <param name="message"></param>
         </member>
         <member name="T:IcVibracoes.DataContracts.OperationResponseData">
             <summary>

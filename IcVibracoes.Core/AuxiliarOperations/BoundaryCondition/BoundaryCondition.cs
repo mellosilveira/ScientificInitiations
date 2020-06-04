@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.BoundaryCondition
         /// <param name="bondaryConditions"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public Task<double[,]> ApplyBondaryConditions(double[,] matrix, bool[] bondaryConditions, uint size)
+        public Task<double[,]> Apply(double[,] matrix, bool[] bondaryConditions, uint size)
         {
             int count1, count2;
 
@@ -52,7 +52,7 @@ namespace IcVibracoes.Core.AuxiliarOperations.BoundaryCondition
         /// <param name="bondaryConditions"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public Task<double[]> ApplyBondaryConditions(double[] vector, bool[] bondaryConditions, uint size)
+        public Task<double[]> Apply(double[] vector, bool[] bondaryConditions, uint size)
         {
             int count1 = 0;
 

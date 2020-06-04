@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations;
+﻿using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
@@ -22,22 +22,23 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         where TResponse : RigidBodyResponse<TResponseData>, new()
         where TInput : RigidBodyInput, new()
     {
-        private readonly IAuxiliarOperation _auxiliarOperation;
         private readonly IRungeKuttaForthOrderMethod<TInput> _numericalMethod;
+        private readonly IFile _file;
         private readonly ITime _time;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="auxiliarOperation"></param>
-        /// <param name="rungeKutta"></param>
+        /// <param name="numericalMethod"></param>
+        /// <param name="file"></param>
+        /// <param name="time"></param>
         public CalculateVibration_RigidBody(
-            IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod<TInput> rungeKutta,
+            IRungeKuttaForthOrderMethod<TInput> numericalMethod,
+            IFile file,
             ITime time)
         {
-            this._auxiliarOperation = auxiliarOperation;
-            this._numericalMethod = rungeKutta;
+            this._numericalMethod = numericalMethod;
+            this._file = file;
             this._time = time;
         }
 
@@ -76,13 +77,13 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                     double time = request.Data.InitialTime;
                     double[] y = initial_y;
 
-                    this._auxiliarOperation.Write(time, y, path);
+                    this._file.Write(time, y, path);
 
                     while (time <= input.FinalTime)
                     {
                         y = await this._numericalMethod.CalculateResult(input, input.TimeStep, time, y).ConfigureAwait(false);
 
-                        this._auxiliarOperation.Write(time + input.TimeStep, y, path);
+                        this._file.Write(time + input.TimeStep, y, path);
 
                         time += input.TimeStep;
                     }

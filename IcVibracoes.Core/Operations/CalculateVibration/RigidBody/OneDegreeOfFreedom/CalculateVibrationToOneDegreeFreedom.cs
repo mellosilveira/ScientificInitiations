@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations;
+﻿using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
@@ -20,15 +20,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="auxiliarOperation"></param>
-        /// <param name="rungeKutta"></param>
+        /// <param name="numericalMethod"></param>
+        /// <param name="file"></param>
         /// <param name="time"></param>
         public CalculateVibrationToOneDegreeFreedom(
-            IAuxiliarOperation auxiliarOperation,
-            IRungeKuttaForthOrderMethod_1DF rungeKutta,
-            ITime time)
-            : base(auxiliarOperation, rungeKutta, time)
-        { }
+            IRungeKuttaForthOrderMethod_1DF numericalMethod, 
+            IFile file, 
+            ITime time) 
+            : base(numericalMethod, file, time)
+        {
+        }
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.

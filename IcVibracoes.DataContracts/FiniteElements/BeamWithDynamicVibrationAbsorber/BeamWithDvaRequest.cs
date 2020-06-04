@@ -9,6 +9,9 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsor
     public class BeamWithDvaRequest<TProfile> : FiniteElementsRequest<TProfile, BeamWithDvaRequestData<TProfile>>
         where TProfile : Profile, new()
     {
+        /// <summary>
+        /// The analysis type. 
+        /// </summary>
         public override string AnalysisType 
         { 
             get
