@@ -7,14 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## UNRELEASED
 ### Added
 - Generic operation to calculate the vibration of structure.
-- Calculation of the maximum value of the analysis.
+- File class in AuxiliarOperation folder responsible to execute operations evolving files.
+- BoundaryCondition class in AuxiliarOperation folder responsible to apply the boundary conditions in matrixes and vectors.
 - A single way to calculate the final time.
 - Summaries in Swagger.
 - Solutions for analysis of beam and beam with piezoelectric with 4 elements to be used in poster.
+- Solutions for analysis of beam with piezoelectric for convergence analysis.
+- Calculation of the maximum value of the analysis.
 ### Fixed
 - Time step calculation for Runge Kutta Forth Order method.
 - Separated linear displacement, angular displacement and additional values when write in file.
 - Folders name and folder organization.
+### Removed
+- AuxiliarOperation class.
 
 ## [2.0.1] - 2020-05-07
 ### Fixed
