@@ -35,7 +35,7 @@
     "forceType": "Impact",
     "initialTime": 0,
     "periodCount": 10,
-    "periodDivision": 10,
+    "periodDivision": 100,
     "initialAngularFrequency": 0,
     "angularFrequencyStep": 0,
     "finalAngularFrequency": 0

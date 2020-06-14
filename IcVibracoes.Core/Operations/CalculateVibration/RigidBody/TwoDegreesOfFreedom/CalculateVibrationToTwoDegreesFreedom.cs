@@ -1,10 +1,8 @@
-﻿using IcVibracoes.Core.AuxiliarOperations;
-using IcVibracoes.Core.AuxiliarOperations.File;
+﻿using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
-using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using System;
@@ -87,15 +85,15 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderPath = Path.Combine(
+            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
+
+            string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/TwoDegreesOfFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}");
+                $"Solutions/RigidBody/OneDegreeFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}/DampingRatio={input.DampingRatio}");
 
-            string fileName = $"{request.AnalysisType.Trim()}_m1={input.Mass}_k1={input.Stiffness}_m2={input.SecondaryMass}_k2={input.SecondaryStiffness}_w={Math.Round(input.AngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
+            string path = Path.Combine(fileUri, fileName);
 
-            string path = Path.Combine(folderPath, fileName);
-
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
         }
@@ -110,17 +108,18 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         public override Task<string> CreateMaxValuesPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input, TwoDegreesOfFreedomResponse response)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+            
+            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}.csv";
 
-            string folderPath = Path.Combine(
+            string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/TwoDegreesOfFreedom/MaxValues");
+                $"Solutions/RigidBody/OneDegreeFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}/DampingRatio={input.DampingRatio}",
+                "MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_m1={input.Mass}_k1={input.Stiffness}_m2={input.SecondaryMass}_k2={input.SecondaryStiffness}_dampingRatio={input.DampingRatio}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency)}.csv";
+            string path = Path.Combine(fileUri, fileName);
 
-            string path = Path.Combine(folderPath, fileName);
-
-            Directory.CreateDirectory(folderPath);
-
+            Directory.CreateDirectory(fileUri);
+       
             return Task.FromResult(path);
         }
     }

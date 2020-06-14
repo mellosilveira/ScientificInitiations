@@ -81,15 +81,15 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderPath = Path.Combine(
+            string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}");
+                $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}");
 
-            string fileName = $"{request.AnalysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w={Math.Round(input.AngularFrequency, 2)}.csv";
+            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
 
-            string path = Path.Combine(folderPath, fileName);
+            string path = Path.Combine(fileUri, fileName);
 
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
         }
@@ -105,15 +105,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderPath = Path.Combine(
+            string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeFreedom/MaxValues");
+                $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}",
+                "MaxValues");
+            
+            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}.csv";
 
-            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_m={input.Mass}_k={input.Stiffness}_dampingRatio={input.DampingRatio}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency)}.csv";
+            string path = Path.Combine(fileUri, fileName);
 
-            string path = Path.Combine(folderPath, fileName);
-
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
         }

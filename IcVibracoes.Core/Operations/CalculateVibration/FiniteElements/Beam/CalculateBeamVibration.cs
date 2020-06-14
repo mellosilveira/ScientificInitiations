@@ -149,15 +149,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderPath = Path.Combine(
+            string fileUri = Path.Combine(
                 previousPath,
                 $"Solutions/FiniteElements/Beam/{request.Data.Profile.GetType().Name}/nEl={request.Data.NumberOfElements}/{input.GetType().Name}");
 
-            string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
+            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 
-            string path = Path.Combine(folderPath, fileName);
+            string path = Path.Combine(fileUri, fileName);
 
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
         }
@@ -166,15 +166,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderPath = Path.Combine(
+            string fileUri = Path.Combine(
                 previousPath,
                 $"Solutions/FiniteElements/Beam/MaxValues/{input.GetType().Name}");
 
-            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_{request.Data.Profile.GetType().Name}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType}_{request.Data.Profile.GetType().Name}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 
-            string path = Path.Combine(folderPath, fileName);
+            string path = Path.Combine(fileUri, fileName);
 
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
         }

@@ -11,6 +11,10 @@ namespace IcVibracoes.Core.Calculator.Time
     {
         private readonly INaturalFrequency _naturalFrequency;
 
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="naturalFrequency"></param>
         public Time(INaturalFrequency naturalFrequency)
         {
             this._naturalFrequency = naturalFrequency;
@@ -67,6 +71,7 @@ namespace IcVibracoes.Core.Calculator.Time
         /// </summary>
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
+        /// <param name="angularFrequency"></param>
         /// <param name="periodDivision"></param>
         /// <returns></returns>
         public async Task<double> CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision)
@@ -77,7 +82,7 @@ namespace IcVibracoes.Core.Calculator.Time
             double timeStep = period / periodDivision;
 
             // Natural time is divided by 10, because it's the maximum value to time step accepted in Runge Kutta Forth Order Method.
-            if (timeStep < naturalPeriod / 10)
+            if (timeStep < naturalPeriod / 10 && angularFrequency != 0)
             {
                 return timeStep;
             }

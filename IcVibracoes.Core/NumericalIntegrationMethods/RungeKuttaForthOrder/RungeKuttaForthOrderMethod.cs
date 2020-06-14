@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
-using IcVibracoes.DataContracts.RigidBody;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder

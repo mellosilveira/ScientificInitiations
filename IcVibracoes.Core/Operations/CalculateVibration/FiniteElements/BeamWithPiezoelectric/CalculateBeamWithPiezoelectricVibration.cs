@@ -212,15 +212,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderPath = Path.Combine(
+            string fileUri = Path.Combine(
                 previousPath,
                 $"Solutions/FiniteElements/BeamWithPiezoelectric/{request.Data.Profile.GetType().Name}/nEl={request.Data.NumberOfElements}/Piezoelectric {Regex.Replace(request.Data.PiezoelectricPosition, @"\s", "")}");
 
-            string fileName = $"{request.AnalysisType.Trim()}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
+            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 
-            string path = Path.Combine(folderPath, fileName);
+            string path = Path.Combine(fileUri, fileName);
 
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
         }
@@ -229,15 +229,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string folderPath = Path.Combine(
+            string fileUri = Path.Combine(
                 previousPath,
                 $"Solutions/FiniteElements/BeamWithPiezoelectric/MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType.Trim()}_{Regex.Replace(request.Data.PiezoelectricPosition, @"\s", "")}_{request.Data.Profile.GetType().Name}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType}_{Regex.Replace(request.Data.PiezoelectricPosition, @"\s", "")}_{request.Data.Profile.GetType().Name}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
 
-            string path = Path.Combine(folderPath, fileName);
+            string path = Path.Combine(fileUri, fileName);
 
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
         }
