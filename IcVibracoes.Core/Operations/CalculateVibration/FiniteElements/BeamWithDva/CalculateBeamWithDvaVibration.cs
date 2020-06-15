@@ -24,7 +24,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
     /// It's responsible to calculate the vibration in a beam with dynamic vibration absorber.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamWithDvaVibration<TProfile, TInput> : CalculateVibration_FiniteElements<BeamWithDvaRequest<TProfile>, BeamWithDvaRequestData<TProfile>, TProfile, BeamWithDva<TProfile>, TInput>, ICalculateBeamWithDvaVibration<TProfile, TInput>
+    public abstract class CalculateBeamWithDvaVibration<TProfile, TInput> : CalculateVibration_FiniteElements<BeamWithDvaRequest<TProfile>, TProfile, BeamWithDva<TProfile>, TInput>, ICalculateBeamWithDvaVibration<TProfile, TInput>
         where TProfile : Profile, new()
         where TInput : NewmarkMethodInput, new()
     {
@@ -52,10 +52,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamWithDvaMainMatrix<TProfile> mainMatrix,
-            IFile file, 
-            ITime time, 
-            INewmarkMethod newmarkMethod, 
-            INaturalFrequency naturalFrequency) 
+            IFile file,
+            ITime time,
+            INewmarkMethod newmarkMethod,
+            INaturalFrequency naturalFrequency)
             : base(file, time, newmarkMethod, naturalFrequency)
         {
             this._boundaryCondition = boundaryCondition;
@@ -72,13 +72,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
                 return null;
             }
 
+            double[] dvaMasses = new double[request.Dvas.Count];
+            double[] dvaStiffnesses = new double[request.Dvas.Count];
+            uint[] dvaNodePositions = new uint[request.Dvas.Count];
+
             int i = 0;
-
-            double[] dvaMasses = new double[request.Data.Dvas.Count];
-            double[] dvaStiffnesses = new double[request.Data.Dvas.Count];
-            uint[] dvaNodePositions = new uint[request.Data.Dvas.Count];
-
-            foreach (DynamicVibrationAbsorber dva in request.Data.Dvas)
+            foreach (DynamicVibrationAbsorber dva in request.Dvas)
             {
                 dvaMasses[i] = dva.DvaMass;
                 dvaStiffnesses[i] = dva.DvaStiffness;
@@ -88,15 +87,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
 
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            if (request.Data.Profile.Area != default && request.Data.Profile.MomentOfInertia != default)
+            if (request.Profile.Area != default && request.Profile.MomentOfInertia != default)
             {
-                geometricProperty.Area = await this._arrayOperation.CreateVector(request.Data.Profile.Area.Value, request.Data.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Data.Profile.MomentOfInertia.Value, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await this._arrayOperation.CreateVector(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
             }
             else
             {
-                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Data.Profile, request.Data.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.Profile, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Profile, request.NumberOfElements).ConfigureAwait(false);
             }
 
             return new BeamWithDva<TProfile>()
@@ -104,19 +103,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
                 DvaMasses = dvaMasses,
                 DvaNodePositions = dvaNodePositions,
                 DvaStiffnesses = dvaStiffnesses,
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Data.Fastenings).ConfigureAwait(false),
-                Forces = await this._mappingResolver.BuildForceVector(request.Data.Forces, degreesOfFreedom).ConfigureAwait(false),
+                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings).ConfigureAwait(false),
+                Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
-                Length = request.Data.Length,
-                Material = MaterialFactory.Create(request.Data.Material),
-                NumberOfElements = request.Data.NumberOfElements,
-                Profile = request.Data.Profile
+                Length = request.Length,
+                Material = MaterialFactory.Create(request.Material),
+                NumberOfElements = request.NumberOfElements,
+                Profile = request.Profile
             };
         }
 
         public override async Task<TInput> CreateInput(BeamWithDvaRequest<TProfile> request)
         {
-            uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.Data.NumberOfElements).ConfigureAwait(false);
+            uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
             BeamWithDva<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom).ConfigureAwait(false);
 
@@ -157,11 +156,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length,
 
-                AngularFrequency = request.Data.InitialAngularFrequency,
+                AngularFrequency = request.InitialAngularFrequency,
 
-                AngularFrequencyStep = request.Data.AngularFrequencyStep,
+                AngularFrequencyStep = request.AngularFrequencyStep,
 
-                FinalAngularFrequency = request.Data.FinalAngularFrequency
+                FinalAngularFrequency = request.FinalAngularFrequency
             };
 
             return input;
@@ -173,9 +172,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithDva/{request.Data.Profile.GetType().Name}/nEl={request.Data.NumberOfElements}");
+                $"Solutions/FiniteElements/BeamWithDva/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}");
 
-            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
+            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
             string path = Path.Combine(fileUri, fileName);
 
@@ -192,7 +191,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
                 previousPath,
                 $"Solutions/FiniteElements/BeamWithDva/MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType}_{request.Data.Profile.GetType().Name}_NumberOfDvas={request.Data.Dvas.Count}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}_nEl={request.Data.NumberOfElements}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
             string path = Path.Combine(fileUri, fileName);
 

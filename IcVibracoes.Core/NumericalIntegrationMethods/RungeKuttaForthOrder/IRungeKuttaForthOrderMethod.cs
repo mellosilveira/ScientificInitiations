@@ -23,10 +23,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// Calculates the response of the Runge Kutta Forth Order numerical integration.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="timeStep"></param>
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        Task<double[]> CalculateResult(TInput input, double timeStep, double time, double[] y);
+        Task<double[]> CalculateResult(TInput input, double time, double[] y);
     }
 }

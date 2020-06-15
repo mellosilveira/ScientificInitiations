@@ -9,7 +9,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
     /// It's responsible to calculate the vibration in a beam.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public interface ICalculateBeamVibration<TProfile, Input> : ICalculateVibration_FiniteElements<BeamRequest<TProfile>, BeamRequestData<TProfile>, TProfile, Beam<TProfile>, Input>
+    public interface ICalculateBeamVibration<TProfile, Input> : ICalculateVibration_FiniteElements<BeamRequest<TProfile>, TProfile, Beam<TProfile>, Input>
         where TProfile : Profile, new()
         where Input : NewmarkMethodInput, new()
     {

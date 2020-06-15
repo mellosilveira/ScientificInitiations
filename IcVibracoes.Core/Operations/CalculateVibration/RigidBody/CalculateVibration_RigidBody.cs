@@ -12,12 +12,10 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
     /// It's responsible to calculate the vibration for a rigid body analysis.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
-    /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
-    public abstract class CalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData, TInput> : CalculateVibration<TRequest, TRequestData, TResponse, TResponseData, TInput>, ICalculateVibration_RigidBody<TRequest, TRequestData, TResponse, TResponseData, TInput>
-        where TRequestData : RigidBodyRequestData
-        where TRequest : RigidBodyRequest<TRequestData>
+    public abstract class CalculateVibration_RigidBody<TRequest, TResponse, TResponseData, TInput> : CalculateVibration<TRequest, TResponse, TResponseData, TInput>, ICalculateVibration_RigidBody<TRequest, TResponse, TResponseData, TInput>
+        where TRequest : RigidBodyRequest
         where TResponseData : RigidBodyResponseData, new()
         where TResponse : RigidBodyResponse<TResponseData>, new()
         where TInput : RigidBodyInput, new()
@@ -45,27 +43,27 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public abstract Task<double[]> BuildInitialConditions(TRequestData data);
+        public abstract Task<double[]> BuildInitialConditions(TRequest request);
 
         protected override async Task<TResponse> ProcessOperation(TRequest request)
         {
             var response = new TResponse();
 
-            double[] initial_y = await this.BuildInitialConditions(request.Data).ConfigureAwait(false);
+            double[] initial_y = await this.BuildInitialConditions(request).ConfigureAwait(false);
 
             TInput input = await this.CreateInput(request).ConfigureAwait(false);
 
             // Parallel.Foreach
-            foreach (double dampingRatio in request.Data.DampingRatioList)
+            foreach (double dampingRatio in request.DampingRatioList)
             {
                 input.DampingRatio = dampingRatio;
 
                 while (input.AngularFrequency <= input.FinalAngularFrequency)
                 {
-                    input.TimeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
-                    input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
+                    input.TimeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
+                    input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
 
                     string path = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
 
@@ -74,14 +72,14 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                         return response;
                     }
 
-                    double time = request.Data.InitialTime;
+                    double time = request.InitialTime;
                     double[] y = initial_y;
 
                     this._file.Write(time, y, path);
 
                     while (time <= input.FinalTime)
                     {
-                        y = await this._numericalMethod.CalculateResult(input, input.TimeStep, time, y).ConfigureAwait(false);
+                        y = await this._numericalMethod.CalculateResult(input, time, y).ConfigureAwait(false);
 
                         this._file.Write(time + input.TimeStep, y, path);
 

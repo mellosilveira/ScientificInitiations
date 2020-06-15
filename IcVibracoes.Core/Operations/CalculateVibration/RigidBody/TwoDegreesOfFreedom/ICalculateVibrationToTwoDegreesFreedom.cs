@@ -6,5 +6,5 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with two degrees freedom.
     /// </summary>
-    public interface ICalculateVibrationToTwoDegreesFreedom : ICalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomRequestData, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput> { }
+    public interface ICalculateVibrationToTwoDegreesFreedom : ICalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput> { }
 }

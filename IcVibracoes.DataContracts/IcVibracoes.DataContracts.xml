@@ -15,13 +15,7 @@
             The analysis type. 
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequestData`1">
-            <summary>
-            It represents the 'data' content of BeamWithDva request.
-            </summary>
-            <typeparam name="TProfile"></typeparam>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequestData`1.Dvas">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.Dvas">
             <summary>
             List of dynamic vibration absorber.
             </summary>
@@ -37,73 +31,67 @@
             The analysis type. 
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1">
-            <summary>
-            It represents the 'data' content of piezoelectric request.
-            </summary>
-            <typeparam name="TProfile"></typeparam>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricYoungModulus">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricYoungModulus">
             <summary>
             Piezoelectric Young Modulus.
-            Unit: 
+            Unit: Pa (Pascal)
             </summary>
             <example>63e9</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricConstant">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricConstant">
             <summary>
             Piezoelectric constant. Variable: d31.
-            Unit: 
+            Unit: m/V (meter per Volts)
             </summary>
             <example>190e-12</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.DielectricConstant">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricConstant">
             <summary>
             Dielectric constant. Variable: k33.
-            Unit: 
+            Unit: F/m (Farad per meter)
             </summary>
             <example>7.33e-9</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.DielectricPermissiveness">
-            <summary>
-            Dielectric permissiveness. Variable: e31.
-            Unit: 
-            </summary>
-            <example>30.705</example>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.ElasticityConstant">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElasticityConstant">
             <summary>
             Elasticity value for constant electric field. Variable: c11.
-            Unit: 
+            Unit: N/m² (Newton per square meter)
             </summary>
             <example>1.076e11</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.ElectricalCharges">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricPermissiveness">
+            <summary>
+            Dielectric permissiveness. Variable: e31.
+            Unit: C/m² (Coulomb per square meter)
+            </summary>
+            <example>30.705</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElectricalCharges">
             <summary>
             Electrical charges on piezoelectric surface.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricSpecificMass">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricSpecificMass">
             <summary>
             Piezoelectric specific mass.
             Unit: kg/m³ (kilogrameter per cubic meter)
             </summary>
             <example>7650</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.ElementsWithPiezoelectric">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElementsWithPiezoelectric">
             <summary>
             Elements with piezoelectric.
             When it is not passed, is assumed that all elements have piezoelectric, because already exist an endpoint to do a anlysis in a beam without piezoelectric.
             </summary>
             <example>1, 2</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricPosition">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricPosition">
             <summary>
             Piezoelectric position on the beam. Can be: up, down, up and down.
             </summary>
             <example>Up And Down</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.PiezoelectricRequestData`1.PiezoelectricProfile">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricProfile">
             <summary>
             Piezoelectric profile.
             </summary>
@@ -120,55 +108,42 @@
             Tha analysis type.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequestData`1">
-            <summary>
-            It represents the 'data' content of beam request operation.
-            </summary>
-            <typeparam name="TProfile"></typeparam>
-        </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`2">
+        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1">
             <summary>
             It represents the request content of Finite Elements operations.
             </summary>
             <typeparam name="TProfile"></typeparam>
-            <typeparam name="TRequestData"></typeparam>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1">
-            <summary>
-            It represents the 'data' content of Finite Elements request operation.
-            </summary>
-            <typeparam name="TProfile"></typeparam>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.NumberOfElements">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.NumberOfElements">
             <summary>
             Number of elements in the beam.
             </summary>
             <example>2</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Material">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Material">
             <summary>
             Beam material.
             </summary>
             <example>Steel 1020</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Length">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Length">
             <summary>
             Beam length.
             Unit: m (meter)
             </summary>
             <example>0.5</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Fastenings">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Fastenings">
             <summary>
             The beam fastenings.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Forces">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Forces">
             <summary>
             Applied forces in the beam.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequestData`1.Profile">
+        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Profile">
             <summary>
             Beam profile.
             </summary>
@@ -181,7 +156,7 @@
         </member>
         <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsResponseData">
             <summary>
-            It contains the 'data' content of FiniteElement response operation.
+            It contains the 'data' content of Finite Element response operation.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.OperationError">
@@ -206,76 +181,73 @@
             The error code.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.OperationRequestBase`1">
+        <member name="T:IcVibracoes.DataContracts.OperationRequestBase">
             <summary>
             It represents the essencial request content to operations.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.Author">
-            <summary>
-            Who is doing the analysis.
-            </summary>
-            <example>Bruno Silveira</example>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.AnalysisType">
             <summary>
             The analysis type. 
             Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase`1.Data">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.Author">
             <summary>
-            The main 'data' content of request.
+            Who is doing the analysis.
             </summary>
+            <example>Bruno Silveira</example>
         </member>
-        <member name="T:IcVibracoes.DataContracts.OperationRequestData">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.NumericalMethod">
             <summary>
-            It represents the essencial request 'data' for operations.
+            The numerical method that have to be used in the analysis.
             </summary>
+            <example>Newmark</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestData.ForceType">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.ForceType">
             <summary>
             The force type.
+            Can be harmonic or impact.
             </summary>
             <example>Harmonic</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestData.InitialTime">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.InitialTime">
             <summary>
             Initial time of analysis.
             Unit: s (second)
             </summary>
             <example>0</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestData.PeriodCount">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.PeriodCount">
             <summary>
             Number of periods.
             </summary>
             <example>10</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestData.PeriodDivision">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.PeriodDivision">
             <summary>
             Divisions on period.
             </summary>
             <example>20</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestData.InitialAngularFrequency">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.InitialAngularFrequency">
             <summary>
-            Initial angular frequency. Receive in Hz and convert to rad/s to the calculus.
-            Unit: Hz (Hertz) or rad/s (radian per second)
+            Initial angular frequency.
+            Unit: Hz (Hertz)
             </summary>
             <example>30</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestData.AngularFrequencyStep">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.AngularFrequencyStep">
             <summary>
-            Delta angular frequency. Receive in Hz and convert to rad/s to the calculus.
-            Unit: Hz (Hertz) or rad/s (radian per second)
+            Delta angular frequency.
+            Unit: Hz (Hertz)
             </summary>
             <example>1</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestData.FinalAngularFrequency">
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.FinalAngularFrequency">
             <summary>
-            Final angular frequency. Receive in Hz and convert to rad/s to the calculus.
-            Unit: Hz (Hertz) or rad/s (radian per second)
+            Final angular frequency.
+            Unit: Hz (Hertz)
             </summary>
             <example>50</example>
         </member>
@@ -337,29 +309,10 @@
             The analysis type. 
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest.ElementData">
             <summary>
-            It contains the request 'data' content of Rigid Body analysis with One Degree of Freedom.
+            The data of element to be analyzed.
             </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData.MechanicalProperties">
-            <summary>
-            The mechanical properties of the object that will be analyzed.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData.InitialDisplacement">
-            <summary>
-            The initial displacement.
-            Unit: m (meter)
-            </summary>
-            <example>0</example>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequestData.InitialVelocity">
-            <summary>
-            The initial velocity.
-            Unit: m/s (meters per second)
-            </summary>
-            <example>0</example>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomResponse">
             <summary>
@@ -371,17 +324,12 @@
             It contains the response 'data' content of Rigid Body analysis with One Degree of Freedom.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest`1">
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest">
             <summary>
             It contains the request content to Rigid Body operation.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData">
-            <summary>
-            It represents the 'data' content of Rigid Body request operation.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData.DampingRatioList">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest.DampingRatioList">
             <summary>
             List of damping ratio of system.
             For each value in the list, it is made a new analysis.
@@ -394,7 +342,7 @@
             </summary>
             <example>0.05</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequestData.Force">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest.Force">
             <summary>
             The force applied in the main object.
             Unit: N (Newton)
@@ -411,6 +359,30 @@
             It contains the 'data' content of RigidBody response operation.
             </summary>
         </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData">
+            <summary>
+            It represents the 'data' content of a single element to be used in RigidBody operations.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData.MechanicalProperties">
+            <summary>
+            The mechanical properties of the element that will be analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData.InitialDisplacement">
+            <summary>
+            The initial displacement.
+            Unit: m (meter)
+            </summary>
+            <example>0</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData.InitialVelocity">
+            <summary>
+            The initial velocity.
+            Unit: m/s (meters per second)
+            </summary>
+            <example>0</example>
+        </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest">
             <summary>
             It contains the request content of Rigid Body analysis with Two Degrees of Freedom.
@@ -421,48 +393,15 @@
             The analysis type. 
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest.PrimaryElementData">
             <summary>
-            It contains the request 'data' content of Rigid Body analysis with Two Degrees of Freedom.
+            The data of main element to be analyzed.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.MainObjectMechanicalProperties">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest.SecondaryElementData">
             <summary>
-            The mechanical properties of the main object that will be analyzed.
+            The data of secondary element to be analyzed.
             </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.SecondaryObjectMechanicalProperties">
-            <summary>
-            The mechanical properties of the secondary object that will be analyzed.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.PrimaryInitialDisplacement">
-            <summary>
-            The initial displacement for primary object.
-            Unit: m (meter)
-            </summary>
-            <example>0</example>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.PrimaryInitialVelocity">
-            <summary>
-            The initial velocity for primary object.
-            Unit: m/s (meters per second)
-            </summary>
-            <example>0</example>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.SecondaryInitialDisplacement">
-            <summary>
-            The initial displacement for secondary object.,
-            Unit: m (meter)
-            </summary>
-            <example>0</example>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequestData.SecondaryInitialVelocity">
-            <summary>
-            The initial velocity for secondary object.
-            Unit: m/s (meters per second)
-            </summary>
-            <example>0</example>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponse">
             <summary>

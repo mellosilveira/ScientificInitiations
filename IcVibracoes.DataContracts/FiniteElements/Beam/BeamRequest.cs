@@ -6,7 +6,7 @@ namespace IcVibracoes.DataContracts.FiniteElements.Beam
     /// It represents the request content of CalculateBeam operations.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public class BeamRequest<TProfile> : FiniteElementsRequest<TProfile, BeamRequestData<TProfile>>
+    public class BeamRequest<TProfile> : FiniteElementsRequest<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>

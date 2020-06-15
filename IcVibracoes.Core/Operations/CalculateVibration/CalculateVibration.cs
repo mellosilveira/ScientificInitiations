@@ -8,12 +8,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
     /// It's responsible to calculate the vibration to a structure.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
-    /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
-    public abstract class CalculateVibration<TRequest, TRequestData, TResponse, TResponseData, TInput> : OperationBase<TRequest, TRequestData, TResponse, TResponseData>, ICalculateVibration<TRequest, TRequestData, TResponse, TResponseData, TInput>
-        where TRequest : OperationRequestBase<TRequestData>
-        where TRequestData : OperationRequestData
+    public abstract class CalculateVibration<TRequest, TResponse, TResponseData, TInput> : OperationBase<TRequest, TResponse, TResponseData>, ICalculateVibration<TRequest, TResponse, TResponseData, TInput>
+        where TRequest : OperationRequestBase
         where TResponse : OperationResponseBase<TResponseData>, new()
         where TResponseData : OperationResponseData
         where TInput : NumericalMethodInput, new()

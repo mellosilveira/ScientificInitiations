@@ -9,7 +9,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
     /// It's responsible to calculate the vibration in a beam with piezoelectric.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public interface ICalculateBeamWithPiezoelectricVibration<TProfile, TInput> : ICalculateVibration_FiniteElements<BeamWithPiezoelectricRequest<TProfile>, PiezoelectricRequestData<TProfile>, TProfile, BeamWithPiezoelectric<TProfile>, TInput>
+    public interface ICalculateBeamWithPiezoelectricVibration<TProfile, TInput> : ICalculateVibration_FiniteElements<BeamWithPiezoelectricRequest<TProfile>, TProfile, BeamWithPiezoelectric<TProfile>, TInput>
         where TProfile : Profile, new()
         where TInput : NewmarkMethodInput, new()
     {

@@ -1,4 +1,7 @@
-﻿using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Common.Profiles;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber
 {
@@ -6,7 +9,7 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsor
     /// It represents the request content of CalculateBeamWithDva operation.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public class BeamWithDvaRequest<TProfile> : FiniteElementsRequest<TProfile, BeamWithDvaRequestData<TProfile>>
+    public class BeamWithDvaRequest<TProfile> : FiniteElementsRequest<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>
@@ -19,5 +22,11 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsor
                 return "FiniteElements_BeamWithDva";
             }
         }
+
+        /// <summary>
+        /// List of dynamic vibration absorber.
+        /// </summary>
+        [Required]
+        public List<DynamicVibrationAbsorber> Dvas { get; set; }
     }
 }

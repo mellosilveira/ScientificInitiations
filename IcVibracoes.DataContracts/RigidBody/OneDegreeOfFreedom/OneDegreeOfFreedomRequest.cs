@@ -3,7 +3,7 @@
     /// <summary>
     /// It contains the request content of Rigid Body analysis with One Degree of Freedom.
     /// </summary>
-    public class OneDegreeOfFreedomRequest : RigidBodyRequest<OneDegreeOfFreedomRequestData> 
+    public class OneDegreeOfFreedomRequest : RigidBodyRequest 
     {
         /// <summary>
         /// The analysis type. 
@@ -15,5 +15,10 @@
                 return "RigidBody_OneDegreeFreedom";
             }
         }
+
+        /// <summary>
+        /// The data of element to be analyzed.
+        /// </summary>
+        public SingleElementRequestData ElementData { get; set; }
     }
 }

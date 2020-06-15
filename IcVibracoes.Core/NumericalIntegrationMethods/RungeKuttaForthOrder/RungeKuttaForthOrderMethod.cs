@@ -23,11 +23,10 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// Calculates the response of the Runge Kutta Forth Order numerical integration.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="timeStep"></param>
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateResult(TInput input, double timeStep, double time, double[] y)
+        public async Task<double[]> CalculateResult(TInput input, double time, double[] y)
         {
             int arrayLength = y.Length;
 
@@ -39,26 +38,26 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
             double[] y1 = await this.CalculateDifferencialEquationOfMotion(input, time, y).ConfigureAwait(false);
             for (int i = 0; i < arrayLength; i++)
             {
-                t1[i] = y[i] + 0.5 * timeStep * y1[i];
+                t1[i] = y[i] + 0.5 * input.TimeStep * y1[i];
             }
 
-            double[] y2 = await this.CalculateDifferencialEquationOfMotion(input, time + timeStep / 2, t1).ConfigureAwait(false);
+            double[] y2 = await this.CalculateDifferencialEquationOfMotion(input, time + input.TimeStep / 2, t1).ConfigureAwait(false);
             for (int i = 0; i < arrayLength; i++)
             {
-                t2[i] = y[i] + 0.5 * timeStep * y2[i];
+                t2[i] = y[i] + 0.5 * input.TimeStep * y2[i];
             }
 
-            double[] y3 = await this.CalculateDifferencialEquationOfMotion(input, time + timeStep / 2, t2).ConfigureAwait(false);
+            double[] y3 = await this.CalculateDifferencialEquationOfMotion(input, time + input.TimeStep / 2, t2).ConfigureAwait(false);
             for (int i = 0; i < arrayLength; i++)
             {
-                t3[i] = y[i] + timeStep * y3[i];
+                t3[i] = y[i] + input.TimeStep * y3[i];
             }
 
-            double[] y4 = await this.CalculateDifferencialEquationOfMotion(input, time + timeStep, t3).ConfigureAwait(false);
+            double[] y4 = await this.CalculateDifferencialEquationOfMotion(input, time + input.TimeStep, t3).ConfigureAwait(false);
 
             for (int i = 0; i < arrayLength; i++)
             {
-                result[i] = (y1[i] + 2 * y2[i] + 2 * y3[i] + y4[i]) * (timeStep / 6);
+                result[i] = (y1[i] + 2 * y2[i] + 2 * y3[i] + y4[i]) * (input.TimeStep / 6);
             }
 
             return result;

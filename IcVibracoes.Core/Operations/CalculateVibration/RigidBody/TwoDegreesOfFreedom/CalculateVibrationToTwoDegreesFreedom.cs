@@ -15,7 +15,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with two degrees freedom.
     /// </summary>
-    public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomRequestData, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesFreedom
+    public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesFreedom
     {
         /// <summary>
         /// Class constructor.
@@ -34,16 +34,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
-        /// <param name="requestData"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequestData requestData)
+        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequest request)
         {
             return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_2DF]
             {
-                requestData.PrimaryInitialDisplacement,
-                requestData.PrimaryInitialVelocity,
-                requestData.SecondaryInitialDisplacement,
-                requestData.SecondaryInitialVelocity
+                request.PrimaryElementData.InitialDisplacement,
+                request.PrimaryElementData.InitialVelocity,
+                request.SecondaryElementData.InitialDisplacement,
+                request.SecondaryElementData.InitialVelocity
             });
         }        
 
@@ -54,23 +54,23 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <returns></returns>
         public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
         {
-            if (request.Data == null || request.Data.MainObjectMechanicalProperties == null || request.Data.SecondaryObjectMechanicalProperties == null)
+            if (request == null || request.PrimaryElementData == null || request.SecondaryElementData== null)
             {
                 return null;
             }
 
             return Task.FromResult(new TwoDegreesOfFreedomInput
             {
-                AngularFrequency = request.Data.InitialAngularFrequency,
-                AngularFrequencyStep = request.Data.AngularFrequencyStep,
-                FinalAngularFrequency = request.Data.FinalAngularFrequency,
-                DampingRatio = request.Data.DampingRatioList.FirstOrDefault(),
-                Force = request.Data.Force,
-                ForceType = ForceTypeFactory.Create(request.Data.ForceType),
-                Stiffness = request.Data.MainObjectMechanicalProperties.Stiffness,
-                Mass = request.Data.MainObjectMechanicalProperties.Mass,
-                SecondaryStiffness = request.Data.SecondaryObjectMechanicalProperties.Stiffness,
-                SecondaryMass = request.Data.SecondaryObjectMechanicalProperties.Mass
+                AngularFrequency = request.InitialAngularFrequency,
+                AngularFrequencyStep = request.AngularFrequencyStep,
+                FinalAngularFrequency = request.FinalAngularFrequency,
+                DampingRatio = request.DampingRatioList.FirstOrDefault(),
+                Force = request.Force,
+                ForceType = ForceTypeFactory.Create(request.ForceType),
+                Stiffness = request.PrimaryElementData.MechanicalProperties.Stiffness,
+                Mass = request.PrimaryElementData.MechanicalProperties.Mass,
+                SecondaryStiffness = request.SecondaryElementData.MechanicalProperties.Stiffness,
+                SecondaryMass = request.SecondaryElementData.MechanicalProperties.Mass
             });
         }
 
@@ -109,7 +109,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
             
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}.csv";
 
             string fileUri = Path.Combine(
                 previousPath,

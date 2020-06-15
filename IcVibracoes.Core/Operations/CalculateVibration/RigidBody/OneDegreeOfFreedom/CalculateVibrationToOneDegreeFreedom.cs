@@ -15,7 +15,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with one degrees freedom.
     /// </summary>
-    public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeOfFreedomRequest, OneDegreeOfFreedomRequestData, OneDegreeOfFreedomResponse, OneDegreeOfFreedomResponseData, OneDegreeOfFreedomInput>, ICalculateVibrationToOneDegreeFreedom
+    public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeOfFreedomRequest, OneDegreeOfFreedomResponse, OneDegreeOfFreedomResponseData, OneDegreeOfFreedomInput>, ICalculateVibrationToOneDegreeFreedom
     {
         /// <summary>
         /// Class constructor.
@@ -34,14 +34,14 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
-        /// <param name="requestData"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(OneDegreeOfFreedomRequestData requestData)
+        public override Task<double[]> BuildInitialConditions(OneDegreeOfFreedomRequest request)
         {
             return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]
             {
-                requestData.InitialDisplacement,
-                requestData.InitialVelocity
+                request.ElementData.InitialDisplacement,
+                request.ElementData.InitialVelocity
             });
         }
 
@@ -52,21 +52,21 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <returns></returns>
         public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request)
         {
-            if (request.Data == null || request.Data.MechanicalProperties == null)
+            if (request == null || request.ElementData == null)
             {
                 return null;
             }
 
             return Task.FromResult(new OneDegreeOfFreedomInput
             {
-                AngularFrequency = request.Data.InitialAngularFrequency,
-                AngularFrequencyStep = request.Data.AngularFrequencyStep,
-                FinalAngularFrequency = request.Data.FinalAngularFrequency,
-                DampingRatio = request.Data.DampingRatioList.FirstOrDefault(),
-                Force = request.Data.Force,
-                ForceType = ForceTypeFactory.Create(request.Data.ForceType),
-                Stiffness = request.Data.MechanicalProperties.Stiffness,
-                Mass = request.Data.MechanicalProperties.Mass
+                AngularFrequency = request.InitialAngularFrequency,
+                AngularFrequencyStep = request.AngularFrequencyStep,
+                FinalAngularFrequency = request.FinalAngularFrequency,
+                DampingRatio = request.DampingRatioList.FirstOrDefault(),
+                Force = request.Force,
+                ForceType = ForceTypeFactory.Create(request.ForceType),
+                Stiffness = request.ElementData.MechanicalProperties.Stiffness,
+                Mass = request.ElementData.MechanicalProperties.Mass
             });
         }
 
@@ -110,7 +110,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
                 $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}",
                 "MaxValues");
             
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.Data.InitialAngularFrequency, 2)}_wf={Math.Round(request.Data.FinalAngularFrequency, 2)}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}.csv";
 
             string path = Path.Combine(fileUri, fileName);
 

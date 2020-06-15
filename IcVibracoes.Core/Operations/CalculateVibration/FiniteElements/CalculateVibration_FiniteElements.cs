@@ -17,12 +17,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
     /// It's responsible to calculate the beam vibration for finite element analysis.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
-    /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
-    public abstract class CalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam, TInput> : CalculateVibration<TRequest, TRequestData, FiniteElementsResponse, FiniteElementsResponseData, TInput>, ICalculateVibration_FiniteElements<TRequest, TRequestData, TProfile, TBeam, TInput>
-        where TRequest : FiniteElementsRequest<TProfile, TRequestData>
-        where TRequestData : FiniteElementsRequestData<TProfile>, new()
+    public abstract class CalculateVibration_FiniteElements<TRequest, TProfile, TBeam, TInput> : CalculateVibration<TRequest, FiniteElementsResponse, FiniteElementsResponseData, TInput>, ICalculateVibration_FiniteElements<TRequest, TProfile, TBeam, TInput>
+        where TRequest : FiniteElementsRequest<TProfile>
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
         where TInput : NewmarkMethodInput, new()
@@ -69,8 +67,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
                 double time = input.InitialTime;
-                input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.Data.PeriodDivision).ConfigureAwait(false);
-                input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.Data.PeriodCount).ConfigureAwait(false);
+                input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
+                input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
 
                 string solutionPath = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
 

@@ -9,12 +9,10 @@ namespace IcVibracoes.Core.Operations
     /// It represents the base for all operations in the application.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
-    /// <typeparam name="TRequestData"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
-    public abstract class OperationBase<TRequest, TRequestData, TResponse, TResponseData> : IOperationBase<TRequest, TRequestData, TResponse, TResponseData>
-        where TRequest : OperationRequestBase<TRequestData>
-        where TRequestData : OperationRequestData
+    public abstract class OperationBase<TRequest, TResponse, TResponseData> : IOperationBase<TRequest, TResponse, TResponseData>
+        where TRequest : OperationRequestBase
         where TResponse : OperationResponseBase<TResponseData>, new()
         where TResponseData : OperationResponseData
     {
