@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Path used to save the Rigid Body solutions. 
 - Moved obsoleted requests to folder Obsoleted in Request folder.
 - Properties on classes RequestData moved to classes Request.
+- FiniteElementsMethodInput for all FiniteMethod operations.
 ### Removed
 - All classes RequestData.
 ### Added

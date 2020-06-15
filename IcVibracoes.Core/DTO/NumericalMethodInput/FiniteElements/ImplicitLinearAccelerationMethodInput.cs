@@ -8,7 +8,7 @@
         /// <summary>
         /// Integration constant used in Implicit Linear Acceleration method calculations.
         /// </summary>
-        public double Beta 
+        public override double Beta 
         { 
             get
             {
@@ -20,6 +20,6 @@
         /// <summary>
         /// Integration constant used in Implicit Linear Acceleration method calculations.
         /// </summary>
-        public double Gama => 0.5;
+        public override double Gama => 0.5;
     }
 }

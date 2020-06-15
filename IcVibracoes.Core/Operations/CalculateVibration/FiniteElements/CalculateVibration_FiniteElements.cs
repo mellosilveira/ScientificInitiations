@@ -19,11 +19,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
-    public abstract class CalculateVibration_FiniteElements<TRequest, TProfile, TBeam, TInput> : CalculateVibration<TRequest, FiniteElementsResponse, FiniteElementsResponseData, TInput>, ICalculateVibration_FiniteElements<TRequest, TProfile, TBeam, TInput>
+    public abstract class CalculateVibration_FiniteElements<TRequest, TProfile, TBeam> : CalculateVibration<TRequest, FiniteElementsResponse, FiniteElementsResponseData, FiniteElementsMethodInput>, ICalculateVibration_FiniteElements<TRequest, TProfile, TBeam>
         where TRequest : FiniteElementsRequest<TProfile>
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
-        where TInput : NewmarkMethodInput, new()
     {
         private readonly IFile _file;
         private readonly ITime _time;
@@ -60,9 +59,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         {
             var response = new FiniteElementsResponse();
 
-            TInput input = await this.CreateInput(request).ConfigureAwait(false);
+            FiniteElementsMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
 
-            string maxValuesPath = await this.CreateMaxValuesPath(request, input, response).ConfigureAwait(false);
+            string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
 
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
@@ -70,7 +69,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
                 input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
                 input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
 
-                string solutionPath = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
+                string solutionPath = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
 
                 var previousResult = new FiniteElementResult
                 {
@@ -94,17 +93,17 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
 
                     if (time == input.InitialTime)
                     {
-                        result = await this._numericalMethod.CalculateResultForInitialTime(input).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResultForInitialTime(input as NewmarkMethodInput).ConfigureAwait(false);
                     }
                     else
                     {
-                        result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResult(input as NewmarkMethodInput, previousResult, time).ConfigureAwait(false);
                     }
 
                     this._file.Write(time, result.Displacement, solutionPath);
 
                     previousResult = result;
-                    maxValuesResult = await this.CompareValues(result, maxValuesResult, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
+                    await this.CompareValuesAndUpdateMaxValuesResult(result, maxValuesResult).ConfigureAwait(false);
 
                     time += input.TimeStep;
                 }
@@ -131,38 +130,39 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         }
 
         /// <summary>
-        /// Compares the values
+        /// Compares the values and update the result with max values.
         /// </summary>
         /// <param name="result"></param>
         /// <param name="maxValuesResult"></param>
-        /// <param name="length"></param>
         /// <returns></returns>
-        private Task<FiniteElementResult> CompareValues(FiniteElementResult result, FiniteElementResult maxValuesResult, uint length)
+        private Task CompareValuesAndUpdateMaxValuesResult(FiniteElementResult result, FiniteElementResult maxValuesResult)
         {
+            int length = result.Displacement.Length;
+
             for (uint i = 0; i < length; i++)
             {
-                if (maxValuesResult.Displacement[i] < Math.Abs(result.Displacement[i]))
+                if (Math.Abs(maxValuesResult.Displacement[i]) < Math.Abs(result.Displacement[i]))
                 {
                     maxValuesResult.Displacement[i] = Math.Abs(result.Displacement[i]);
                 }
 
-                if (maxValuesResult.Velocity[i] < Math.Abs(result.Velocity[i]))
+                if (Math.Abs(maxValuesResult.Velocity[i]) < Math.Abs(result.Velocity[i]))
                 {
                     maxValuesResult.Velocity[i] = Math.Abs(result.Velocity[i]);
                 }
 
-                if (maxValuesResult.Acceleration[i] < Math.Abs(result.Acceleration[i]))
+                if (Math.Abs(maxValuesResult.Acceleration[i]) < Math.Abs(result.Acceleration[i]))
                 {
                     maxValuesResult.Acceleration[i] = Math.Abs(result.Acceleration[i]);
                 }
 
-                if (maxValuesResult.Force[i] < Math.Abs(result.Force[i]))
+                if (Math.Abs(maxValuesResult.Force[i]) < Math.Abs(result.Force[i]))
                 {
                     maxValuesResult.Force[i] = Math.Abs(result.Force[i]);
                 }
             }
 
-            return Task.FromResult(maxValuesResult);
+            return Task.CompletedTask;
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.Core.Operations.CalculateVibration;
 using IcVibracoes.DataContracts.RigidBody;
+using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
@@ -55,17 +56,20 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
             TInput input = await this.CreateInput(request).ConfigureAwait(false);
 
-            // Parallel.Foreach
             foreach (double dampingRatio in request.DampingRatioList)
             {
                 input.DampingRatio = dampingRatio;
+
+                string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
 
                 while (input.AngularFrequency <= input.FinalAngularFrequency)
                 {
                     input.TimeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
                     input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
 
-                    string path = await this.CreateSolutionPath(request, input, response).ConfigureAwait(false);
+                    double[] maxValues = new double[initial_y.Length];
+
+                    string path = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
 
                     if (path == null)
                     {
@@ -81,16 +85,41 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                     {
                         y = await this._numericalMethod.CalculateResult(input, time, y).ConfigureAwait(false);
 
+                        await this.CompareValuesAndUpdateMaxValuesResult(y, maxValues).ConfigureAwait(false);
+
                         this._file.Write(time + input.TimeStep, y, path);
 
                         time += input.TimeStep;
                     }
+
+                    this._file.Write(input.AngularFrequency, maxValues, maxValuesPath);
 
                     input.AngularFrequency += input.AngularFrequencyStep;
                 }
             }
 
             return response;
+        }
+
+        /// <summary>
+        /// Compares the values and update the result with max values.
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="maxValuesResult"></param>
+        /// <returns></returns>
+        private Task CompareValuesAndUpdateMaxValuesResult(double[] result, double[] maxValuesResult)
+        {
+            int length = result.Length;
+
+            for (int i = 0; i < length; i++)
+            {
+                if (Math.Abs(result[i]) > Math.Abs(maxValuesResult[i]))
+                {
+                    maxValuesResult[i] = result[i];
+                }
+            }
+
+            return Task.CompletedTask;
         }
 
         protected override Task<TResponse> ValidateOperation(TRequest request)

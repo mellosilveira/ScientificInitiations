@@ -10,11 +10,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
     /// It's responsible to calculate the beam vibration for finite element analysis.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public interface ICalculateVibration_FiniteElements<TRequest, TProfile, TBeam, TInput> : ICalculateVibration<TRequest, FiniteElementsResponse, FiniteElementsResponseData, TInput>
+    public interface ICalculateVibration_FiniteElements<TRequest, TProfile, TBeam> : ICalculateVibration<TRequest, FiniteElementsResponse, FiniteElementsResponseData, FiniteElementsMethodInput>
         where TRequest : FiniteElementsRequest<TProfile>
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
-        where TInput : NewmarkMethodInput, new()
     {
         /// <summary>
         /// Builds the beam.

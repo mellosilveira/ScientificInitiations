@@ -28,17 +28,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        Task<string> CreateSolutionPath(TRequest request, TInput input, TResponse response);
+        Task<string> CreateSolutionPath(TRequest request, TInput input);
 
         /// <summary>
         /// Creates the file path to write the maximum values calculated in the analysis.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        Task<string> CreateMaxValuesPath(TRequest request, TInput input, TResponse response);
+        Task<string> CreateMaxValuesPath(TRequest request, TInput input);
     }
 }

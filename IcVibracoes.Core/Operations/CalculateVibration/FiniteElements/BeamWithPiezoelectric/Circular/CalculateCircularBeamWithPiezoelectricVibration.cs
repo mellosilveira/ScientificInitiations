@@ -6,7 +6,6 @@ using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
@@ -15,7 +14,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
     /// <summary>
     /// It's responsible to calculate the vibration in a circular beam with piezoelectric.
     /// </summary>
-    public class CalculateCircularBeamWithPiezoelectricVibration : CalculateBeamWithPiezoelectricVibration<CircularProfile, NewmarkMethodInput>, ICalculateCircularBeamWithPiezoelectricVibration
+    public class CalculateCircularBeamWithPiezoelectricVibration : CalculateBeamWithPiezoelectricVibration<CircularProfile>, ICalculateCircularBeamWithPiezoelectricVibration
     {
         /// <summary>
         /// Class constructor.

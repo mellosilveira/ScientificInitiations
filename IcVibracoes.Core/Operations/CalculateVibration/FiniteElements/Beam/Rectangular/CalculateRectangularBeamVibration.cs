@@ -6,7 +6,6 @@ using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
@@ -15,7 +14,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Rec
     /// <summary>
     /// It's responsible to calculate the vibration in a rectangular beam.
     /// </summary>
-    public class CalculateRectangularBeamVibration : CalculateBeamVibration<RectangularProfile, NewmarkMethodInput>, ICalculateRectangularBeamVibration
+    public class CalculateRectangularBeamVibration : CalculateBeamVibration<RectangularProfile>, ICalculateRectangularBeamVibration
     {
         /// <summary>
         /// Class constructor.

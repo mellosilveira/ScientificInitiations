@@ -34,5 +34,20 @@
         /// The number of true boundary conditions.
         /// </summary>
         public uint NumberOfTrueBoundaryConditions { get; set; }
+
+        /// <summary>
+        /// Integration constant used in numerical method calculations.
+        /// Valid values:
+        /// 1. 0 --> Central difference method.
+        /// 2. 1/4 --> Newmark method is implicit and unconditionally stable. In this case the acceleration within the time interval [ti, ti+1) is presumed to be constant.
+        /// 3. 1/6 --> Linear acceleration method. In this case the acceleration within the time interval [ti, ti+1) is presumed to be linear.
+        /// </summary>
+        public virtual double Beta { get; set; }
+
+        /// <summary>
+        /// Integration constant used in numerical method calculations.
+        /// For Gama = 1 / 2 the numerical method is at least second-order accurate, it is first order accurate for all other values of.
+        /// </summary>
+        public virtual double Gama { get; set; }
     }
 }

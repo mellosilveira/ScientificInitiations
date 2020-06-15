@@ -6,7 +6,6 @@ using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
@@ -15,7 +14,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Cir
     /// <summary>
     /// It's responsible to calculate the vibration in a circular beam.
     /// </summary>
-    public class CalculateCircularBeamVibration : CalculateBeamVibration<CircularProfile, NewmarkMethodInput>, ICalculateCircularBeamVibration
+    public class CalculateCircularBeamVibration : CalculateBeamVibration<CircularProfile>, ICalculateCircularBeamVibration
     {
         /// <summary>
         /// Class constructor.

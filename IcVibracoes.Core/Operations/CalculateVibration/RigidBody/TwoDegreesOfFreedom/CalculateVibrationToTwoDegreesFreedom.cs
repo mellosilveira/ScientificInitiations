@@ -79,9 +79,8 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public override Task<string> CreateSolutionPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input, TwoDegreesOfFreedomResponse response)
+        public override Task<string> CreateSolutionPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -103,9 +102,8 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public override Task<string> CreateMaxValuesPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input, TwoDegreesOfFreedomResponse response)
+        public override Task<string> CreateMaxValuesPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
             

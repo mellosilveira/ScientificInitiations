@@ -24,9 +24,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
     /// It's responsible to calculate the vibration in a beam with dynamic vibration absorber.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamWithDvaVibration<TProfile, TInput> : CalculateVibration_FiniteElements<BeamWithDvaRequest<TProfile>, TProfile, BeamWithDva<TProfile>, TInput>, ICalculateBeamWithDvaVibration<TProfile, TInput>
+    public abstract class CalculateBeamWithDvaVibration<TProfile> : CalculateVibration_FiniteElements<BeamWithDvaRequest<TProfile>, TProfile, BeamWithDva<TProfile>>, ICalculateBeamWithDvaVibration<TProfile>
         where TProfile : Profile, new()
-        where TInput : NewmarkMethodInput, new()
     {
         private readonly IBoundaryCondition _boundaryCondition;
         private readonly IArrayOperation _arrayOperation;
@@ -113,7 +112,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             };
         }
 
-        public override async Task<TInput> CreateInput(BeamWithDvaRequest<TProfile> request)
+        public override async Task<FiniteElementsMethodInput> CreateInput(BeamWithDvaRequest<TProfile> request)
         {
             uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
@@ -144,7 +143,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             double[] forces = beam.Forces;
 
             // Creating input.
-            TInput input = new TInput
+            FiniteElementsMethodInput input = new FiniteElementsMethodInput
             {
                 Mass = await this._boundaryCondition.Apply(massWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 
@@ -166,13 +165,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return input;
         }
 
-        public override Task<string> CreateSolutionPath(BeamWithDvaRequest<TProfile> request, TInput input, FiniteElementsResponse response)
+        public override Task<string> CreateSolutionPath(BeamWithDvaRequest<TProfile> request, FiniteElementsMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithDva/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}");
+                $"Solutions/FiniteElements/BeamWithDva/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}");
 
             string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
@@ -183,13 +182,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return Task.FromResult(path);
         }
 
-        public override Task<string> CreateMaxValuesPath(BeamWithDvaRequest<TProfile> request, TInput input, FiniteElementsResponse response)
+        public override Task<string> CreateMaxValuesPath(BeamWithDvaRequest<TProfile> request, FiniteElementsMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithDva/MaxValues");
+                $"Solutions/FiniteElements/BeamWithDva/MaxValues/{request.NumericalMethod}");
 
             string fileName = $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 

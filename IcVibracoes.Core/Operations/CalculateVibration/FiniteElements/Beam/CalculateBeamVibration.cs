@@ -23,9 +23,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
     /// It's responsible to calculate the vibration in a beam.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamVibration<TProfile, TInput> : CalculateVibration_FiniteElements<BeamRequest<TProfile>, TProfile, Beam<TProfile>, TInput>, ICalculateBeamVibration<TProfile, TInput>
+    public abstract class CalculateBeamVibration<TProfile> : CalculateVibration_FiniteElements<BeamRequest<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
         where TProfile : Profile, new()
-        where TInput : NewmarkMethodInput, new()
     {
         private readonly IBoundaryCondition _boundaryCondition;
         private readonly IArrayOperation _arrayOperation;
@@ -96,7 +95,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             };
         }
 
-        public override async Task<TInput> CreateInput(BeamRequest<TProfile> request)
+        public override async Task<FiniteElementsMethodInput> CreateInput(BeamRequest<TProfile> request)
         {
             uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
@@ -123,7 +122,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             double[] forces = beam.Forces;
 
             // Creating input.
-            TInput input = new TInput
+            FiniteElementsMethodInput input = new FiniteElementsMethodInput
             {
                 Mass = await this._boundaryCondition.Apply(mass, bondaryCondition, numberOfTrueBoundaryConditions),
 
@@ -145,13 +144,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             return input;
         }
 
-        public override Task<string> CreateSolutionPath(BeamRequest<TProfile> request, TInput input, FiniteElementsResponse response)
+        public override Task<string> CreateSolutionPath(BeamRequest<TProfile> request, FiniteElementsMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/Beam/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{input.GetType().Name}");
+                $"Solutions/FiniteElements/Beam/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}");
 
             string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
@@ -162,13 +161,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             return Task.FromResult(path);
         }
 
-        public override Task<string> CreateMaxValuesPath(BeamRequest<TProfile> request, TInput input, FiniteElementsResponse response)
+        public override Task<string> CreateMaxValuesPath(BeamRequest<TProfile> request, FiniteElementsMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/Beam/MaxValues/{input.GetType().Name}");
+                $"Solutions/FiniteElements/Beam/MaxValues/{request.NumericalMethod}");
 
             string fileName = $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 

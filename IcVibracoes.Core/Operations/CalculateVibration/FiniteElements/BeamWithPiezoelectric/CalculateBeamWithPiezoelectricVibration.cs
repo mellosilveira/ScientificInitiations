@@ -25,9 +25,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
     /// It's responsible to calculate the vibration in a beam with piezoelectric.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamWithPiezoelectricVibration<TProfile, TInput> : CalculateVibration_FiniteElements<BeamWithPiezoelectricRequest<TProfile>, TProfile, BeamWithPiezoelectric<TProfile>, TInput>, ICalculateBeamWithPiezoelectricVibration<TProfile, TInput>
+    public abstract class CalculateBeamWithPiezoelectricVibration<TProfile> : CalculateVibration_FiniteElements<BeamWithPiezoelectricRequest<TProfile>, TProfile, BeamWithPiezoelectric<TProfile>>, ICalculateBeamWithPiezoelectricVibration<TProfile>
         where TProfile : Profile, new()
-        where TInput : NewmarkMethodInput, new()
     {
         private readonly IBoundaryCondition _boundaryCondition;
         private readonly IArrayOperation _arrayOperation;
@@ -129,7 +128,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             };
         }
 
-        public override async Task<TInput> CreateInput(BeamWithPiezoelectricRequest<TProfile> request)
+        public override async Task<FiniteElementsMethodInput> CreateInput(BeamWithPiezoelectricRequest<TProfile> request)
         {
             uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
@@ -184,7 +183,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             double[] equivalentForce = await this._arrayOperation.MergeVectors(force, electricalCharge);
 
             // Creating input.
-            TInput input = new TInput
+            FiniteElementsMethodInput input = new FiniteElementsMethodInput
             {
                 Mass = await this._boundaryCondition.Apply(equivalentMass, bondaryConditions, numberOfTrueBoundaryConditions),
 
@@ -206,13 +205,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return input;
         }
 
-        public override Task<string> CreateSolutionPath(BeamWithPiezoelectricRequest<TProfile> request, TInput input, FiniteElementsResponse response)
+        public override Task<string> CreateSolutionPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementsMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithPiezoelectric/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/Piezoelectric {Regex.Replace(request.PiezoelectricPosition, @"\s", "")}");
+                $"Solutions/FiniteElements/BeamWithPiezoelectric/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/Piezoelectric {Regex.Replace(request.PiezoelectricPosition, @"\s", "")}/{request.NumericalMethod}");
 
             string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
@@ -223,13 +222,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return Task.FromResult(path);
         }
 
-        public override Task<string> CreateMaxValuesPath(BeamWithPiezoelectricRequest<TProfile> request, TInput input, FiniteElementsResponse response)
+        public override Task<string> CreateMaxValuesPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementsMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithPiezoelectric/MaxValues");
+                $"Solutions/FiniteElements/BeamWithPiezoelectric/MaxValues/{request.NumericalMethod}");
 
             string fileName = $"MaxValues_{request.AnalysisType}_{Regex.Replace(request.PiezoelectricPosition, @"\s", "")}_{request.Profile.GetType().Name}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
