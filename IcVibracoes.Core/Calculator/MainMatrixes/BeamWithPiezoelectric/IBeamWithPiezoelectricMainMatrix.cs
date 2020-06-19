@@ -1,6 +1,8 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
@@ -88,13 +90,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         Task<double[,]> CalculateEquivalentStiffness(double[,] stiffness, double[,] piezoelectricElectromechanicalCoupling, double[,] piezoelectricCapacitance, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum);
 
         /// <summary>
-        /// It's rewsponsible to build the bondary condition matrix.
+        /// /// It's rewsponsible to build the bondary condition matrix.
         /// </summary>
-        /// <param name="firstFastening"></param>
-        /// <param name="lastFastening"></param>
+        /// <param name="fastenings"></param>
         /// <param name="numberOfNodes"></param>
         /// <param name="elementsWithPiezoelectric"></param>
         /// <returns></returns>
-        Task<bool[]> CalculatePiezoelectricBondaryCondition(uint numberOfNodes, uint[] elementsWithPiezoelectric);
+        Task<bool[]> CalculatePiezoelectricBondaryCondition(IDictionary<uint, FasteningType> fastenings, uint numberOfNodes, uint[] elementsWithPiezoelectric);
     }
 }

@@ -1,9 +1,13 @@
-﻿using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ArrayOperations;
+using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -290,28 +294,34 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <summary>
         /// It's responsible to build the bondary condition matrix.
         /// </summary>
+        /// <param name="fastenings"></param>
         /// <param name="numberOfElements"></param>
         /// <param name="elementsWithPiezoelectric"></param>
         /// <returns></returns>
-        public Task<bool[]> CalculatePiezoelectricBondaryCondition(uint numberOfElements, uint[] elementsWithPiezoelectric)
+        public Task<bool[]> CalculatePiezoelectricBondaryCondition(IDictionary<uint, FasteningType> fastenings, uint numberOfElements, uint[] elementsWithPiezoelectric)
         {
-            bool[] bondaryCondition = new bool[numberOfElements + 1];
+            bool[] boundaryCondition = new bool[numberOfElements + 1];
 
             for (uint i = 0; i < numberOfElements; i++)
             {
                 if (elementsWithPiezoelectric.Contains(i + 1))
                 {
-                    bondaryCondition[i] = true;
-                    bondaryCondition[i + 1] = true;
+                    boundaryCondition[i] = true;
+                    boundaryCondition[i + 1] = true;
                 }
                 else
                 {
-                    bondaryCondition[i] = false;
-                    bondaryCondition[i + 1] = false;
+                    boundaryCondition[i] = false;
+                    boundaryCondition[i + 1] = false;
                 }
             }
 
-            return Task.FromResult(bondaryCondition);
+            foreach(KeyValuePair<uint, FasteningType> fastening in fastenings)
+            {
+                boundaryCondition[fastening.Key] = fastening.Value.LinearDisplacement;
+            }
+
+            return Task.FromResult(boundaryCondition);
         }
     }
 }

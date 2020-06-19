@@ -147,7 +147,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
                 }
             }
 
-            bool[] piezoelectricBondaryConditions = await this._mainMatrix.CalculatePiezoelectricBondaryCondition(beam.NumberOfElements, beam.ElementsWithPiezoelectric).ConfigureAwait(false);
+            bool[] piezoelectricBondaryConditions = await this._mainMatrix.CalculatePiezoelectricBondaryCondition(beam.Fastenings, beam.NumberOfElements, beam.ElementsWithPiezoelectric).ConfigureAwait(false);
             uint numberOfTruePiezoelectricBoundaryConditions = 0;
 
             for (int i = 0; i < piezoelectricDegreesFreedomMaximum; i++)
