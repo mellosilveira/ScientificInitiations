@@ -14,11 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Matrix with piezoelectric boundary conditions to consider the beam fastening.
 - Constructor of class FiniteElementsMethodInput receives the Numerical Method choosen for the analysis to set the correct values on properties Beta and Gama.
 - All names with FiniteElements to FiniteElement.
-- Numerical method instantiated on process operation instead of in the constructor.
+- Numerical method instantiated in the process operation, instead of in the constructor, to allow the user to decide which numerical method to use in the analysis without having to create an endpoint per numerical method.
 ### Removed
 - All classes RequestData.
 - Classes CentralDifferenceMethodInput, ImplicitAccelerationMethodInput and NewmarkMethodInput.
 ### Added
+- Property NumericalMethod on OperationRequestBase.
 - Enum NumericalMethod.
 - Property NumericalMethod in class OperationRequestBase.
 
