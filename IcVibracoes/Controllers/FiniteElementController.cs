@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace IcVibracoes.Controllers
 {
     /// <summary>
-    /// This controller executes analysis using finite elements concepts.
+    /// This controller executes analysis using finite element concepts.
     /// The object is divided in elements and the mechanical properties are matricially calculated.
     /// </summary>
     [Route("api/v1/beam")]

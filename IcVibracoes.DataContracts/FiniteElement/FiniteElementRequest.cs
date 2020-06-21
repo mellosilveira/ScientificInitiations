@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace IcVibracoes.DataContracts.FiniteElement
 {
     /// <summary>
-    /// It represents the request content of Finite Elements operations.
+    /// It represents the request content of Finite Element operations.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
     public abstract class FiniteElementRequest<TProfile> : OperationRequestBase
