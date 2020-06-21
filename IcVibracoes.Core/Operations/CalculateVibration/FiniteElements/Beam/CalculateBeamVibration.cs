@@ -8,10 +8,10 @@ using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.Beam;
 using System;
 using System.IO;
@@ -50,10 +50,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamMainMatrix<TProfile> mainMatrix,
-            IFile file, 
-            ITime time, 
-            INewmarkMethod newmarkMethod, 
-            INaturalFrequency naturalFrequency) 
+            IFile file,
+            ITime time,
+            INewmarkMethod newmarkMethod,
+            INaturalFrequency naturalFrequency)
             : base(file, time, newmarkMethod, naturalFrequency)
         {
             this._boundaryCondition = boundaryCondition;
@@ -95,6 +95,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             };
         }
 
+        // TODO: Generalizar este método para as análises de elementos finitos
         public override async Task<FiniteElementsMethodInput> CreateInput(BeamRequest<TProfile> request)
         {
             uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
@@ -122,7 +123,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam
             double[] forces = beam.Forces;
 
             // Creating input.
-            FiniteElementsMethodInput input = new FiniteElementsMethodInput
+            FiniteElementsMethodInput input = new FiniteElementsMethodInput(NumericalMethodFactory.Create(request.NumericalMethod))
             {
                 Mass = await this._boundaryCondition.Apply(mass, bondaryCondition, numberOfTrueBoundaryConditions),
 

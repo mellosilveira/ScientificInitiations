@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Path used to save the Rigid Body solutions. 
 - Moved obsoleted requests to folder Obsoleted in Request folder.
 - Properties on classes RequestData moved to classes Request.
-- FiniteElementsMethodInput for all FiniteMethod operations.
+- Class FiniteElementsMethodInput used in all FiniteMethod operations.
 - Matrix with piezoelectric boundary conditions to consider the beam fastening.
+- Constructor of class FiniteElementsMethodInput receives the Numerical Method choosen for the analysis to set the correct values on properties Beta and Gama.
 ### Removed
 - All classes RequestData.
+- Classes CentralDifferenceMethodInput, ImplicitAccelerationMethodInput and NewmarkMethodInput.
 ### Added
 - Enum NumericalMethod.
 - Property NumericalMethod in class OperationRequestBase.

@@ -21,7 +21,7 @@ namespace IcVibracoes.Controllers
         /// <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
         /// <param name="request">The request content for this operation.</param>
         /// <returns>A file with analysis result.</returns>
-        /// <response code="201">Returns the newly created file.</response>
+        /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -48,7 +48,7 @@ namespace IcVibracoes.Controllers
         /// <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
         /// <param name="request">The request content for this operation.</param>
         /// <returns>A file with analysis result.</returns>
-        /// <response code="201">Returns the newly created file.</response>
+        /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]

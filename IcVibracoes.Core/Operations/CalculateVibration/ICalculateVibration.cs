@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         where TRequest : OperationRequestBase
         where TResponse : OperationResponseBase<TResponseData>, new()
         where TResponseData : OperationResponseData
-        where TInput : NumericalMethodInput, new()
+        where TInput : NumericalMethodInput
     {
         /// <summary>
         /// Calculates the input to numerical integration method.

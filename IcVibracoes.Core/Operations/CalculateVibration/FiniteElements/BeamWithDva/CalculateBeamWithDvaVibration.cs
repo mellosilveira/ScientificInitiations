@@ -9,10 +9,10 @@ using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber;
 using System;
 using System.IO;
@@ -143,7 +143,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             double[] forces = beam.Forces;
 
             // Creating input.
-            FiniteElementsMethodInput input = new FiniteElementsMethodInput
+            FiniteElementsMethodInput input = new FiniteElementsMethodInput(NumericalMethodFactory.Create(request.NumericalMethod))
             {
                 Mass = await this._boundaryCondition.Apply(massWithDva, bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length),
 

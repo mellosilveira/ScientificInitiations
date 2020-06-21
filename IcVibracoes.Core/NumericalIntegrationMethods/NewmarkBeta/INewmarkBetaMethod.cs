@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> CalculateResultForInitialTime(NewmarkMethodInput input);
+        Task<FiniteElementResult> CalculateResultForInitialTime(FiniteElementsMethodInput input);
 
         /// <summary>
         /// Executes the Newmark-Beta numerical integration method.
@@ -22,6 +22,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// <param name="input"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> CalculateResult(NewmarkMethodInput input, FiniteElementResult previousResult);
+        Task<FiniteElementResult> CalculateResult(FiniteElementsMethodInput input, FiniteElementResult previousResult);
     }
 }

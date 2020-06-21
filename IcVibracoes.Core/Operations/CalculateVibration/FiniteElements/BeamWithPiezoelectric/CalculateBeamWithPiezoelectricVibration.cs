@@ -12,7 +12,6 @@ using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.DataContracts.FiniteElements;
 using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
 using System;
 using System.IO;
@@ -183,7 +182,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             double[] equivalentForce = await this._arrayOperation.MergeVectors(force, electricalCharge);
 
             // Creating input.
-            FiniteElementsMethodInput input = new FiniteElementsMethodInput
+            FiniteElementsMethodInput input = new FiniteElementsMethodInput(NumericalMethodFactory.Create(request.NumericalMethod))
             {
                 Mass = await this._boundaryCondition.Apply(equivalentMass, bondaryConditions, numberOfTrueBoundaryConditions),
 

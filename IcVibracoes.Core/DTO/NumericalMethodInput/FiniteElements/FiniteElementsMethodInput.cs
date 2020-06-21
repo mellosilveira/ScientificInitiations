@@ -1,10 +1,41 @@
-﻿namespace IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements
+﻿using IcVibracoes.Core.Models;
+
+namespace IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements
 {
     /// <summary>
     /// It contains the input 'data' of finite element methods.
     /// </summary>
     public class FiniteElementsMethodInput : NumericalMethodInput
     {
+        public FiniteElementsMethodInput(NumericalMethod finiteElementMethod)
+        {
+            switch (finiteElementMethod)
+            {
+                case NumericalMethod.CentralDifferenceMethod:
+                    this.Beta = 0;
+                    this.Gama = 0.5;
+                    break;
+
+                case NumericalMethod.ImplicitLinearAccelerationMethod:
+                    this.Beta = (double)1 / 6;
+                    this.Gama = 0.5;
+                    break;
+
+                case NumericalMethod.Newmark | NumericalMethod.NewmarkBeta:
+                    this.Beta = 0.25;
+                    this.Gama = 0.5;
+                    break;
+
+                case NumericalMethod.RungeKuttaForthOrder:
+                    this.Beta = 0;
+                    this.Gama = 0;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         /// <summary>
         /// The mass matrix.
         /// </summary>
@@ -42,12 +73,12 @@
         /// 2. 1/4 --> Newmark method is implicit and unconditionally stable. In this case the acceleration within the time interval [ti, ti+1) is presumed to be constant.
         /// 3. 1/6 --> Linear acceleration method. In this case the acceleration within the time interval [ti, ti+1) is presumed to be linear.
         /// </summary>
-        public virtual double Beta { get; set; }
+        public double Beta { get; }
 
         /// <summary>
         /// Integration constant used in numerical method calculations.
         /// For Gama = 1 / 2 the numerical method is at least second-order accurate, it is first order accurate for all other values of.
         /// </summary>
-        public virtual double Gama { get; set; }
+        public double Gama { get; }
     }
 }

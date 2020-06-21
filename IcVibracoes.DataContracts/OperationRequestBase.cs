@@ -25,7 +25,7 @@ namespace IcVibracoes.DataContracts
         /// The numerical method that have to be used in the analysis.
         /// </summary>
         /// <example>Newmark</example>
-        public NumericalMethod NumericalMethod { get; set; }
+        public string NumericalMethod { get; set; }
 
         /// <summary>
         /// The force type.

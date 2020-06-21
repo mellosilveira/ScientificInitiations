@@ -93,11 +93,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
 
                     if (time == input.InitialTime)
                     {
-                        result = await this._numericalMethod.CalculateResultForInitialTime(input as NewmarkMethodInput).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResultForInitialTime(input).ConfigureAwait(false);
                     }
                     else
                     {
-                        result = await this._numericalMethod.CalculateResult(input as NewmarkMethodInput, previousResult, time).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
                     this._file.Write(time, result.Displacement, solutionPath);
