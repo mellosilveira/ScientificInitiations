@@ -7,7 +7,6 @@ using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rectangular
 {
@@ -29,17 +28,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rect
         /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateRectangularBeamVibration(
-            IBoundaryCondition boundaryCondition, 
+            IBoundaryCondition boundaryCondition,
             IArrayOperation arrayOperation,
             IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            IRectangularBeamMainMatrix mainMatrix, 
-            IFile file, 
-            ITime time, 
-            INewmarkMethod newmarkMethod, 
-            INaturalFrequency naturalFrequency) 
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, newmarkMethod, naturalFrequency)
-        {
-        }
+            IRectangularBeamMainMatrix mainMatrix,
+            IFile file,
+            ITime time,
+            INaturalFrequency naturalFrequency)
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, naturalFrequency)
+        { }
     }
 }

@@ -3,7 +3,6 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
-using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_1DF;
 using IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom;
 using System;
 using System.IO;
@@ -20,16 +19,23 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="numericalMethod"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
         public CalculateVibrationToOneDegreeFreedom(
-            IRungeKuttaForthOrderMethod_1DF numericalMethod, 
-            IFile file, 
-            ITime time) 
-            : base(numericalMethod, file, time)
-        {
-        }
+            IFile file,
+            ITime time)
+            : base(file, time)
+        { }
+
+        /// <summary>
+        /// Calculates and write in a file the results for one degree of freedom analysis.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] y) 
+            => base._numericalMethod.CalculateOneDegreeOfFreedomResult(input, time, y);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
@@ -107,7 +113,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
                 previousPath,
                 $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}",
                 "MaxValues");
-            
+
             string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}.csv";
 
             string path = Path.Combine(fileUri, fileName);

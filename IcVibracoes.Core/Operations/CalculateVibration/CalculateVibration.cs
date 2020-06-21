@@ -1,4 +1,6 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput;
+using IcVibracoes.Core.Models;
+using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.DataContracts;
 using System.Threading.Tasks;
 
@@ -16,6 +18,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         where TResponseData : OperationResponseData
         where TInput : NumericalMethodInput
     {
+        /// <summary>
+        /// The numerical method.
+        /// </summary>
+        protected INumericalIntegrationMethod _numericalMethod;
+
         /// <summary>
         /// Creates the input to numerical integration method.
         /// </summary>

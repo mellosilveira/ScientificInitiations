@@ -3,7 +3,6 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
-using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using System;
 using System.IO;
@@ -20,16 +19,23 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="numericalMethod"></param>
-        /// <param name="file"></param>
+        /// <param name="file"></pram>
         /// <param name="time"></param>
         public CalculateVibrationToTwoDegreesFreedom(
-            IRungeKuttaForthOrderMethod_2DF numericalMethod, 
-            IFile file, 
-            ITime time) 
-            : base(numericalMethod, file, time)
-        {
-        }
+            IFile file,
+            ITime time)
+            : base(file, time)
+        { }
+
+        /// <summary>
+        /// Calculates and write in a file the results for two degrees of freedom analysis.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public override Task<double[]> CalculateRigidBodyResult(TwoDegreesOfFreedomInput input, double time, double[] y)
+            => base._numericalMethod.CalculateTwoDegreesOfFreedomResult(input, time, y);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
@@ -45,7 +51,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
                 request.SecondaryElementData.InitialDisplacement,
                 request.SecondaryElementData.InitialVelocity
             });
-        }        
+        }
 
         /// <summary>
         /// Creates the input to numerical integration method.
@@ -54,7 +60,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <returns></returns>
         public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
         {
-            if (request == null || request.PrimaryElementData == null || request.SecondaryElementData== null)
+            if (request == null || request.PrimaryElementData == null || request.SecondaryElementData == null)
             {
                 return null;
             }
@@ -106,7 +112,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         public override Task<string> CreateMaxValuesPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
-            
+
             string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}.csv";
 
             string fileUri = Path.Combine(
@@ -117,7 +123,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
             string path = Path.Combine(fileUri, fileName);
 
             Directory.CreateDirectory(fileUri);
-       
+
             return Task.FromResult(path);
         }
     }

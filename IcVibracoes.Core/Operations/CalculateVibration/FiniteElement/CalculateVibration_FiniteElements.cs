@@ -6,7 +6,6 @@ using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.DataContracts.FiniteElement;
 using System;
 using System.Threading.Tasks;
@@ -26,7 +25,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
     {
         private readonly IFile _file;
         private readonly ITime _time;
-        private readonly INewmarkMethod _numericalMethod;
         private readonly INaturalFrequency _naturalFrequency;
 
         /// <summary>
@@ -34,17 +32,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="file"></param>
         /// <param name="time"></param>
-        /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateVibration_FiniteElement(
             IFile file,
             ITime time,
-            INewmarkMethod newmarkMethod,
             INaturalFrequency naturalFrequency)
         {
             this._file = file;
             this._time = time;
-            this._numericalMethod = newmarkMethod;
             this._naturalFrequency = naturalFrequency;
         }
 
@@ -58,6 +53,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         protected override async Task<FiniteElementResponse> ProcessOperation(TRequest request)
         {
             var response = new FiniteElementResponse();
+
+            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             FiniteElementMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
 
@@ -93,11 +90,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 
                     if (time == input.InitialTime)
                     {
-                        result = await this._numericalMethod.CalculateResultForInitialTime(input).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateFiniteElementResultForInitialTime(input).ConfigureAwait(false);
                     }
                     else
                     {
-                        result = await this._numericalMethod.CalculateResult(input, previousResult, time).ConfigureAwait(false);
+                        result = await this._numericalMethod.CalculateFiniteElementResult(input, previousResult, time).ConfigureAwait(false);
                     }
 
                     this._file.Write(time, result.Displacement, solutionPath);

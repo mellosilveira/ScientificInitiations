@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
-using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Operations.CalculateVibration;
 using IcVibracoes.DataContracts.RigidBody;
 using System;
@@ -21,25 +21,30 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         where TResponse : RigidBodyResponse<TResponseData>, new()
         where TInput : RigidBodyInput, new()
     {
-        private readonly IRungeKuttaForthOrderMethod<TInput> _numericalMethod;
         private readonly IFile _file;
         private readonly ITime _time;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="numericalMethod"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
         public CalculateVibration_RigidBody(
-            IRungeKuttaForthOrderMethod<TInput> numericalMethod,
             IFile file,
             ITime time)
         {
-            this._numericalMethod = numericalMethod;
             this._file = file;
             this._time = time;
         }
+
+        /// <summary>
+        /// Calculates the result for rigid body analysis.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public abstract Task<double[]> CalculateRigidBodyResult(TInput input, double time, double[] y);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
@@ -51,6 +56,8 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         protected override async Task<TResponse> ProcessOperation(TRequest request)
         {
             var response = new TResponse();
+
+            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             double[] initial_y = await this.BuildInitialConditions(request).ConfigureAwait(false);
 
@@ -83,7 +90,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                     while (time <= input.FinalTime)
                     {
-                        y = await this._numericalMethod.CalculateResult(input, time, y).ConfigureAwait(false);
+                        y = await this.CalculateRigidBodyResult(input, time, y).ConfigureAwait(false);
 
                         await this.CompareValuesAndUpdateMaxValuesResult(y, maxValues).ConfigureAwait(false);
 

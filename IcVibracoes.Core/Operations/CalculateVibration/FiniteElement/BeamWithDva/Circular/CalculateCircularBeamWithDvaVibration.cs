@@ -7,7 +7,6 @@ using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva.Circular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva.Circular
 {
@@ -26,7 +25,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// <param name="mainMatrix"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
-        /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateCircularBeamWithDvaVibration(
             IBoundaryCondition boundaryCondition,
@@ -36,10 +34,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
             ICircularBeamWithDvaMainMatrix mainMatrix,
             IFile file,
             ITime time,
-            INewmarkMethod newmarkMethod,
             INaturalFrequency naturalFrequency)
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, newmarkMethod, naturalFrequency)
-        {
-        }
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, naturalFrequency)
+        { }
     }
 }

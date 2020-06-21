@@ -1,4 +1,9 @@
-﻿using IcVibracoes.DataContracts;
+﻿using IcVibracoes.Core.ArrayOperations;
+using IcVibracoes.Core.NumericalIntegrationMethods;
+using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
+using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
+using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
+using IcVibracoes.DataContracts;
 using System;
 
 namespace IcVibracoes.Core.Models
@@ -25,6 +30,11 @@ namespace IcVibracoes.Core.Models
     /// </summary>
     public class NumericalMethodFactory
     {
+        /// <summary>
+        /// Creates a new instance of a NumericalMethod enum.
+        /// </summary>
+        /// <param name="numericalMethod"></param>
+        /// <returns></returns>
         public static NumericalMethod Create(string numericalMethod)
         {
             switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
@@ -44,6 +54,37 @@ namespace IcVibracoes.Core.Models
             }
         }
 
+        /// <summary>
+        /// Creates a new instance of NumericalIntegrationMethod class.
+        /// </summary>
+        /// <param name="numericalMethod"></param>
+        /// <returns></returns>
+        public static INumericalIntegrationMethod CreateMethod(string numericalMethod)
+        {
+            switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
+            {
+                case NumericalMethod.CentralDifferenceMethod:
+                    return new NewmarkBetaMethod(new ArrayOperation());
+                case NumericalMethod.ImplicitLinearAccelerationMethod:
+                    return new NewmarkBetaMethod(new ArrayOperation());
+                case NumericalMethod.NewmarkBeta:
+                    return new NewmarkBetaMethod(new ArrayOperation());
+                case NumericalMethod.Newmark:
+                    return new NewmarkMethod(new ArrayOperation());
+                case NumericalMethod.RungeKuttaForthOrder:
+                    return null;
+                default:
+                    return default;
+            }
+        }
+
+        /// <summary>
+        /// Validates the numerical method passed in request.
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <typeparam name="TResponseData"></typeparam>
+        /// <param name="numericalMethod"></param>
+        /// <param name="response"></param>
         public static void Validate<TResponse, TResponseData>(string numericalMethod, TResponse response)
             where TResponse : OperationResponseBase<TResponseData>
             where TResponseData : OperationResponseData

@@ -11,7 +11,6 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.DataContracts.FiniteElement.Beam;
 using System;
 using System.IO;
@@ -42,7 +41,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="mainMatrix"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
-        /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateBeamVibration(
             IBoundaryCondition boundaryCondition,
@@ -52,9 +50,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             IBeamMainMatrix<TProfile> mainMatrix,
             IFile file,
             ITime time,
-            INewmarkMethod newmarkMethod,
             INaturalFrequency naturalFrequency)
-            : base(file, time, newmarkMethod, naturalFrequency)
+            : base(file, time, naturalFrequency)
         {
             this._boundaryCondition = boundaryCondition;
             this._arrayOperation = arrayOperation;

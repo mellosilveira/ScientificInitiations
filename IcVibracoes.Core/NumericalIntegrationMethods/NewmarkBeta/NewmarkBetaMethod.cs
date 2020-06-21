@@ -1,6 +1,7 @@
 ﻿using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using System;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
     /// <summary>
     /// It's responsible to execute the Newmark-Beta numerical integration method to calculate the vibration.
     /// </summary>
-    public class NewmarkBetaMethod : INewmarkBetaMethod
+    public class NewmarkBetaMethod : NumericalIntegrationMethod, INewmarkBetaMethod
     {
         private readonly IArrayOperation _arrayOperation;
 
@@ -24,11 +25,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         }
 
         /// <summary>
-        /// Calculates the result for the initial time.
+        /// Calculates and write in a file the results for a finite element analysis using Newmark-Beta integration method.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<FiniteElementResult> CalculateResultForInitialTime(FiniteElementMethodInput input)
+        public override async Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input)
         {
             // [accel] = ([M]^(-1))*([F] - [K]*[displacement] - [C]*[velocity])
             // In initial time, displacement and velocity are zero, so, accel could be calculated by:
@@ -46,12 +47,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         }
 
         /// <summary>
-        /// Calculates the result to Newmark-Beta numerical integration method.
+        /// Calculates and write in a file the results for a one degree of freedom analysis using Newmark-Beta integration method.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public async Task<FiniteElementResult> CalculateResult(FiniteElementMethodInput input, FiniteElementResult previousResult)
+        public override async Task<FiniteElementResult> CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time)
         {
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
@@ -78,7 +79,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             };
         }
 
-        private Task<double[,]> CalculateEquivalentStiffness(FiniteElementMethodInput input)
+        /// <summary>
+        /// Calculates the equivalent stiffness to calculate the displacement in Newmark-Beta method.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Task<double[,]> CalculateEquivalentStiffness(FiniteElementMethodInput input)
         {
             double[,] equivalentStiffness = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
@@ -96,7 +102,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             return Task.FromResult(equivalentStiffness);
         }
 
-        private Task<double[,]> CalculateEquivalentDamping(FiniteElementMethodInput input)
+        /// <summary>
+        /// Calculates the equivalent damping to be used in Newmark-Beta method.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Task<double[,]> CalculateEquivalentDamping(FiniteElementMethodInput input)
         {
             double[,] equivalentDamping = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
@@ -114,7 +125,12 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             return Task.FromResult(equivalentDamping);
         }
 
-        private Task<double[,]> CalculateEquivalentMass(FiniteElementMethodInput input)
+        /// <summary>
+        /// Calculates the equivalent mass to be used in Newmark-Beta method.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Task<double[,]> CalculateEquivalentMass(FiniteElementMethodInput input)
         {
             double[,] equivalentMass = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
@@ -132,7 +148,13 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             return Task.FromResult(equivalentMass);
         }
 
-        private async Task<double[]> CalculateEquivalentForce(FiniteElementMethodInput input, FiniteElementResult previousResult)
+        /// <summary>
+        /// Calculates the equivalent force to calculate the displacement in Newmark-Beta method.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="previousResult"></param>
+        /// <returns></returns>
+        public async Task<double[]> CalculateEquivalentForce(FiniteElementMethodInput input, FiniteElementResult previousResult)
         {
             double[,] equivalentDamping = await this.CalculateEquivalentDamping(input).ConfigureAwait(false);
             double[,] equivalentMass = await this.CalculateEquivalentMass(input).ConfigureAwait(false);
@@ -144,6 +166,30 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             double[] equivalentForce = await this._arrayOperation.Sum(deltaForce, damping_vel, mass_accel, $"{nameof(deltaForce)}, {nameof(damping_vel)} and {nameof(mass_accel)}").ConfigureAwait(false);
 
             return equivalentForce;
+        }
+
+        /// <summary>
+        /// Calculates and write in a file the results for one degree of freedom analysis using Newmark integration method.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] y)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Calculates and write in a file the results for two degrees of freedom analysis using Newmark integration method.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public override Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] y)
+        {
+            throw new NotImplementedException();
         }
     }
 }

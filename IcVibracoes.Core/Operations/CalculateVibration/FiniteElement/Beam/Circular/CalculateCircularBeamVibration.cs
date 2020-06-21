@@ -7,7 +7,6 @@ using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Circular
 {
@@ -29,16 +28,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Circ
         /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateCircularBeamVibration(
-            IBoundaryCondition boundaryCondition, 
+            IBoundaryCondition boundaryCondition,
             IArrayOperation arrayOperation, ICircularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            ICircularBeamMainMatrix mainMatrix, 
-            IFile file, 
-            ITime time, 
-            INewmarkMethod newmarkMethod, 
-            INaturalFrequency naturalFrequency) 
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, newmarkMethod, naturalFrequency)
-        {
-        }
+            ICircularBeamMainMatrix mainMatrix,
+            IFile file,
+            ITime time,
+            INaturalFrequency naturalFrequency)
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, naturalFrequency)
+        { }
     }
 }

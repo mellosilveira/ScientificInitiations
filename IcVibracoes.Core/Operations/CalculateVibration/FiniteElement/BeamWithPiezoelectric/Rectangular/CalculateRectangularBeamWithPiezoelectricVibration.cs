@@ -7,7 +7,6 @@ using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric.Rectangular
 {
@@ -26,20 +25,17 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <param name="mainMatrix"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
-        /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateRectangularBeamWithPiezoelectricVibration(
-            IBoundaryCondition boundaryCondition, 
+            IBoundaryCondition boundaryCondition,
             IArrayOperation arrayOperation,
             IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix, 
-            IFile file, 
-            ITime time, 
-            INewmarkMethod newmarkMethod, 
-            INaturalFrequency naturalFrequency) 
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, newmarkMethod, naturalFrequency)
-        {
-        }
+            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix,
+            IFile file,
+            ITime time,
+            INaturalFrequency naturalFrequency)
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, naturalFrequency)
+        { }
     }
 }

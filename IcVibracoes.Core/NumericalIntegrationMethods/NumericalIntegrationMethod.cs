@@ -1,0 +1,47 @@
+﻿using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using System.Threading.Tasks;
+
+namespace IcVibracoes.Core.NumericalIntegrationMethods
+{
+    /// <summary>
+    /// It is responsible to execute the numerical integration method to generate the analysis results.
+    /// </summary>
+    public abstract class NumericalIntegrationMethod : INumericalIntegrationMethod
+    {
+        /// <summary>
+        /// Calculates the result for the initial time for a finite element analysis.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public abstract Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input);
+
+        /// <summary>
+        /// Calculates and write in a file the results for a finite element analysis.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="previousResult"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public abstract Task<FiniteElementResult> CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time);
+
+        /// <summary>
+        /// Calculates and write in a file the results for one degree of freedom analysis.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public abstract Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] y);
+
+        /// <summary>
+        /// Calculates and write in a file the results for two degrees of freedom analysis.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="time"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public abstract Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] y);
+    }
+}

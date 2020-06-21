@@ -7,7 +7,6 @@ using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric.Circular
 {
@@ -26,20 +25,17 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <param name="mainMatrix"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
-        /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateCircularBeamWithPiezoelectricVibration(
-            IBoundaryCondition boundaryCondition, 
-            IArrayOperation arrayOperation, 
+            IBoundaryCondition boundaryCondition,
+            IArrayOperation arrayOperation,
             ICircularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            ICircularBeamWithPiezoelectricMainMatrix mainMatrix, 
-            IFile file, 
-            ITime time, 
-            INewmarkMethod newmarkMethod, 
-            INaturalFrequency naturalFrequency) 
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, newmarkMethod, naturalFrequency)
-        {
-        }
+            ICircularBeamWithPiezoelectricMainMatrix mainMatrix,
+            IFile file,
+            ITime time,
+            INaturalFrequency naturalFrequency)
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, naturalFrequency)
+        { }
     }
 }
