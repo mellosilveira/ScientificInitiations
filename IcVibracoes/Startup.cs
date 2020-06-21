@@ -1,5 +1,4 @@
 using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations;
 using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
 using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
@@ -18,8 +17,7 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
-using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_1DF;
-using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder.RigidBody_2DF;
+using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Circular;
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rectangular;
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva.Circular;
@@ -37,7 +35,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 namespace IcVibracoes
 {
@@ -110,15 +107,10 @@ namespace IcVibracoes
             // Register Mapper
             services.AddScoped<IMappingResolver, MappingResolver>();
 
-            // Register Numerical Integration Methods - Finite Element - Newmark
+            // Register Numerical Integration Methods
             services.AddScoped<INewmarkMethod, NewmarkMethod>();
-
-            // Register Numerical Integration Methods - Finite Element - Newmark Beta
             services.AddScoped<INewmarkBetaMethod, NewmarkBetaMethod>();
-
-            // Register Numerical Integration Methods - Rigid Body - Runge Kutta Forth Order
-            services.AddScoped<IRungeKuttaForthOrderMethod_1DF, RungeKuttaForthOrderMethod_1DF>();
-            services.AddScoped<IRungeKuttaForthOrderMethod_2DF, RungeKuttaForthOrderMethod_2DF>();
+            services.AddScoped<IRungeKuttaForthOrderMethod, RungeKuttaForthOrderMethod>();
 
             // Register Rigid Body Operations
             services.AddScoped<ICalculateVibrationToOneDegreeFreedom, CalculateVibrationToOneDegreeFreedom>();
