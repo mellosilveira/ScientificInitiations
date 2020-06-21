@@ -3,13 +3,13 @@ using IcVibracoes.Common.Profiles;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace IcVibracoes.DataContracts.FiniteElements
+namespace IcVibracoes.DataContracts.FiniteElement
 {
     /// <summary>
     /// It represents the request content of Finite Elements operations.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class FiniteElementsRequest<TProfile> : OperationRequestBase
+    public abstract class FiniteElementRequest<TProfile> : OperationRequestBase
         where TProfile : Profile, new()
     {
         /// <summary>

@@ -3,15 +3,15 @@ using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.DataContracts.FiniteElements;
+using IcVibracoes.DataContracts.FiniteElement;
 using System;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 {
     /// <summary>
     /// It's responsible to calculate the beam vibration for finite element analysis.
@@ -19,8 +19,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TProfile"></typeparam>
     /// <typeparam name="TBeam"></typeparam>
-    public abstract class CalculateVibration_FiniteElements<TRequest, TProfile, TBeam> : CalculateVibration<TRequest, FiniteElementsResponse, FiniteElementsResponseData, FiniteElementsMethodInput>, ICalculateVibration_FiniteElements<TRequest, TProfile, TBeam>
-        where TRequest : FiniteElementsRequest<TProfile>
+    public abstract class CalculateVibration_FiniteElement<TRequest, TProfile, TBeam> : CalculateVibration<TRequest, FiniteElementResponse, FiniteElementResponseData, FiniteElementMethodInput>, ICalculateVibration_FiniteElement<TRequest, TProfile, TBeam>
+        where TRequest : FiniteElementRequest<TProfile>
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
     {
@@ -36,7 +36,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         /// <param name="time"></param>
         /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
-        public CalculateVibration_FiniteElements(
+        public CalculateVibration_FiniteElement(
             IFile file,
             ITime time,
             INewmarkMethod newmarkMethod,
@@ -55,11 +55,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         /// <returns></returns>
         public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
 
-        protected override async Task<FiniteElementsResponse> ProcessOperation(TRequest request)
+        protected override async Task<FiniteElementResponse> ProcessOperation(TRequest request)
         {
-            var response = new FiniteElementsResponse();
+            var response = new FiniteElementResponse();
 
-            FiniteElementsMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
+            FiniteElementMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
 
             string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
 
@@ -170,9 +170,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected async override Task<FiniteElementsResponse> ValidateOperation(TRequest request)
+        protected async override Task<FiniteElementResponse> ValidateOperation(TRequest request)
         {
-            FiniteElementsResponse response = new FiniteElementsResponse();
+            FiniteElementResponse response = new FiniteElementResponse();
 
             return response;
         }

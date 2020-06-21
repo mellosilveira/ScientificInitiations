@@ -1,12 +1,12 @@
 ﻿using IcVibracoes.Common.Profiles;
 
-namespace IcVibracoes.DataContracts.FiniteElements.Beam
+namespace IcVibracoes.DataContracts.FiniteElement.Beam
 {
     /// <summary>
     /// It represents the request content of CalculateBeam operations.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public class BeamRequest<TProfile> : FiniteElementsRequest<TProfile>
+    public class BeamRequest<TProfile> : FiniteElementRequest<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>
@@ -16,7 +16,7 @@ namespace IcVibracoes.DataContracts.FiniteElements.Beam
         {
             get 
             {
-                return "FiniteElements_Beam";
+                return "FiniteElement_Beam";
             }
         }
     }

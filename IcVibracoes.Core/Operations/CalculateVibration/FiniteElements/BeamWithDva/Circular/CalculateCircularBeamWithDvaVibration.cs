@@ -9,7 +9,7 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
-namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Circular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva.Circular
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a circular beam with dynamic vibration absorber.

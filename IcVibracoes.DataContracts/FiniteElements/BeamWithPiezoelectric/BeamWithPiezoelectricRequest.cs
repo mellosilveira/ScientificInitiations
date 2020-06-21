@@ -3,13 +3,13 @@ using IcVibracoes.Common.Profiles;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric
+namespace IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric
 {
     /// <summary>
     /// It represents the request content of CalculatePiezoelectric operations.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public class BeamWithPiezoelectricRequest<TProfile> : FiniteElementsRequest<TProfile>
+    public class BeamWithPiezoelectricRequest<TProfile> : FiniteElementRequest<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>
@@ -19,7 +19,7 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric
         {
             get
             {
-                return "FiniteElements_BeamWithPiezoelectric";
+                return "FiniteElement_BeamWithPiezoelectric";
             }
         }
 

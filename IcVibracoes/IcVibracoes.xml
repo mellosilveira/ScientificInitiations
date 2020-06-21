@@ -4,75 +4,75 @@
         <name>IcVibracoes</name>
     </assembly>
     <members>
-        <member name="T:IcVibracoes.Controllers.FiniteElementsController">
+        <member name="T:IcVibracoes.Controllers.FiniteElementController">
             <summary>
             This controller executes analysis using finite elements concepts.
             The object is divided in elements and the mechanical properties are matricially calculated.
             </summary>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Rectangular.ICalculateRectangularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rectangular.ICalculateRectangularBeamVibration,IcVibracoes.DataContracts.FiniteElement.Beam.BeamRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
             <summary>
             Calculates the vibration to a rectangular profile beam.
             </summary>
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Rectangular.ICalculateRectangularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva.Rectangular.ICalculateRectangularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
             <summary>
             Calculates the vibration to a rectangular profile beam with dynamic vibration absorbers.
             </summary>
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Rectangular.ICalculateRectangularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric.Rectangular.ICalculateRectangularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.RectangularProfile})">
             <summary>
             Calculates the vibration to a rectangular profile beam with piezoelectrics.
             </summary>
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Circular.ICalculateCircularBeamVibration,IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Circular.ICalculateCircularBeamVibration,IcVibracoes.DataContracts.FiniteElement.Beam.BeamRequest{IcVibracoes.Common.Profiles.CircularProfile})">
             <summary>
             Calculates the vibration to a circular profile beam.
             </summary>
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithDva.Circular.ICalculateCircularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva.Circular.ICalculateCircularBeamWithDvaVibration,IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest{IcVibracoes.Common.Profiles.CircularProfile})">
             <summary>
             Calculates the vibration to a circular profile beam with dynamic vibration absorbers.
             </summary>
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.FiniteElementsController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric.Circular.ICalculateCircularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.CircularProfile})">
+        <member name="M:IcVibracoes.Controllers.FiniteElementController.CalculateVibration(IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric.Circular.ICalculateCircularBeamWithPiezoelectricVibration,IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest{IcVibracoes.Common.Profiles.CircularProfile})">
             <summary>
             Calculates the vibration to a circular profile beam with piezoelectrics.
             </summary>
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
@@ -89,7 +89,7 @@
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
@@ -100,7 +100,7 @@
             <param name="calculateVibration">The operation responsible to calculate the vibration.</param>
             <param name="request">The request content for this operation.</param>
             <returns>A file with analysis result.</returns>
-            <response code="201">Returns the newly created file.</response>
+            <response code="201">Returns the newly created files.</response>
             <response code="400">If some validation do not passed.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>

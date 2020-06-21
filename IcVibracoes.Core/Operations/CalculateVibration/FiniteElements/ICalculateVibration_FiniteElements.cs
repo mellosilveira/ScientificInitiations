@@ -1,17 +1,17 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.Models.Beams;
-using IcVibracoes.DataContracts.FiniteElements;
+using IcVibracoes.DataContracts.FiniteElement;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 {
     /// <summary>
     /// It's responsible to calculate the beam vibration for finite element analysis.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public interface ICalculateVibration_FiniteElements<TRequest, TProfile, TBeam> : ICalculateVibration<TRequest, FiniteElementsResponse, FiniteElementsResponseData, FiniteElementsMethodInput>
-        where TRequest : FiniteElementsRequest<TProfile>
+    public interface ICalculateVibration_FiniteElement<TRequest, TProfile, TBeam> : ICalculateVibration<TRequest, FiniteElementResponse, FiniteElementResponseData, FiniteElementMethodInput>
+        where TRequest : FiniteElementRequest<TProfile>
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
     {

@@ -9,7 +9,7 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 
-namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.Beam.Rectangular
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rectangular
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a rectangular beam.

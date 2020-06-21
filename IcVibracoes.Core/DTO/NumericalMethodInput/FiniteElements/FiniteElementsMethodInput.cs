@@ -1,13 +1,13 @@
 ﻿using IcVibracoes.Core.Models;
 
-namespace IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements
+namespace IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement
 {
     /// <summary>
     /// It contains the input 'data' of finite element methods.
     /// </summary>
-    public class FiniteElementsMethodInput : NumericalMethodInput
+    public class FiniteElementMethodInput : NumericalMethodInput
     {
-        public FiniteElementsMethodInput(NumericalMethod finiteElementMethod)
+        public FiniteElementMethodInput(NumericalMethod finiteElementMethod)
         {
             switch (finiteElementMethod)
             {

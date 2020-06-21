@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using System;
 using System.Threading.Tasks;
 
@@ -28,7 +28,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<FiniteElementResult> CalculateResultForInitialTime(FiniteElementsMethodInput input)
+        public async Task<FiniteElementResult> CalculateResultForInitialTime(FiniteElementMethodInput input)
         {
             // [accel] = ([M]^(-1))*([F] - [K]*[displacement] - [C]*[velocity])
             // In initial time, displacement and velocity are zero, so, accel could be calculated by:
@@ -51,7 +51,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// <param name="input"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public async Task<FiniteElementResult> CalculateResult(FiniteElementsMethodInput input, FiniteElementResult previousResult)
+        public async Task<FiniteElementResult> CalculateResult(FiniteElementMethodInput input, FiniteElementResult previousResult)
         {
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
@@ -78,7 +78,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             };
         }
 
-        private Task<double[,]> CalculateEquivalentStiffness(FiniteElementsMethodInput input)
+        private Task<double[,]> CalculateEquivalentStiffness(FiniteElementMethodInput input)
         {
             double[,] equivalentStiffness = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
@@ -96,7 +96,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             return Task.FromResult(equivalentStiffness);
         }
 
-        private Task<double[,]> CalculateEquivalentDamping(FiniteElementsMethodInput input)
+        private Task<double[,]> CalculateEquivalentDamping(FiniteElementMethodInput input)
         {
             double[,] equivalentDamping = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
@@ -114,7 +114,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             return Task.FromResult(equivalentDamping);
         }
 
-        private Task<double[,]> CalculateEquivalentMass(FiniteElementsMethodInput input)
+        private Task<double[,]> CalculateEquivalentMass(FiniteElementMethodInput input)
         {
             double[,] equivalentMass = new double[input.NumberOfTrueBoundaryConditions, input.NumberOfTrueBoundaryConditions];
 
@@ -132,7 +132,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             return Task.FromResult(equivalentMass);
         }
 
-        private async Task<double[]> CalculateEquivalentForce(FiniteElementsMethodInput input, FiniteElementResult previousResult)
+        private async Task<double[]> CalculateEquivalentForce(FiniteElementMethodInput input, FiniteElementResult previousResult)
         {
             double[,] equivalentDamping = await this.CalculateEquivalentDamping(input).ConfigureAwait(false);
             double[,] equivalentMass = await this.CalculateEquivalentMass(input).ConfigureAwait(false);

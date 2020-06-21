@@ -1,7 +1,7 @@
-﻿namespace IcVibracoes.DataContracts.FiniteElements
+﻿namespace IcVibracoes.DataContracts.FiniteElement
 {
     /// <summary>
     /// It contains the 'data' content of Finite Element response operation.
     /// </summary>
-    public class FiniteElementsResponseData : OperationResponseData { }
+    public class FiniteElementResponseData : OperationResponseData { }
 }

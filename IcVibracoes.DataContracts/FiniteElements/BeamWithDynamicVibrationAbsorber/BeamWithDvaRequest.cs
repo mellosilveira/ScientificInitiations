@@ -3,13 +3,13 @@ using IcVibracoes.Common.Profiles;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber
+namespace IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber
 {
     /// <summary>
     /// It represents the request content of CalculateBeamWithDva operation.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public class BeamWithDvaRequest<TProfile> : FiniteElementsRequest<TProfile>
+    public class BeamWithDvaRequest<TProfile> : FiniteElementRequest<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>
@@ -19,7 +19,7 @@ namespace IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsor
         { 
             get
             {
-                return "FiniteElements_BeamWithDva";
+                return "FiniteElement_BeamWithDva";
             }
         }
 

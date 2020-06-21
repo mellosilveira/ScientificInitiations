@@ -1,13 +1,13 @@
 ﻿using IcVibracoes.Common.ErrorCodes;
 using IcVibracoes.Common.Profiles;
-using IcVibracoes.DataContracts.FiniteElements;
+using IcVibracoes.DataContracts.FiniteElement;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.Profiles.Circular
 {
     public class CircularProfileValidator : ProfileValidator<CircularProfile>, ICircularProfileValidator
     {
-        public override Task<bool> Execute(CircularProfile profile, FiniteElementsResponse response)
+        public override Task<bool> Execute(CircularProfile profile, FiniteElementResponse response)
         {
             if(profile == null)
             {

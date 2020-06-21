@@ -4,157 +4,157 @@
         <name>IcVibracoes.DataContracts</name>
     </assembly>
     <members>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1">
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1">
             <summary>
             It represents the request content of CalculateBeamWithDva operation.
             </summary>
             <typeparam name="TProfile"></typeparam>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.AnalysisType">
             <summary>
             The analysis type. 
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.Dvas">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.Dvas">
             <summary>
             List of dynamic vibration absorber.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1">
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1">
             <summary>
             It represents the request content of CalculatePiezoelectric operations.
             </summary>
             <typeparam name="TProfile"></typeparam>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.AnalysisType">
             <summary>
             The analysis type. 
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricYoungModulus">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricYoungModulus">
             <summary>
             Piezoelectric Young Modulus.
             Unit: Pa (Pascal)
             </summary>
             <example>63e9</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricConstant">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricConstant">
             <summary>
             Piezoelectric constant. Variable: d31.
             Unit: m/V (meter per Volts)
             </summary>
             <example>190e-12</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricConstant">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricConstant">
             <summary>
             Dielectric constant. Variable: k33.
             Unit: F/m (Farad per meter)
             </summary>
             <example>7.33e-9</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElasticityConstant">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElasticityConstant">
             <summary>
             Elasticity value for constant electric field. Variable: c11.
             Unit: N/m² (Newton per square meter)
             </summary>
             <example>1.076e11</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricPermissiveness">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricPermissiveness">
             <summary>
             Dielectric permissiveness. Variable: e31.
             Unit: C/m² (Coulomb per square meter)
             </summary>
             <example>30.705</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElectricalCharges">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElectricalCharges">
             <summary>
             Electrical charges on piezoelectric surface.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricSpecificMass">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricSpecificMass">
             <summary>
             Piezoelectric specific mass.
             Unit: kg/m³ (kilogrameter per cubic meter)
             </summary>
             <example>7650</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElementsWithPiezoelectric">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElementsWithPiezoelectric">
             <summary>
             Elements with piezoelectric.
             When it is not passed, is assumed that all elements have piezoelectric, because already exist an endpoint to do a anlysis in a beam without piezoelectric.
             </summary>
             <example>1, 2</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricPosition">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricPosition">
             <summary>
             Piezoelectric position on the beam. Can be: up, down, up and down.
             </summary>
             <example>Up And Down</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricProfile">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricProfile">
             <summary>
             Piezoelectric profile.
             </summary>
             <example>RectangularProfile</example>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest`1">
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.Beam.BeamRequest`1">
             <summary>
             It represents the request content of CalculateBeam operations.
             </summary>
             <typeparam name="TProfile"></typeparam>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.Beam.BeamRequest`1.AnalysisType">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.Beam.BeamRequest`1.AnalysisType">
             <summary>
             Tha analysis type.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1">
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1">
             <summary>
             It represents the request content of Finite Elements operations.
             </summary>
             <typeparam name="TProfile"></typeparam>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.NumberOfElements">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.NumberOfElements">
             <summary>
             Number of elements in the beam.
             </summary>
             <example>2</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Material">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Material">
             <summary>
             Beam material.
             </summary>
             <example>Steel 1020</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Length">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Length">
             <summary>
             Beam length.
             Unit: m (meter)
             </summary>
             <example>0.5</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Fastenings">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Fastenings">
             <summary>
             The beam fastenings.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Forces">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Forces">
             <summary>
             Applied forces in the beam.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.FiniteElements.FiniteElementsRequest`1.Profile">
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Profile">
             <summary>
             Beam profile.
             </summary>
             <example>RectangularProfile</example>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsResponse">
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.FiniteElementResponse">
             <summary>
             It represents the response content of Finite Elements operations.
             </summary>
         </member>
-        <member name="T:IcVibracoes.DataContracts.FiniteElements.FiniteElementsResponseData">
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.FiniteElementResponseData">
             <summary>
             It contains the 'data' content of Finite Element response operation.
             </summary>

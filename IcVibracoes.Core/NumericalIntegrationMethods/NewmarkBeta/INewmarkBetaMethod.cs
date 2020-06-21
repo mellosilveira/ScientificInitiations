@@ -1,5 +1,5 @@
 ﻿using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> CalculateResultForInitialTime(FiniteElementsMethodInput input);
+        Task<FiniteElementResult> CalculateResultForInitialTime(FiniteElementMethodInput input);
 
         /// <summary>
         /// Executes the Newmark-Beta numerical integration method.
@@ -22,6 +22,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// <param name="input"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> CalculateResult(FiniteElementsMethodInput input, FiniteElementResult previousResult);
+        Task<FiniteElementResult> CalculateResult(FiniteElementMethodInput input, FiniteElementResult previousResult);
     }
 }

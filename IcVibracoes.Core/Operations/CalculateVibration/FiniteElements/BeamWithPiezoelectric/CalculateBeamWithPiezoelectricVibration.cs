@@ -6,25 +6,25 @@ using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
-using IcVibracoes.DataContracts.FiniteElements.BeamWithPiezoelectric;
+using IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWithPiezoelectric
+namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric
 {
     /// <summary>
     /// It's responsible to calculate the vibration in a beam with piezoelectric.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamWithPiezoelectricVibration<TProfile> : CalculateVibration_FiniteElements<BeamWithPiezoelectricRequest<TProfile>, TProfile, BeamWithPiezoelectric<TProfile>>, ICalculateBeamWithPiezoelectricVibration<TProfile>
+    public abstract class CalculateBeamWithPiezoelectricVibration<TProfile> : CalculateVibration_FiniteElement<BeamWithPiezoelectricRequest<TProfile>, TProfile, BeamWithPiezoelectric<TProfile>>, ICalculateBeamWithPiezoelectricVibration<TProfile>
         where TProfile : Profile, new()
     {
         private readonly IBoundaryCondition _boundaryCondition;
@@ -127,7 +127,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             };
         }
 
-        public override async Task<FiniteElementsMethodInput> CreateInput(BeamWithPiezoelectricRequest<TProfile> request)
+        public override async Task<FiniteElementMethodInput> CreateInput(BeamWithPiezoelectricRequest<TProfile> request)
         {
             uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
@@ -182,7 +182,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             double[] equivalentForce = await this._arrayOperation.MergeVectors(force, electricalCharge);
 
             // Creating input.
-            FiniteElementsMethodInput input = new FiniteElementsMethodInput(NumericalMethodFactory.Create(request.NumericalMethod))
+            FiniteElementMethodInput input = new FiniteElementMethodInput(NumericalMethodFactory.Create(request.NumericalMethod))
             {
                 Mass = await this._boundaryCondition.Apply(equivalentMass, bondaryConditions, numberOfTrueBoundaryConditions),
 
@@ -204,13 +204,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return input;
         }
 
-        public override Task<string> CreateSolutionPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementsMethodInput input)
+        public override Task<string> CreateSolutionPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithPiezoelectric/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/Piezoelectric {Regex.Replace(request.PiezoelectricPosition, @"\s", "")}/{request.NumericalMethod}");
+                $"Solutions/FiniteElement/BeamWithPiezoelectric/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/Piezoelectric {Regex.Replace(request.PiezoelectricPosition, @"\s", "")}/{request.NumericalMethod}");
 
             string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
@@ -221,13 +221,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElements.BeamWith
             return Task.FromResult(path);
         }
 
-        public override Task<string> CreateMaxValuesPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementsMethodInput input)
+        public override Task<string> CreateMaxValuesPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/FiniteElements/BeamWithPiezoelectric/MaxValues/{request.NumericalMethod}");
+                $"Solutions/FiniteElement/BeamWithPiezoelectric/MaxValues/{request.NumericalMethod}");
 
             string fileName = $"MaxValues_{request.AnalysisType}_{Regex.Replace(request.PiezoelectricPosition, @"\s", "")}_{request.Profile.GetType().Name}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 

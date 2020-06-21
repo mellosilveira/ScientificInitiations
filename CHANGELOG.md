@@ -6,13 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## UNRELEASED
 ### Changed
-- Variable FolderPath to FileUri on methods CreateSolutionPath and CreateMaxValuesPath.
+- All names with FiniteElements to FiniteElement.
+- Variable folderPath to fileUri on methods CreateSolutionPath and CreateMaxValuesPath.
 - Path used to save the Rigid Body solutions. 
-- Moved obsoleted requests to folder Obsoleted in Request folder.
+- Moved obsoleted requests to folder 'Obsoleted' in Request folder.
 - Properties on classes RequestData moved to classes Request.
-- Class FiniteElementsMethodInput used in all FiniteMethod operations.
+- Class FiniteElementMethodInput to be used in all FiniteElementMethod operations.
 - Matrix with piezoelectric boundary conditions to consider the beam fastening.
-- Constructor of class FiniteElementsMethodInput receives the Numerical Method choosen for the analysis to set the correct values on properties Beta and Gama.
+- Constructor of class FiniteElementMethodInput receives the Numerical Method choosen for the analysis to set the correct values on properties Beta and Gama.
 ### Removed
 - All classes RequestData.
 - Classes CentralDifferenceMethodInput, ImplicitAccelerationMethodInput and NewmarkMethodInput.
@@ -43,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.0] - 2020-05-07
 ### Changed
-- Classes and folder name from CalculateVibration to FiniteElements operations.
+- Classes and folder name from CalculateVibration to FiniteElement operations.
 ### Fixed
 - Inheritances, classes and folders name and folder organization.
 ### Added
