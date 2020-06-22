@@ -21,7 +21,12 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement
                     this.Gama = 0.5;
                     break;
 
-                case NumericalMethod.Newmark | NumericalMethod.NewmarkBeta:
+                case NumericalMethod.NewmarkBeta:
+                    this.Beta = 0.25;
+                    this.Gama = 0.5;
+                    break;
+
+                case NumericalMethod.Newmark:
                     this.Beta = 0.25;
                     this.Gama = 0.5;
                     break;

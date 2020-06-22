@@ -209,7 +209,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 previousPath,
                 $"Solutions/FiniteElement/BeamWithPiezoelectric/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/Piezoelectric {Regex.Replace(request.PiezoelectricPosition, @"\s", "")}/{request.NumericalMethod}");
 
-            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
+            string fileName = $"{request.AnalysisType}_{Regex.Replace(request.PiezoelectricPosition, @"\s", "")}_{request.Profile.GetType().Name}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
             string path = Path.Combine(fileUri, fileName);
 

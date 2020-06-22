@@ -170,7 +170,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
                 previousPath,
                 $"Solutions/FiniteElement/BeamWithDva/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}");
 
-            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
+            string fileName = $"{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
 
             string path = Path.Combine(fileUri, fileName);
 

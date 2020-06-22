@@ -135,7 +135,7 @@ namespace IcVibracoes.Core.ArrayOperations
                 pivot = matrix[i, i];
                 if (pivot == 0)
                 {
-                    throw new DivideByZeroException($"Invalid value to pivot: {pivot}.");
+                    throw new DivideByZeroException($"Pivot cannot be zero at line {i}.");
                 }
 
                 // Parallel.For
