@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## UNRELEASED
 ### Changed
 - Variable folderPath to fileUri on methods CreateSolutionPath and CreateMaxValuesPath.
-- Path used to save the Rigid Body solutions. 
+- Path used to save the solutions. 
 - Moved obsoleted requests to folder 'Obsoleted' in Request folder.
 - Properties on classes RequestData moved to classes Request.
 - Class FiniteElementsMethodInput to be used in all FiniteElementsMethod operations.
