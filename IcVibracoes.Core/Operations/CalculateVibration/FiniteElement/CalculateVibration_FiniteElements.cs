@@ -110,8 +110,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                 input.AngularFrequency += input.AngularFrequencyStep;
             }
 
-            double[] naturalFrequencies = await this._naturalFrequency.CalculateByQRDecomposition(input.Mass, input.Stiffness, tolerance: 1e-3).ConfigureAwait(false);
-            this._file.Write("Natural Frequencies", naturalFrequencies, maxValuesPath);
+            //double[] naturalFrequencies = await this._naturalFrequency.CalculateByQRDecomposition(input.Mass, input.Stiffness, tolerance: 1e-3).ConfigureAwait(false);
+            //this._file.Write("Natural Frequencies", naturalFrequencies, maxValuesPath);
 
             return response;
         }
