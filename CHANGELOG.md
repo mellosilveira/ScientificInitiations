@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Constructor of class FiniteElementsMethodInput receives the Numerical Method choosen for the analysis to set the correct values on properties Beta and Gama.
 - All names with FiniteElements to FiniteElement.
 - Numerical method instantiated in the process operation, instead of in the constructor, to allow the user to decide which numerical method to use in the analysis without having to create an endpoint per numerical method.
+- Method ProcessOperation in CalculateVibration_FiniteElement do not calculate natural frequency.
 ### Removed
 - All classes RequestData.
 - Classes CentralDifferenceMethodInput, ImplicitAccelerationMethodInput and NewmarkMethodInput.
