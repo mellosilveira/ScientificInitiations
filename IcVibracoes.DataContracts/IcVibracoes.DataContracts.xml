@@ -272,6 +272,11 @@
             The list of errors.
             </summary>
         </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.HttpStatusCode">
+            <summary>
+            The Http status code.
+            </summary>
+        </member>
         <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Data">
             <summary>
             It represents the 'data' content of all operation response.
@@ -283,6 +288,26 @@
             </summary>
             <param name="code"></param>
             <param name="message"></param>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetStatusCodeCreated">
+            <summary>
+            This method sets the HttpStatusCode Created.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetStatusCodeBadRequest">
+            <summary>
+            This method sets the HttpStatusCode BadRequest.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetInternalServerError">
+            <summary>
+            This method sets the HttpStatusCode InternalServerError.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetNotImplemented">
+            <summary>
+            This method sets the HttpStatusCode InternalServerError.
+            </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.OperationResponseData">
             <summary>

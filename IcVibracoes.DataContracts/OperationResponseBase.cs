@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace IcVibracoes.DataContracts
 {
@@ -15,13 +16,13 @@ namespace IcVibracoes.DataContracts
         /// </summary>
         public OperationResponseBase()
         {
-            Errors = new List<OperationError>();
+            this.Errors = new List<OperationError>();
         }
 
         /// <summary>
         /// The success status of operation.
         /// </summary>
-        public bool Success => !Errors.Any();
+        public bool Success => !this.Errors.Any();
 
         /// <summary>
         /// The list of errors.
@@ -40,7 +41,7 @@ namespace IcVibracoes.DataContracts
         /// <param name="message"></param>
         public void AddError(string code, string message)
         {
-            Errors.Add(new OperationError(code, message));
+            this.Errors.Add(new OperationError(code, message));
         }
     }
 }

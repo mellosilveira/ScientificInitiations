@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Property NumericalMethod on OperationRequestBase.
 - Enum NumericalMethod.
 - Property NumericalMethod in class OperationRequestBase.
+- Property FileUri in class OperationResponseBase.
 
 ## [2.1.0] - 2020-06-04
 ### Added

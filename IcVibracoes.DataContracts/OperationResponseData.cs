@@ -14,5 +14,10 @@
         /// A simple analysis explanation.
         /// </summary>
         public string AnalysisExplanation { get; set; }
+
+        /// <summary>
+        /// The file URI with the solution files.
+        /// </summary>
+        public string FileUri { get; set; }
     }
 }
