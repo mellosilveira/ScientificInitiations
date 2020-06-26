@@ -28,7 +28,17 @@ namespace IcVibracoes.Core.Operations
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected abstract Task<TResponse> ValidateOperation(TRequest request);
+        protected virtual Task<TResponse> ValidateOperation(TRequest request)
+        {
+            TResponse response = new TResponse();
+
+            if (request == null)
+            {
+                response.AddError("", "Request cannot be null.");
+            }
+
+            return Task.FromResult(response);
+        }
 
         /// <summary>
         /// The main method of all operations.

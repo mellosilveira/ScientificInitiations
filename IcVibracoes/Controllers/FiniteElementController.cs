@@ -9,8 +9,10 @@ using IcVibracoes.DataContracts.FiniteElement;
 using IcVibracoes.DataContracts.FiniteElement.Beam;
 using IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber;
 using IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric;
+using IcVibracoes.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Controllers
@@ -30,10 +32,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("rectangular")]
@@ -42,14 +46,7 @@ namespace IcVibracoes.Controllers
             [FromBody] BeamRequest<RectangularProfile> request)
         {
             FiniteElementResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            // TODO - Alterar Ok para Created e passar a URI do arquivo.
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
 
         /// <summary>
@@ -60,10 +57,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("rectangular/dynamic-vibration-absorber")]
@@ -72,13 +71,7 @@ namespace IcVibracoes.Controllers
             [FromBody] BeamWithDvaRequest<RectangularProfile> request)
         {
             FiniteElementResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
 
         /// <summary>
@@ -89,10 +82,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("rectangular/piezoelectric")]
@@ -101,13 +96,7 @@ namespace IcVibracoes.Controllers
             [FromBody] BeamWithPiezoelectricRequest<RectangularProfile> request)
         {
             FiniteElementResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
 
         /// <summary>
@@ -118,10 +107,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("circular")]
@@ -130,13 +121,7 @@ namespace IcVibracoes.Controllers
             [FromBody] BeamRequest<CircularProfile> request)
         {
             FiniteElementResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
 
         /// <summary>
@@ -147,10 +132,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("circular/dynamic-vibration-absorber")]
@@ -159,13 +146,7 @@ namespace IcVibracoes.Controllers
             [FromBody] BeamWithDvaRequest<CircularProfile> request)
         {
             FiniteElementResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
 
         /// <summary>
@@ -176,10 +157,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("circular/piezoelectric")]
@@ -188,13 +171,7 @@ namespace IcVibracoes.Controllers
             [FromBody] BeamWithPiezoelectricRequest<CircularProfile> request)
         {
             FiniteElementResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
     }
 }

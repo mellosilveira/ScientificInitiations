@@ -181,6 +181,31 @@
             The error code.
             </summary>
         </member>
+        <member name="T:IcVibracoes.DataContracts.OperationErrorCode">
+            <summary>
+            It contains the operation error codes that the application can return.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.RequestValidationError">
+            <summary>
+            This error means that the request do not passed in the validation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.UnauthorizedError">
+            <summary>
+            This error means that the client is not authorized to access the endpoint or the resource.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.InternalServerError">
+            <summary>
+            This error means that some error ocurred while processing the request.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.NotImplementedError">
+            <summary>
+            This error means that some resource or endpoint was not implemented.
+            </summary>
+        </member>
         <member name="T:IcVibracoes.DataContracts.OperationRequestBase">
             <summary>
             It represents the essencial request content to operations.
@@ -267,14 +292,14 @@
             The success status of operation.
             </summary>
         </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.HttpStatusCode">
+            <summary>
+            The HTTP status code.
+            </summary>
+        </member>
         <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Errors">
             <summary>
             The list of errors.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.HttpStatusCode">
-            <summary>
-            The Http status code.
             </summary>
         </member>
         <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Data">
@@ -289,24 +314,29 @@
             <param name="code"></param>
             <param name="message"></param>
         </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetStatusCodeCreated">
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetSuccessCreated">
             <summary>
-            This method sets the HttpStatusCode Created.
+            Set success to true. The HttpStatusCode will be set to 201 (Created).
             </summary>
         </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetStatusCodeBadRequest">
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetBadRequestError">
             <summary>
-            This method sets the HttpStatusCode BadRequest.
+            Set success to false. The HttpStatusCode will be set to 400 (BadRequest).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetUnauthorizedError">
+            <summary>
+            Set success to false. The HttpStatusCode will be set to 401 (Unauthorized).
             </summary>
         </member>
         <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetInternalServerError">
             <summary>
-            This method sets the HttpStatusCode InternalServerError.
+            Set Success to false. The HttpStatusCode will be set to 500 (InternalServerError).
             </summary>
         </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetNotImplemented">
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetNotImplementedError">
             <summary>
-            This method sets the HttpStatusCode InternalServerError.
+            Set Success to false. The HttpStatusCode will be set to 501 (NotImplemented).
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.OperationResponseData">
@@ -322,6 +352,11 @@
         <member name="P:IcVibracoes.DataContracts.OperationResponseData.AnalysisExplanation">
             <summary>
             A simple analysis explanation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseData.FileUri">
+            <summary>
+            The file URI with the solution files.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest">

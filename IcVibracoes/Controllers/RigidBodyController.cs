@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom;
 using IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
+using IcVibracoes.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -23,10 +24,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("one-degree-freedom")]
@@ -35,13 +38,7 @@ namespace IcVibracoes.Controllers
             [FromBody] OneDegreeOfFreedomRequest request)
         {
             OneDegreeOfFreedomResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
 
         /// <summary>
@@ -52,10 +49,12 @@ namespace IcVibracoes.Controllers
         /// <returns>A file with analysis result.</returns>
         /// <response code="201">Returns the newly created files.</response>
         /// <response code="400">If some validation do not passed.</response>
+        /// <response code="401">If the client does not have authorization.</response>
         /// <response code="500">If occurred some error in process.</response>
         /// <response code="501">If some resource is not implemented.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("two-degree-freedom")]
@@ -64,13 +63,7 @@ namespace IcVibracoes.Controllers
             [FromBody] TwoDegreesOfFreedomRequest request)
         {
             TwoDegreesOfFreedomResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return response.BuildHttpResponse();
         }
     }
 }

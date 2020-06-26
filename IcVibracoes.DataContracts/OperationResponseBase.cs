@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 namespace IcVibracoes.DataContracts
@@ -22,7 +21,12 @@ namespace IcVibracoes.DataContracts
         /// <summary>
         /// The success status of operation.
         /// </summary>
-        public bool Success => !this.Errors.Any();
+        public bool Success { get; private set; }
+
+        /// <summary>
+        /// The HTTP status code.
+        /// </summary>
+        public HttpStatusCode HttpStatusCode { get; private set; }
 
         /// <summary>
         /// The list of errors.
@@ -42,6 +46,51 @@ namespace IcVibracoes.DataContracts
         public void AddError(string code, string message)
         {
             this.Errors.Add(new OperationError(code, message));
+        }
+
+        /// <summary>
+        /// Set success to true. The HttpStatusCode will be set to 201 (Created).
+        /// </summary>
+        public void SetSuccessCreated()
+        {
+            this.HttpStatusCode = HttpStatusCode.Created;
+            this.Success = true;
+        }
+
+        /// <summary>
+        /// Set success to false. The HttpStatusCode will be set to 400 (BadRequest).
+        /// </summary>
+        public void SetBadRequestError()
+        {
+            this.HttpStatusCode = HttpStatusCode.BadRequest;
+            this.Success = false;
+        }
+
+        /// <summary>
+        /// Set success to false. The HttpStatusCode will be set to 401 (Unauthorized).
+        /// </summary>
+        public void SetUnauthorizedError()
+        {
+            this.HttpStatusCode = HttpStatusCode.Unauthorized;
+            this.Success = false;
+        }
+
+        /// <summary>
+        /// Set Success to false. The HttpStatusCode will be set to 500 (InternalServerError).
+        /// </summary>
+        public void SetInternalServerError()
+        {
+            this.HttpStatusCode = HttpStatusCode.InternalServerError;
+            this.Success = false;
+        }
+
+        /// <summary>
+        /// Set Success to false. The HttpStatusCode will be set to 501 (NotImplemented).
+        /// </summary>
+        public void SetNotImplementedError()
+        {
+            this.HttpStatusCode = HttpStatusCode.NotImplemented;
+            this.Success = false;
         }
     }
 }

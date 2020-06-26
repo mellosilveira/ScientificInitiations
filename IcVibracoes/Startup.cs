@@ -131,8 +131,8 @@ namespace IcVibracoes
             // Register Validators - Beam Request Data
 
             // Register Validators - Profiles
-            services.AddScoped<IRectangularProfileValidator, RectangularProfileValidator>();
-            services.AddScoped<ICircularProfileValidator, CircularProfileValidator>();
+            //services.AddScoped<IRectangularProfileValidator, RectangularProfileValidator>();
+            //services.AddScoped<ICircularProfileValidator, CircularProfileValidator>();
 
             // Register Validators - Time Step
             services.AddScoped<ITimeStepValidator, TimeStepValidator>();
