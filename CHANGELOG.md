@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Class OperationResponseBaseExtensions responsible to build the HTTP response.
 ### Removed
 - Property InitialTime from class OperationRequestBase.
+### Changed
+- Name of properties on class FasteningType from LinearDisplacement and AngularDisplacement to AlowLinearDisplacement and AlowAngularDisplacement.
 
 ## [2.2.0] - 2020-06-26
 ### Changed

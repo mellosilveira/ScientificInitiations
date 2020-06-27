@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput;
-using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.DataContracts;
 using System.Threading.Tasks;

@@ -102,8 +102,10 @@ namespace IcVibracoes.Core.Operations
             try
             {
                 response = await this.ValidateOperation(request).ConfigureAwait(false);
-                if (!response.Success)
+                if (response.Success == false)
                 {
+                    response.SetBadRequestError();
+
                     return response;
                 }
 
@@ -112,7 +114,7 @@ namespace IcVibracoes.Core.Operations
             catch (Exception ex)
             {
                 response = new TResponse();
-                response.AddError("000", $"{ex.Message}");
+                response.AddError(OperationErrorCode.InternalServerError, $"{ex.Message}");
             }
 
             return response;

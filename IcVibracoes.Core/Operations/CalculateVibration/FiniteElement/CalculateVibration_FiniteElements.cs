@@ -8,10 +8,12 @@ using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElement;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
@@ -27,6 +29,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         where TProfile : Profile, new()
         where TBeam : IBeam<TProfile>, new()
     {
+        private readonly IProfileValidator<TProfile> _profileValidator;
         private readonly IFile _file;
         private readonly ITime _time;
         private readonly INaturalFrequency _naturalFrequency;
@@ -38,10 +41,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateVibration_FiniteElement(
+            IProfileValidator<TProfile> profileValidator,
             IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
         {
+            this._profileValidator = profileValidator;
             this._file = file;
             this._time = time;
             this._naturalFrequency = naturalFrequency;
@@ -58,7 +63,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         {
             var response = new FiniteElementResponse();
 
-            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
+            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod, response);
 
             FiniteElementMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
 
@@ -175,24 +180,48 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         {
             FiniteElementResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
 
+            if (response.Success == false)
+            {
+                return response;
+            }
+
             if (request.NumberOfElements <= 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, "Number of elements must be greather than zero.");
             }
 
-            if(Enum.TryParse(typeof(Materials), request.Material, out object material) == false)
+            if (Enum.TryParse(typeof(Materials), request.Material, out _) == false)
             {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid material: {material}.");
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid material: {request.Material}.");
             }
 
-            if(request.Length <= 0)
+            if (request.Length <= 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, $"Length: '{request.Length}' must be greather than zero.");
             }
 
-            List<Fastening> Fastenings;
-            List<Force> Forces;
-            TProfile Profile;
+            foreach (var fastening in request.Fastenings)
+            {
+                if (fastening.NodePosition < 0 || fastening.NodePosition > request.NumberOfElements)
+                {
+                    response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value for fastening node position: '{fastening.NodePosition}'. It must be greather than zero and less than '{request.NumberOfElements}'.");
+                }
+
+                if (Enum.TryParse(typeof(Fastenings), fastening.Type, out _) == false)
+                {
+                    response.AddError(OperationErrorCode.RequestValidationError, $"Invalid fastening type: '{fastening.Type}'.");
+                }
+            }
+
+            foreach (var forces in request.Forces)
+            {
+                if (forces.NodePosition < 0 || forces.NodePosition > request.NumberOfElements)
+                {
+                    response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value for fastening node position: '{forces.NodePosition}'. It must be greather than zero and less than '{request.NumberOfElements}'.");
+                }
+            }
+
+            await this._profileValidator.Execute(request.Profile, response).ConfigureAwait(false);
 
             return response;
         }

@@ -318,7 +318,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 
             foreach(KeyValuePair<uint, FasteningType> fastening in fastenings)
             {
-                boundaryCondition[fastening.Key] = fastening.Value.LinearDisplacement;
+                boundaryCondition[fastening.Key] = fastening.Value.AlowLinearDisplacement;
             }
 
             return Task.FromResult(boundaryCondition);
