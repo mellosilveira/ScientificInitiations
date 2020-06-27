@@ -7,21 +7,18 @@ namespace IcVibracoes.Core.Validators.Profiles.Circular
 {
     public class CircularProfileValidator : ProfileValidator<CircularProfile>, ICircularProfileValidator
     {
-        public override Task<bool> Execute(CircularProfile profile, FiniteElementResponse response)
+        public override async Task<bool> Execute(CircularProfile profile, FiniteElementResponse response)
         {
-            if (profile == null)
-            {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Profile cannot be null.");
-
-                return Task.FromResult(false);
-            }
+            bool profileIsValid = await base.Execute(profile, response).ConfigureAwait(false);
 
             if (profile.Area == default && profile.MomentOfInertia == default && profile.Diameter == default)
             {
                 response.AddError(OperationErrorCode.RequestValidationError,
                     $"Some parameter must be passed. If diameter is passed, area and Moment of Inertia cannot be passed. If area and Moment of Inertia are passed, diameter cannot be passed.");
 
-                return Task.FromResult(false);
+                profileIsValid = false;
+
+                return profileIsValid;
             }
 
             if (profile.Diameter > 0)
