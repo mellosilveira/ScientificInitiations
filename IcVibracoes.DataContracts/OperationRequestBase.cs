@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Common.Classes;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IcVibracoes.DataContracts
 {
@@ -34,14 +33,6 @@ namespace IcVibracoes.DataContracts
         /// <example>Harmonic</example>
         [Required]
         public string ForceType { get; set; }
-
-        /// <summary>
-        /// Initial time of analysis.
-        /// Unit: s (second)
-        /// </summary>
-        /// <example>0</example>
-        [Required]
-        public double InitialTime { get; set; }
 
         /// <summary>
         /// Number of periods.

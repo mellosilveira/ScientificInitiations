@@ -49,9 +49,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamWithPiezoelectricMainMatrix<TProfile> mainMatrix,
-            IFile file, 
-            ITime time, 
-            INaturalFrequency naturalFrequency) 
+            IFile file,
+            ITime time,
+            INaturalFrequency naturalFrequency)
             : base(file, time, naturalFrequency)
         {
             this._boundaryCondition = boundaryCondition;
@@ -179,7 +179,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             double[] equivalentForce = await this._arrayOperation.MergeVectors(force, electricalCharge);
 
             // Creating input.
-            FiniteElementMethodInput input = new FiniteElementMethodInput(NumericalMethodFactory.Create(request.NumericalMethod))
+            var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
+            FiniteElementMethodInput input = new FiniteElementMethodInput(numericalMethod)
             {
                 Mass = await this._boundaryCondition.Apply(equivalentMass, bondaryConditions, numberOfTrueBoundaryConditions),
 
@@ -244,7 +245,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         {
             uint[] vector = new uint[numberOfElements];
 
-            for(uint i = 0; i < numberOfElements; i++)
+            for (uint i = 0; i < numberOfElements; i++)
             {
                 vector[i] = i + 1;
             }

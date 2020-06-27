@@ -120,7 +120,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             double[] forces = beam.Forces;
 
             // Creating input.
-            FiniteElementMethodInput input = new FiniteElementMethodInput(NumericalMethodFactory.Create(request.NumericalMethod))
+            var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
+            FiniteElementMethodInput input = new FiniteElementMethodInput(numericalMethod)
             {
                 Mass = await this._boundaryCondition.Apply(mass, bondaryCondition, numberOfTrueBoundaryConditions),
 

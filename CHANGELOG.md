@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Class OperationErrorCode, containing the error codes that the application can return.
 - Class OperationResponseBaseExtensions responsible to build the HTTP response.
+### Removed
+- Property InitialTime from class OperationRequestBase.
 
 ## [2.2.0] - 2020-06-26
 ### Changed

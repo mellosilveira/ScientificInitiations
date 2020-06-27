@@ -70,7 +70,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
                 FinalAngularFrequency = request.FinalAngularFrequency,
                 DampingRatio = request.DampingRatioList.FirstOrDefault(),
                 Force = request.Force,
-                ForceType = ForceTypeFactory.Create(request.ForceType),
+                ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
                 Stiffness = request.ElementData.MechanicalProperties.Stiffness,
                 Mass = request.ElementData.MechanicalProperties.Mass
             });

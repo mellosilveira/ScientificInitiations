@@ -72,7 +72,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
                 FinalAngularFrequency = request.FinalAngularFrequency,
                 DampingRatio = request.DampingRatioList.FirstOrDefault(),
                 Force = request.Force,
-                ForceType = ForceTypeFactory.Create(request.ForceType),
+                ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
                 Stiffness = request.PrimaryElementData.MechanicalProperties.Stiffness,
                 Mass = request.PrimaryElementData.MechanicalProperties.Mass,
                 SecondaryStiffness = request.SecondaryElementData.MechanicalProperties.Stiffness,

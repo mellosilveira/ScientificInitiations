@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IcVibracoes.DataContracts;
+using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
+using System;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
@@ -60,41 +62,45 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     }
 
     /// <summary>
+    /// It contains the materials that can be used in the analysis.
+    /// </summary>
+    public enum Materials
+    {
+        Steel1020 = 1,
+        Steel4130 = 2,
+        Aluminum = 3
+    }
+
+    /// <summary>
     /// It's responsible to manipulate a material object based in a string.
     /// </summary>
     public class MaterialFactory
     {
         /// <summary>
-        /// It's responsible to create a material object based in a string.
+        /// /// This method creates an instance of class <seealso cref="Material"/>.
+        /// It can be <seealso cref="Steel1020"/>, <seealso cref="Steel4130"/> or <seealso cref="Aluminum"/>.
         /// </summary>
-        public static Material Create(string material)
+        /// <typeparam name="TResponseData"></typeparam>
+        /// <param name="material"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public static Material Create<TResponseData>(string material, OperationResponseBase<TResponseData> response)
+            where TResponseData : OperationResponseData
         {
             switch ((Materials)Enum.Parse(typeof(Materials), material.Trim(), ignoreCase: true))
             {
-                case Materials.Steel1020: return new Steel1020();
-                case Materials.Steel4130: return new Steel4130();
-                case Materials.Aluminum: return new Aluminum();
-                default: break;
+                case Materials.Steel1020:
+                    return new Steel1020();
+                case Materials.Steel4130:
+                    return new Steel4130();
+                case Materials.Aluminum:
+                    return new Aluminum();
+                default: 
+                    break;
             }
 
-            throw new Exception($"Invalid material: {material}.");
+            response.AddError(OperationErrorCode.InternalServerError, $"Invalid material: '{material}'.");
+            return null;
         }
-
-        /// <summary>
-        /// It's responsible to validate a material object based in a string.
-        /// </summary>
-        public bool Validate(string material)
-        {
-            bool isMaterialValid = Enum.TryParse<Materials>(material, out _);
-
-            return isMaterialValid;
-        }
-    }
-
-    public enum Materials
-    {
-        Steel1020,
-        Steel4130,
-        Aluminum
     }
 }

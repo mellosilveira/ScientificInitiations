@@ -1,4 +1,6 @@
-﻿using IcVibracoes.DataContracts;
+﻿using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.DataContracts;
 using System;
 using System.Threading.Tasks;
 
@@ -34,7 +36,54 @@ namespace IcVibracoes.Core.Operations
 
             if (request == null)
             {
-                response.AddError("", "Request cannot be null.");
+                response.AddError(OperationErrorCode.RequestValidationError, "Request cannot be null.");
+
+                return Task.FromResult(response);
+            }
+
+            if (string.IsNullOrWhiteSpace(request.Author))
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, "Author cannot be null or white space.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.NumericalMethod))
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, "Numerical method cannot be null or white space.");
+            }
+
+            if (Enum.TryParse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true, out object _) == false)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid numerical method: '{request.NumericalMethod}'.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.ForceType))
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, "ForceType cannot be null or white space.");
+            }
+
+            if (Enum.TryParse(typeof(ForceType), request.ForceType, ignoreCase: true, out object _) == false)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid force type: '{request.ForceType}'.");
+            }
+
+            if (request.PeriodCount <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, "PeriodCount must be greather than zero.");
+            }
+
+            if (request.PeriodDivision <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, "PeriodDivision must be greather than zero.");
+            }
+            
+            if(request.InitialAngularFrequency > request.FinalAngularFrequency)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Final angular frequency: '{request.InitialAngularFrequency}' must be grether than initial angular frequency: '{request.InitialAngularFrequency}'.");
+            }
+
+            if(request.AngularFrequencyStep == 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Angular frequency step: '{request.AngularFrequencyStep}' cannot be zero.");
             }
 
             return Task.FromResult(response);

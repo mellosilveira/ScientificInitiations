@@ -236,13 +236,6 @@
             </summary>
             <example>Harmonic</example>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.InitialTime">
-            <summary>
-            Initial time of analysis.
-            Unit: s (second)
-            </summary>
-            <example>0</example>
-        </member>
         <member name="P:IcVibracoes.DataContracts.OperationRequestBase.PeriodCount">
             <summary>
             Number of periods.

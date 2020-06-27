@@ -83,7 +83,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                         return response;
                     }
 
-                    double time = request.InitialTime;
+                    double time = 0;
                     double[] y = initial_y;
 
                     this._file.Write(time, y, path);

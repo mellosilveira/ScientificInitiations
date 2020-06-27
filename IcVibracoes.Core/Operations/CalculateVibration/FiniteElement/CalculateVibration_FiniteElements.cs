@@ -1,13 +1,17 @@
-﻿using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElement;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
@@ -169,7 +173,26 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <returns></returns>
         protected async override Task<FiniteElementResponse> ValidateOperation(TRequest request)
         {
-            FiniteElementResponse response = new FiniteElementResponse();
+            FiniteElementResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+
+            if (request.NumberOfElements <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, "Number of elements must be greather than zero.");
+            }
+
+            if(Enum.TryParse(typeof(Materials), request.Material, out object material) == false)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid material: {material}.");
+            }
+
+            if(request.Length <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Length: '{request.Length}' must be greather than zero.");
+            }
+
+            List<Fastening> Fastenings;
+            List<Force> Forces;
+            TProfile Profile;
 
             return response;
         }

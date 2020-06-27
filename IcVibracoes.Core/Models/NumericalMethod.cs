@@ -2,7 +2,6 @@
 using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
-using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts;
 using System;
 
@@ -31,35 +30,15 @@ namespace IcVibracoes.Core.Models
     public class NumericalMethodFactory
     {
         /// <summary>
-        /// Creates a new instance of a NumericalMethod enum.
+        /// This method creates an instance of class <seealso cref="INumericalIntegrationMethod"/>.
+        /// It can be <seealso cref="NewmarkBetaMethod"/> (used in <see cref="NumericalMethod.CentralDifferenceMethod"/>, <see cref="NumericalMethod.ImplicitLinearAccelerationMethod"/> and <see cref="NumericalMethod.NewmarkBeta"/>), <seealso cref="NewmarkMethod"/> or <seealso cref="Pinned"/>.
         /// </summary>
+        /// <typeparam name="TResponseData"></typeparam>
         /// <param name="numericalMethod"></param>
+        /// <param name="response"></param>
         /// <returns></returns>
-        public static NumericalMethod Create(string numericalMethod)
-        {
-            switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
-            {
-                case NumericalMethod.CentralDifferenceMethod:
-                    return NumericalMethod.CentralDifferenceMethod;
-                case NumericalMethod.ImplicitLinearAccelerationMethod:
-                    return NumericalMethod.ImplicitLinearAccelerationMethod;
-                case NumericalMethod.NewmarkBeta:
-                    return NumericalMethod.NewmarkBeta;
-                case NumericalMethod.Newmark:
-                    return NumericalMethod.Newmark;
-                case NumericalMethod.RungeKuttaForthOrder:
-                    return NumericalMethod.RungeKuttaForthOrder;
-                default:
-                    return default;
-            }
-        }
-
-        /// <summary>
-        /// Creates a new instance of NumericalIntegrationMethod class.
-        /// </summary>
-        /// <param name="numericalMethod"></param>
-        /// <returns></returns>
-        public static INumericalIntegrationMethod CreateMethod(string numericalMethod)
+        public static INumericalIntegrationMethod CreateMethod<TResponseData>(string numericalMethod, OperationResponseBase<TResponseData> response)
+            where TResponseData : OperationResponseData
         {
             switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
             {
@@ -72,27 +51,13 @@ namespace IcVibracoes.Core.Models
                 case NumericalMethod.Newmark:
                     return new NewmarkMethod(new ArrayOperation());
                 case NumericalMethod.RungeKuttaForthOrder:
-                    return null;
+                    throw new NotImplementedException("Cannot use RungeKuttaForthOrder numerical method in this context.");
                 default:
-                    return default;
+                    break;
             }
-        }
 
-        /// <summary>
-        /// Validates the numerical method passed in request.
-        /// </summary>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <typeparam name="TResponseData"></typeparam>
-        /// <param name="numericalMethod"></param>
-        /// <param name="response"></param>
-        public static void Validate<TResponse, TResponseData>(string numericalMethod, TResponse response)
-            where TResponse : OperationResponseBase<TResponseData>
-            where TResponseData : OperationResponseData
-        {
-            if (Enum.TryParse(typeof(NumericalMethod), numericalMethod, ignoreCase: true, out object _) == false)
-            {
-                response.AddError("", $"Invalid numerical method: '{numericalMethod}'.");
-            }
+            response.AddError(OperationErrorCode.InternalServerError, $"Invalid numerical method: '{numericalMethod}'.");
+            return null;
         }
     }
 }
