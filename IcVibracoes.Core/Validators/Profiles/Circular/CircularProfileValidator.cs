@@ -5,55 +5,77 @@ using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.Profiles.Circular
 {
+    /// <summary>
+    /// It's responsible to validate a circular profile.
+    /// </summary>
     public class CircularProfileValidator : ProfileValidator<CircularProfile>, ICircularProfileValidator
     {
+        /// <summary>
+        /// This method validates the circular profile used in the analysis.
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <param name="response"></param>
+        /// <returns>True, if the values informed in the circular profile can be used in the analysis. False, otherwise.</returns>
         public override async Task<bool> Execute(CircularProfile profile, FiniteElementResponse response)
         {
-            bool profileIsValid = await base.Execute(profile, response).ConfigureAwait(false);
+            if (await base.Execute(profile, response).ConfigureAwait(false) == false)
+            {
+                return false;
+            }
 
-            if (profile.Area == default && profile.MomentOfInertia == default && profile.Diameter == default)
+            if (profile.Area == 0 && profile.MomentOfInertia == 0 && profile.Diameter == 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError,
-                    $"Some parameter must be passed. If diameter is passed, area and Moment of Inertia cannot be passed. If area and Moment of Inertia are passed, diameter cannot be passed.");
+                    $"Some parameter must be informed. If diameter is informed, Area and Moment of Inertia cannot be informed. If Area and Moment of Inertia are informed, diameter cannot be informed.");
 
-                profileIsValid = false;
-
-                return profileIsValid;
+                return false;
             }
 
             if (profile.Diameter > 0)
             {
-                if (profile.Area != default || profile.MomentOfInertia != default)
+                if (profile.Area != 0 || profile.MomentOfInertia != 0)
                 {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"When diameter is passed, area: {profile.Area} or Moment of Inertia: {profile.MomentOfInertia} must not be passed.");
+                    response.AddError(OperationErrorCode.RequestValidationError, $"When diameter is informed, Area: {profile.Area} and Moment of Inertia: {profile.MomentOfInertia} cannot be informed.");
 
-                    return Task.FromResult(false);
+                    return false;
                 }
 
-                return Task.FromResult(true);
+                if (profile.Thickness < 0)
+                {
+                    response.AddError(OperationErrorCode.RequestValidationError, $"Thickness cannot be less than zero.");
+
+                    return false;
+                }
+
+                return true;
             }
-            else
+            else if (profile.Diameter < 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value to diameter: {profile.Diameter}. Diameter must be greather than zero");
             }
 
             if (profile.Area > 0 && profile.MomentOfInertia > 0)
             {
-                if (profile.Diameter != default)
+                if (profile.Diameter != 0)
                 {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"When area and Moment of Inertia are passed, diameter: {profile.Diameter} must not be passed.");
+                    response.AddError(OperationErrorCode.RequestValidationError, $"When Area and Moment of Inertia are informed, diameter: {profile.Diameter} and thickness: {profile.Thickness} cannot be informed.");
 
-                    return Task.FromResult(false);
+                    return false;
                 }
 
-                return Task.FromResult(true);
+                if (profile.Thickness != 0)
+                {
+                    response.AddError(OperationErrorCode.RequestValidationError, $"When Area and Moment of Inertia are informed, thickness: {profile.Thickness} must be zero.");
+                }
+
+                return true;
             }
             else
             {
                 response.AddError(OperationErrorCode.RequestValidationError,
                     $"Area: {profile.Area} and Moment of Inertia: {profile.MomentOfInertia} must be greather than zero.");
 
-                return Task.FromResult(false);
+                return false;
             }
         }
     }

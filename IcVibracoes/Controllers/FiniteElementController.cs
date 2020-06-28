@@ -12,7 +12,6 @@ using IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric;
 using IcVibracoes.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Controllers

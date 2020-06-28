@@ -2,7 +2,8 @@
 
 namespace IcVibracoes.Core.Validators.Profiles.Rectangular
 {
-    public interface IRectangularProfileValidator : IProfileValidator<RectangularProfile>
-    {
-    }
+    /// <summary>
+    /// It's responsible to validate a rectangular profile.
+    /// </summary>
+    public interface IRectangularProfileValidator : IProfileValidator<RectangularProfile> { }
 }

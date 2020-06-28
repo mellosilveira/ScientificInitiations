@@ -12,6 +12,12 @@ namespace IcVibracoes.Core.Validators.Profiles
     public abstract class ProfileValidator<TProfile> : IProfileValidator<TProfile>
         where TProfile : Profile
     {
+        /// <summary>
+        /// This method validates the profile used in the analysis.
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <param name="response"></param>
+        /// <returns>True, if the values passed in the profile can be used in the analysis. False, otherwise.</returns>
         public virtual Task<bool> Execute(TProfile profile, FiniteElementResponse response)
         {
             if (profile == null)
