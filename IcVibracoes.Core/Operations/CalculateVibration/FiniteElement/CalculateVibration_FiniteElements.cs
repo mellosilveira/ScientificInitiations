@@ -172,7 +172,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         }
 
         /// <summary>
-        /// It's responsible to validade
+        /// It's responsible to validade the request.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -192,7 +192,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 
             if (Enum.TryParse(typeof(Materials), request.Material, out _) == false)
             {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid material: {request.Material}.");
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid material: '{request.Material}'.");
             }
 
             if (request.Length <= 0)
@@ -217,7 +217,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
             {
                 if (forces.NodePosition < 0 || forces.NodePosition > request.NumberOfElements)
                 {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value for fastening node position: '{forces.NodePosition}'. It must be greather than zero and less than '{request.NumberOfElements}'.");
+                    response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value for fastening node position: {forces.NodePosition}. It must be greather than zero and less than {request.NumberOfElements}.");
                 }
             }
 
