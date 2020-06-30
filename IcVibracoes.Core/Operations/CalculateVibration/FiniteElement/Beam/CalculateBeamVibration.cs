@@ -11,6 +11,8 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.Validators.Profiles;
+using IcVibracoes.DataContracts.FiniteElement;
 using IcVibracoes.DataContracts.FiniteElement.Beam;
 using System;
 using System.IO;
@@ -39,6 +41,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
+        /// <param name="profileValidator"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
@@ -48,10 +51,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamMainMatrix<TProfile> mainMatrix,
+            IProfileValidator<TProfile> profileValidator,
             IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
-            : base(file, time, naturalFrequency)
+            : base(profileValidator, file, time, naturalFrequency)
         {
             this._boundaryCondition = boundaryCondition;
             this._arrayOperation = arrayOperation;
@@ -60,7 +64,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             this._mainMatrix = mainMatrix;
         }
 
-        public async override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom)
+        /// <summary>
+        /// This method creates a new instance of class <see cref="Beam{TProfile}"/>.
+        /// This is a step to create the input fot finite element analysis.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="degreesOfFreedom"></param>
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="Beam{TProfile}"/>.</returns>
+        public async override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom, FiniteElementResponse response)
         {
             if (request == null)
             {
@@ -69,7 +81,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
 
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            if (request.Profile.Area != default && request.Profile.MomentOfInertia != default)
+            if (request.Profile.Area != 0 && request.Profile.MomentOfInertia != 0)
             {
                 geometricProperty.Area = await this._arrayOperation.CreateVector(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
                 geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
@@ -86,18 +98,24 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
                 Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
-                Material = MaterialFactory.Create(request.Material),
+                Material = MaterialFactory.Create(request.Material, response),
                 NumberOfElements = request.NumberOfElements,
                 Profile = request.Profile
             };
         }
 
         // TODO: Generalizar este método para as análises de elementos finitos
-        public override async Task<FiniteElementMethodInput> CreateInput(BeamRequest<TProfile> request)
+        /// <summary>
+        /// This method creates the input to be used in finite element analysis.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
+        public override async Task<FiniteElementMethodInput> CreateInput(BeamRequest<TProfile> request, FiniteElementResponse response)
         {
-            uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
+            uint degreesOfFreedom = await base.CalculateDegreesOfFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
-            Beam<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom);
+            Beam<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom, response);
 
             bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom).ConfigureAwait(false);
             uint numberOfTrueBoundaryConditions = 0;
@@ -143,6 +161,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             return input;
         }
 
+        /// <summary>
+        /// This method creates the path to save the solution files.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="input"></param>
+        /// <returns>The path to save the solution files.</returns>
         public override Task<string> CreateSolutionPath(BeamRequest<TProfile> request, FiniteElementMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
@@ -160,6 +184,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             return Task.FromResult(path);
         }
 
+        /// <summary>
+        /// This method creates the path to save the file with the maximum values for each angular frequency.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="input"></param>
+        /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
         public override Task<string> CreateMaxValuesPath(BeamRequest<TProfile> request, FiniteElementMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
@@ -176,5 +206,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
 
             return Task.FromResult(path);
         }
+
+        /// <summary>
+        /// This method validates the <see cref="BeamRequest{TProfile}"/> specific parameters.
+        /// <see cref="BeamRequest{TProfile}"/> does not have specific values.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public override Task ValidateSpecificData(BeamRequest<TProfile> request, FiniteElementResponse response) => Task.CompletedTask;
     }
 }

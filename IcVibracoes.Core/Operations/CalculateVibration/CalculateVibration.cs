@@ -23,26 +23,27 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         protected INumericalIntegrationMethod _numericalMethod;
 
         /// <summary>
-        /// Creates the input to numerical integration method.
+        /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <returns></returns>
-        public abstract Task<TInput> CreateInput(TRequest request);
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="TInput"/>.</returns>
+        public abstract Task<TInput> CreateInput(TRequest request, TResponse response);
 
         /// <summary>
-        /// Creates the file path to write the results.
+        /// This method creates the path to save the solution files.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <returns></returns>
+        /// <returns>The path to save the solution files.</returns>
         public abstract Task<string> CreateSolutionPath(TRequest request, TInput input);
 
         /// <summary>
-        /// Creates the file path to write the maximum values calculated in the analysis.
+        /// This method creates the path to save the file with the maximum values for each angular frequency.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <returns></returns>
+        /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
         public abstract Task<string> CreateMaxValuesPath(TRequest request, TInput input);
     }
 }

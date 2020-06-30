@@ -25,12 +25,12 @@ namespace IcVibracoes.Core.Models
     }
 
     /// <summary>
-    /// It's responsible to create a force type object based on a string.
+    /// It's responsible to manipulate the enum <see cref="NumericalMethod"/> based in a string.
     /// </summary>
     public class NumericalMethodFactory
     {
         /// <summary>
-        /// This method creates an instance of class <seealso cref="INumericalIntegrationMethod"/>.
+        /// This method creates an instance of interface <seealso cref="INumericalIntegrationMethod"/>.
         /// It can be <seealso cref="NewmarkBetaMethod"/> (used in <see cref="NumericalMethod.CentralDifferenceMethod"/>, <see cref="NumericalMethod.ImplicitLinearAccelerationMethod"/> and <see cref="NumericalMethod.NewmarkBeta"/>), <seealso cref="NewmarkMethod"/> or <seealso cref="Pinned"/>.
         /// </summary>
         /// <typeparam name="TResponseData"></typeparam>

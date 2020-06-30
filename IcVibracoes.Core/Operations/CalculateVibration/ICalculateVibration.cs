@@ -17,26 +17,27 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         where TInput : NumericalMethodInput
     {
         /// <summary>
-        /// Calculates the input to numerical integration method.
+        /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <returns></returns>
-        Task<TInput> CreateInput(TRequest request);
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="TInput"/>.</returns>
+        Task<TInput> CreateInput(TRequest request, TResponse response);
 
         /// <summary>
-        /// Creates the file path to write the results.
+        /// This method creates the file path to write the results.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <returns></returns>
+        /// <returns>The solution path.</returns>
         Task<string> CreateSolutionPath(TRequest request, TInput input);
 
         /// <summary>
-        /// Creates the file path to write the maximum values calculated in the analysis.
+        /// This method creates the file path to write the maximum values calculated in the analysis.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <returns></returns>
+        /// <returns>The maximum values solution path.</returns>
         Task<string> CreateMaxValuesPath(TRequest request, TInput input);
     }
 }

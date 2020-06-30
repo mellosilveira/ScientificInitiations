@@ -11,9 +11,13 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
+using IcVibracoes.Core.Validators.Profiles;
+using IcVibracoes.DataContracts;
+using IcVibracoes.DataContracts.FiniteElement;
 using IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -31,6 +35,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         private readonly IGeometricProperty<TProfile> _geometricProperty;
         private readonly IMappingResolver _mappingResolver;
         private readonly IBeamWithPiezoelectricMainMatrix<TProfile> _mainMatrix;
+        private readonly IProfileValidator<TProfile> _profileValidator;
 
         /// <summary>
         /// Class constructor.
@@ -40,6 +45,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
+        /// <param name="profileValidator"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
@@ -49,19 +55,29 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamWithPiezoelectricMainMatrix<TProfile> mainMatrix,
+            IProfileValidator<TProfile> profileValidator,
             IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
-            : base(file, time, naturalFrequency)
+            : base(profileValidator, file, time, naturalFrequency)
         {
             this._boundaryCondition = boundaryCondition;
             this._arrayOperation = arrayOperation;
             this._geometricProperty = geometricProperty;
             this._mappingResolver = mappingResolver;
             this._mainMatrix = mainMatrix;
+            this._profileValidator = profileValidator;
         }
 
-        public override async Task<BeamWithPiezoelectric<TProfile>> BuildBeam(BeamWithPiezoelectricRequest<TProfile> request, uint degreesOfFreedom)
+        /// <summary>
+        /// This method creates a new instance of class <see cref="BeamWithPiezoelectric{TProfile}"/>.
+        /// This is a step to create the input fot finite element analysis.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="degreesOfFreedom"></param>
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="BeamWithPiezoelectric{TProfile}"/>.</returns>
+        public override async Task<BeamWithPiezoelectric<TProfile>> BuildBeam(BeamWithPiezoelectricRequest<TProfile> request, uint degreesOfFreedom, FiniteElementResponse response)
         {
             if (request == null)
             {
@@ -71,7 +87,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             GeometricProperty geometricProperty = new GeometricProperty();
             GeometricProperty piezoelectricGeometricProperty = new GeometricProperty();
 
-            uint numberOfPiezoelectricPerElements = PiezoelectricPositionFactory.Create(request.PiezoelectricPosition);
+            uint numberOfPiezoelectricPerElements = PiezoelectricPositionFactory.Create(request.PiezoelectricPosition, response);
             uint[] elementsWithPiezoelectric = request.ElementsWithPiezoelectric ?? this.CreateVectorWithAllElements(request.NumberOfElements);
 
             // Calculating beam geometric properties.
@@ -112,7 +128,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
-                Material = MaterialFactory.Create(request.Material),
+                Material = MaterialFactory.Create(request.Material, response),
                 NumberOfElements = request.NumberOfElements,
                 NumberOfPiezoelectricPerElements = numberOfPiezoelectricPerElements,
                 PiezoelectricConstant = request.PiezoelectricConstant,
@@ -124,11 +140,17 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             };
         }
 
-        public override async Task<FiniteElementMethodInput> CreateInput(BeamWithPiezoelectricRequest<TProfile> request)
+        /// <summary>
+        /// This method creates the input to be used in finite element analysis.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
+        public override async Task<FiniteElementMethodInput> CreateInput(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementResponse response)
         {
-            uint degreesOfFreedom = await base.CalculateDegreesFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
+            uint degreesOfFreedom = await base.CalculateDegreesOfFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
-            BeamWithPiezoelectric<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom).ConfigureAwait(false);
+            BeamWithPiezoelectric<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom, response).ConfigureAwait(false);
 
             uint piezoelectricDegreesFreedomMaximum = beam.NumberOfElements + 1;
 
@@ -202,6 +224,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             return input;
         }
 
+        /// <summary>
+        /// This method creates the path to save the solution files.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="input"></param>
+        /// <returns>The path to save the solution files.</returns>
         public override Task<string> CreateSolutionPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
@@ -219,6 +247,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             return Task.FromResult(path);
         }
 
+        /// <summary>
+        /// This method creates the path to save the file with the maximum values for each angular frequency.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="input"></param>
+        /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
         public override Task<string> CreateMaxValuesPath(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementMethodInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
@@ -251,6 +285,65 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             }
 
             return vector;
+        }
+
+        /// <summary>
+        /// This method validates the <see cref="BeamWithPiezoelectricRequest{TProfile}"/> specific parameters.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public override async Task ValidateSpecificData(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementResponse response)
+        {
+            if (request.PiezoelectricYoungModulus <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Piezoelectric Young Modulus: {request.PiezoelectricYoungModulus} must be greather than zero.");
+            }
+
+            if (request.PiezoelectricConstant <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Piezoelectric Constant: {request.PiezoelectricConstant} must be greather than zero.");
+            }
+
+            if (request.DielectricConstant <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Dielectric Constant: {request.DielectricConstant} must be greather than zero.");
+            }
+
+            if (request.ElasticityConstant <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Elasticity Constant: {request.ElasticityConstant} must be greather than zero.");
+            }
+
+            if (request.DielectricPermissiveness <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Dielectric Permissiveness: {request.DielectricPermissiveness} must be greather than zero.");
+            }
+
+            if (request.PiezoelectricSpecificMass <= 0)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Piezoelectric SpecificMass: {request.PiezoelectricSpecificMass} must be greather than zero.");
+            }
+
+            foreach (var electricalCharge in request.ElectricalCharges)
+            {
+                if (electricalCharge.NodePosition < 0 || electricalCharge.NodePosition > request.NumberOfElements)
+                {
+                    response.AddError(OperationErrorCode.RequestValidationError, $"Electrical Charge NodePosition: {electricalCharge.NodePosition} must be greather than zero and less than number of elements: {request.NumberOfElements}. Electrical Charge index: {request.ElectricalCharges.IndexOf(electricalCharge)}.");
+                }
+            }
+
+            if (Enum.TryParse(typeof(PiezoelectricPosition), request.PiezoelectricPosition, ignoreCase: true, out _) == false)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid piezoelectric position: '{request.PiezoelectricPosition}'.");
+            }
+
+            if (request.ElementsWithPiezoelectric.Max() > request.NumberOfElements || request.ElementsWithPiezoelectric.Min() < 1)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Element with piezoelectric must be greather than one (1) and less than number of elements: {request.NumberOfElements}.");
+            }
+
+            await this._profileValidator.Execute(request.PiezoelectricProfile, response).ConfigureAwait(false);
         }
     }
 }

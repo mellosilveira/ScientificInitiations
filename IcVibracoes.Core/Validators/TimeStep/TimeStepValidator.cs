@@ -12,6 +12,10 @@ namespace IcVibracoes.Core.Validators.TimeStep
     {
         private readonly INaturalFrequency _naturalFrequency;
 
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="naturalFrequency"></param>
         public TimeStepValidator(
             INaturalFrequency naturalFrequency)
         {
@@ -38,7 +42,7 @@ namespace IcVibracoes.Core.Validators.TimeStep
 
             if (timeStep > naturalPeriod / 10)
             {
-                response.AddError("", $"Time step: {timeStep} must be less than one-tenth of natural periodo: {naturalPeriod}.");
+                response.AddError(OperationErrorCode.RequestValidationError, $"Time step: {timeStep} must be less than one-tenth of natural period: {naturalPeriod}.");
 
                 return false;
             }

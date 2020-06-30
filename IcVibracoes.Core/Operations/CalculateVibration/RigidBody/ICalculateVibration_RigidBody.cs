@@ -15,6 +15,5 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         where TResponse : RigidBodyResponse<TResponseData>, new()
         where TResponseData : RigidBodyResponseData, new()
         where TInput : RigidBodyInput, new()
-    {
-    }
+    { }
 }

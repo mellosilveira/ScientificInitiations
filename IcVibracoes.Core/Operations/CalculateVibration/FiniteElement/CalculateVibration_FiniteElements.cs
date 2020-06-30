@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Common.Classes;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
@@ -12,14 +11,12 @@ using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElement;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 {
     /// <summary>
-    /// It's responsible to calculate the beam vibration for finite element analysis.
+    /// It's responsible to calculate the beam vibration using finite element concepts.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TProfile"></typeparam>
@@ -37,6 +34,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <summary>
         /// Class constructor.
         /// </summary>
+        /// <param name="profileValidator"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
@@ -53,19 +51,38 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         }
 
         /// <summary>
-        /// Builds the beam.
+        /// This method creates a new instance of class <see cref="TBeam"/>.
+        /// This is a step to create the input fot finite element analysis.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="degreesOfFreedom"></param>
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
+        public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom, FiniteElementResponse response);
+
+        /// <summary>
+        /// This method validates the request specific parameters.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public abstract Task ValidateSpecificData(TRequest request, FiniteElementResponse response);
+
+        // TODO: Retornar os dados assíncronamente, conforme calcula o resultado para uma iteração e retorna o valor.
+        // TODO: Continua escrevendo no arquivo enquanto a frequência angular não muda.
+        /// <summary>
+        /// This method calculates the vibration using finite element concept and writes the results in a file.
+        /// Each line in the file contains the result in an instant of time at an angular frequency.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
-
         protected override async Task<FiniteElementResponse> ProcessOperation(TRequest request)
         {
             var response = new FiniteElementResponse();
 
             base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod, response);
 
-            FiniteElementMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
+            FiniteElementMethodInput input = await this.CreateInput(request, response).ConfigureAwait(false);
 
             string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
 
@@ -109,6 +126,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                     this._file.Write(time, result.Displacement, solutionPath);
 
                     previousResult = result;
+
                     await this.CompareValuesAndUpdateMaxValuesResult(result, maxValuesResult).ConfigureAwait(false);
 
                     time += input.TimeStep;
@@ -126,17 +144,17 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         }
 
         /// <summary>
-        /// Calculates the degrees freedom maximum.
+        /// This method calculates the degrees of freedom maximum.
         /// </summary>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        protected Task<uint> CalculateDegreesFreedomMaximum(uint numberOfElements)
+        protected Task<uint> CalculateDegreesOfFreedomMaximum(uint numberOfElements)
         {
             return Task.FromResult((numberOfElements + 1) * Constant.NodesPerElement);
         }
 
         /// <summary>
-        /// Compares the values and update the result with max values.
+        /// This method compares the values and update the result with maximum values.
         /// </summary>
         /// <param name="result"></param>
         /// <param name="maxValuesResult"></param>
@@ -172,7 +190,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         }
 
         /// <summary>
-        /// It's responsible to validade the request.
+        /// This method validates the finite element request.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -222,6 +240,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
             }
 
             await this._profileValidator.Execute(request.Profile, response).ConfigureAwait(false);
+
+            await this.ValidateSpecificData(request, response).ConfigureAwait(false);
 
             return response;
         }

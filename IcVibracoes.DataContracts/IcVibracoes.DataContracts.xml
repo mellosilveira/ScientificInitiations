@@ -302,7 +302,7 @@
         </member>
         <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.AddError(System.String,System.String)">
             <summary>
-            This method add error on list of errors.
+            This method adds error on list of errors.
             </summary>
             <param name="code"></param>
             <param name="message"></param>

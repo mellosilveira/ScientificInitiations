@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 {
     /// <summary>
-    /// It's responsible to calculate the beam vibration for finite element analysis.
+    /// It's responsible to calculate the beam vibration using finite element concepts.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
     public interface ICalculateVibration_FiniteElement<TRequest, TProfile, TBeam> : ICalculateVibration<TRequest, FiniteElementResponse, FiniteElementResponseData, FiniteElementMethodInput>
@@ -16,10 +16,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         where TBeam : IBeam<TProfile>, new()
     {
         /// <summary>
-        /// Builds the beam.
+        /// This method creates a new instance of class <see cref="TBeam"/>.
+        /// This is a step to create the input fot finite element analysis.
         /// </summary>
         /// <param name="request"></param>
-        /// <returns></returns>
-        Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
+        /// <param name="degreesOfFreedom"></param>
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
+        Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom, FiniteElementResponse response);
     }
 }

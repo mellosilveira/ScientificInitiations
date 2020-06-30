@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber;
 

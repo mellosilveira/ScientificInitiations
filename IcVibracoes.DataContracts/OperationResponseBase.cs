@@ -39,12 +39,14 @@ namespace IcVibracoes.DataContracts
         public TResponseData Data { get; set; }
 
         /// <summary>
-        /// This method add error on list of errors.
+        /// This method adds error on list of errors.
         /// </summary>
         /// <param name="code"></param>
         /// <param name="message"></param>
         public void AddError(string code, string message)
         {
+            this.SetBadRequestError();
+
             this.Errors.Add(new OperationError(code, message));
         }
 

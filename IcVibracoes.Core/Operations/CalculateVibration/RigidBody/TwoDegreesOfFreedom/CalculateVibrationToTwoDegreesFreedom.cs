@@ -54,11 +54,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         }
 
         /// <summary>
-        /// Creates the input to numerical integration method.
+        /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <returns></returns>
-        public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
+        /// <param name="response"></param>
+        /// <returns>A new instance of class <see cref="TwoDegreesOfFreedomInput"/>.</returns>
+        public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomResponse response)
         {
             if (request == null || request.PrimaryElementData == null || request.SecondaryElementData == null)
             {
@@ -81,11 +82,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         }
 
         /// <summary>
-        /// Creates the file path to write the results.
+        /// This method creates the path to save the solution files.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <returns></returns>
+        /// <returns>The path to save the solution files.</returns>
         public override Task<string> CreateSolutionPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
@@ -104,11 +105,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         }
 
         /// <summary>
-        /// Creates the file path to write the maximum values calculated in the analysis.
+        /// This method creates the path to save the file with the maximum values for each angular frequency.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="input"></param>
-        /// <returns></returns>
+        /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
         public override Task<string> CreateMaxValuesPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());

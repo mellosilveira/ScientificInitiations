@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.DataContracts;
-using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using System;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
@@ -72,12 +71,12 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     }
 
     /// <summary>
-    /// It's responsible to manipulate a material object based in a string.
+    /// It's responsible to manipulate the enum <see cref="Materials"/> object based in a string.
     /// </summary>
     public class MaterialFactory
     {
         /// <summary>
-        /// /// This method creates an instance of class <seealso cref="Material"/>.
+        /// This method creates an instance of class <seealso cref="Material"/>.
         /// It can be <seealso cref="Steel1020"/>, <seealso cref="Steel4130"/> or <seealso cref="Aluminum"/>.
         /// </summary>
         /// <typeparam name="TResponseData"></typeparam>

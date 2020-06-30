@@ -57,11 +57,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         {
             var response = new TResponse();
 
-            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
+            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod, response);
 
             double[] initial_y = await this.BuildInitialConditions(request).ConfigureAwait(false);
 
-            TInput input = await this.CreateInput(request).ConfigureAwait(false);
+            TInput input = await this.CreateInput(request, response).ConfigureAwait(false);
 
             foreach (double dampingRatio in request.DampingRatioList)
             {
@@ -129,6 +129,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// This method validates the rigid body request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         protected override Task<TResponse> ValidateOperation(TRequest request)
         {
             var response = new TResponse();

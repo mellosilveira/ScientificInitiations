@@ -7,11 +7,12 @@ using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rectangular
 {
     /// <summary>
-    /// It's responsible to calculate the vibration in a rectangular beam.
+    /// It's responsible to calculate the vibration in a rectangular profile beam.
     /// </summary>
     public class CalculateRectangularBeamVibration : CalculateBeamVibration<RectangularProfile>, ICalculateRectangularBeamVibration
     {
@@ -23,9 +24,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rect
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
+        /// <param name="profileValidator"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
-        /// <param name="newmarkMethod"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateRectangularBeamVibration(
             IBoundaryCondition boundaryCondition,
@@ -33,10 +34,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Rect
             IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
             IRectangularBeamMainMatrix mainMatrix,
+            IRectangularProfileValidator profileValidator,
             IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, naturalFrequency)
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, profileValidator, file, time, naturalFrequency)
         { }
     }
 }

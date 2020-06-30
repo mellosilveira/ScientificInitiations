@@ -7,6 +7,7 @@ using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.Validators.Profiles.Rectangular;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric.Rectangular
 {
@@ -23,6 +24,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
+        /// <param name="profileValidator"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
@@ -32,10 +34,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
             IRectangularBeamWithPiezoelectricMainMatrix mainMatrix,
+            IRectangularProfileValidator profileValidator,
             IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, file, time, naturalFrequency)
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, profileValidator, file, time, naturalFrequency)
         { }
     }
 }

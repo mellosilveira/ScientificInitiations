@@ -15,7 +15,7 @@ namespace IcVibracoes.Core.Validators.Profiles.Circular
         /// </summary>
         /// <param name="profile"></param>
         /// <param name="response"></param>
-        /// <returns>True, if the values informed in the circular profile can be used in the analysis. False, otherwise.</returns>
+        /// <returns>True, if the values in the circular profile can be used in the analysis. False, otherwise.</returns>
         public override async Task<bool> Execute(CircularProfile profile, FiniteElementResponse response)
         {
             if (await base.Execute(profile, response).ConfigureAwait(false) == false)

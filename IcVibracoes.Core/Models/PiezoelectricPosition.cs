@@ -15,18 +15,18 @@ namespace IcVibracoes.Core.Models
     }
 
     /// <summary>
-    /// It's responsible to manipulate a PiezoelectricPosition object based in a string.
+    /// It's responsible to manipulate the enum <see cref="PiezoelectricPosition"/> based in a string.
     /// </summary>
     public class PiezoelectricPositionFactory
     {
         /// <summary>
-        /// 
+        /// This method returns the number of piezoelectrics per element.
         /// </summary>
         /// <typeparam name="TResponseData"></typeparam>
         /// <param name="piezoelectricPosition"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public static uint? Create<TResponseData>(string piezoelectricPosition, OperationResponseBase<TResponseData> response)
+        public static uint Create<TResponseData>(string piezoelectricPosition, OperationResponseBase<TResponseData> response)
             where TResponseData : OperationResponseData
         {
             var value = Regex.Replace(piezoelectricPosition, @"\s", "");
@@ -43,7 +43,7 @@ namespace IcVibracoes.Core.Models
             }
 
             response.AddError(OperationErrorCode.InternalServerError, $"Invalid piezoelectric position: {piezoelectricPosition}.");
-            return null;
+            return 0;
         }
     }
 }

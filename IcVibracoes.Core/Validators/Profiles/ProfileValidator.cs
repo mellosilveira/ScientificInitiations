@@ -17,7 +17,7 @@ namespace IcVibracoes.Core.Validators.Profiles
         /// </summary>
         /// <param name="profile"></param>
         /// <param name="response"></param>
-        /// <returns>True, if the values passed in the profile can be used in the analysis. False, otherwise.</returns>
+        /// <returns>True, if the values in the profile can be used in the analysis. False, otherwise.</returns>
         public virtual Task<bool> Execute(TProfile profile, FiniteElementResponse response)
         {
             if (profile == null)

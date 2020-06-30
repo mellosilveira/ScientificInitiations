@@ -54,7 +54,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     }
 
     /// <summary>
-    /// It's responsible to create a fastening object based on a string.
+    /// It's responsible to manipulate the enum <see cref="Fastenings"/> based in a string.
     /// </summary>
     public class FasteningFactory
     {

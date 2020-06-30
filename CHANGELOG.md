@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Property InitialTime from class OperationRequestBase.
 ### Changed
 - Name of properties on class FasteningType from LinearDisplacement and AngularDisplacement to AlowLinearDisplacement and AlowAngularDisplacement.
+- Name of properties on class DynamicVibrationAbsorber from DvaMass, DvaStiffness and DvaNodePosition to Mass, Stiffness and NodePosition.
 
 ## [2.2.0] - 2020-06-26
 ### Changed

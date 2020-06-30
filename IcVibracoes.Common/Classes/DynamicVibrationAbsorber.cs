@@ -13,7 +13,7 @@ namespace IcVibracoes.Common.Classes
         /// </summary>
         /// <example>2</example>
         [Required]
-        public double DvaMass { get; set; }
+        public double Mass { get; set; }
 
         /// <summary>
         /// Stiffness of DVA.
@@ -21,13 +21,13 @@ namespace IcVibracoes.Common.Classes
         /// </summary>
         /// <example>500</example>
         [Required]
-        public double DvaStiffness { get; set; }
+        public double Stiffness { get; set; }
 
         /// <summary>
         /// Node position of DVA.
         /// </summary>
         /// <example>1</example>
         [Required]
-        public uint DvaNodePosition { get; set; }
+        public uint NodePosition { get; set; }
     }
 }

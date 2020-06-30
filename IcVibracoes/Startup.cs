@@ -1,3 +1,4 @@
+using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
 using IcVibracoes.Core.AuxiliarOperations.File;
@@ -29,6 +30,7 @@ using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreed
 using IcVibracoes.Core.Validators.Profiles.Circular;
 using IcVibracoes.Core.Validators.Profiles.Rectangular;
 using IcVibracoes.Core.Validators.TimeStep;
+using IcVibracoes.DataContracts.FiniteElement.Beam;
 using IcVibracoes.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -127,8 +129,6 @@ namespace IcVibracoes
             // Register Finite Element Operations - Beam with Piezoelectric
             services.AddScoped<ICalculateCircularBeamWithPiezoelectricVibration, CalculateCircularBeamWithPiezoelectricVibration>();
             services.AddScoped<ICalculateRectangularBeamWithPiezoelectricVibration, CalculateRectangularBeamWithPiezoelectricVibration>();
-
-            // Register Validators - Beam Request Data
 
             // Register Validators - Profiles
             services.AddScoped<IRectangularProfileValidator, RectangularProfileValidator>();
