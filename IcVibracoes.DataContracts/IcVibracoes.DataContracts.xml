@@ -300,12 +300,13 @@
             It represents the 'data' content of all operation response.
             </summary>
         </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.AddError(System.String,System.String)">
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.AddError(System.String,System.String,System.Net.HttpStatusCode)">
             <summary>
             This method adds error on list of errors.
             </summary>
             <param name="code"></param>
             <param name="message"></param>
+            <param name="httpStatusCode"></param>
         </member>
         <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetSuccessCreated">
             <summary>
@@ -411,30 +412,6 @@
             <summary>
             It contains the 'data' content of RigidBody response operation.
             </summary>
-        </member>
-        <member name="T:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData">
-            <summary>
-            It represents the 'data' content of a single element to be used in RigidBody operations.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData.MechanicalProperties">
-            <summary>
-            The mechanical properties of the element that will be analyzed.
-            </summary>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData.InitialDisplacement">
-            <summary>
-            The initial displacement.
-            Unit: m (meter)
-            </summary>
-            <example>0</example>
-        </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.SingleElementRequestData.InitialVelocity">
-            <summary>
-            The initial velocity.
-            Unit: m/s (meters per second)
-            </summary>
-            <example>0</example>
         </member>
         <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest">
             <summary>

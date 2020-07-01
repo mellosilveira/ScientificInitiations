@@ -34,7 +34,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] y) 
+        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] y)
             => base._numericalMethod.CalculateOneDegreeOfFreedomResult(input, time, y);
 
         /// <summary>
@@ -43,13 +43,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="request"></param>
         /// <returns></returns>
         public override Task<double[]> BuildInitialConditions(OneDegreeOfFreedomRequest request)
-        {
-            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]
-            {
-                request.ElementData.InitialDisplacement,
-                request.ElementData.InitialVelocity
-            });
-        }
+            => Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]);
 
         /// <summary>
         /// This method creates the input to numerical integration method.
@@ -72,8 +66,8 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
                 DampingRatio = request.DampingRatioList.FirstOrDefault(),
                 Force = request.Force,
                 ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
-                Stiffness = request.ElementData.MechanicalProperties.Stiffness,
-                Mass = request.ElementData.MechanicalProperties.Mass
+                Stiffness = request.ElementData.Stiffness,
+                Mass = request.ElementData.Mass
             });
         }
 

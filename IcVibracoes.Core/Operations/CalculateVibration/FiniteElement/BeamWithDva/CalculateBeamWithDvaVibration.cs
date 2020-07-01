@@ -107,12 +107,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
                 geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Profile, request.NumberOfElements).ConfigureAwait(false);
             }
 
-            return new BeamWithDva<TProfile>()
+            var beam = new BeamWithDva<TProfile>()
             {
                 DvaMasses = dvaMasses,
                 DvaNodePositions = dvaNodePositions,
                 DvaStiffnesses = dvaStiffnesses,
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings).ConfigureAwait(false),
+                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings, response).ConfigureAwait(false),
                 Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
@@ -120,6 +120,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
                 NumberOfElements = request.NumberOfElements,
                 Profile = request.Profile
             };
+
+            if (response.Success == false)
+            {
+                return null;
+            }
+
+            return beam;
         }
 
         /// <summary>
@@ -133,6 +140,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
             uint degreesOfFreedom = await base.CalculateDegreesOfFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
             BeamWithDva<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom, response).ConfigureAwait(false);
+
+            if (beam == null)
+            {
+                return null;
+            }
 
             bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom + (uint)beam.DvaNodePositions.Length).ConfigureAwait(false);
             uint numberOfTrueBoundaryConditions = 0;

@@ -5,12 +5,12 @@ using System.Net;
 namespace IcVibracoes.Extensions
 {
     /// <summary>
-    /// It contains the extensions to the class OperationResponseBase.
+    /// It is responsible to build the HTTP response.
     /// </summary>
-    public static class OperationResponseBaseExtensions
+    public static class HttpResponseBuilder
     {
         /// <summary>
-        /// This method builds the HTTP response 
+        /// This method builds the HTTP response .
         /// </summary>
         /// <typeparam name="TResponseData"></typeparam>
         /// <param name="response"></param>

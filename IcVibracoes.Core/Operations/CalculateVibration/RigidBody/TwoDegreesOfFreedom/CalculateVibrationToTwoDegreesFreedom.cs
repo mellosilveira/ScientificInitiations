@@ -42,16 +42,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequest request)
-        {
-            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_2DF]
-            {
-                request.PrimaryElementData.InitialDisplacement,
-                request.PrimaryElementData.InitialVelocity,
-                request.SecondaryElementData.InitialDisplacement,
-                request.SecondaryElementData.InitialVelocity
-            });
-        }
+        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequest request) => Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_2DF]);
 
         /// <summary>
         /// This method creates the input to numerical integration method.
@@ -74,10 +65,10 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
                 DampingRatio = request.DampingRatioList.FirstOrDefault(),
                 Force = request.Force,
                 ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
-                Stiffness = request.PrimaryElementData.MechanicalProperties.Stiffness,
-                Mass = request.PrimaryElementData.MechanicalProperties.Mass,
-                SecondaryStiffness = request.SecondaryElementData.MechanicalProperties.Stiffness,
-                SecondaryMass = request.SecondaryElementData.MechanicalProperties.Mass
+                Stiffness = request.PrimaryElementData.Stiffness,
+                Mass = request.PrimaryElementData.Mass,
+                SecondaryStiffness = request.SecondaryElementData.Stiffness,
+                SecondaryMass = request.SecondaryElementData.Mass
             });
         }
 

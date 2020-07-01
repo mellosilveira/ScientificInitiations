@@ -18,6 +18,7 @@ using IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -117,14 +118,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 piezoelectricGeometricProperty.MomentOfInertia = await this._geometricProperty.CalculatePiezoelectricMomentOfInertia(request.PiezoelectricProfile, request.Profile, request.NumberOfElements, elementsWithPiezoelectric, numberOfPiezoelectricPerElements).ConfigureAwait(false);
             }
 
-            return new BeamWithPiezoelectric<TProfile>()
+            var beam = new BeamWithPiezoelectric<TProfile>()
             {
                 DielectricConstant = request.DielectricConstant,
                 DielectricPermissiveness = request.DielectricPermissiveness,
                 ElasticityConstant = request.ElasticityConstant,
                 ElectricalCharge = new double[request.NumberOfElements + 1],
                 ElementsWithPiezoelectric = elementsWithPiezoelectric,
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings),
+                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings, response),
                 Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
@@ -138,6 +139,15 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 PiezoelectricYoungModulus = request.PiezoelectricYoungModulus,
                 Profile = request.Profile
             };
+
+            if (response.Success == false)
+            {
+                response.AddError(OperationErrorCode.InternalServerError, $"Ocurred an error while creating the object {beam.GetType().Name}.", HttpStatusCode.InternalServerError);
+
+                return null;
+            }
+
+            return beam;
         }
 
         /// <summary>
@@ -151,6 +161,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             uint degreesOfFreedom = await base.CalculateDegreesOfFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
             BeamWithPiezoelectric<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom, response).ConfigureAwait(false);
+
+            if (beam == null)
+            {
+                return null;
+            }
 
             uint piezoelectricDegreesFreedomMaximum = beam.NumberOfElements + 1;
 

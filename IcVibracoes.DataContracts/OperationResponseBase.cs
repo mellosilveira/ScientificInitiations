@@ -21,33 +21,36 @@ namespace IcVibracoes.DataContracts
         /// <summary>
         /// The success status of operation.
         /// </summary>
-        public bool Success { get; private set; }
+        public bool Success { get; protected set; }
 
         /// <summary>
         /// The HTTP status code.
         /// </summary>
-        public HttpStatusCode HttpStatusCode { get; private set; }
+        public HttpStatusCode HttpStatusCode { get; set; }
 
         /// <summary>
         /// The list of errors.
         /// </summary>
-        public List<OperationError> Errors { get; }
+        public List<OperationError> Errors { get; protected set; }
 
         /// <summary>
         /// It represents the 'data' content of all operation response.
         /// </summary>
         public TResponseData Data { get; set; }
 
+
         /// <summary>
         /// This method adds error on list of errors.
         /// </summary>
         /// <param name="code"></param>
         /// <param name="message"></param>
-        public void AddError(string code, string message)
+        /// <param name="httpStatusCode"></param>
+        public void AddError(string code, string message, HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest)
         {
-            this.SetBadRequestError();
-
             this.Errors.Add(new OperationError(code, message));
+
+            this.HttpStatusCode = httpStatusCode;
+            this.Success = false;
         }
 
         /// <summary>

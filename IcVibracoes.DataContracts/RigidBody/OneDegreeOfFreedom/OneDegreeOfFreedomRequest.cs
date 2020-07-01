@@ -1,4 +1,6 @@
-﻿namespace IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom
+﻿using IcVibracoes.Common.Classes;
+
+namespace IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom
 {
     /// <summary>
     /// It contains the request content of Rigid Body analysis with One Degree of Freedom.
@@ -19,6 +21,6 @@
         /// <summary>
         /// The data of element to be analyzed.
         /// </summary>
-        public SingleElementRequestData ElementData { get; set; }
+        public MechanicalProperties ElementData { get; set; }
     }
 }

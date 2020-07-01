@@ -1,4 +1,6 @@
-﻿namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom
+﻿using IcVibracoes.Common.Classes;
+
+namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom
 {
     /// <summary>
     /// It contains the request content of Rigid Body analysis with Two Degrees of Freedom.
@@ -19,11 +21,11 @@
         /// <summary>
         /// The data of main element to be analyzed.
         /// </summary>
-        public SingleElementRequestData PrimaryElementData { get; set; }
+        public MechanicalProperties PrimaryElementData { get; set; }
 
         /// <summary>
         /// The data of secondary element to be analyzed.
         /// </summary>
-        public SingleElementRequestData SecondaryElementData { get; set; }
+        public MechanicalProperties SecondaryElementData { get; set; }
     }
 }

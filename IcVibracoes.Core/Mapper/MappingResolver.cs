@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Common.Classes;
 using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.DataContracts.FiniteElement;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -58,14 +59,15 @@ namespace IcVibracoes.Core.Mapper
         /// Thid method builds the fastenings of the beam.
         /// </summary>
         /// <param name="fastenings"></param>
+        /// <param name="response"></param>
         /// <returns></returns>
-        public Task<IDictionary<uint, FasteningType>> BuildFastenings(List<Fastening> fastenings)
+        public Task<IDictionary<uint, FasteningType>> BuildFastenings(List<Fastening> fastenings, FiniteElementResponse response)
         {
             IDictionary<uint, FasteningType> beamFastenings = new Dictionary<uint, FasteningType>();
 
             foreach (var fastening in fastenings)
             {
-                beamFastenings.Add(fastening.NodePosition, FasteningFactory.Create(fastening.Type));
+                beamFastenings.Add(fastening.NodePosition, FasteningFactory.Create(fastening.Type, response));
             }
 
             return Task.FromResult(beamFastenings);

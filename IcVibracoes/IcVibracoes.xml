@@ -132,14 +132,14 @@
             <param name="app"></param>
             <returns>The Swagger documentations.</returns>
         </member>
-        <member name="T:IcVibracoes.Extensions.OperationResponseBaseExtensions">
+        <member name="T:IcVibracoes.Extensions.HttpResponseBuilder">
             <summary>
-            It contains the extensions to the class OperationResponseBase.
+            It is responsible to build the HTTP response.
             </summary>
         </member>
-        <member name="M:IcVibracoes.Extensions.OperationResponseBaseExtensions.BuildHttpResponse``1(IcVibracoes.DataContracts.OperationResponseBase{``0})">
+        <member name="M:IcVibracoes.Extensions.HttpResponseBuilder.BuildHttpResponse``1(IcVibracoes.DataContracts.OperationResponseBase{``0})">
             <summary>
-            This method builds the HTTP response 
+            This method builds the HTTP response .
             </summary>
             <typeparam name="TResponseData"></typeparam>
             <param name="response"></param>
