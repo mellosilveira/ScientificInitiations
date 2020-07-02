@@ -20,7 +20,7 @@ namespace IcVibracoes.DataContracts.RigidBody
         /// </summary>
         /// <example>0.05</example>
         [Required]
-        public List<double> DampingRatioList { get; set; }
+        public ICollection<double> DampingRatios { get; set; }
 
         /// <summary>
         /// The force applied in the main object.

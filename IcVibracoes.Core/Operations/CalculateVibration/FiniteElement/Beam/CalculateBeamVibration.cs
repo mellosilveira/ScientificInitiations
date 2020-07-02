@@ -72,7 +72,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="degreesOfFreedom"></param>
         /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="Beam{TProfile}"/>.</returns>
-        public async override Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom, FiniteElementResponse response)
+        public override async Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom, FiniteElementResponse response)
         {
             if (request == null)
             {
@@ -92,9 +92,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
                 geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Profile, request.NumberOfElements).ConfigureAwait(false);
             }
 
-            return new Beam<TProfile>()
+            var beam = new Beam<TProfile>()
             {
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings).ConfigureAwait(false),
+                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings, response).ConfigureAwait(false),
                 Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
@@ -102,6 +102,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
                 NumberOfElements = request.NumberOfElements,
                 Profile = request.Profile
             };
+
+            if (response.Success == false)
+            {
+                return null;
+            }
+
+            return beam;
         }
 
         // TODO: Generalizar este método para as análises de elementos finitos
@@ -116,6 +123,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             uint degreesOfFreedom = await base.CalculateDegreesOfFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
 
             Beam<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom, response);
+
+            if (beam == null)
+            {
+                return null;
+            }
 
             bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom).ConfigureAwait(false);
             uint numberOfTrueBoundaryConditions = 0;
@@ -206,14 +218,5 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
 
             return Task.FromResult(path);
         }
-
-        /// <summary>
-        /// This method validates the <see cref="BeamRequest{TProfile}"/> specific parameters.
-        /// <see cref="BeamRequest{TProfile}"/> does not have specific values.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        public override Task ValidateSpecificData(BeamRequest<TProfile> request, FiniteElementResponse response) => Task.CompletedTask;
     }
 }

@@ -3,6 +3,7 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Validators.MechanicalProperties;
 using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 using System;
 using System.IO;
@@ -16,16 +17,22 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
     /// </summary>
     public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesFreedom
     {
+        private readonly IMechanicalPropertiesValidator _mechanicalPropertiesValidator;
+
         /// <summary>
         /// Class constructor.
         /// </summary>
+        /// <param name="mechanicalPropertiesValidator"></param>
         /// <param name="file"></pram>
         /// <param name="time"></param>
         public CalculateVibrationToTwoDegreesFreedom(
+            IMechanicalPropertiesValidator mechanicalPropertiesValidator,
             IFile file,
             ITime time)
             : base(file, time)
-        { }
+        {
+            this._mechanicalPropertiesValidator = mechanicalPropertiesValidator;
+        }
 
         /// <summary>
         /// Calculates and write in a file the results for two degrees of freedom analysis.
@@ -62,7 +69,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
                 AngularFrequency = request.InitialAngularFrequency,
                 AngularFrequencyStep = request.AngularFrequencyStep,
                 FinalAngularFrequency = request.FinalAngularFrequency,
-                DampingRatio = request.DampingRatioList.FirstOrDefault(),
+                DampingRatio = request.DampingRatios.FirstOrDefault(),
                 Force = request.Force,
                 ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
                 Stiffness = request.PrimaryElementData.Stiffness,
@@ -117,6 +124,22 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
             Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
+        }
+
+        /// <summary>
+        /// This method validates the <see cref="TwoDegreesOfFreedomRequest"/>.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected override async Task<TwoDegreesOfFreedomResponse> ValidateOperation(TwoDegreesOfFreedomRequest request)
+        {
+            TwoDegreesOfFreedomResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+
+            await this._mechanicalPropertiesValidator.Execute(request.PrimaryElementData, response).ConfigureAwait(false);
+
+            await this._mechanicalPropertiesValidator.Execute(request.SecondaryElementData, response).ConfigureAwait(false);
+
+            return response;
         }
     }
 }

@@ -3,14 +3,16 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Operations.CalculateVibration;
+using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.RigidBody;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 {
     /// <summary>
-    /// It's responsible to calculate the vibration for a rigid body analysis.
+    /// It's responsible to calculate the vibration using rigid body concepts.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
@@ -53,6 +55,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <returns></returns>
         public abstract Task<double[]> BuildInitialConditions(TRequest request);
 
+        /// <summary>
+        /// This method calculates the vibration using rigid body concepts and writes the results in a file.
+        /// Each line in the file contains the result in an instant of time at an angular frequency and a damping ratio.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         protected override async Task<TResponse> ProcessOperation(TRequest request)
         {
             var response = new TResponse();
@@ -63,7 +71,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
             TInput input = await this.CreateInput(request, response).ConfigureAwait(false);
 
-            foreach (double dampingRatio in request.DampingRatioList)
+            foreach (double dampingRatio in request.DampingRatios)
             {
                 input.DampingRatio = dampingRatio;
 
@@ -134,11 +142,21 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override Task<TResponse> ValidateOperation(TRequest request)
+        protected override async Task<TResponse> ValidateOperation(TRequest request)
         {
-            var response = new TResponse();
+            var response = await base.ValidateOperation(request).ConfigureAwait(false);
+            
+            if(response.Success == false)
+            {
+                return response;
+            }
 
-            return Task.FromResult(response);
+            if (request.DampingRatios.Any(v => v < 0))
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, $"Damping ratio cannot be less than zero.");
+            }
+
+            return response;
         }
     }
 }

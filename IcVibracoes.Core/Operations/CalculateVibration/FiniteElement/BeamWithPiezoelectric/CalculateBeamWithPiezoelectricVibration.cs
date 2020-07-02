@@ -303,13 +303,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         }
 
         /// <summary>
-        /// This method validates the <see cref="BeamWithPiezoelectricRequest{TProfile}"/> specific parameters.
+        /// This method validates the <see cref="BeamWithPiezoelectricRequest{TProfile}"/>.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public override async Task ValidateSpecificData(BeamWithPiezoelectricRequest<TProfile> request, FiniteElementResponse response)
+        protected override async Task<FiniteElementResponse> ValidateOperation(BeamWithPiezoelectricRequest<TProfile> request)
         {
+            FiniteElementResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+
             if (request.PiezoelectricYoungModulus <= 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, $"Piezoelectric Young Modulus: {request.PiezoelectricYoungModulus} must be greather than zero.");
@@ -359,6 +360,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             }
 
             await this._profileValidator.Execute(request.PiezoelectricProfile, response).ConfigureAwait(false);
+
+            return response;
         }
     }
 }

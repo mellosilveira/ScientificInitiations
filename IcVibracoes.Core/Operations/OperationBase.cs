@@ -33,6 +33,7 @@ namespace IcVibracoes.Core.Operations
         protected virtual Task<TResponse> ValidateOperation(TRequest request)
         {
             TResponse response = new TResponse();
+            response.SetSuccessCreated();
 
             if (request == null)
             {

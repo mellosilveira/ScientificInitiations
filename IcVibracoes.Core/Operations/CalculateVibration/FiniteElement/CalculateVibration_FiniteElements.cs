@@ -60,18 +60,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
         public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom, FiniteElementResponse response);
 
-        /// <summary>
-        /// This method validates the request specific parameters.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        public abstract Task ValidateSpecificData(TRequest request, FiniteElementResponse response);
-
         // TODO: Retornar os dados assíncronamente, conforme calcula o resultado para uma iteração e retorna o valor.
-        // TODO: Continua escrevendo no arquivo enquanto a frequência angular não muda.
+        // TODO: Continua escrevendo no mesmo arquivo enquanto a frequência angular não muda.
         /// <summary>
-        /// This method calculates the vibration using finite element concept and writes the results in a file.
+        /// This method calculates the vibration using finite element concepts and writes the results in a file.
         /// Each line in the file contains the result in an instant of time at an angular frequency.
         /// </summary>
         /// <param name="request"></param>
@@ -194,7 +186,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected async override Task<FiniteElementResponse> ValidateOperation(TRequest request)
+        protected override async Task<FiniteElementResponse> ValidateOperation(TRequest request)
         {
             FiniteElementResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
 
@@ -240,8 +232,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
             }
 
             await this._profileValidator.Execute(request.Profile, response).ConfigureAwait(false);
-
-            await this.ValidateSpecificData(request, response).ConfigureAwait(false);
 
             return response;
         }

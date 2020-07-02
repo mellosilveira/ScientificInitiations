@@ -241,13 +241,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         }
 
         /// <summary>
-        /// This method validates the <see cref="BeamWithDvaRequest{TProfile}"/> specific parameters.
+        /// This method validates the <see cref="BeamWithDvaRequest{TProfile}"/>.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public override Task ValidateSpecificData(BeamWithDvaRequest<TProfile> request, FiniteElementResponse response)
+        protected override async Task<FiniteElementResponse> ValidateOperation(BeamWithDvaRequest<TProfile> request)
         {
+            FiniteElementResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+
             foreach (var dva in request.Dvas)
             {
                 if (dva.Mass < 0)
@@ -266,7 +267,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
                 }
             }
 
-            return Task.CompletedTask;
+            return response;
         }
     }
 }

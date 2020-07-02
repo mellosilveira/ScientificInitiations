@@ -21,6 +21,6 @@ namespace IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom
         /// <summary>
         /// The data of element to be analyzed.
         /// </summary>
-        public MechanicalProperties ElementData { get; set; }
+        public MechanicalProperty ElementData { get; set; }
     }
 }

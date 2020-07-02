@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Name of properties on class FasteningType from LinearDisplacement and AngularDisplacement to AlowLinearDisplacement and AlowAngularDisplacement.
 - Name of properties on class DynamicVibrationAbsorber from DvaMass, DvaStiffness and DvaNodePosition to Mass, Stiffness and NodePosition.
 - Name of class OperationResponseBaseExtensions to HttpResponseBuilder.
+- Name of property on class RigidBodyRequest from DampingRatioList to DampingRatios.
+- Name of class from MechanicalProperties to MechanicalProperty.
 
 ## [2.2.0] - 2020-06-26
 ### Changed

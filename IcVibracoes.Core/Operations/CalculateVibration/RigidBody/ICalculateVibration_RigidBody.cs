@@ -5,7 +5,7 @@ using IcVibracoes.DataContracts.RigidBody;
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 {
     /// <summary>
-    /// It's responsible to calculate the vibration for a rigid body analysis.
+    /// It's responsible to calculate the vibration using rigid body concepts.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>

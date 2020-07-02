@@ -3,6 +3,7 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Validators.MechanicalProperties;
 using IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom;
 using System;
 using System.IO;
@@ -16,16 +17,22 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
     /// </summary>
     public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeOfFreedomRequest, OneDegreeOfFreedomResponse, OneDegreeOfFreedomResponseData, OneDegreeOfFreedomInput>, ICalculateVibrationToOneDegreeFreedom
     {
+        private readonly IMechanicalPropertiesValidator _mechanicalPropertiesValidator;
+
         /// <summary>
         /// Class constructor.
         /// </summary>
+        /// <param name="mechanicalPropertiesValidator"></param>
         /// <param name="file"></param>
         /// <param name="time"></param>
         public CalculateVibrationToOneDegreeFreedom(
+            IMechanicalPropertiesValidator mechanicalPropertiesValidator,
             IFile file,
             ITime time)
             : base(file, time)
-        { }
+        {
+            this._mechanicalPropertiesValidator = mechanicalPropertiesValidator;
+        }
 
         /// <summary>
         /// Calculates and write in a file the results for one degree of freedom analysis.
@@ -63,7 +70,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
                 AngularFrequency = request.InitialAngularFrequency,
                 AngularFrequencyStep = request.AngularFrequencyStep,
                 FinalAngularFrequency = request.FinalAngularFrequency,
-                DampingRatio = request.DampingRatioList.FirstOrDefault(),
+                DampingRatio = request.DampingRatios.FirstOrDefault(),
                 Force = request.Force,
                 ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
                 Stiffness = request.ElementData.Stiffness,
@@ -116,6 +123,20 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
             Directory.CreateDirectory(fileUri);
 
             return Task.FromResult(path);
+        }
+
+        /// <summary>
+        /// This method validates the <see cref="OneDegreeOfFreedomRequest"/>.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected override async Task<OneDegreeOfFreedomResponse> ValidateOperation(OneDegreeOfFreedomRequest request)
+        {
+            OneDegreeOfFreedomResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+
+            await this._mechanicalPropertiesValidator.Execute(request.ElementData, response).ConfigureAwait(false);
+
+            return response;
         }
     }
 }

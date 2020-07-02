@@ -21,11 +21,11 @@ namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom
         /// <summary>
         /// The data of main element to be analyzed.
         /// </summary>
-        public MechanicalProperties PrimaryElementData { get; set; }
+        public MechanicalProperty PrimaryElementData { get; set; }
 
         /// <summary>
         /// The data of secondary element to be analyzed.
         /// </summary>
-        public MechanicalProperties SecondaryElementData { get; set; }
+        public MechanicalProperty SecondaryElementData { get; set; }
     }
 }
