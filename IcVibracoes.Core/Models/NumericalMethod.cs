@@ -1,10 +1,16 @@
 ﻿using IcVibracoes.Core.ArrayOperations;
+using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
+using IcVibracoes.Core.Calculator.Eigenvalue;
+using IcVibracoes.Core.Calculator.Force;
+using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
+using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts;
 using System;
 using System.Net;
+using System.Net.Http.Headers;
 
 namespace IcVibracoes.Core.Models
 {
@@ -52,7 +58,11 @@ namespace IcVibracoes.Core.Models
                 case NumericalMethod.Newmark:
                     return new NewmarkMethod(new ArrayOperation());
                 case NumericalMethod.RungeKuttaForthOrder:
-                    throw new NotImplementedException("Cannot use RungeKuttaForthOrder numerical method in this context.");
+                    return new RungeKuttaForthOrderMethod(
+                        new DifferentialEquationOfMotion(
+                            new NaturalFrequency(
+                                new ArrayOperation(), new Eigenvalue(new ArrayOperation())),
+                            new Force()));
                 default:
                     break;
             }
