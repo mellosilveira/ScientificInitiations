@@ -383,7 +383,7 @@
             It contains the request content to Rigid Body operation.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest.DampingRatioList">
+        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest.DampingRatios">
             <summary>
             List of damping ratio of system.
             For each value in the list, it is made a new analysis.

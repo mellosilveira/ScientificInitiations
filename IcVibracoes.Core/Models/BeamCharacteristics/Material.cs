@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.DataContracts;
 using System;
+using System.Net;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
@@ -94,11 +95,11 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
                     return new Steel4130();
                 case Materials.Aluminum:
                     return new Aluminum();
-                default: 
+                default:
                     break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid material: '{material}'.");
+            response.AddError(OperationErrorCode.InternalServerError, $"Invalid material: '{material}'.", HttpStatusCode.InternalServerError);
             return null;
         }
     }

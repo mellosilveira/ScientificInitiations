@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.DataContracts;
 using System;
+using System.Net;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
@@ -71,17 +72,17 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
         {
             switch ((Fastenings)Enum.Parse(typeof(Fastenings), fastening, ignoreCase: true))
             {
-                case Fastenings.Fixed: 
+                case Fastenings.Fixed:
                     return new Fixed();
-                case Fastenings.Pinned: 
+                case Fastenings.Pinned:
                     return new Pinned();
-                case Fastenings.None: 
+                case Fastenings.None:
                     return new None();
-                default: 
+                default:
                     break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid fastening: '{fastening}'.");
+            response.AddError(OperationErrorCode.InternalServerError, $"Invalid fastening: '{fastening}'.", HttpStatusCode.InternalServerError);
             return null;
         }
     }

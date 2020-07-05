@@ -4,6 +4,7 @@ using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
 using IcVibracoes.DataContracts;
 using System;
+using System.Net;
 
 namespace IcVibracoes.Core.Models
 {
@@ -56,7 +57,7 @@ namespace IcVibracoes.Core.Models
                     break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid numerical method: '{numericalMethod}'.");
+            response.AddError(OperationErrorCode.InternalServerError, $"Invalid numerical method: '{numericalMethod}'.", HttpStatusCode.InternalServerError);
             return null;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.DataContracts;
 using System;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace IcVibracoes.Core.Models
@@ -42,7 +43,7 @@ namespace IcVibracoes.Core.Models
                 default: break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid piezoelectric position: {piezoelectricPosition}.");
+            response.AddError(OperationErrorCode.InternalServerError, $"Invalid piezoelectric position: {piezoelectricPosition}.", HttpStatusCode.InternalServerError);
             return 0;
         }
     }

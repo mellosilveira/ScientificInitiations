@@ -76,13 +76,13 @@ namespace IcVibracoes.Core.Operations
             {
                 response.AddError(OperationErrorCode.RequestValidationError, "PeriodDivision must be greather than zero.");
             }
-            
-            if(request.InitialAngularFrequency > request.FinalAngularFrequency)
+
+            if (request.InitialAngularFrequency > request.FinalAngularFrequency)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, $"Final angular frequency: '{request.InitialAngularFrequency}' must be grether than initial angular frequency: '{request.InitialAngularFrequency}'.");
             }
 
-            if(request.AngularFrequencyStep == 0)
+            if (request.AngularFrequencyStep == 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, $"Angular frequency step: '{request.AngularFrequencyStep}' cannot be zero.");
             }
