@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.File;
-using IcVibracoes.Core.Calculator.Time;
+﻿using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
@@ -23,13 +22,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// Class constructor.
         /// </summary>
         /// <param name="mechanicalPropertiesValidator"></param>
-        /// <param name="file"></param>
         /// <param name="time"></param>
         public CalculateVibrationToOneDegreeFreedom(
             IMechanicalPropertiesValidator mechanicalPropertiesValidator,
-            IFile file,
             ITime time)
-            : base(file, time)
+            : base(time)
         {
             this._mechanicalPropertiesValidator = mechanicalPropertiesValidator;
         }

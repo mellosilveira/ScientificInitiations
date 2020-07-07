@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Core.AuxiliarOperations.File;
-using IcVibracoes.Core.Calculator.Time;
+﻿using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Operations.CalculateVibration;
@@ -27,19 +26,15 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         where TResponse : RigidBodyResponse<TResponseData>, new()
         where TInput : RigidBodyInput, new()
     {
-        private readonly IFile _file;
         private readonly ITime _time;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="file"></param>
         /// <param name="time"></param>
         public CalculateVibration_RigidBody(
-            IFile file,
             ITime time)
         {
-            this._file = file;
             this._time = time;
         }
 
