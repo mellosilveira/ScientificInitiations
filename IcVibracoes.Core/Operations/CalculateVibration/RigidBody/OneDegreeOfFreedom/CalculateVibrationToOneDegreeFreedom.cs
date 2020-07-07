@@ -90,7 +90,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}");
+                $"Solutions/RigidBody/OneDegreeOfFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}");
 
             string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
 
@@ -113,10 +113,10 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}",
+                $"Solutions/RigidBody/OneDegreeOFFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}",
                 "MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}.csv";
+            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
 
             string path = Path.Combine(fileUri, fileName);
 

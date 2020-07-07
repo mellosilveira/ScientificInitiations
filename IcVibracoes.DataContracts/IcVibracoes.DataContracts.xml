@@ -348,7 +348,7 @@
             A simple analysis explanation.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationResponseData.FileUri">
+        <member name="P:IcVibracoes.DataContracts.OperationResponseData.FileUris">
             <summary>
             The file URI with the solution files.
             </summary>

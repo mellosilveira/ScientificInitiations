@@ -1,4 +1,6 @@
-﻿namespace IcVibracoes.DataContracts
+﻿using System.Collections.Generic;
+
+namespace IcVibracoes.DataContracts
 {
     /// <summary>
     /// It represents the 'data' content of all operation response.
@@ -18,6 +20,6 @@
         /// <summary>
         /// The file URI with the solution files.
         /// </summary>
-        public string FileUri { get; set; }
+        public ICollection<string> FileUris { get; set; }
     }
 }

@@ -93,7 +93,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}/DampingRatio={input.DampingRatio}");
+                $"Solutions/RigidBody/TwoDegreesOfFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}/DampingRatio={input.DampingRatio}");
 
             string path = Path.Combine(fileUri, fileName);
 
@@ -112,12 +112,12 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}.csv";
-
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}/DampingRatio={input.DampingRatio}",
+                $"Solutions/RigidBody/TwoDegreesOfFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}",
                 "MaxValues");
+
+            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
 
             string path = Path.Combine(fileUri, fileName);
 
