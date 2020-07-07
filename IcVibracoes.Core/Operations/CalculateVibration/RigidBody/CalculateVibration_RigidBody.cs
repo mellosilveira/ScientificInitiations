@@ -6,8 +6,11 @@ using IcVibracoes.Core.Operations.CalculateVibration;
 using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.RigidBody;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
@@ -64,7 +67,8 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// <returns></returns>
         protected override async Task<TResponse> ProcessOperation(TRequest request)
         {
-            var response = new TResponse();
+            var response = new TResponse { Data = new TResponseData() };
+            response.SetSuccessCreated();
 
             // Step 1 - Sets the numerical method to be used in analysis.
             base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod, response);
@@ -75,6 +79,8 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             // Step 3 - Creates the initial conditions for displacement and velocity.
             double[] initial_y = await this.BuildInitialConditions(request).ConfigureAwait(false);
 
+            ICollection<string> fileUris = new Collection<string>();
+
             foreach (double dampingRatio in request.DampingRatios)
             {
                 // Step 4 - Sets the initial angular frequency.
@@ -83,8 +89,13 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                 // Step 5 - Sets the damping ratio to be used in analysis.
                 input.DampingRatio = dampingRatio;
 
-                // Step 6 - Generates the path to save the maximum values of analysis results.
+                // Step 6 - Generates the path to save the maximum values of analysis results and save the file URI.
                 string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
+
+                if (fileUris.Contains(Path.GetDirectoryName(maxValuesPath)) == false)
+                {
+                    fileUris.Add(Path.GetDirectoryName(maxValuesPath));
+                }
 
                 while (input.AngularFrequency <= input.FinalAngularFrequency)
                 {
@@ -98,27 +109,21 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                     // Each combination of damping ratio and angular frequency will have a specific path.
                     string path = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
 
+                    if (fileUris.Contains(Path.GetDirectoryName(path)) == false)
+                    {
+                        fileUris.Add(Path.GetDirectoryName(path));
+                    }
+
                     // Step 9 - Sets the initial conditions for time, displacement and velocity.
                     double time = 0;
                     double[] y = initial_y;
 
-                    // Step 10 - Calculates the results and writes it into a file.
-                    using (StreamWriter streamWriter = new StreamWriter(path))
+                    try
                     {
-                        //    // Step 10.1 - Writes the initial values into a file.
-                        streamWriter.Write(string.Format("{0}; ", time + input.TimeStep));
-                        for (int i = 0; i < y.Length; i++)
+                        // Step 10 - Calculates the results and writes it into a file.
+                        using (StreamWriter streamWriter = new StreamWriter(path))
                         {
-                            streamWriter.Write(string.Format("{0}; ", y[i]));
-                        }
-                        streamWriter.Write(streamWriter.NewLine);
-
-                        while (time <= input.FinalTime)
-                        {
-                            // Step 10.2 - Calculates the analysis results.
-                            y = await this.CalculateRigidBodyResult(input, time, y).ConfigureAwait(false);
-
-                            // Step 10.3 - Writes the analysis results into a file.
+                            //    // Step 10.1 - Writes the initial values into a file.
                             streamWriter.Write(string.Format("{0}; ", time + input.TimeStep));
                             for (int i = 0; i < y.Length; i++)
                             {
@@ -126,22 +131,53 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                             }
                             streamWriter.Write(streamWriter.NewLine);
 
-                            time += input.TimeStep;
+                            while (time <= input.FinalTime)
+                            {
+                                // Step 10.2 - Calculates the analysis results.
+                                y = await this.CalculateRigidBodyResult(input, time, y).ConfigureAwait(false);
 
-                            // Step 11 - Compares the previous results with the new calculated.
-                            await this.CompareValuesAndUpdateMaxValuesResult(y, maxValues).ConfigureAwait(false);
+                                // Step 10.3 - Writes the analysis results into a file.
+                                streamWriter.Write(string.Format("{0}; ", time + input.TimeStep));
+                                for (int i = 0; i < y.Length; i++)
+                                {
+                                    streamWriter.Write(string.Format("{0}; ", y[i]));
+                                }
+                                streamWriter.Write(streamWriter.NewLine);
+
+                                time += input.TimeStep;
+
+                                // Step 11 - Compares the previous results with the new calculated.
+                                await this.CompareValuesAndUpdateMaxValuesResult(y, maxValues).ConfigureAwait(false);
+                            }
                         }
                     }
-
-                    // Step 12 - Writes the maximum values of analysis result into a file.
-                    using (StreamWriter streamWriter = new StreamWriter(maxValuesPath, true))
+                    catch (Exception ex)
                     {
-                        streamWriter.Write(string.Format("{0}; ", input.AngularFrequency));
-                        for (int i = 0; i < maxValues.Length; i++)
+                        response.AddError(OperationErrorCode.InternalServerError, $"Occurred error while calculating the analysis results and writing them in the file. {ex.Message}", HttpStatusCode.InternalServerError);
+
+                        response.SetInternalServerError();
+                        return response;
+                    }
+
+                    try
+                    {
+                        // Step 12 - Writes the maximum values of analysis result into a file.
+                        using (StreamWriter streamWriter = new StreamWriter(maxValuesPath, true))
                         {
-                            streamWriter.Write(string.Format("{0}; ", maxValues[i]));
+                            streamWriter.Write(string.Format("{0}; ", input.AngularFrequency));
+                            for (int i = 0; i < maxValues.Length; i++)
+                            {
+                                streamWriter.Write(string.Format("{0}; ", maxValues[i]));
+                            }
+                            streamWriter.Write(streamWriter.NewLine);
                         }
-                        streamWriter.Write(streamWriter.NewLine);
+                    }
+                    catch (Exception ex)
+                    {
+                        response.AddError(OperationErrorCode.InternalServerError, $"Occurred error while writing the maximum values in the file. {ex.Message}", HttpStatusCode.InternalServerError);
+
+                        response.SetInternalServerError();
+                        return response;
                     }
 
                     input.AngularFrequency += input.AngularFrequencyStep;
@@ -149,7 +185,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             }
 
             // Step 13 - Maps the response.
-            // TODO: Adicionar as pastas no response.FileUris
+            response.Data.Author = request.Author;
+            response.Data.AnalysisExplanation = "Not implemented.";
+            response.Data.FileUris = fileUris;
             return response;
         }
 
