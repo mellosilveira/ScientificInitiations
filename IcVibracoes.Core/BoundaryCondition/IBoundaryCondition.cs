@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace IcVibracoes.Core.AuxiliarOperations.BoundaryCondition
+namespace IcVibracoes.Core.BoundaryCondition
 {
     /// <summary>
     /// It's responsible to execute operations using the boundary conditions.

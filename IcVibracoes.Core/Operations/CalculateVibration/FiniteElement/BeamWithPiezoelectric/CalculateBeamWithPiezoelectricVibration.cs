@@ -1,8 +1,7 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
-using IcVibracoes.Core.AuxiliarOperations.File;
+using IcVibracoes.Core.BoundaryCondition;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
@@ -47,7 +46,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
         /// <param name="profileValidator"></param>
-        /// <param name="file"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateBeamWithPiezoelectricVibration(
@@ -57,10 +55,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             IMappingResolver mappingResolver,
             IBeamWithPiezoelectricMainMatrix<TProfile> mainMatrix,
             IProfileValidator<TProfile> profileValidator,
-            IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
-            : base(profileValidator, file, time, naturalFrequency)
+            : base(profileValidator, time, naturalFrequency)
         {
             this._boundaryCondition = boundaryCondition;
             this._arrayOperation = arrayOperation;

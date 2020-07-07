@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Operations.CalculateVibration;
 using IcVibracoes.DataContracts;
@@ -102,11 +103,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                     // Step 8 - Generates the path to save the analysis results.
                     // Each combination of damping ratio and angular frequency will have a specific path.
-                    string path = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
+                    string solutionPath = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
 
-                    if (fileUris.Contains(Path.GetDirectoryName(path)) == false)
+                    if (fileUris.Contains(Path.GetDirectoryName(solutionPath)) == false)
                     {
-                        fileUris.Add(Path.GetDirectoryName(path));
+                        fileUris.Add(Path.GetDirectoryName(solutionPath));
                     }
 
                     // Step 9 - Sets the initial conditions for time, displacement and velocity.
@@ -116,32 +117,22 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                     try
                     {
                         // Step 10 - Calculates the results and writes it into a file.
-                        using (StreamWriter streamWriter = new StreamWriter(path))
+                        using (StreamWriter streamWriter = new StreamWriter(solutionPath))
                         {
-                            //    // Step 10.1 - Writes the initial values into a file.
-                            streamWriter.Write(string.Format("{0}; ", time + input.TimeStep));
-                            for (int i = 0; i < y.Length; i++)
-                            {
-                                streamWriter.Write(string.Format("{0}; ", y[i]));
-                            }
-                            streamWriter.Write(streamWriter.NewLine);
-
+                            // Step 10.1 - Writes the initial values into a file.
+                            streamWriter.WriteResult(time, y);
+                            
                             while (time <= input.FinalTime)
                             {
                                 // Step 10.2 - Calculates the analysis results.
                                 y = await this.CalculateRigidBodyResult(input, time, y).ConfigureAwait(false);
 
                                 // Step 10.3 - Writes the analysis results into a file.
-                                streamWriter.Write(string.Format("{0}; ", time + input.TimeStep));
-                                for (int i = 0; i < y.Length; i++)
-                                {
-                                    streamWriter.Write(string.Format("{0}; ", y[i]));
-                                }
-                                streamWriter.Write(streamWriter.NewLine);
-
+                                streamWriter.WriteResult(time + input.TimeStep, y);
+                                
                                 time += input.TimeStep;
 
-                                // Step 11 - Compares the previous results with the new calculated.
+                                // Step 11 - Compares the previous results with the new calculated to catch the maximum values.
                                 await this.CompareValuesAndUpdateMaxValuesResult(y, maxValues).ConfigureAwait(false);
                             }
                         }
@@ -159,12 +150,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                         // Step 12 - Writes the maximum values of analysis result into a file.
                         using (StreamWriter streamWriter = new StreamWriter(maxValuesPath, true))
                         {
-                            streamWriter.Write(string.Format("{0}; ", input.AngularFrequency));
-                            for (int i = 0; i < maxValues.Length; i++)
-                            {
-                                streamWriter.Write(string.Format("{0}; ", maxValues[i]));
-                            }
-                            streamWriter.Write(streamWriter.NewLine);
+                            streamWriter.WriteResult(input.AngularFrequency, maxValues);
                         }
                     }
                     catch (Exception ex)

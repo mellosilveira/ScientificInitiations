@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
-using IcVibracoes.Core.AuxiliarOperations.File;
+using IcVibracoes.Core.BoundaryCondition;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam.Circular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
@@ -25,7 +24,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Circ
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
         /// <param name="profileValidator"></param>
-        /// <param name="file"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateCircularBeamVibration(
@@ -35,10 +33,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam.Circ
             IMappingResolver mappingResolver,
             ICircularBeamMainMatrix mainMatrix,
             ICircularProfileValidator profileValidator,
-            IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, profileValidator, file, time, naturalFrequency)
+            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, profileValidator, time, naturalFrequency)
         { }
     }
 }

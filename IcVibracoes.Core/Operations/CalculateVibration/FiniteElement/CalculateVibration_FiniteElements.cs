@@ -1,9 +1,9 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.AuxiliarOperations.File;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
@@ -11,6 +11,10 @@ using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElement;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
@@ -27,7 +31,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         where TBeam : IBeam<TProfile>, new()
     {
         private readonly IProfileValidator<TProfile> _profileValidator;
-        private readonly IFile _file;
         private readonly ITime _time;
         private readonly INaturalFrequency _naturalFrequency;
 
@@ -35,17 +38,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// Class constructor.
         /// </summary>
         /// <param name="profileValidator"></param>
-        /// <param name="file"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateVibration_FiniteElement(
             IProfileValidator<TProfile> profileValidator,
-            IFile file,
             ITime time,
             INaturalFrequency naturalFrequency)
         {
             this._profileValidator = profileValidator;
-            this._file = file;
             this._time = time;
             this._naturalFrequency = naturalFrequency;
         }
@@ -60,8 +60,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
         public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom, FiniteElementResponse response);
 
-        // TODO: Retornar os dados assíncronamente, conforme calcula o resultado para uma iteração e retorna o valor.
-        // TODO: Continua escrevendo no mesmo arquivo enquanto a frequência angular não muda.
         /// <summary>
         /// This method calculates the vibration using finite element concepts and writes the results in a file.
         /// Each line in the file contains the result in an instant of time at an angular frequency.
@@ -70,20 +68,29 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <returns></returns>
         protected override async Task<FiniteElementResponse> ProcessOperation(TRequest request)
         {
-            var response = new FiniteElementResponse();
+            var response = new FiniteElementResponse { Data = new FiniteElementResponseData() };
+            response.SetSuccessCreated();
 
+            // Step 1 - Sets the numerical method to be used in analysis.
             base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod, response);
 
+            // Step 2 - Creates the input to numerical method.
             FiniteElementMethodInput input = await this.CreateInput(request, response).ConfigureAwait(false);
 
+            // Step 3 - Generates the path to save the maximum values of analysis results and save the file URI.
             string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
+
+            ICollection<string> fileUris = new Collection<string>();
+            fileUris.Add(Path.GetDirectoryName(maxValuesPath));
 
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
-                double time = input.InitialTime;
+                // Step 4 - Sets the value for time step and final time based on angular frequency and element mechanical properties.
                 input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
                 input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
 
+                // Step 5 - Generates the path to save the analysis results.
+                // Each combination of damping ratio and angular frequency will have a specific path.
                 string solutionPath = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
 
                 var previousResult = new FiniteElementResult
@@ -102,36 +109,67 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                     Force = new double[input.NumberOfTrueBoundaryConditions]
                 };
 
-                while (time <= input.FinalTime)
+                try
                 {
-                    FiniteElementResult result;
-
-                    if (time == input.InitialTime)
+                    using (StreamWriter streamWriter = new StreamWriter(solutionPath))
                     {
-                        result = await this._numericalMethod.CalculateFiniteElementResultForInitialTime(input).ConfigureAwait(false);
+                        // Step 6 - Calculates the initial results and writes it into a file.
+                        FiniteElementResult result = await this._numericalMethod.CalculateFiniteElementResultForInitialTime(input).ConfigureAwait(false);
+                        streamWriter.WriteResult(input.InitialTime, result.Displacement);
+
+                        // Step 7 - Sets the next time.
+                        double time = input.InitialTime + input.TimeStep;
+
+                        while (time <= input.FinalTime)
+                        {
+                            // Step 8 - Calculates the results and writes it into a file.
+                            result = await this._numericalMethod.CalculateFiniteElementResult(input, previousResult, time).ConfigureAwait(false);
+                            streamWriter.WriteResult(time, result.Displacement);
+
+                            previousResult = result;
+
+                            // Step 9 - Compares the previous results with the new calculated to catch the maximum values.
+                            await this.CompareValuesAndUpdateMaxValuesResult(result, maxValuesResult).ConfigureAwait(false);
+
+                            time += input.TimeStep;
+                        }
                     }
-                    else
-                    {
-                        result = await this._numericalMethod.CalculateFiniteElementResult(input, previousResult, time).ConfigureAwait(false);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    response.AddError(OperationErrorCode.InternalServerError, $"Occurred error while calculating the analysis results and writing them in the file. {ex.Message}", HttpStatusCode.InternalServerError);
 
-                    this._file.Write(time, result.Displacement, solutionPath);
-
-                    previousResult = result;
-
-                    await this.CompareValuesAndUpdateMaxValuesResult(result, maxValuesResult).ConfigureAwait(false);
-
-                    time += input.TimeStep;
+                    response.SetInternalServerError();
+                    return response;
                 }
 
-                this._file.Write(input.AngularFrequency, maxValuesResult.Displacement, maxValuesPath);
+                try
+                {
+                    // Step 10 - Writes the maximum values of analysis result into a file.
+                    using (StreamWriter streamWriter = new StreamWriter(maxValuesPath, true))
+                    {
+                        streamWriter.WriteResult(input.AngularFrequency, maxValuesResult.Displacement);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.AddError(OperationErrorCode.InternalServerError, $"Occurred error while writing the maximum values in the file. {ex.Message}", HttpStatusCode.InternalServerError);
+
+                    response.SetInternalServerError();
+                    return response;
+                }
 
                 input.AngularFrequency += input.AngularFrequencyStep;
             }
 
+            // Step 11 - Calculates the structure natural frequencies and writes them into a file.
             //double[] naturalFrequencies = await this._naturalFrequency.CalculateByQRDecomposition(input.Mass, input.Stiffness, tolerance: 1e-3).ConfigureAwait(false);
             //this._file.Write("Natural Frequencies", naturalFrequencies, maxValuesPath);
 
+            // Step 12 - Maps the response.
+            response.Data.Author = request.Author;
+            response.Data.AnalysisExplanation = "Not implemented.";
+            response.Data.FileUris = fileUris;
             return response;
         }
 

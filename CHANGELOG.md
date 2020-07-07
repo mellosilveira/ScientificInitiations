@@ -10,7 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Class OperationResponseBaseExtensions responsible to build the HTTP response.
 ### Removed
 - Property InitialTime from class OperationRequestBase.
-- Class SingleElementRequestData.
+- Class SingleElementRequestData, containing the data of a single element.
+- Class File, responsible to execute file operations.
+- AuxiliarOperations folder.
 ### Changed
 - Name of properties on class FasteningType from LinearDisplacement and AngularDisplacement to AlowLinearDisplacement and AlowAngularDisplacement.
 - Name of properties on class DynamicVibrationAbsorber from DvaMass, DvaStiffness and DvaNodePosition to Mass, Stiffness and NodePosition.

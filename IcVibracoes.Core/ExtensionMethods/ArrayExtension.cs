@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IcVibracoes.Common.ExtensionMethods
+namespace IcVibracoes.Core.ExtensionMethods
 {
     public static class VectorExtension
     {

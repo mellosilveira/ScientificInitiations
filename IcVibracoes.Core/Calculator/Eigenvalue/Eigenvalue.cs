@@ -1,5 +1,5 @@
-﻿using IcVibracoes.Common.ExtensionMethods;
-using IcVibracoes.Core.ArrayOperations;
+﻿using IcVibracoes.Core.ArrayOperations;
+using IcVibracoes.Core.ExtensionMethods;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

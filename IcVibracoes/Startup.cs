@@ -1,6 +1,5 @@
 using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
-using IcVibracoes.Core.AuxiliarOperations.File;
+using IcVibracoes.Core.BoundaryCondition;
 using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
 using IcVibracoes.Core.Calculator.Eigenvalue;
 using IcVibracoes.Core.Calculator.Force;
@@ -70,9 +69,6 @@ namespace IcVibracoes
 
             // Register Auxiliar Operations - Boundary Condition
             services.AddScoped<IBoundaryCondition, BoundaryCondition>();
-
-            // Register Auxiliar Operations - File
-            services.AddScoped<IFile, File>();
 
             // Register Calculator - Differential Equation of Motion
             services.AddScoped<IDifferentialEquationOfMotion, DifferentialEquationOfMotion>();

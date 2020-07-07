@@ -20,7 +20,7 @@ namespace IcVibracoes.Controllers
     /// This controller executes analysis using finite element concepts.
     /// The object is divided in elements and the mechanical properties are matricially calculated.
     /// </summary>
-    [Route("api/v1/beam")]
+    [Route("api/v1/finite-element/beam")]
     public class FiniteElementController : ControllerBase
     {
         /// <summary>
