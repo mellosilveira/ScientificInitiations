@@ -1,7 +1,5 @@
-﻿using IcVibracoes.Common.Classes;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.AuxiliarOperations.BoundaryCondition;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
