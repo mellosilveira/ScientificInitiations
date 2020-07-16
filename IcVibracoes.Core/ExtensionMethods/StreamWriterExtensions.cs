@@ -5,7 +5,7 @@ namespace IcVibracoes.Core.ExtensionMethods
     /// <summary>
     /// It contains extension methods for class StreamWriter.
     /// </summary>
-    public static class StreamWriterExtension
+    public static class StreamWriterExtensions
     {
         /// <summary>
         /// This method writes the analysis result and the key to identify that values in a new line of file.

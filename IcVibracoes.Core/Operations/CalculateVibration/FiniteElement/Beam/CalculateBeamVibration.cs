@@ -1,11 +1,10 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.BoundaryCondition;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
@@ -26,8 +25,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
     public abstract class CalculateBeamVibration<TProfile> : CalculateVibration_FiniteElement<BeamRequest<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
         where TProfile : Profile, new()
     {
-        private readonly IBoundaryCondition _boundaryCondition;
-        private readonly IArrayOperation _arrayOperation;
         private readonly IGeometricProperty<TProfile> _geometricProperty;
         private readonly IMappingResolver _mappingResolver;
         private readonly IBeamMainMatrix<TProfile> _mainMatrix;
@@ -35,8 +32,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="boundaryCondition"></param>
-        /// <param name="arrayOperation"></param>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
@@ -44,8 +39,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateBeamVibration(
-            IBoundaryCondition boundaryCondition,
-            IArrayOperation arrayOperation,
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamMainMatrix<TProfile> mainMatrix,
@@ -54,8 +47,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             INaturalFrequency naturalFrequency)
             : base(profileValidator, time, naturalFrequency)
         {
-            this._boundaryCondition = boundaryCondition;
-            this._arrayOperation = arrayOperation;
             this._geometricProperty = geometricProperty;
             this._mappingResolver = mappingResolver;
             this._mainMatrix = mainMatrix;
@@ -80,8 +71,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
 
             if (request.Profile.Area != 0 && request.Profile.MomentOfInertia != 0)
             {
-                geometricProperty.Area = await this._arrayOperation.CreateVector(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await ArrayFactory.CreateVectorAsync(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await ArrayFactory.CreateVectorAsync(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
             }
             else
             {
@@ -150,13 +141,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
             var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
             FiniteElementMethodInput input = new FiniteElementMethodInput(numericalMethod)
             {
-                Mass = await this._boundaryCondition.Apply(mass, bondaryCondition, numberOfTrueBoundaryConditions),
+                Mass = await mass.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
-                Stiffness = await this._boundaryCondition.Apply(stiffness, bondaryCondition, numberOfTrueBoundaryConditions),
+                Stiffness = await stiffness.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
-                Damping = await this._boundaryCondition.Apply(damping, bondaryCondition, numberOfTrueBoundaryConditions),
+                Damping = await damping.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
-                OriginalForce = await this._boundaryCondition.Apply(forces, bondaryCondition, numberOfTrueBoundaryConditions),
+                OriginalForce = await forces.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 

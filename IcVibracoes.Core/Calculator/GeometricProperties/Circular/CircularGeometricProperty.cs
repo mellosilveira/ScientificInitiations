@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
+using IcVibracoes.Core.ExtensionMethods;
 using System;
 using System.Threading.Tasks;
 
@@ -11,17 +11,6 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
     /// </summary>
     public class CircularGeometricProperty : GeometricProperty<CircularProfile>, ICircularGeometricProperty
     {
-        private readonly IArrayOperation _arrayOperation;
-
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public CircularGeometricProperty(IArrayOperation arrayOperation)
-        {
-            this._arrayOperation = arrayOperation;
-        }
-
         /// <summary>
         /// This method calculates the vector with the beam area.
         /// </summary>
@@ -41,7 +30,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
                 area = (Math.PI / 4) * (Math.Pow(profile.Diameter, 2) - Math.Pow(profile.Diameter - 2 * profile.Thickness.Value, 2));
             }
 
-            return await this._arrayOperation.CreateVector(area, numberOfElements).ConfigureAwait(false);
+            return await ArrayFactory.CreateVectorAsync(area, numberOfElements).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -63,7 +52,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
                 momentOfInertia = (Math.PI / 64) * (Math.Pow(profile.Diameter, 4) - Math.Pow(profile.Diameter - 2 * profile.Thickness.Value, 4));
             }
 
-            return await this._arrayOperation.CreateVector(momentOfInertia, numberOfElements).ConfigureAwait(false);
+            return await ArrayFactory.CreateVectorAsync(momentOfInertia, numberOfElements).ConfigureAwait(false);
         }
 
         /// <summary>

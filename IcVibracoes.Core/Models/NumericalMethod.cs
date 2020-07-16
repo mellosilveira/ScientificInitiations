@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
+﻿using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
 using IcVibracoes.Core.Calculator.Eigenvalue;
 using IcVibracoes.Core.Calculator.Force;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
@@ -10,7 +9,6 @@ using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
 using IcVibracoes.DataContracts;
 using System;
 using System.Net;
-using System.Net.Http.Headers;
 
 namespace IcVibracoes.Core.Models
 {
@@ -50,18 +48,17 @@ namespace IcVibracoes.Core.Models
             switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
             {
                 case NumericalMethod.CentralDifferenceMethod:
-                    return new NewmarkBetaMethod(new ArrayOperation());
+                    return new NewmarkBetaMethod();
                 case NumericalMethod.ImplicitLinearAccelerationMethod:
-                    return new NewmarkBetaMethod(new ArrayOperation());
+                    return new NewmarkBetaMethod();
                 case NumericalMethod.NewmarkBeta:
-                    return new NewmarkBetaMethod(new ArrayOperation());
+                    return new NewmarkBetaMethod();
                 case NumericalMethod.Newmark:
-                    return new NewmarkMethod(new ArrayOperation());
+                    return new NewmarkMethod();
                 case NumericalMethod.RungeKuttaForthOrder:
                     return new RungeKuttaForthOrderMethod(
                         new DifferentialEquationOfMotion(
-                            new NaturalFrequency(
-                                new ArrayOperation(), new Eigenvalue(new ArrayOperation())),
+                            new NaturalFrequency(new Eigenvalue()), 
                             new Force()));
                 default:
                     break;

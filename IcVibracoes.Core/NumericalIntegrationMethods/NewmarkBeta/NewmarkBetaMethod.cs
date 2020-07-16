@@ -1,7 +1,7 @@
-﻿using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.DTO;
+﻿using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.ExtensionMethods;
 using System;
 using System.Threading.Tasks;
 
@@ -12,18 +12,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
     /// </summary>
     public class NewmarkBetaMethod : NumericalIntegrationMethod, INewmarkBetaMethod
     {
-        private readonly IArrayOperation _arrayOperation;
-
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public NewmarkBetaMethod(
-            IArrayOperation arrayOperation)
-        {
-            this._arrayOperation = arrayOperation;
-        }
-
         /// <summary>
         /// Calculates and write in a file the results for a finite element analysis using Newmark-Beta integration method.
         /// </summary>
@@ -35,13 +23,13 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             // In initial time, displacement and velocity are zero, so, accel could be calculated by:
             // [accel] = ([M]^(-1))*[F]
 
-            double[,] inversedMass = await this._arrayOperation.InverseMatrix(input.Mass, nameof(input.Mass)).ConfigureAwait(false);
+            double[,] inversedMass = await input.Mass.InverseMatrixAsync().ConfigureAwait(false);
 
             return new FiniteElementResult
             {
                 Displacement = new double[input.NumberOfTrueBoundaryConditions],
                 Velocity = new double[input.NumberOfTrueBoundaryConditions],
-                Acceleration = await this._arrayOperation.Multiply(inversedMass, input.OriginalForce).ConfigureAwait(false),
+                Acceleration = await inversedMass.MultiplyAsync(input.OriginalForce).ConfigureAwait(false),
                 Force = input.OriginalForce
             };
         }
@@ -55,11 +43,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         public override async Task<FiniteElementResult> CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time)
         {
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input).ConfigureAwait(false);
-            double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
+            double[,] inversedEquivalentStiffness = await equivalentStiffness.InverseMatrixAsync().ConfigureAwait(false);
 
             double[] equivalentForce = await this.CalculateEquivalentForce(input, previousResult).ConfigureAwait(false);
 
-            double[] deltaDisplacement = await this._arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce).ConfigureAwait(false);
+            double[] deltaDisplacement = await inversedEquivalentStiffness.MultiplyAsync(equivalentForce).ConfigureAwait(false);
 
             double[] deltaVelocity = new double[input.NumberOfTrueBoundaryConditions];
             double[] deltaAcceleration = new double[input.NumberOfTrueBoundaryConditions];
@@ -72,9 +60,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
 
             return new FiniteElementResult
             {
-                Displacement = await this._arrayOperation.Sum(previousResult.Displacement, deltaDisplacement).ConfigureAwait(false),
-                Velocity = await this._arrayOperation.Sum(previousResult.Velocity, deltaVelocity).ConfigureAwait(false),
-                Acceleration = await this._arrayOperation.Sum(previousResult.Acceleration, deltaAcceleration).ConfigureAwait(false),
+                Displacement = await previousResult.Displacement.SumAsync(deltaDisplacement).ConfigureAwait(false),
+                Velocity = await previousResult.Velocity.SumAsync(deltaVelocity).ConfigureAwait(false),
+                Acceleration = await previousResult.Acceleration.SumAsync(deltaAcceleration).ConfigureAwait(false),
                 Force = input.Force
             };
         }
@@ -159,11 +147,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             double[,] equivalentDamping = await this.CalculateEquivalentDamping(input).ConfigureAwait(false);
             double[,] equivalentMass = await this.CalculateEquivalentMass(input).ConfigureAwait(false);
 
-            double[] damping_vel = await this._arrayOperation.Multiply(equivalentDamping, previousResult.Velocity).ConfigureAwait(false);
-            double[] mass_accel = await this._arrayOperation.Multiply(equivalentMass, previousResult.Acceleration).ConfigureAwait(false);
-            double[] deltaForce = await this._arrayOperation.Subtract(input.Force, previousResult.Force).ConfigureAwait(false);
+            double[] damping_vel = await equivalentDamping.MultiplyAsync(previousResult.Velocity).ConfigureAwait(false);
+            double[] mass_accel = await equivalentMass.MultiplyAsync(previousResult.Acceleration).ConfigureAwait(false);
+            double[] deltaForce = await input.Force.SubtractAsync(previousResult.Force).ConfigureAwait(false);
 
-            double[] equivalentForce = await this._arrayOperation.Sum(deltaForce, damping_vel, mass_accel, $"{nameof(deltaForce)}, {nameof(damping_vel)} and {nameof(mass_accel)}").ConfigureAwait(false);
+            double[] equivalentForce = await deltaForce.SumAsync(damping_vel, mass_accel).ConfigureAwait(false);
 
             return equivalentForce;
         }

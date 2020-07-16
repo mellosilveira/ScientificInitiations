@@ -1,11 +1,10 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.BoundaryCondition;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
@@ -30,8 +29,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
     public abstract class CalculateBeamWithPiezoelectricVibration<TProfile> : CalculateVibration_FiniteElement<BeamWithPiezoelectricRequest<TProfile>, TProfile, BeamWithPiezoelectric<TProfile>>, ICalculateBeamWithPiezoelectricVibration<TProfile>
         where TProfile : Profile, new()
     {
-        private readonly IBoundaryCondition _boundaryCondition;
-        private readonly IArrayOperation _arrayOperation;
         private readonly IGeometricProperty<TProfile> _geometricProperty;
         private readonly IMappingResolver _mappingResolver;
         private readonly IBeamWithPiezoelectricMainMatrix<TProfile> _mainMatrix;
@@ -40,8 +37,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="boundaryCondition"></param>
-        /// <param name="arrayOperation"></param>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
         /// <param name="mainMatrix"></param>
@@ -49,8 +44,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
         public CalculateBeamWithPiezoelectricVibration(
-            IBoundaryCondition boundaryCondition,
-            IArrayOperation arrayOperation,
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamWithPiezoelectricMainMatrix<TProfile> mainMatrix,
@@ -59,8 +52,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             INaturalFrequency naturalFrequency)
             : base(profileValidator, time, naturalFrequency)
         {
-            this._boundaryCondition = boundaryCondition;
-            this._arrayOperation = arrayOperation;
             this._geometricProperty = geometricProperty;
             this._mappingResolver = mappingResolver;
             this._mainMatrix = mainMatrix;
@@ -91,8 +82,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
             // Calculating beam geometric properties.
             if (request.Profile.Area != default && request.Profile.MomentOfInertia != default)
             {
-                geometricProperty.Area = await this._arrayOperation.CreateVector(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.Area = await ArrayFactory.CreateVectorAsync(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty.MomentOfInertia = await ArrayFactory.CreateVectorAsync(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
             }
             else
             {
@@ -106,8 +97,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 double area = request.PiezoelectricProfile.Area.Value * numberOfPiezoelectricPerElements;
                 double momentOfInertia = request.PiezoelectricProfile.MomentOfInertia.Value * numberOfPiezoelectricPerElements;
 
-                piezoelectricGeometricProperty.Area = await this._arrayOperation.CreateVector(area, request.NumberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
-                piezoelectricGeometricProperty.MomentOfInertia = await this._arrayOperation.CreateVector(momentOfInertia, request.NumberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
+                piezoelectricGeometricProperty.Area = await ArrayFactory.CreateVectorAsync(area, request.NumberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
+                piezoelectricGeometricProperty.MomentOfInertia = await ArrayFactory.CreateVectorAsync(momentOfInertia, request.NumberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
             }
             else
             {
@@ -188,7 +179,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 }
             }
 
-            bool[] bondaryConditions = await this._arrayOperation.MergeVectors(beamBondaryConditions, piezoelectricBondaryConditions).ConfigureAwait(false);
+            bool[] bondaryConditions = await beamBondaryConditions.CombineVectorsAsync(piezoelectricBondaryConditions).ConfigureAwait(false);
             uint numberOfTrueBoundaryConditions = numberOfTrueBeamBoundaryConditions + numberOfTruePiezoelectricBoundaryConditions;
 
             // Main matrixes to create input.
@@ -210,19 +201,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
 
             double[] electricalCharge = beam.ElectricalCharge;
 
-            double[] equivalentForce = await this._arrayOperation.MergeVectors(force, electricalCharge);
+            double[] equivalentForce = await force.CombineVectorsAsync(electricalCharge);
 
             // Creating input.
             var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
             FiniteElementMethodInput input = new FiniteElementMethodInput(numericalMethod)
             {
-                Mass = await this._boundaryCondition.Apply(equivalentMass, bondaryConditions, numberOfTrueBoundaryConditions),
+                Mass = await equivalentMass.ApplyBoundaryConditionsAsync(bondaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
-                Stiffness = await this._boundaryCondition.Apply(equivalentStiffness, bondaryConditions, numberOfTrueBoundaryConditions),
+                Stiffness = await equivalentStiffness.ApplyBoundaryConditionsAsync(bondaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
-                Damping = await this._boundaryCondition.Apply(damping, bondaryConditions, numberOfTrueBoundaryConditions),
+                Damping = await damping.ApplyBoundaryConditionsAsync(bondaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
-                OriginalForce = await this._boundaryCondition.Apply(equivalentForce, bondaryConditions, numberOfTrueBoundaryConditions),
+                OriginalForce = await equivalentForce.ApplyBoundaryConditionsAsync(bondaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 

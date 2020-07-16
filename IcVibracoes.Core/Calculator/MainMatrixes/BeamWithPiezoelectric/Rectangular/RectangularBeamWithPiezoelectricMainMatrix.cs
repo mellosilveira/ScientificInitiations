@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beams;
 using System;
@@ -12,15 +11,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
     /// </summary>
     public class RectangularBeamWithPiezoelectricMainMatrix : BeamWithPiezoelectricMainMatrix<RectangularProfile>, IRectangularBeamWithPiezoelectricMainMatrix
     {
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public RectangularBeamWithPiezoelectricMainMatrix(
-            IArrayOperation arrayOperation)
-            : base(arrayOperation) 
-        { }
-
         public override Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<RectangularProfile> beamWithPiezoelectric, uint elementIndex)
         {
             double[,] piezoelectricCapacitance = new double[Constant.PiezoelectricDegreesFreedomElement, Constant.PiezoelectricDegreesFreedomElement];

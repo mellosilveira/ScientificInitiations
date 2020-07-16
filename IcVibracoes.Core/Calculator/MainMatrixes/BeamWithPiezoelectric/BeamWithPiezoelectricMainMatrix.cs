@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
+using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
@@ -18,17 +18,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
     public abstract class BeamWithPiezoelectricMainMatrix<TProfile> : BeamMainMatrix<TProfile>, IBeamWithPiezoelectricMainMatrix<TProfile>
         where TProfile : Profile, new()
     {
-        private readonly IArrayOperation _arrayOperation;
-
-        /// <summary>
-        /// Class construtor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public BeamWithPiezoelectricMainMatrix(IArrayOperation arrayOperation)
-        {
-            this._arrayOperation = arrayOperation;
-        }
-
         /// <summary>
         /// It's responsible to calculate piezoelectric mass matrix.
         /// </summary>
@@ -259,7 +248,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         {
             uint matrixSize = degreesFreedomMaximum + piezoelectricDegreesFreedomMaximum;
 
-            double[,] piezoelectricElectromechanicalCouplingTransposed = await this._arrayOperation.TransposeMatrix(piezoelectricElectromechanicalCoupling).ConfigureAwait(false);
+            double[,] piezoelectricElectromechanicalCouplingTransposed = await piezoelectricElectromechanicalCoupling.TransposeMatrixAsync().ConfigureAwait(false);
 
             double[,] equivalentStiffness = new double[matrixSize, matrixSize];
 

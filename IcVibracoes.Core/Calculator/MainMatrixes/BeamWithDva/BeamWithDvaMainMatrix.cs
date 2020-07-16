@@ -1,8 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
-using IcVibracoes.Core.Models.BeamCharacteristics;
-using System.Collections.Generic;
+using IcVibracoes.Core.ExtensionMethods;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
@@ -13,18 +11,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
     public abstract class BeamWithDvaMainMatrix<TProfile> : BeamMainMatrix<TProfile>, IBeamWithDvaMainMatrix<TProfile>
         where TProfile : Profile, new()
     {
-        private readonly IArrayOperation _arrayOperation;
-
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public BeamWithDvaMainMatrix(
-            IArrayOperation arrayOperation)
-        {
-            this._arrayOperation = arrayOperation;
-        }
-
         /// <summary>
         /// Responsible to calculate the mass matrix of the beam.
         /// </summary>
@@ -36,7 +22,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         {
             double[,] massWithDva = new double[beamMass.GetLength(0) + dvaMasses.Length, beamMass.GetLength(1) + dvaMasses.Length];
 
-            beamMass = await this._arrayOperation.AddValue(beamMass, dvaMasses, dvaNodePositions, "Beam Mass").ConfigureAwait(false);
+            await beamMass.AddPerNodePositionAsync(dvaMasses, dvaNodePositions).ConfigureAwait(false);
 
             for (int i = 0; i < beamMass.GetLength(0); i++)
             {
@@ -66,7 +52,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         {
             double[,] stiffnessWithDva = new double[beamStiffness.GetLength(0) + dvaStiffness.Length, beamStiffness.GetLength(1) + dvaStiffness.Length];
 
-            beamStiffness = await this._arrayOperation.AddValue(beamStiffness, dvaStiffness, dvaNodePositions, "Beam Stiffness").ConfigureAwait(false);
+            await beamStiffness.AddPerNodePositionAsync(dvaStiffness, dvaNodePositions).ConfigureAwait(false);
 
             for (int i = 0; i < beamStiffness.GetLength(0); i++)
             {

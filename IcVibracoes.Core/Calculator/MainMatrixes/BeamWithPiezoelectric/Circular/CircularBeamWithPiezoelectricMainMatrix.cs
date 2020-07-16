@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.Models.Beams;
 using System;
 using System.Threading.Tasks;
@@ -11,16 +10,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circula
     /// </summary>
     public class CircularBeamWithPiezoelectricMainMatrix : BeamWithPiezoelectricMainMatrix<CircularProfile>, ICircularBeamWithPiezoelectricMainMatrix
     {
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public CircularBeamWithPiezoelectricMainMatrix(
-            IArrayOperation arrayOperation) 
-            : base(arrayOperation)
-        {
-        }
-
         public override Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<CircularProfile> beamWithPiezoelectric, uint elementIndex)
         {
             throw new NotImplementedException();

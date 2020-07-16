@@ -1,7 +1,7 @@
-﻿using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.DTO;
+﻿using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.ExtensionMethods;
 using System;
 using System.Threading.Tasks;
 
@@ -21,18 +21,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// The path of file to write the solutions.
         /// </summary>
         public string path;
-
-        private readonly IArrayOperation _arrayOperation;
-
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public NewmarkMethod(
-            IArrayOperation arrayOperation)
-        {
-            this._arrayOperation = arrayOperation;
-        }
 
         /// <summary>
         /// Calculates the result for the initial time for a finite element analysis using Newmark integration method.
@@ -70,11 +58,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             CalculateIngrationContants(input);
 
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
-            double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
+            double[,] inversedEquivalentStiffness = await equivalentStiffness.InverseMatrixAsync().ConfigureAwait(false);
 
             double[] equivalentForce = await this.CalculateEquivalentForce(input, previousResult.Displacement, previousResult.Velocity, previousResult.Acceleration, time).ConfigureAwait(false);
 
-            result.Displacement = await this._arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentStiffness)}").ConfigureAwait(false);
+            result.Displacement = await inversedEquivalentStiffness.MultiplyAsync(equivalentForce).ConfigureAwait(false);
 
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
@@ -98,8 +86,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             double[] equivalentVelocity = await this.CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
             double[] equivalentAcceleration = await this.CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
 
-            double[] mass_accel = await this._arrayOperation.Multiply(input.Mass, equivalentAcceleration, $"{nameof(input.Mass)} and {nameof(equivalentAcceleration)}").ConfigureAwait(false);
-            double[] damping_vel = await this._arrayOperation.Multiply(input.Damping, equivalentVelocity, $"{nameof(input.Damping)} and {nameof(equivalentVelocity)}").ConfigureAwait(false);
+            double[] mass_accel = await input.Mass.MultiplyAsync(equivalentAcceleration).ConfigureAwait(false);
+            double[] damping_vel = await input.Damping.MultiplyAsync(equivalentVelocity).ConfigureAwait(false);
 
             double[] equivalentForce = new double[input.NumberOfTrueBoundaryConditions];
 

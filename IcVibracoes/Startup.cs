@@ -1,5 +1,3 @@
-using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.BoundaryCondition;
 using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
 using IcVibracoes.Core.Calculator.Eigenvalue;
 using IcVibracoes.Core.Calculator.Force;
@@ -64,12 +62,6 @@ namespace IcVibracoes
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Register Array Operation
-            services.AddScoped<IArrayOperation, ArrayOperation>();
-
-            // Register Auxiliar Operations - Boundary Condition
-            services.AddScoped<IBoundaryCondition, BoundaryCondition>();
-
             // Register Calculator - Differential Equation of Motion
             services.AddScoped<IDifferentialEquationOfMotion, DifferentialEquationOfMotion>();
 

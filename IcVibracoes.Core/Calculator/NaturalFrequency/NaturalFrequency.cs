@@ -1,5 +1,5 @@
-﻿using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.Calculator.Eigenvalue;
+﻿using IcVibracoes.Core.Calculator.Eigenvalue;
+using IcVibracoes.Core.ExtensionMethods;
 using System;
 using System.Threading.Tasks;
 
@@ -10,7 +10,6 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
     /// </summary>
     public class NaturalFrequency : INaturalFrequency
     {
-        private readonly IArrayOperation _arrayOperation;
         private readonly IEigenvalue _calculateEigenvalue;
 
         /// <summary>
@@ -19,10 +18,8 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <param name="arrayOperation"></param>
         /// <param name="calculateEigenvalue"></param>
         public NaturalFrequency(
-            IArrayOperation arrayOperation,
             IEigenvalue calculateEigenvalue)
         {
-            this._arrayOperation = arrayOperation;
             this._calculateEigenvalue = calculateEigenvalue;
         }
 
@@ -40,10 +37,10 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <returns></returns>
         public async Task<double> CalculateByInversePowerMethod(double[,] mass, double[,] stiffness, double tolerance)
         {
-            double[,] inversedStiffness = await this._arrayOperation.InverseMatrix(stiffness, nameof(stiffness)).ConfigureAwait(false);
+            double[,] inversedStiffness = await stiffness.InverseMatrixAsync().ConfigureAwait(false);
 
-            double[,] dynamicalMatrix = await this._arrayOperation.Multiply(inversedStiffness, mass).ConfigureAwait(false);
-            double[,] inversetDynamicalMatrix = await this._arrayOperation.InverseMatrix(dynamicalMatrix, nameof(dynamicalMatrix)).ConfigureAwait(false);
+            double[,] dynamicalMatrix = await inversedStiffness.MultiplyAsync(mass).ConfigureAwait(false);
+            double[,] inversetDynamicalMatrix = await dynamicalMatrix.InverseMatrixAsync().ConfigureAwait(false);
 
             double naturalFrequency = await this._calculateEigenvalue.PowerMethod(inversetDynamicalMatrix, tolerance).ConfigureAwait(false);
 
@@ -63,9 +60,9 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <returns></returns>
         public async Task<double[]> CalculateByQRDecomposition(double[,] mass, double[,] stiffness, double tolerance)
         {
-            double[,] inversedStiffness = await this._arrayOperation.InverseMatrix(stiffness, nameof(stiffness)).ConfigureAwait(false);
+            double[,] inversedStiffness = await stiffness.InverseMatrixAsync().ConfigureAwait(false);
 
-            double[,] dynamicalMatrix = await this._arrayOperation.Multiply(inversedStiffness, mass).ConfigureAwait(false);
+            double[,] dynamicalMatrix = await inversedStiffness.MultiplyAsync(mass).ConfigureAwait(false);
 
             double[] naturalFrequencies = await this._calculateEigenvalue.QR_Decomposition(dynamicalMatrix, tolerance).ConfigureAwait(false);
 
