@@ -103,7 +103,7 @@ namespace IcVibracoes
 
             // Register Rigid Body Operations
             services.AddScoped<ICalculateVibrationToOneDegreeFreedom, CalculateVibrationToOneDegreeFreedom>();
-            services.AddScoped<ICalculateVibrationToTwoDegreesFreedom, CalculateVibrationToTwoDegreesFreedom>();
+            services.AddScoped<ICalculateVibrationToTwoDegreesOfFreedom, CalculateVibrationToTwoDegreesOfFreedom>();
 
             // Register Finite Element Operations - Beam
             services.AddScoped<ICalculateCircularBeamVibration, CalculateCircularBeamVibration>();

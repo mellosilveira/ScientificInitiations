@@ -18,18 +18,18 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// </summary>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
-        /// <param name="mainMatrix"></param>
         /// <param name="profileValidator"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateRectangularBeamWithPiezoelectricVibration(
             IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix,
             IRectangularProfileValidator profileValidator,
             ITime time,
-            INaturalFrequency naturalFrequency)
-            : base(geometricProperty, mappingResolver, mainMatrix, profileValidator, time, naturalFrequency)
+            INaturalFrequency naturalFrequency,
+            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix)
+            : base(geometricProperty, mappingResolver, profileValidator, time, naturalFrequency, mainMatrix)
         { }
     }
 }

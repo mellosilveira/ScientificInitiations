@@ -21,8 +21,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="request"></param>
         /// <param name="degreesOfFreedom"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
-        Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom, FiniteElementResponse response);
+        Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
     }
 }

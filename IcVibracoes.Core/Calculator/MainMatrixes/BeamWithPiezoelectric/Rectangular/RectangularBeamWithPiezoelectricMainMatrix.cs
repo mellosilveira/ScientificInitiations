@@ -11,12 +11,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
     /// </summary>
     public class RectangularBeamWithPiezoelectricMainMatrix : BeamWithPiezoelectricMainMatrix<RectangularProfile>, IRectangularBeamWithPiezoelectricMainMatrix
     {
-        public override Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<RectangularProfile> beamWithPiezoelectric, uint elementIndex)
+        public override Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<RectangularProfile> beam, uint elementIndex)
         {
-            double[,] piezoelectricCapacitance = new double[Constant.PiezoelectricDegreesFreedomElement, Constant.PiezoelectricDegreesFreedomElement];
-            double elementLength = beamWithPiezoelectric.Length / beamWithPiezoelectric.NumberOfElements;
+            double[,] piezoelectricCapacitance = new double[Constant.PiezoelectricDegreesOfFreedomElement, Constant.PiezoelectricDegreesOfFreedomElement];
+            double elementLength = beam.Length / beam.NumberOfElements;
 
-            double constant = -beamWithPiezoelectric.DielectricConstant * beamWithPiezoelectric.PiezoelectricGeometricProperty.Area[elementIndex] * elementLength / Math.Pow(beamWithPiezoelectric.PiezoelectricProfile.Height, 2);
+            double constant = -beam.DielectricConstant * beam.PiezoelectricGeometricProperty.Area[elementIndex] * elementLength / Math.Pow(beam.PiezoelectricProfile.Height, 2);
 
             piezoelectricCapacitance[0, 0] = constant;
             piezoelectricCapacitance[0, 1] = -constant;
@@ -26,12 +26,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
             return Task.FromResult(piezoelectricCapacitance);
         }
 
-        public override Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<RectangularProfile> beamWithPiezoelectric)
+        public override Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<RectangularProfile> beam)
         {
-            double[,] electromechanicalCoupling = new double[Constant.DegreesFreedomElement, Constant.PiezoelectricDegreesFreedomElement];
-            double elementLength = beamWithPiezoelectric.Length / beamWithPiezoelectric.NumberOfElements;
+            double[,] electromechanicalCoupling = new double[Constant.DegreesOfFreedomElement, Constant.PiezoelectricDegreesOfFreedomElement];
+            double elementLength = beam.Length / beam.NumberOfElements;
 
-            double constant = -(beamWithPiezoelectric.DielectricPermissiveness * beamWithPiezoelectric.PiezoelectricProfile.Width * elementLength / 2) * (2 * beamWithPiezoelectric.Profile.Height * beamWithPiezoelectric.PiezoelectricProfile.Height + Math.Pow(beamWithPiezoelectric.PiezoelectricProfile.Height, 2));
+            double constant = -(beam.DielectricPermissiveness * beam.PiezoelectricProfile.Width * elementLength / 2) * (2 * beam.Profile.Height * beam.PiezoelectricProfile.Height + Math.Pow(beam.PiezoelectricProfile.Height, 2));
 
             electromechanicalCoupling[0, 0] = 0;
             electromechanicalCoupling[0, 1] = 0;

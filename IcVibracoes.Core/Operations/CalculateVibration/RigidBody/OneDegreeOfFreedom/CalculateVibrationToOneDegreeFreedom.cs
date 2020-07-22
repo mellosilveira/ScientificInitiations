@@ -53,15 +53,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="OneDegreeOfFreedomInput"/>.</returns>
-        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomResponse response)
+        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request)
         {
-            if (request == null || request.ElementData == null)
-            {
-                return null;
-            }
-
             return Task.FromResult(new OneDegreeOfFreedomInput
             {
                 AngularFrequency = request.InitialAngularFrequency,

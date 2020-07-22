@@ -2,11 +2,11 @@
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.DataContracts;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations
 {
-    // TODO: Refatorar 
     /// <summary>
     /// It represents the base for all operations in the application.
     /// </summary>
@@ -115,7 +115,7 @@ namespace IcVibracoes.Core.Operations
             catch (Exception ex)
             {
                 response = new TResponse();
-                response.AddError(OperationErrorCode.InternalServerError, $"{ex.Message}");
+                response.AddError(OperationErrorCode.InternalServerError, $"{ex.Message}", HttpStatusCode.InternalServerError);
             }
 
             return response;

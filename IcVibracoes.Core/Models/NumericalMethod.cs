@@ -6,9 +6,7 @@ using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
 using IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder;
-using IcVibracoes.DataContracts;
 using System;
-using System.Net;
 
 namespace IcVibracoes.Core.Models
 {
@@ -38,12 +36,9 @@ namespace IcVibracoes.Core.Models
         /// This method creates an instance of interface <seealso cref="INumericalIntegrationMethod"/>.
         /// It can be <seealso cref="NewmarkBetaMethod"/> (used in <see cref="NumericalMethod.CentralDifferenceMethod"/>, <see cref="NumericalMethod.ImplicitLinearAccelerationMethod"/> and <see cref="NumericalMethod.NewmarkBeta"/>), <seealso cref="NewmarkMethod"/> or <seealso cref="Pinned"/>.
         /// </summary>
-        /// <typeparam name="TResponseData"></typeparam>
         /// <param name="numericalMethod"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public static INumericalIntegrationMethod CreateMethod<TResponseData>(string numericalMethod, OperationResponseBase<TResponseData> response)
-            where TResponseData : OperationResponseData
+        public static INumericalIntegrationMethod CreateMethod(string numericalMethod)
         {
             switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
             {
@@ -64,8 +59,7 @@ namespace IcVibracoes.Core.Models
                     break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid numerical method: '{numericalMethod}'.", HttpStatusCode.InternalServerError);
-            return null;
+            throw new Exception($"Invalid numerical method: '{numericalMethod}'.");
         }
     }
 }

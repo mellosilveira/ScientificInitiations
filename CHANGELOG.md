@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## UNRELEASED
 ### Changed
 - Operations in ArrayOperation and BoundaryCondition converted to extension methods.
+- Beam main matrix calculator.
+- Type of parameters in class Constants from int to byte.
+- Generalized operation CreateInput to CalculateVibration_FiniteElement class.
 
 ## [2.3.1] - 2020-07-10
 ### Fixed

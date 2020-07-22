@@ -1,33 +1,12 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
-using IcVibracoes.Core.Models.BeamCharacteristics;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using IcVibracoes.Core.Models.Beams;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
 {
     /// <summary>
     /// It's responsible to calculate the beam with DVA main matrixes.
     /// </summary>
-    public interface IBeamWithDvaMainMatrix<TProfile> : IBeamMainMatrix<TProfile>
+    public interface IBeamWithDvaMainMatrix<TProfile> : IMainMatrix<BeamWithDva<TProfile>, TProfile>
         where TProfile : Profile, new()
-    {
-        /// <summary>
-        /// Responsible to calculate the mass matrix of the beam.
-        /// </summary>
-        /// <param name="beamMass"></param>
-        /// <param name="dvaMasses"></param>
-        /// <param name="dvaNodePositions"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateMassWithDva(double[,] beamMass, double[] dvaMasses, uint[] dvaNodePositions);
-
-        /// <summary>
-        /// Responsible to calculate the stiffness matrix of the beam.
-        /// </summary>
-        /// <param name="beamStiffness"></param>
-        /// <param name="dvaStiffness"></param>
-        /// <param name="dvaNodePositions"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateStiffnessWithDva(double[,] beamStiffness, double[] dvaStiffness, uint[] dvaNodePositions);
-    }
+    { }
 }

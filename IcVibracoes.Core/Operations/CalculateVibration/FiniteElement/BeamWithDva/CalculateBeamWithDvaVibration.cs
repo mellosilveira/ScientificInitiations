@@ -7,7 +7,6 @@ using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Mapper;
-using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.Validators.Profiles;
@@ -29,29 +28,27 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
     {
         private readonly IGeometricProperty<TProfile> _geometricProperty;
         private readonly IMappingResolver _mappingResolver;
-        private readonly IBeamWithDvaMainMatrix<TProfile> _mainMatrix;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
-        /// <param name="mainMatrix"></param>
         /// <param name="profileValidator"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateBeamWithDvaVibration(
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
-            IBeamWithDvaMainMatrix<TProfile> mainMatrix,
-            IProfileValidator<TProfile> profileValidator,
-            ITime time,
-            INaturalFrequency naturalFrequency)
-            : base(profileValidator, time, naturalFrequency)
+            IProfileValidator<TProfile> profileValidator, 
+            ITime time, 
+            INaturalFrequency naturalFrequency, 
+            IBeamWithDvaMainMatrix<TProfile> mainMatrix) 
+            : base(profileValidator, time, naturalFrequency, mainMatrix)
         {
             this._geometricProperty = geometricProperty;
             this._mappingResolver = mappingResolver;
-            this._mainMatrix = mainMatrix;
         }
 
         /// <summary>
@@ -60,15 +57,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// </summary>
         /// <param name="request"></param>
         /// <param name="degreesOfFreedom"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="Beam{TProfile}"/>.</returns>
-        public override async Task<BeamWithDva<TProfile>> BuildBeam(BeamWithDvaRequest<TProfile> request, uint degreesOfFreedom, FiniteElementResponse response)
+        public override async Task<BeamWithDva<TProfile>> BuildBeam(BeamWithDvaRequest<TProfile> request, uint degreesOfFreedom)
         {
-            if (request == null)
-            {
-                return null;
-            }
-
             double[] dvaMasses = new double[request.Dvas.Count];
             double[] dvaStiffnesses = new double[request.Dvas.Count];
             uint[] dvaNodePositions = new uint[request.Dvas.Count];
@@ -100,86 +91,16 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
                 DvaMasses = dvaMasses,
                 DvaNodePositions = dvaNodePositions,
                 DvaStiffnesses = dvaStiffnesses,
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings, response).ConfigureAwait(false),
-                Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
+                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings).ConfigureAwait(false),
+                Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom + (uint)request.Dvas.Count).ConfigureAwait(false),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
-                Material = MaterialFactory.Create(request.Material, response),
+                Material = MaterialFactory.Create(request.Material),
                 NumberOfElements = request.NumberOfElements,
                 Profile = request.Profile
             };
 
-            if (response.Success == false)
-            {
-                return null;
-            }
-
             return beam;
-        }
-
-        /// <summary>
-        /// This method creates the input to be used in finite element analysis.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="response"></param>
-        /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
-        public override async Task<FiniteElementMethodInput> CreateInput(BeamWithDvaRequest<TProfile> request, FiniteElementResponse response)
-        {
-            uint degreesOfFreedom = await base.CalculateDegreesOfFreedomMaximum(request.NumberOfElements).ConfigureAwait(false);
-
-            BeamWithDva<TProfile> beam = await this.BuildBeam(request, degreesOfFreedom, response).ConfigureAwait(false);
-
-            if (beam == null)
-            {
-                return null;
-            }
-
-            bool[] bondaryCondition = await this._mainMatrix.CalculateBondaryCondition(beam.Fastenings, degreesOfFreedom + (uint)beam.DvaNodePositions.Length).ConfigureAwait(false);
-            uint numberOfTrueBoundaryConditions = 0;
-
-            for (int i = 0; i < degreesOfFreedom; i++)
-            {
-                if (bondaryCondition[i] == true)
-                {
-                    numberOfTrueBoundaryConditions += 1;
-                }
-            }
-
-            // Main matrixes to create input.
-            double[,] mass = await this._mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
-
-            double[,] stiffness = await this._mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
-
-            double[,] massWithDva = await this._mainMatrix.CalculateMassWithDva(mass, beam.DvaMasses, beam.DvaNodePositions).ConfigureAwait(false);
-
-            double[,] stiffnessWithDva = await this._mainMatrix.CalculateStiffnessWithDva(stiffness, beam.DvaStiffnesses, beam.DvaNodePositions).ConfigureAwait(false);
-
-            double[,] dampingWithDva = await this._mainMatrix.CalculateDamping(massWithDva, stiffnessWithDva).ConfigureAwait(false);
-
-            double[] forces = beam.Forces;
-
-            // Creating input.
-            var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
-            FiniteElementMethodInput input = new FiniteElementMethodInput(numericalMethod)
-            {
-                Mass = await massWithDva.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length).ConfigureAwait(false),
-
-                Stiffness = await stiffnessWithDva.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length).ConfigureAwait(false),
-
-                Damping = await dampingWithDva.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length).ConfigureAwait(false),
-
-                OriginalForce = await forces.ApplyBoundaryConditionsAsync(bondaryCondition, numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length).ConfigureAwait(false),
-
-                NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions + (uint)beam.DvaNodePositions.Length,
-
-                AngularFrequency = request.InitialAngularFrequency,
-
-                AngularFrequencyStep = request.AngularFrequencyStep,
-
-                FinalAngularFrequency = request.FinalAngularFrequency
-            };
-
-            return input;
         }
 
         /// <summary>

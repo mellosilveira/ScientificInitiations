@@ -288,13 +288,13 @@ namespace IcVibracoes.Core.ExtensionMethods
         }
 
         /// <summary>
-        /// This method applies the bondary conditions to a matrix.
+        /// This method applies the boundary conditions to a matrix.
         /// </summary>
         /// <param name="matrix"></param>
-        /// <param name="bondaryConditions"></param>
+        /// <param name="boundaryConditions"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public static Task<double[,]> ApplyBoundaryConditionsAsync(this double[,] matrix, bool[] bondaryConditions, uint numberOfTrueBoundaryConditions)
+        public static Task<double[,]> ApplyBoundaryConditionsAsync(this double[,] matrix, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
         {
             int count1, count2;
 
@@ -306,11 +306,11 @@ namespace IcVibracoes.Core.ExtensionMethods
             {
                 count2 = 0;
 
-                if (bondaryConditions[i] == true)
+                if (boundaryConditions[i] == true)
                 {
                     for (int j = 0; j < matrix.GetLength(1); j++)
                     {
-                        if (bondaryConditions[j] == true)
+                        if (boundaryConditions[j] == true)
                         {
                             matrixBC[count1, count2] = matrix[i, j];
 
@@ -326,13 +326,13 @@ namespace IcVibracoes.Core.ExtensionMethods
         }
 
         /// <summary>
-        /// This method applies the bondary conditions to a vector.
+        /// This method applies the boundary conditions to a vector.
         /// </summary>
         /// <param name="vector"></param>
-        /// <param name="bondaryConditions"></param>
+        /// <param name="boundaryConditions"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public static Task<double[]> ApplyBoundaryConditionsAsync(this double[] vector, bool[] bondaryConditions, uint numberOfTrueBoundaryConditions)
+        public static Task<double[]> ApplyBoundaryConditionsAsync(this double[] vector, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
         {
             int count1 = 0;
 
@@ -340,7 +340,7 @@ namespace IcVibracoes.Core.ExtensionMethods
 
             for (int i = 0; i < vector.Length; i++)
             {
-                if (bondaryConditions[i] == true)
+                if (boundaryConditions[i] == true)
                 {
                     matrixBC[count1] = vector[i];
                     count1 += 1;

@@ -105,13 +105,13 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousDisplacement"></param>
         /// <param name="previousVelocity"></param>
         /// <param name="previousAcceleration"></param>
-        /// <param name="numberOfTrueBondaryConditions"></param>
+        /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public Task<double[]> CalculateEquivalentAcceleration(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBondaryConditions)
+        public Task<double[]> CalculateEquivalentAcceleration(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBoundaryConditions)
         {
-            double[] equivalentAcceleration = new double[numberOfTrueBondaryConditions];
+            double[] equivalentAcceleration = new double[numberOfTrueBoundaryConditions];
 
-            for (int i = 0; i < numberOfTrueBondaryConditions; i++)
+            for (int i = 0; i < numberOfTrueBoundaryConditions; i++)
             {
                 equivalentAcceleration[i] = a0 * previousDisplacement[i] + a2 * previousVelocity[i] + a3 * previousAcceleration[i];
             }
@@ -125,13 +125,13 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousDisplacement"></param>
         /// <param name="previousVelocity"></param>
         /// <param name="previousAcceleration"></param>
-        /// <param name="numberOfTrueBondaryConditions"></param>
+        /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public Task<double[]> CalculateEquivalentVelocity(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBondaryConditions)
+        public Task<double[]> CalculateEquivalentVelocity(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBoundaryConditions)
         {
-            double[] equivalentVelocity = new double[numberOfTrueBondaryConditions];
+            double[] equivalentVelocity = new double[numberOfTrueBoundaryConditions];
 
-            for (int i = 0; i < numberOfTrueBondaryConditions; i++)
+            for (int i = 0; i < numberOfTrueBoundaryConditions; i++)
             {
                 equivalentVelocity[i] = a1 * previousDisplacement[i] + a4 * previousVelocity[i] + a5 * previousAcceleration[i];
             }

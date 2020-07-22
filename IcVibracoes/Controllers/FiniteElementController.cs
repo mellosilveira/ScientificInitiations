@@ -42,7 +42,7 @@ namespace IcVibracoes.Controllers
         [HttpPost("rectangular")]
         public async Task<ActionResult<FiniteElementResponse>> CalculateVibration(
             [FromServices] ICalculateRectangularBeamVibration calculateVibration,
-            [FromBody] BeamRequest<RectangularProfile> request)
+            [FromQuery] BeamRequest<RectangularProfile> request)
         {
             FiniteElementResponse response = await calculateVibration.Process(request).ConfigureAwait(false);
             return response.BuildHttpResponse();

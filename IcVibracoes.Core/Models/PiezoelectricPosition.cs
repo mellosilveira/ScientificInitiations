@@ -1,6 +1,4 @@
-﻿using IcVibracoes.DataContracts;
-using System;
-using System.Net;
+﻿using System;
 using System.Text.RegularExpressions;
 
 namespace IcVibracoes.Core.Models
@@ -23,12 +21,9 @@ namespace IcVibracoes.Core.Models
         /// <summary>
         /// This method returns the number of piezoelectrics per element.
         /// </summary>
-        /// <typeparam name="TResponseData"></typeparam>
         /// <param name="piezoelectricPosition"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public static uint Create<TResponseData>(string piezoelectricPosition, OperationResponseBase<TResponseData> response)
-            where TResponseData : OperationResponseData
+        public static uint Create(string piezoelectricPosition)
         {
             var value = Regex.Replace(piezoelectricPosition, @"\s", "");
 
@@ -43,8 +38,7 @@ namespace IcVibracoes.Core.Models
                 default: break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid piezoelectric position: {piezoelectricPosition}.", HttpStatusCode.InternalServerError);
-            return 0;
+            throw new Exception($"Invalid piezoelectric position: {piezoelectricPosition}.");
         }
     }
 }

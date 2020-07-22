@@ -1,6 +1,4 @@
-﻿using IcVibracoes.DataContracts;
-using System;
-using System.Net;
+﻿using System;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
@@ -80,12 +78,9 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
         /// This method creates an instance of class <seealso cref="Material"/>.
         /// It can be <seealso cref="Steel1020"/>, <seealso cref="Steel4130"/> or <seealso cref="Aluminum"/>.
         /// </summary>
-        /// <typeparam name="TResponseData"></typeparam>
         /// <param name="material"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public static Material Create<TResponseData>(string material, OperationResponseBase<TResponseData> response)
-            where TResponseData : OperationResponseData
+        public static Material Create(string material)
         {
             switch ((Materials)Enum.Parse(typeof(Materials), material.Trim(), ignoreCase: true))
             {
@@ -99,8 +94,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
                     break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid material: '{material}'.", HttpStatusCode.InternalServerError);
-            return null;
+            throw new Exception($"Invalid material: '{material}'.");
         }
     }
 }

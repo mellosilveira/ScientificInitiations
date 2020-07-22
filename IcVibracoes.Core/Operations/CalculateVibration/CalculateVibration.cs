@@ -26,9 +26,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="TInput"/>.</returns>
-        public abstract Task<TInput> CreateInput(TRequest request, TResponse response);
+        public abstract Task<TInput> CreateInput(TRequest request);
 
         /// <summary>
         /// This method creates the path to save the solution files.

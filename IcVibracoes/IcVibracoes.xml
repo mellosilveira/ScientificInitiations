@@ -107,7 +107,7 @@
             <response code="500">If occurred some error in process.</response>
             <response code="501">If some resource is not implemented.</response>
         </member>
-        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom.ICalculateVibrationToTwoDegreesFreedom,IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest)">
+        <member name="M:IcVibracoes.Controllers.RigidBodyController.CalculateVibration(IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom.ICalculateVibrationToTwoDegreesOfFreedom,IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest)">
             <summary>
             Calculates the vibration of system with two degrees of freedom.
             </summary>

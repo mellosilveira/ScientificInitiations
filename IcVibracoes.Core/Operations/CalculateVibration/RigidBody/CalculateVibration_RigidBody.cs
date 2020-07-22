@@ -67,10 +67,10 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             response.SetSuccessCreated();
 
             // Step 1 - Sets the numerical method to be used in analysis.
-            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod, response);
+            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             // Step 2 - Creates the input to numerical method.
-            TInput input = await this.CreateInput(request, response).ConfigureAwait(false);
+            TInput input = await this.CreateInput(request).ConfigureAwait(false);
 
             // Step 3 - Creates the initial conditions for displacement and velocity.
             double[] initial_y = await this.BuildInitialConditions(request).ConfigureAwait(false);

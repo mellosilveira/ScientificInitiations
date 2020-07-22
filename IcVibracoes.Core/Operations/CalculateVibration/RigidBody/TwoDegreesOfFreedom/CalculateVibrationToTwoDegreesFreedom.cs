@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with two degrees freedom.
     /// </summary>
-    public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesFreedom
+    public class CalculateVibrationToTwoDegreesOfFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesOfFreedom
     {
         private readonly IMechanicalPropertiesValidator _mechanicalPropertiesValidator;
 
@@ -23,7 +23,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="mechanicalPropertiesValidator"></param>
         /// <param name="time"></param>
-        public CalculateVibrationToTwoDegreesFreedom(
+        public CalculateVibrationToTwoDegreesOfFreedom(
             IMechanicalPropertiesValidator mechanicalPropertiesValidator,
             ITime time)
             : base(time)
@@ -52,15 +52,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="TwoDegreesOfFreedomInput"/>.</returns>
-        public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomResponse response)
+        public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
         {
-            if (request == null || request.PrimaryElementData == null || request.SecondaryElementData == null)
-            {
-                return null;
-            }
-
             return Task.FromResult(new TwoDegreesOfFreedomInput
             {
                 AngularFrequency = request.InitialAngularFrequency,

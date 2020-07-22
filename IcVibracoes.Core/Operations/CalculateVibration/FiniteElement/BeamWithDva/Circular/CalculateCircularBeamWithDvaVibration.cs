@@ -18,18 +18,18 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// </summary>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
-        /// <param name="mainMatrix"></param>
         /// <param name="profileValidator"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateCircularBeamWithDvaVibration(
             ICircularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            ICircularBeamWithDvaMainMatrix mainMatrix,
             ICircularProfileValidator profileValidator,
             ITime time,
-            INaturalFrequency naturalFrequency)
-            : base(geometricProperty, mappingResolver, mainMatrix, profileValidator, time, naturalFrequency)
+            INaturalFrequency naturalFrequency,
+            ICircularBeamWithDvaMainMatrix mainMatrix)
+            : base(geometricProperty, mappingResolver, profileValidator, time, naturalFrequency, mainMatrix)
         { }
     }
 }

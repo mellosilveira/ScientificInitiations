@@ -1,8 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
-using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
@@ -11,91 +8,62 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
     /// It's responsible to calculate the beam with piezoelectric main matrixes.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public interface IBeamWithPiezoelectricMainMatrix<TProfile> : IBeamMainMatrix<TProfile>
+    public interface IBeamWithPiezoelectricMainMatrix<TProfile> : IMainMatrix<BeamWithPiezoelectric<TProfile>, TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>
-        /// It's responsible to calculate piezoelectric mass matrix.
+        /// This method calculates the mass matrix of beam with piezoelectric plates.
         /// </summary>
-        /// <param name="beamWithPiezoelectric"></param>
-        /// <param name="degreesFreedomMaximum"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateMass(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum);
+        /// <param name="beam"></param>
+        /// <param name="degreesOfFreedom"></param>
+        /// <returns>The structure mass matrix.</returns>
+        Task<double[,]> CalculateStructureMass(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
 
         /// <summary>
-        /// It's responsible to calculate piezoelectric stiffness matrix.
+        /// This method calculates stiffness matrix of an element of beam with piezoelectric plates.
         /// </summary>
-        /// <param name="beamWithPiezoelectric"></param>
-        /// <param name="degreesFreedomMaximum"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateStiffness(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum);
-        
-        /// <summary>
-        /// It's responsible to calculate piezoelectric element stiffness matrix.
-        /// </summary>
-        /// <param name="momentInertia"></param>
         /// <param name="elasticityConstant"></param>
+        /// <param name="momentOfInertia"></param>
         /// <param name="length"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculatePiezoelectricElementStiffness(double momentInertia, double elasticityConstant, double length);
+        /// <returns>The element's piezoelectric stiffness matrix.</returns>
+        Task<double[,]> CalculatePiezoelectricElementStiffness(double elasticityConstant, double momentOfInertia, double length);
 
         /// <summary>
-        /// It's responsible to calculate piezoelectric electromechanical coupling matrix.
+        /// This method calculates the stiffness matrix of beam with piezoelectric plates.
         /// </summary>
-        /// <param name="beamWithPiezoelectric"></param>
-        /// <param name="degreesFreedomMaximum"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculatePiezoelectricElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint degreesFreedomMaximum);
+        /// <param name="beam"></param>
+        /// <param name="degreesOfFreedom"></param>
+        /// <returns>The structure stiffness matrix.</returns>
+        Task<double[,]> CalculateStructureStiffness(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
 
         /// <summary>
-        /// It's responsible to calculate piezoelectric element electromechanical coupling matrix.
+        /// This method calculates the electromechanical coupling matrix of an element of beam with piezoelectric plates.
         /// </summary>
-        /// <param name="beamWithPiezoelectric"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric);
+        /// <param name="beam"></param>
+        /// <returns>The element's electromechanical coupling matrix.</returns>
+        Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beam);
 
         /// <summary>
-        /// It's responsible to calculate piezoelectric capacitance matrix.
+        /// This method calculates electromechanical coupling matrix of beam with piezoelectric plates.
         /// </summary>
-        /// <param name="beamWithPiezoelectric"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculatePiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric);
+        /// <param name="beam"></param>
+        /// <param name="degreesOfFreedom"></param>
+        /// <returns>The structure piezoelectric electromechanical coupling matrix.</returns>
+        Task<double[,]> CalculatePiezoelectricElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
 
         /// <summary>
-        /// It's responsible to calculate element piezoelectric capacitance matrix.
+        /// This method calculates the element piezoelectric capacitance matrix.
         /// </summary>
-        /// <param name="beamWithPiezoelectric"></param>
+        /// <param name="beam"></param>
         /// <param name="elementIndex"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beamWithPiezoelectric, uint elementIndex);
+        /// <returns>The element's piezoelectric capacitance matrix.</returns>
+        Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beam, uint elementIndex);
 
         /// <summary>
-        /// It's responsible to calculate equivalent mass matrix.
+        /// This method calculates the piezoelectric capacitance matrix of beam with piezoelectric plates.
         /// </summary>
-        /// <param name="mass"></param>
-        /// <param name="degreesFreedomMaximum"></param>
-        /// <param name="piezoelectricDegreesFreedomMaximum"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateEquivalentMass(double[,] mass, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum);
-
-        /// <summary>
-        /// It's responsible to calculate equivalent stiffness matrix.
-        /// </summary>
-        /// <param name="stiffness"></param>
-        /// <param name="piezoelectricElectromechanicalCoupling"></param>
-        /// <param name="piezoelectricCapacitance"></param>
-        /// <param name="degreesFreedomMaximum"></param>
-        /// <param name="piezoelectricDegreesFreedomMaximum"></param>
-        /// <returns></returns>
-        Task<double[,]> CalculateEquivalentStiffness(double[,] stiffness, double[,] piezoelectricElectromechanicalCoupling, double[,] piezoelectricCapacitance, uint degreesFreedomMaximum, uint piezoelectricDegreesFreedomMaximum);
-
-        /// <summary>
-        /// /// It's rewsponsible to build the bondary condition matrix.
-        /// </summary>
-        /// <param name="fastenings"></param>
-        /// <param name="numberOfNodes"></param>
-        /// <param name="elementsWithPiezoelectric"></param>
-        /// <returns></returns>
-        Task<bool[]> CalculatePiezoelectricBondaryCondition(IDictionary<uint, FasteningType> fastenings, uint numberOfNodes, uint[] elementsWithPiezoelectric);
+        /// <param name="beam"></param>
+        /// <returns>The structure piezoelectric capacitance matrix.</returns>
+        Task<double[,]> CalculatePiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beam);
     }
 }
