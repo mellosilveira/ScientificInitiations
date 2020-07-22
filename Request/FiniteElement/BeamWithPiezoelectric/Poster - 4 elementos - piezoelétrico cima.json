@@ -43,8 +43,8 @@
   "numericalMethod": "Newmark",
   "forceType": "Harmonic",
   "initialTime": 0,
-  "periodCount": 10,
-  "periodDivision": 100,
+  "periodCount": 50,
+  "periodDivision": 1000,
   "initialAngularFrequency": 10,
   "angularFrequencyStep": 1,
   "finalAngularFrequency": 90

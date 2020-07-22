@@ -239,7 +239,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 }
             }
 
-            if (Enum.TryParse(typeof(PiezoelectricPosition), request.PiezoelectricPosition, ignoreCase: true, out _) == false)
+            if (Enum.TryParse(typeof(PiezoelectricPosition), Regex.Replace(request.PiezoelectricPosition, @"\s", ""), ignoreCase: true, out _) == false)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, $"Invalid piezoelectric position: '{request.PiezoelectricPosition}'.");
             }

@@ -28,8 +28,9 @@ namespace IcVibracoes.Extensions
                     StatusCode = (int)HttpStatusCode.BadRequest
                 };
             }
+
             // Unauthorized Status Code.
-            else if (response.HttpStatusCode == HttpStatusCode.Unauthorized)
+            if (response.HttpStatusCode == HttpStatusCode.Unauthorized)
             {
                 response.SetUnauthorizedError();
 
@@ -38,8 +39,9 @@ namespace IcVibracoes.Extensions
                     StatusCode = (int)HttpStatusCode.Unauthorized
                 };
             }
+
             // InternalServerError Status Code.
-            else if (response.HttpStatusCode == HttpStatusCode.InternalServerError)
+            if (response.HttpStatusCode == HttpStatusCode.InternalServerError)
             {
                 response.SetInternalServerError();
 
@@ -48,8 +50,9 @@ namespace IcVibracoes.Extensions
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
             }
+
             // NotImplemented Status Code.
-            else if (response.HttpStatusCode == HttpStatusCode.NotImplemented)
+            if (response.HttpStatusCode == HttpStatusCode.NotImplemented)
             {
                 response.SetNotImplementedError();
 
