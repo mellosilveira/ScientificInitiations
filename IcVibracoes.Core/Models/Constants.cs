@@ -12,21 +12,15 @@
         public const byte NodesPerElement = 2;
 
         /// <summary>
+        /// Degrees freedom per per.
+        /// </summary>
+        public const byte DegreesOfFreedomPerNode = 2;
+
+        /// <summary>
         /// Degrees freedom per element.
-        /// Calculus: Degrees freedom per element = Nodes Per Element * Degrees Freedom
+        /// Degrees freedom per element = Nodes Per Element * Degrees of Freedom
         /// </summary>
         public const byte DegreesOfFreedomElement = 4;
-
-        /// <summary>
-        /// Dimensions in the beam.
-        /// OBS.: That is different than analysis dimensions.
-        /// </summary>
-        public const byte Dimensions = 2;
-
-        /// <summary>
-        /// Degrees freedom per element.
-        /// </summary>
-        public const byte DegreesOfFreedom = 2;
 
         /// <summary>
         /// Proportionality constant used in the damping calculate. 
