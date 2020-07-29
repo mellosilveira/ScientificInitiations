@@ -29,8 +29,27 @@
     <Folder Include="Core\Calculator\MainMatrix\BeamWithDvas\" />
     <Folder Include="Core\Calculator\MainMatrix\BeamWithPiezoelectrics\" />
     <Folder Include="Core\Calculator\MainMatrix\Beam\" />
+    <Folder Include="Core\Calculator\DifferentialEquationOfMotion\" />
+    <Folder Include="Core\Calculator\Eigenvalue\" />
+    <Folder Include="Core\Calculator\Force\" />
+    <Folder Include="Core\Calculator\NaturalFrequency\" />
+    <Folder Include="Core\Calculator\Time\" />
+    <Folder Include="Core\ExtensionMethods\" />
+    <Folder Include="Core\Mapper\" />
+    <Folder Include="Core\NumericalIntegrationMethods\RungeKuttaForthOrder\" />
+    <Folder Include="Core\NumericalIntegrationMethods\NewmarkBeta\" />
     <Folder Include="Core\NumericalIntegrationMethods\Newmark\" />
-    <Folder Include="Core\Operations\BeamWithPiezoelectrics\" />
+    <Folder Include="Core\Operations\CalculateVibration\FiniteElement\BeamWithDva\Circular\" />
+    <Folder Include="Core\Operations\CalculateVibration\FiniteElement\BeamWithDva\Rectangular\" />
+    <Folder Include="Core\Operations\CalculateVibration\FiniteElement\BeamWithPiezoelectric\Circular\" />
+    <Folder Include="Core\Operations\CalculateVibration\FiniteElement\BeamWithPiezoelectric\Rectangular\" />
+    <Folder Include="Core\Operations\CalculateVibration\FiniteElement\Beam\Circular\" />
+    <Folder Include="Core\Operations\CalculateVibration\FiniteElement\Beam\Rectangular\" />
+    <Folder Include="Core\Operations\CalculateVibration\RigidBody\TwoDegreeOfFreedom\" />
+    <Folder Include="Core\Operations\CalculateVibration\RigidBody\OneDegreeOfFreedom\" />
+    <Folder Include="Core\Validators\MechanicalProperties\" />
+    <Folder Include="Core\Validators\TimeStep\" />
+    <Folder Include="Core\Validators\Profiles\" />
   </ItemGroup>
 
 </Project>

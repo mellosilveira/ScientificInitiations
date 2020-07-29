@@ -873,7 +873,7 @@ void MatrizP5(void)
 void Elim_Gauss(void)
 {
 	long double P1inv[CCT][CCT];
-   long double matriz[CCT][CCT];
+    long double matriz[CCT][CCT];
 	long double pivot = 0, p = 0, aux = 0;
 	int i, j, k, l;
 
