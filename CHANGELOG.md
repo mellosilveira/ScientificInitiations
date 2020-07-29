@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Beam main matrix calculator.
 - Type of parameters in class Constants from int to byte.
 - Generalized operation CreateInput to CalculateVibration_FiniteElement class.
+- Name of parameter in class Constant from DegreesOfFreedom to DegreesOfFreedomPerNode.
+### Removed
+- Parameter Dimensions in class Constant.
 
 ## [2.3.1] - 2020-07-10
 ### Fixed
