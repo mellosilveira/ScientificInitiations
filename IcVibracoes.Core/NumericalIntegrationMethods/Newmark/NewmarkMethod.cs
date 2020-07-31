@@ -55,7 +55,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 Force = previousResult.Force
             };
 
-            CalculateIngrationContants(input);
+            this.CalculateIngrationContants(input);
 
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await equivalentStiffness.InverseMatrixAsync().ConfigureAwait(false);
