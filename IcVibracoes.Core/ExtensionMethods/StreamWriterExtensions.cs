@@ -42,8 +42,27 @@ namespace IcVibracoes.Core.ExtensionMethods
                 {
                     streamWriter.Write(string.Format("{0}; ", matrix[i, j]));
                 }
-             
+
                 streamWriter.Write(streamWriter.NewLine);
+            }
+
+            streamWriter.Write(streamWriter.NewLine);
+        }
+
+        /// <summary>
+        /// This method writes a vector into a file.
+        /// </summary>
+        /// <param name="streamWriter"></param>
+        /// <param name="vector"></param>
+        /// <param name="matrixName"></param>
+        public static void WriteVector(this StreamWriter streamWriter, double[] vector, string matrixName)
+        {
+            streamWriter.Write(string.Format(matrixName));
+            streamWriter.Write(streamWriter.NewLine);
+
+            for (int i = 0; i < vector.Length; i++)
+            {
+                streamWriter.Write(string.Format("{0}; ", vector[i]));
             }
 
             streamWriter.Write(streamWriter.NewLine);

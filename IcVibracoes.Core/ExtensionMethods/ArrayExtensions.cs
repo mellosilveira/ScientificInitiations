@@ -50,11 +50,12 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// This method inverses a matrix using the Gauss-Jordan method.
         /// </summary>
         /// <param name="matrix"></param>
-        /// <param name="matrixName"></param>
         /// <returns>The inversed matrix using the Gauss-Jordan method.</returns>
         public static Task<double[,]> InverseMatrixAsync(this double[,] matrix)
         {
-            int n = matrix.GetLength(0);
+            double[,] matrixCopy = matrix.Clone() as double[,];
+
+            int n = matrixCopy.GetLength(0);
             double[,] matrizInv = new double[n, n];
             double pivot, p;
 
@@ -76,7 +77,7 @@ namespace IcVibracoes.Core.ExtensionMethods
             // Triangularization
             for (int i = 0; i < n; i++)
             {
-                pivot = matrix[i, i];
+                pivot = matrixCopy[i, i];
                 if (pivot == 0)
                 {
                     throw new DivideByZeroException($"Pivot cannot be zero at line {i}.");
@@ -84,17 +85,17 @@ namespace IcVibracoes.Core.ExtensionMethods
 
                 for (int l = 0; l < n; l++)
                 {
-                    matrix[i, l] = matrix[i, l] / pivot;
+                    matrixCopy[i, l] = matrixCopy[i, l] / pivot;
                     matrizInv[i, l] = matrizInv[i, l] / pivot;
                 }
 
                 for (int k = i + 1; k < n; k++)
                 {
-                    p = matrix[k, i];
+                    p = matrixCopy[k, i];
 
                     for (int j = 0; j < n; j++)
                     {
-                        matrix[k, j] = matrix[k, j] - p * matrix[i, j];
+                        matrixCopy[k, j] = matrixCopy[k, j] - p * matrixCopy[i, j];
                         matrizInv[k, j] = matrizInv[k, j] - p * matrizInv[i, j];
                     }
                 }
@@ -105,11 +106,11 @@ namespace IcVibracoes.Core.ExtensionMethods
             {
                 for (int k = i - 1; k >= 0; k--)
                 {
-                    p = matrix[k, i];
+                    p = matrixCopy[k, i];
 
                     for (int j = n - 1; j >= 0; j--)
                     {
-                        matrix[k, j] = matrix[k, j] - p * matrix[i, j];
+                        matrixCopy[k, j] = matrixCopy[k, j] - p * matrixCopy[i, j];
                         matrizInv[k, j] = matrizInv[k, j] - p * matrizInv[i, j];
                     }
                 }
