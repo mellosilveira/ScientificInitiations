@@ -139,6 +139,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                 // Step 5 - Generates the path to save the analysis results.
                 // Each combination of damping ratio and angular frequency will have a specific path.
                 string solutionPath = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
+                fileUris.Add(solutionPath);
 
                 var previousResult = new FiniteElementResult
                 {
