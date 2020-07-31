@@ -13,7 +13,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
     {
         /// <summary>
         /// This method calculates the element piezoelectric capacitance matrix.
-        /// This method is not implemented.
         /// </summary>
         /// <param name="beam"></param>
         /// <param name="elementIndex"></param>
@@ -34,7 +33,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
 
         /// <summary>
         /// This method calculates the electromechanical coupling matrix of an element of beam with piezoelectric plates.
-        /// This method is not implemented.
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The element's electromechanical coupling matrix.</returns>
