@@ -39,12 +39,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                     elementPiezoelectricMass = await base.CalculateElementMass(beam.PiezoelectricGeometricProperty.Area[n], beam.PiezoelectricSpecificMass, elementLength).ConfigureAwait(false);
                 }
 
-                uint halfDFE = Constant.DegreesOfFreedomElement / 2;
-                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
+                for (uint i = 2 * n; i < 2 * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = halfDFE * n; j < halfDFE * n + Constant.DegreesOfFreedomElement; j++)
+                    for (uint j = 2 * n; j < 2 * n + Constant.DegreesOfFreedomElement; j++)
                     {
-                        mass[i, j] += elementPiezoelectricMass[i - halfDFE * n, j - halfDFE * n] + elementBeamMass[i - halfDFE * n, j - halfDFE * n];
+                        mass[i, j] += elementPiezoelectricMass[i - 2 * n, j - 2 * n] + elementBeamMass[i - 2 * n, j - 2 * n];
                     }
                 }
             }
@@ -138,12 +137,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                     piezoelectricElementStiffness = await this.CalculatePiezoelectricElementStiffness(beam.ElasticityConstant, beam.PiezoelectricGeometricProperty.MomentOfInertia[n], elementLength).ConfigureAwait(false);
                 }
 
-                uint halfDFE = Constant.DegreesOfFreedomElement / 2;
-                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
+                for (uint i = 2 * n; i < 2 * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = halfDFE * n; j < halfDFE * n + Constant.DegreesOfFreedomElement; j++)
+                    for (uint j = 2 * n; j < 2 * n + Constant.DegreesOfFreedomElement; j++)
                     {
-                        stiffness[i, j] += beamElementStiffness[i - halfDFE * n, j - halfDFE * n] + piezoelectricElementStiffness[i - halfDFE * n, j - halfDFE * n];
+                        stiffness[i, j] += beamElementStiffness[i - 2 * n, j - 2 * n] + piezoelectricElementStiffness[i - 2 * n, j - 2 * n];
                     }
                 }
             }
@@ -177,13 +175,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                     piezoelectricElementElectromechanicalCoupling = await this.CalculatePiezoelectricElementElectromechanicalCoupling(beam).ConfigureAwait(false);
                 }
 
-                uint halfDFE = Constant.DegreesOfFreedomElement / 2;
-                uint halfPDFE = Constant.PiezoelectricDegreesOfFreedomElement / 2;
-                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
+                for (uint i = 2 * n; i < 2 * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = halfPDFE * n; j < halfPDFE * n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
+                    for (uint j = n; j < n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
                     {
-                        piezoelectricElectromechanicalCoupling[i, j] += piezoelectricElementElectromechanicalCoupling[i - halfDFE * n, j - halfPDFE * n];
+                        piezoelectricElectromechanicalCoupling[i, j] += piezoelectricElementElectromechanicalCoupling[i - 2 * n, j - n];
                     }
                 }
             }
@@ -217,12 +213,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                     piezoelectricElementCapacitance = await this.CalculateElementPiezoelectricCapacitance(beam, elementIndex: n).ConfigureAwait(false);
                 }
 
-                uint halfPDFE = Constant.PiezoelectricDegreesOfFreedomElement / 2;
-                for (uint i = halfPDFE * n; i < halfPDFE * n + Constant.PiezoelectricDegreesOfFreedomElement; i++)
+                for (uint i = n; i < n + Constant.PiezoelectricDegreesOfFreedomElement; i++)
                 {
-                    for (uint j = halfPDFE * n; j < halfPDFE * n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
+                    for (uint j = n; j < n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
                     {
-                        piezoelectricCapacitance[i, j] += piezoelectricElementCapacitance[i - halfPDFE * n, j - halfPDFE * n];
+                        piezoelectricCapacitance[i, j] += piezoelectricElementCapacitance[i - n, j - n];
                     }
                 }
             }

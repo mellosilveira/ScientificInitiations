@@ -57,22 +57,18 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <returns>The structure mass matrix.</returns>
         public async virtual Task<double[,]> CalculateMass(TBeam beam, uint degreesOfFreedom)
         {
-            uint numberOfElements = beam.NumberOfElements;
-            uint halfDFE = Constant.DegreesOfFreedomElement / 2;
-
             double[,] mass = new double[degreesOfFreedom, degreesOfFreedom];
 
-            double length = beam.Length / numberOfElements;
-
-            for (uint n = 0; n < numberOfElements; n++)
+            for (uint n = 0; n < beam.NumberOfElements; n++)
             {
+                double length = beam.Length / beam.NumberOfElements;
                 double[,] elementMass = await this.CalculateElementMass(beam.GeometricProperty.Area[n], beam.Material.SpecificMass, length).ConfigureAwait(false);
 
-                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
+                for (uint i = 2 * n; i < 2 * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = halfDFE * n; j < halfDFE * n + Constant.DegreesOfFreedomElement; j++)
+                    for (uint j = 2 * n; j < 2 * n + Constant.DegreesOfFreedomElement; j++)
                     {
-                        mass[i, j] += elementMass[i - halfDFE * n, j - halfDFE * n];
+                        mass[i, j] += elementMass[i - 2 * n, j - 2 * n];
                     }
                 }
             }
@@ -104,12 +100,8 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
             elementStiffness[2, 1] = -6 * elementLength * constant;
             elementStiffness[2, 2] = 12 * constant;
             elementStiffness[2, 3] = -6 * elementLength * constant;
-            // Pode ser esse - esperar resposta do professor Sergio
-            //elementStiffness[3, 0] = 6 * Math.Pow(elementLength, 2) * constant;
             elementStiffness[3, 0] = 6 * elementLength * constant;
             elementStiffness[3, 1] = 2 * Math.Pow(elementLength, 2) * constant;
-            // Pode ser esse - esperar resposta do professor Sergio
-            //elementStiffness[3, 2] = -6 * Math.Pow(elementLength, 2) * constant;
             elementStiffness[3, 2] = -6 * elementLength * constant;
             elementStiffness[3, 3] = 4 * Math.Pow(elementLength, 2) * constant;
 
@@ -124,22 +116,18 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <returns>The structure stiffness matrix.</returns>
         public async virtual Task<double[,]> CalculateStiffness(TBeam beam, uint degreesOfFreedom)
         {
-            uint numberOfElements = beam.NumberOfElements;
-            uint halfDFE = Constant.DegreesOfFreedomElement / 2;
-
             double[,] stiffness = new double[degreesOfFreedom, degreesOfFreedom];
 
-            double length = beam.Length / numberOfElements;
-
-            for (uint n = 0; n < numberOfElements; n++)
+            for (uint n = 0; n < beam.NumberOfElements; n++)
             {
+                double length = beam.Length / beam.NumberOfElements;
                 double[,] elementStiffness = await this.CalculateElementStiffness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, length).ConfigureAwait(false);
 
-                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
+                for (uint i = 2 * n; i < 2 * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = halfDFE * n; j < halfDFE * n + Constant.DegreesOfFreedomElement; j++)
+                    for (uint j = 2 * n; j < 2 * n + Constant.DegreesOfFreedomElement; j++)
                     {
-                        stiffness[i, j] += elementStiffness[i - halfDFE * n, j - halfDFE * n];
+                        stiffness[i, j] += elementStiffness[i - 2 * n, j - 2 * n];
                     }
                 }
             }
