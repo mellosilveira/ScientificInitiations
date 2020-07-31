@@ -35,7 +35,7 @@
         public const double Mi = 0;
 
         /// <summary>
-        /// Size of piezoelectric element size.
+        /// Piezoelectric degrees of freedom per element.
         /// </summary>
         public const byte PiezoelectricDegreesOfFreedomElement = 2;
 

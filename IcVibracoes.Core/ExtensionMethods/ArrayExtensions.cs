@@ -236,7 +236,7 @@ namespace IcVibracoes.Core.ExtensionMethods
 
             for (int i = 0; i < vectorSum.Length; i++)
             {
-                foreach(var vector in vectors)
+                foreach (var vector in vectors)
                 {
                     vectorSum[i] += vector[i];
                 }
