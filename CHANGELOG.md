@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Type of parameters in class Constants from int to byte.
 - Generalized operation CreateInput to CalculateVibration_FiniteElement class.
 - Name of parameter in class Constant from DegreesOfFreedom to DegreesOfFreedomPerNode.
+- Improve inheritance, summary and organization of classes to calculate main matrixes.
 ### Removed
 - Parameter Dimensions in class Constant.
 

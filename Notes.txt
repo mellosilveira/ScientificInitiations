@@ -1,0 +1,4 @@
+ANOTAÇÕES - IC VIBRAÇÕES
+
+Matrizes de rigidez e massa para um elemento
+- Livro: Craig, Structure Dynamics, pg 202 no pdf

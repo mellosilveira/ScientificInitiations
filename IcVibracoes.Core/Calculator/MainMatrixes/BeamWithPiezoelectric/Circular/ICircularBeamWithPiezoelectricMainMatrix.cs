@@ -5,7 +5,5 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circula
     /// <summary>
     /// It's responsible to calculate the circular beam with piezoelectric main matrixes.
     /// </summary>
-    public interface ICircularBeamWithPiezoelectricMainMatrix : IBeamWithPiezoelectricMainMatrix<CircularProfile>
-    {
-    }
+    public interface ICircularBeamWithPiezoelectricMainMatrix : IBeamWithPiezoelectricMainMatrix<CircularProfile> { }
 }

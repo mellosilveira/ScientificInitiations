@@ -25,28 +25,26 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <returns>The structure mass matrix.</returns>
         public async Task<double[,]> CalculateStructureMass(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom)
         {
-            uint numberOfElements = beam.NumberOfElements;
-            uint dfe = Constant.DegreesOfFreedomElement;
-
             double[,] mass = new double[degreesOfFreedom, degreesOfFreedom];
 
-            double elementLength = beam.Length / numberOfElements;
-
-            for (uint n = 0; n < numberOfElements; n++)
+            for (uint n = 0; n < beam.NumberOfElements; n++)
             {
-                double[,] elementPiezoelectricMass = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
+                double elementLength = beam.Length / beam.NumberOfElements;
+
                 double[,] elementBeamMass = await base.CalculateElementMass(beam.GeometricProperty.Area[n], beam.Material.SpecificMass, elementLength).ConfigureAwait(false);
+                double[,] elementPiezoelectricMass = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
 
                 if (beam.ElementsWithPiezoelectric.Contains(n + 1))
                 {
                     elementPiezoelectricMass = await base.CalculateElementMass(beam.PiezoelectricGeometricProperty.Area[n], beam.PiezoelectricSpecificMass, elementLength).ConfigureAwait(false);
                 }
 
-                for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
+                uint halfDFE = Constant.DegreesOfFreedomElement / 2;
+                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = (dfe / 2) * n; j < (dfe / 2) * n + dfe; j++)
+                    for (uint j = halfDFE * n; j < halfDFE * n + Constant.DegreesOfFreedomElement; j++)
                     {
-                        mass[i, j] += elementPiezoelectricMass[i - (dfe / 2) * n, j - (dfe / 2) * n] + elementBeamMass[i - (dfe / 2) * n, j - (dfe / 2) * n];
+                        mass[i, j] += elementPiezoelectricMass[i - halfDFE * n, j - halfDFE * n] + elementBeamMass[i - halfDFE * n, j - halfDFE * n];
                     }
                 }
             }
@@ -57,15 +55,15 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <summary>
         /// This method calculates the equivalent mass matrix to be used in Finite Element Analysis.
         /// </summary>
-        /// <param name="mass"></param>
+        /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
-        /// <param name="piezoelectricDegreesOfFreedom"></param>
         /// <returns>The equivalent mass matrix.</returns>
         public async override Task<double[,]> CalculateMass(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom)
         {
             double[,] mass = await this.CalculateStructureMass(beam, degreesOfFreedom).ConfigureAwait(false);
 
             uint matrixSize = degreesOfFreedom + beam.PiezoelectricDegreesOfFreedom;
+
             double[,] equivalentMass = new double[matrixSize, matrixSize];
 
             for (uint i = 0; i < matrixSize; i++)
@@ -91,30 +89,29 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// </summary>
         /// <param name="elasticityConstant"></param>
         /// <param name="momentOfInertia"></param>
-        /// <param name="length"></param>
+        /// <param name="elementLength"></param>
         /// <returns>The element's piezoelectric stiffness matrix.</returns>
-        public Task<double[,]> CalculatePiezoelectricElementStiffness(double elasticityConstant, double momentOfInertia, double length)
+        public Task<double[,]> CalculatePiezoelectricElementStiffness(double elasticityConstant, double momentOfInertia, double elementLength)
         {
+            double constant = momentOfInertia * elasticityConstant / Math.Pow(elementLength, 3);
+
             double[,] elementStiffness = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
-
-            double constant = momentOfInertia * elasticityConstant / Math.Pow(length, 3);
-
             elementStiffness[0, 0] = 12 * constant;
-            elementStiffness[0, 1] = 6 * length * constant;
+            elementStiffness[0, 1] = 6 * elementLength * constant;
             elementStiffness[0, 2] = -12 * constant;
-            elementStiffness[0, 3] = 6 * length * constant;
-            elementStiffness[1, 0] = 6 * length * constant;
-            elementStiffness[1, 1] = 4 * Math.Pow(length, 2) * constant;
-            elementStiffness[1, 2] = -(6 * length * constant);
-            elementStiffness[1, 3] = 2 * Math.Pow(length, 2) * constant;
+            elementStiffness[0, 3] = 6 * elementLength * constant;
+            elementStiffness[1, 0] = 6 * elementLength * constant;
+            elementStiffness[1, 1] = 4 * Math.Pow(elementLength, 2) * constant;
+            elementStiffness[1, 2] = -(6 * elementLength * constant);
+            elementStiffness[1, 3] = 2 * Math.Pow(elementLength, 2) * constant;
             elementStiffness[2, 0] = -(12 * constant);
-            elementStiffness[2, 1] = -(6 * length * constant);
+            elementStiffness[2, 1] = -(6 * elementLength * constant);
             elementStiffness[2, 2] = 12 * constant;
-            elementStiffness[2, 3] = -(6 * Math.Pow(length, 2) * constant);
-            elementStiffness[3, 0] = 6 * length * constant;
-            elementStiffness[3, 1] = 2 * Math.Pow(length, 2) * constant;
-            elementStiffness[3, 2] = -(6 * Math.Pow(length, 2) * constant);
-            elementStiffness[3, 3] = 4 * Math.Pow(length, 2) * constant;
+            elementStiffness[2, 3] = -(6 * Math.Pow(elementLength, 2) * constant);
+            elementStiffness[3, 0] = 6 * elementLength * constant;
+            elementStiffness[3, 1] = 2 * Math.Pow(elementLength, 2) * constant;
+            elementStiffness[3, 2] = -(6 * Math.Pow(elementLength, 2) * constant);
+            elementStiffness[3, 3] = 4 * Math.Pow(elementLength, 2) * constant;
 
             return Task.FromResult(elementStiffness);
         }
@@ -127,15 +124,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <returns>The structure stiffness matrix.</returns>
         public async Task<double[,]> CalculateStructureStiffness(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom)
         {
-            uint numberOfElements = beam.NumberOfElements;
-            uint dfe = Constant.DegreesOfFreedomElement;
-
             double[,] stiffness = new double[degreesOfFreedom, degreesOfFreedom];
 
-            double elementLength = beam.Length / numberOfElements;
-
-            for (uint n = 0; n < numberOfElements; n++)
+            for (uint n = 0; n < beam.NumberOfElements; n++)
             {
+                double elementLength = beam.Length / beam.NumberOfElements;
+
                 double[,] piezoelectricElementStiffness = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
                 double[,] beamElementStiffness = await base.CalculateElementStiffness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, elementLength).ConfigureAwait(false);
 
@@ -144,11 +138,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                     piezoelectricElementStiffness = await this.CalculatePiezoelectricElementStiffness(beam.ElasticityConstant, beam.PiezoelectricGeometricProperty.MomentOfInertia[n], elementLength).ConfigureAwait(false);
                 }
 
-                for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
+                uint halfDFE = Constant.DegreesOfFreedomElement / 2;
+                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = (dfe / 2) * n; j < (dfe / 2) * n + dfe; j++)
+                    for (uint j = halfDFE * n; j < halfDFE * n + Constant.DegreesOfFreedomElement; j++)
                     {
-                        stiffness[i, j] += beamElementStiffness[i - (dfe / 2) * n, j - (dfe / 2) * n] + piezoelectricElementStiffness[i - (dfe / 2) * n, j - (dfe / 2) * n];
+                        stiffness[i, j] += beamElementStiffness[i - halfDFE * n, j - halfDFE * n] + piezoelectricElementStiffness[i - halfDFE * n, j - halfDFE * n];
                     }
                 }
             }
@@ -171,7 +166,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <returns>The structure piezoelectric electromechanical coupling matrix.</returns>
         public async Task<double[,]> CalculatePiezoelectricElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom)
         {
-            uint dfe = Constant.DegreesOfFreedomElement;
             double[,] piezoelectricElectromechanicalCoupling = new double[degreesOfFreedom, beam.PiezoelectricDegreesOfFreedom];
 
             for (uint n = 0; n < beam.NumberOfElements; n++)
@@ -183,11 +177,13 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                     piezoelectricElementElectromechanicalCoupling = await this.CalculatePiezoelectricElementElectromechanicalCoupling(beam).ConfigureAwait(false);
                 }
 
-                for (uint i = (dfe / 2) * n; i < (dfe / 2) * n + dfe; i++)
+                uint halfDFE = Constant.DegreesOfFreedomElement / 2;
+                uint halfPDFE = Constant.PiezoelectricDegreesOfFreedomElement / 2;
+                for (uint i = halfDFE * n; i < halfDFE * n + Constant.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = n; j < n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
+                    for (uint j = halfPDFE * n; j < halfPDFE * n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
                     {
-                        piezoelectricElectromechanicalCoupling[i, j] += piezoelectricElementElectromechanicalCoupling[i - 2 * n, j - n];
+                        piezoelectricElectromechanicalCoupling[i, j] += piezoelectricElementElectromechanicalCoupling[i - halfDFE * n, j - halfPDFE * n];
                     }
                 }
             }
@@ -221,11 +217,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
                     piezoelectricElementCapacitance = await this.CalculateElementPiezoelectricCapacitance(beam, elementIndex: n).ConfigureAwait(false);
                 }
 
-                for (uint i = n; i < n + Constant.PiezoelectricDegreesOfFreedomElement; i++)
+                uint halfPDFE = Constant.PiezoelectricDegreesOfFreedomElement / 2;
+                for (uint i = halfPDFE * n; i < halfPDFE * n + Constant.PiezoelectricDegreesOfFreedomElement; i++)
                 {
-                    for (uint j = n; j < n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
+                    for (uint j = halfPDFE * n; j < halfPDFE * n + Constant.PiezoelectricDegreesOfFreedomElement; j++)
                     {
-                        piezoelectricCapacitance[i, j] += piezoelectricElementCapacitance[i - n, j - n];
+                        piezoelectricCapacitance[i, j] += piezoelectricElementCapacitance[i - halfPDFE * n, j - halfPDFE * n];
                     }
                 }
             }
@@ -236,11 +233,8 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <summary>
         /// This method calculates the equivalent stiffness matrix.
         /// </summary>
-        /// <param name="stiffness"></param>
-        /// <param name="piezoelectricElectromechanicalCoupling"></param>
-        /// <param name="piezoelectricCapacitance"></param>
+        /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
-        /// <param name="piezoelectricDegreesOfFreedom"></param>
         /// <returns>The equivalent stiffness matrix.</returns>
         public async override Task<double[,]> CalculateStiffness(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom)
         {
