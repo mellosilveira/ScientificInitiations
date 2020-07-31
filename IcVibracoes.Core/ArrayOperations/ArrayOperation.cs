@@ -99,7 +99,7 @@ namespace IcVibracoes.Core.ArrayOperations
         /// <summary>
         /// It's responsible to inverse a matrix using the Gauss-Jordan method.
         /// </summary>
-        /// <param name="matrix"></param>
+        /// <param name="matrixClone"></param>
         /// <param name="matrixName"></param>
         /// <returns></returns>
         public Task<double[,]> InverseMatrix(double[,] matrix, string matrixName)
@@ -109,7 +109,9 @@ namespace IcVibracoes.Core.ArrayOperations
                 throw new ArgumentException($"Error inversing {matrixName}. It is just possible to inverse a square matrix.");
             }
 
-            int n = matrix.GetLength(0);
+            double[,] matrixClone = matrix.Clone() as double[,];
+
+            int n = matrixClone.GetLength(0);
             double[,] matrizInv = new double[n, n];
             double pivot, p;
 
@@ -132,7 +134,7 @@ namespace IcVibracoes.Core.ArrayOperations
             // Triangularization
             for (int i = 0; i < n; i++)
             {
-                pivot = matrix[i, i];
+                pivot = matrixClone[i, i];
                 if (pivot == 0)
                 {
                     throw new DivideByZeroException($"Pivot cannot be zero at line {i}.");
@@ -141,18 +143,18 @@ namespace IcVibracoes.Core.ArrayOperations
                 // Parallel.For
                 for (int l = 0; l < n; l++)
                 {
-                    matrix[i, l] = matrix[i, l] / pivot;
+                    matrixClone[i, l] = matrixClone[i, l] / pivot;
                     matrizInv[i, l] = matrizInv[i, l] / pivot;
                 }
 
                 for (int k = i + 1; k < n; k++)
                 {
-                    p = matrix[k, i];
+                    p = matrixClone[k, i];
 
                     // Parallel.For
                     for (int j = 0; j < n; j++)
                     {
-                        matrix[k, j] = matrix[k, j] - p * matrix[i, j];
+                        matrixClone[k, j] = matrixClone[k, j] - p * matrixClone[i, j];
                         matrizInv[k, j] = matrizInv[k, j] - p * matrizInv[i, j];
                     }
                 }
@@ -163,12 +165,12 @@ namespace IcVibracoes.Core.ArrayOperations
             {
                 for (int k = i - 1; k >= 0; k--)
                 {
-                    p = matrix[k, i];
+                    p = matrixClone[k, i];
 
                     // Parallel.For
                     for (int j = n - 1; j >= 0; j--)
                     {
-                        matrix[k, j] = matrix[k, j] - p * matrix[i, j];
+                        matrixClone[k, j] = matrixClone[k, j] - p * matrixClone[i, j];
                         matrizInv[k, j] = matrizInv[k, j] - p * matrizInv[i, j];
                     }
                 }
