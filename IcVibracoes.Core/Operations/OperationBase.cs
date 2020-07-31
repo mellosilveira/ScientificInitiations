@@ -102,13 +102,13 @@ namespace IcVibracoes.Core.Operations
 
             try
             {
-                response = await this.ValidateOperation(request).ConfigureAwait(false);
-                if (response.Success == false)
-                {
-                    response.SetBadRequestError();
+                //response = await this.ValidateOperation(request).ConfigureAwait(false);
+                //if (response.Success == false)
+                //{
+                //    response.SetBadRequestError();
 
-                    return response;
-                }
+                //    return response;
+                //}
 
                 response = await this.ProcessOperation(request).ConfigureAwait(false);
             }

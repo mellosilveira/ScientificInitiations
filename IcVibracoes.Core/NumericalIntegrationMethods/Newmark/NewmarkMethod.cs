@@ -3,6 +3,7 @@ using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
@@ -41,7 +42,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <returns></returns>
         public override Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input)
         {
-            return Task.FromResult(new FiniteElementResult 
+            return Task.FromResult(new FiniteElementResult
             {
                 Displacement = new double[input.NumberOfTrueBoundaryConditions],
                 Velocity = new double[input.NumberOfTrueBoundaryConditions],
@@ -67,7 +68,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 Force = previousResult.Force
             };
 
-            CalculateIngrationContants(input);
+            this.CalculateIngrationContants(input);
 
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await this._arrayOperation.InverseMatrix(equivalentStiffness, nameof(equivalentStiffness)).ConfigureAwait(false);
@@ -76,6 +77,16 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
             result.Displacement = await this._arrayOperation.Multiply(inversedEquivalentStiffness, equivalentForce, $"{nameof(equivalentForce)}, {nameof(inversedEquivalentStiffness)}").ConfigureAwait(false);
 
+            string path = @"C:\Users\bruno\OneDrive\Área de Trabalho\Testes - IC Vibrações\Matrizes resultantes\master.csv";
+            using (StreamWriter streamWriter = new StreamWriter(path))
+            {
+                this.WriteMatrix(streamWriter, equivalentStiffness, "Keq");
+                this.WriteMatrix(streamWriter, inversedEquivalentStiffness, "IKeq");
+
+                this.WriteVector(streamWriter, equivalentForce, "Feq");
+                this.WriteVector(streamWriter, result.Displacement, "Y");
+            }
+
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
                 result.Acceleration[i] = a0 * (result.Displacement[i] - previousResult.Displacement[i]) - a2 * previousResult.Velocity[i] - a3 * previousResult.Acceleration[i];
@@ -83,6 +94,37 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             }
 
             return result;
+        }
+
+        public void WriteMatrix(StreamWriter streamWriter, double[,] matrix, string matrixName)
+        {
+            streamWriter.Write(string.Format(matrixName));
+            streamWriter.Write(streamWriter.NewLine);
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    streamWriter.Write(string.Format("{0}; ", matrix[i, j]));
+                }
+
+                streamWriter.Write(streamWriter.NewLine);
+            }
+
+            streamWriter.Write(streamWriter.NewLine);
+        }
+
+        public void WriteVector(StreamWriter streamWriter, double[] vector, string matrixName)
+        {
+            streamWriter.Write(string.Format(matrixName));
+            streamWriter.Write(streamWriter.NewLine);
+
+            for (int i = 0; i < vector.Length; i++)
+            {
+                streamWriter.Write(string.Format("{0}; ", vector[i]));
+            }
+
+            streamWriter.Write(streamWriter.NewLine);
         }
 
         /// <summary>
