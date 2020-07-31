@@ -104,8 +104,12 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
             elementStiffness[2, 1] = -6 * elementLength * constant;
             elementStiffness[2, 2] = 12 * constant;
             elementStiffness[2, 3] = -6 * elementLength * constant;
+            // Pode ser esse - esperar resposta do professor Sergio
+            //elementStiffness[3, 0] = 6 * Math.Pow(elementLength, 2) * constant;
             elementStiffness[3, 0] = 6 * elementLength * constant;
             elementStiffness[3, 1] = 2 * Math.Pow(elementLength, 2) * constant;
+            // Pode ser esse - esperar resposta do professor Sergio
+            //elementStiffness[3, 2] = -6 * Math.Pow(elementLength, 2) * constant;
             elementStiffness[3, 2] = -6 * elementLength * constant;
             elementStiffness[3, 3] = 4 * Math.Pow(elementLength, 2) * constant;
 
