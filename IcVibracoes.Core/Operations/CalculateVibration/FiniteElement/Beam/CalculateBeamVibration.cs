@@ -59,7 +59,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         {
             GeometricProperty geometricProperty = new GeometricProperty();
 
-            if (request.Profile.Area != 0 && request.Profile.MomentOfInertia != 0)
+            if (request.Profile.Area != null && request.Profile.MomentOfInertia != null)
             {
                 geometricProperty.Area = await ArrayFactory.CreateVectorAsync(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
                 geometricProperty.MomentOfInertia = await ArrayFactory.CreateVectorAsync(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
