@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Generalized operation CreateInput to CalculateVibration_FiniteElement class.
 - Name of parameter in class Constant from DegreesOfFreedom to DegreesOfFreedomPerNode.
 - Improve inheritance, summary and organization of classes to calculate main matrixes.
+- Validate angular frequencies if force type is impact.
 ### Removed
 - Parameter Dimensions in class Constant.
 
