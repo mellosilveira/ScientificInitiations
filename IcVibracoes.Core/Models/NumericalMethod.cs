@@ -42,9 +42,7 @@ namespace IcVibracoes.Core.Models
             switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
             {
                 case NumericalMethod.CentralDifference:
-                    return new NewmarkBetaMethod(new Force());
                 case NumericalMethod.ImplicitLinearAcceleration:
-                    return new NewmarkBetaMethod(new Force());
                 case NumericalMethod.NewmarkBeta:
                     return new NewmarkBetaMethod(new Force());
                 case NumericalMethod.Newmark:
