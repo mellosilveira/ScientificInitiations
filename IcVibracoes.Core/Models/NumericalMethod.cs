@@ -1,7 +1,5 @@
 ﻿using IcVibracoes.Core.Calculator.DifferentialEquationOfMotion;
-using IcVibracoes.Core.Calculator.Eigenvalue;
 using IcVibracoes.Core.Calculator.Force;
-using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
@@ -17,9 +15,9 @@ namespace IcVibracoes.Core.Models
     /// </summary>
     public enum NumericalMethod
     {
-        CentralDifferenceMethod = 1,
+        CentralDifference = 1,
 
-        ImplicitLinearAccelerationMethod = 2,
+        ImplicitLinearAcceleration = 2,
 
         NewmarkBeta = 3,
 
@@ -35,7 +33,7 @@ namespace IcVibracoes.Core.Models
     {
         /// <summary>
         /// This method creates an instance of interface <seealso cref="INumericalIntegrationMethod"/>.
-        /// It can be <seealso cref="NewmarkBetaMethod"/> (used in <see cref="NumericalMethod.CentralDifferenceMethod"/>, <see cref="NumericalMethod.ImplicitLinearAccelerationMethod"/> and <see cref="NumericalMethod.NewmarkBeta"/>) or <seealso cref="NewmarkMethod"/>.
+        /// It can be <seealso cref="NewmarkBetaMethod"/> (used in <see cref="NumericalMethod.CentralDifference"/>, <see cref="NumericalMethod.ImplicitLinearAcceleration"/> and <see cref="NumericalMethod.NewmarkBeta"/>) or <seealso cref="NewmarkMethod"/>.
         /// </summary>
         /// <param name="numericalMethod"></param>
         /// <returns></returns>
@@ -43,9 +41,9 @@ namespace IcVibracoes.Core.Models
         {
             switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
             {
-                case NumericalMethod.CentralDifferenceMethod:
+                case NumericalMethod.CentralDifference:
                     return new NewmarkBetaMethod(new Force());
-                case NumericalMethod.ImplicitLinearAccelerationMethod:
+                case NumericalMethod.ImplicitLinearAcceleration:
                     return new NewmarkBetaMethod(new Force());
                 case NumericalMethod.NewmarkBeta:
                     return new NewmarkBetaMethod(new Force());

@@ -65,14 +65,14 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput
             {
                 switch (this.NumericalMethod)
                 {
-                    case NumericalMethod.ImplicitLinearAccelerationMethod:
+                    case NumericalMethod.ImplicitLinearAcceleration:
                         return (double)1 / 6;
 
                     case NumericalMethod.NewmarkBeta:
                     case NumericalMethod.Newmark:
                         return 0.25;
 
-                    case NumericalMethod.CentralDifferenceMethod:
+                    case NumericalMethod.CentralDifference:
                     case NumericalMethod.RungeKuttaForthOrder:
                         return 0;
 
@@ -92,8 +92,8 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput
             {
                 switch (this.NumericalMethod)
                 {
-                    case NumericalMethod.CentralDifferenceMethod:
-                    case NumericalMethod.ImplicitLinearAccelerationMethod:
+                    case NumericalMethod.CentralDifference:
+                    case NumericalMethod.ImplicitLinearAcceleration:
                     case NumericalMethod.NewmarkBeta:
                     case NumericalMethod.Newmark:
                         return 0.5;

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Validate angular frequencies if force type is impact.
 - Method CreateInput on CalculateVibration operation from abstract to virtual, it instantiate the angular frequencies correctly to impact analysis and when is informed just the initial angular frequency and the numerical method.
 - Moved properties NumericalMethod, Beta and Gama from FiniteElementMethodInput to NumericalMethodInput.
+- Name of parameters on enum NumericalMethod from CentralDifferenceMethod and ImplicitLinearAccelerationMethod to CentralDifference and ImplicitLinearAcceleration.
 ### Removed
 - Parameter Dimensions in class Constant.
 
