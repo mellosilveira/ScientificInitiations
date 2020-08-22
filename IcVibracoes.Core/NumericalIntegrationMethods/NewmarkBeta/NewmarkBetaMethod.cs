@@ -191,7 +191,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             // Displacement
             result[0] = previousResult[0] + deltaDisplacement;
             // Velocity
-            result[1] = -2 * previousResult[1] - (input.TimeStep / 2) * previousResult[2] + (3 / input.TimeStep) * deltaDisplacement;
+            result[1] = (1 - input.Gama / input.Beta) * previousResult[1] + input.TimeStep * (1 - input.Gama / (2 * input.Beta)) * previousResult[2] + (input.Gama / (input.Beta * input.TimeStep)) * deltaDisplacement;
             // Acceleration
             result[2] = -(input.Damping * result[1] + input.Stiffness * result[0] + input.Force * Math.Sin(input.AngularFrequency * time)) / input.Mass;
 
