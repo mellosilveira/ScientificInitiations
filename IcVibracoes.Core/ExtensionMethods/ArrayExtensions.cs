@@ -125,7 +125,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="vector1"></param>
         /// <param name="vector2"></param>
         /// <returns>A new array with the values combined of others two vectors.</returns>
-        public static Task<T[]> CombineVectorsAsync<T>(this T[] vector1, T[] vector2)
+        public static T[] CombineVectors<T>(this T[] vector1, T[] vector2)
         {
             int vector1Length = vector1.Length;
             int size = vector1Length + vector2.Length;
@@ -143,7 +143,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 }
             }
 
-            return Task.FromResult(mergedVector);
+            return mergedVector;
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Calculator.Eigenvalue;
 using IcVibracoes.Core.Calculator.Force;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
+using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.Core.NumericalIntegrationMethods.Newmark;
 using IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta;
@@ -34,7 +35,7 @@ namespace IcVibracoes.Core.Models
     {
         /// <summary>
         /// This method creates an instance of interface <seealso cref="INumericalIntegrationMethod"/>.
-        /// It can be <seealso cref="NewmarkBetaMethod"/> (used in <see cref="NumericalMethod.CentralDifferenceMethod"/>, <see cref="NumericalMethod.ImplicitLinearAccelerationMethod"/> and <see cref="NumericalMethod.NewmarkBeta"/>), <seealso cref="NewmarkMethod"/> or <seealso cref="Pinned"/>.
+        /// It can be <seealso cref="NewmarkBetaMethod"/> (used in <see cref="NumericalMethod.CentralDifferenceMethod"/>, <see cref="NumericalMethod.ImplicitLinearAccelerationMethod"/> and <see cref="NumericalMethod.NewmarkBeta"/>) or <seealso cref="NewmarkMethod"/>.
         /// </summary>
         /// <param name="numericalMethod"></param>
         /// <returns></returns>
@@ -49,7 +50,7 @@ namespace IcVibracoes.Core.Models
                 case NumericalMethod.NewmarkBeta:
                     return new NewmarkBetaMethod();
                 case NumericalMethod.Newmark:
-                    return new NewmarkMethod();
+                    return new NewmarkMethod(new MappingResolver(new NaturalFrequency(new Eigenvalue())));
                 case NumericalMethod.RungeKuttaForthOrder:
                     return new RungeKuttaForthOrderMethod(
                         new DifferentialEquationOfMotion(

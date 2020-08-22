@@ -274,7 +274,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The structure force matrix.</returns>
-        public override Task<double[]> CalculateForce(BeamWithPiezoelectric<TProfile> beam) => beam.Forces.CombineVectorsAsync(beam.ElectricalCharge);
+        public override Task<double[]> CalculateForce(BeamWithPiezoelectric<TProfile> beam) => Task.FromResult(beam.Forces.CombineVectors(beam.ElectricalCharge));
 
         /// <summary>
         /// This method builds the boundary condition matrix and the number of true boundary conditions.

@@ -2,6 +2,8 @@
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.ExtensionMethods;
+using IcVibracoes.Core.Mapper;
+using IcVibracoes.Core.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -12,15 +14,27 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
     /// </summary>
     public class NewmarkMethod : NumericalIntegrationMethod, INewmarkMethod
     {
+        private readonly IMappingResolver _mappingResolver;
+
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="mappingResolver"></param>
+        public NewmarkMethod(IMappingResolver mappingResolver)
+        {
+            this._mappingResolver = mappingResolver;
+        }
+
         /// <summary>
         /// Integration constants.
         /// </summary>
         public double a0, a1, a2, a3, a4, a5, a6, a7;
 
         /// <summary>
-        /// The path of file to write the solutions.
+        /// Constants used to calculate the integration constants.
         /// </summary>
-        public string path;
+        public const double Beta = 0.25;
+        public const double Gama = 0.5;
 
         /// <summary>
         /// Calculates the result for the initial time for a finite element analysis using Newmark integration method.
@@ -29,7 +43,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <returns></returns>
         public override Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input)
         {
-            return Task.FromResult(new FiniteElementResult 
+            return Task.FromResult(new FiniteElementResult
             {
                 Displacement = new double[input.NumberOfTrueBoundaryConditions],
                 Velocity = new double[input.NumberOfTrueBoundaryConditions],
@@ -55,7 +69,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 Force = previousResult.Force
             };
 
-            this.CalculateIngrationContants(input);
+            this.CalculateIngrationContants(input.TimeStep);
 
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await equivalentStiffness.InverseMatrixAsync().ConfigureAwait(false);
@@ -165,17 +179,17 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <summary>
         /// Calculates the ingration constants to be used in method.
         /// </summary>
-        /// <param name="input"></param>
-        public void CalculateIngrationContants(FiniteElementMethodInput input)
+        /// <param name="timeStep"></param>
+        public void CalculateIngrationContants(double timeStep)
         {
-            a0 = 1 / (input.Beta * Math.Pow(input.TimeStep, 2));
-            a1 = input.Gama / (input.Beta * input.TimeStep);
-            a2 = 1 / (input.Beta * input.TimeStep);
-            a3 = 1 / (2 * input.Beta) - 1;
-            a4 = input.Gama / input.Beta - 1;
-            a5 = input.TimeStep / 2 * (input.Gama / input.Beta - 2);
-            a6 = input.TimeStep * (1 - input.Gama);
-            a7 = input.Gama * input.TimeStep;
+            this.a0 = 1 / (Beta * Math.Pow(timeStep, 2));
+            this.a1 = Gama / (Beta * timeStep);
+            this.a2 = 1 / (Beta * timeStep);
+            this.a3 = 1 / (2 * Beta) - 1;
+            this.a4 = Gama / Beta - 1;
+            this.a5 = (timeStep / 2) * (Gama / Beta - 2);
+            this.a6 = timeStep * (1 - Gama);
+            this.a7 = Gama * timeStep;
         }
 
         /// <summary>
@@ -183,11 +197,27 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] y)
+        public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
         {
-            throw new NotImplementedException();
+            this.CalculateIngrationContants(input.TimeStep);
+
+            double equivalentStiffness = input.Stiffness + this.a0 * input.Mass + this.a1 * input.DampingRatio;
+            double equivalentForce =
+                input.Force * Math.Sin(input.AngularFrequency * time)
+                + input.Mass * (this.a0 * previousResult[0] + this.a2 * previousResult[1] + this.a3 * previousResult[2])
+                + input.Damping * (this.a1 * previousResult[0] + this.a4 * previousResult[1] + this.a5 * previousResult[2]);
+
+            var result = new double[Constant.NumberOfRigidBodyVariables_1DF];
+            // Displacement
+            result[0] = equivalentForce / equivalentStiffness;
+            // Acceleration
+            result[2] = this.a0 * (result[0] - previousResult[0]) - this.a2 * previousResult[1] - this.a3 * previousResult[2];
+            // Velocity
+            result[1] = previousResult[1] + this.a6 * previousResult[2] + this.a7 * result[2];
+
+            return Task.FromResult(result);
         }
 
         /// <summary>
@@ -197,9 +227,16 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="time"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] y)
+        public override async Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] y)
         {
-            throw new NotImplementedException();
+            FiniteElementMethodInput finiteElementMethodInput = await this._mappingResolver.BuildFiniteElementMethodInput(input).ConfigureAwait(false);
+            FiniteElementResult previousResult = await this._mappingResolver.BuildFiniteElementResult(y, input.Force).ConfigureAwait(false);
+
+            FiniteElementResult finiteElementResult = await this.CalculateFiniteElementResult(finiteElementMethodInput, previousResult, time).ConfigureAwait(false);
+
+            double[] result = await this._mappingResolver.BuildVariableVector(finiteElementResult).ConfigureAwait(false);
+
+            return result;
         }
     }
 }

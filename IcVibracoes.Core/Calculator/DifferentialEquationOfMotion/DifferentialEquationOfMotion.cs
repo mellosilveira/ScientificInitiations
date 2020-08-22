@@ -39,16 +39,12 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
 
-            // wn - Natural angular frequency
-            double wn = await this._naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
-            double damping = input.DampingRatio * 2 * input.Mass * wn;
-
             double force = await this._force.CalculateForceByType(input.Force, input.AngularFrequency, time, input.ForceType).ConfigureAwait(false);
 
             // Velocity of primary object.
             result[0] = y[1];
             // Acceleration of primary object.
-            result[1] = (force - damping * y[1] - input.Stiffness * y[0]) / input.Mass;
+            result[1] = (force - input.Damping * y[1] - input.Stiffness * y[0]) / input.Mass;
 
             return result;
         }
@@ -64,13 +60,6 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
         {
             double[] result = new double[Constant.NumberOfRigidBodyVariables_2DF];
 
-            // wn - Natural angular frequency
-            double wn = await this._naturalFrequency.Calculate(input.Mass, input.Stiffness).ConfigureAwait(false);
-            double secondaryWn = await this._naturalFrequency.Calculate(input.SecondaryMass, input.SecondaryStiffness).ConfigureAwait(false);
-
-            double damping = input.DampingRatio * 2 * input.Mass * wn;
-            double secondaryDamping = input.DampingRatio * 2 * input.SecondaryMass * secondaryWn;
-
             double force = await this._force.CalculateForceByType(input.Force, input.AngularFrequency, time, input.ForceType).ConfigureAwait(false);
 
             // Velocity of primary object.
@@ -78,9 +67,9 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
             // Velocity of secondary object.
             result[1] = y[3];
             // Acceleration of primary object.
-            result[2] = (force - ((input.Stiffness + input.SecondaryStiffness) * y[0] - input.SecondaryStiffness * y[1] + (damping + secondaryDamping) * y[2] - secondaryDamping * y[3])) / input.Mass;
+            result[2] = (force - ((input.Stiffness + input.SecondaryStiffness) * y[0] - input.SecondaryStiffness * y[1] + (input.Damping + input.SecondaryDamping) * y[2] - input.SecondaryDamping * y[3])) / input.Mass;
             // Acceleration of secondary object.
-            result[3] = (input.SecondaryStiffness * (y[0] - y[1]) + secondaryDamping * (y[2] - y[3])) / input.SecondaryMass;
+            result[3] = (input.SecondaryStiffness * (y[0] - y[1]) + input.SecondaryDamping * (y[2] - y[3])) / input.SecondaryMass;
 
             return result;
         }

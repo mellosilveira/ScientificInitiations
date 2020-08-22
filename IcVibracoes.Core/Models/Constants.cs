@@ -42,11 +42,11 @@
         /// <summary>
         /// Number of variables in a one degree freedom rigid body analysis.
         /// </summary>
-        public const byte NumberOfRigidBodyVariables_1DF = 2;
+        public const byte NumberOfRigidBodyVariables_1DF = 3;
 
         /// <summary>
         /// Number of variables in a two degrees freedom rigid body analysis.
         /// </summary>
-        public const byte NumberOfRigidBodyVariables_2DF = 4;
+        public const byte NumberOfRigidBodyVariables_2DF = 6;
     }
 }

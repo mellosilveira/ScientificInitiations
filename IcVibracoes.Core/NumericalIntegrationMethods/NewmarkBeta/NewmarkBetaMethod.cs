@@ -1,7 +1,9 @@
-﻿using IcVibracoes.Core.DTO;
+﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.ExtensionMethods;
+using IcVibracoes.Core.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -161,11 +163,27 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] y)
+        public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
         {
-            throw new NotImplementedException();
+            double equivalentStiffness = (6 / Math.Pow(input.TimeStep, 2)) * input.Mass + (3 / input.TimeStep) * input.Damping + input.Stiffness;
+            double equivalentDamping = (6 / input.TimeStep) * input.Mass + 3 * input.Damping;
+            double equivalentMass = 3 * input.Mass + (input.TimeStep / 2) * input.Damping;
+            double deltaForce = Force
+                input.Force * (Math.Sin(input.AngularFrequency * time) - Math.Sin(input.AngularFrequency * (time - input.TimeStep)));
+
+            double deltaDisplacement = (deltaForce + equivalentDamping * previousResult[1] + equivalentMass * previousResult[2]) / equivalentStiffness;
+
+            double[] result = new double[Constant.NumberOfRigidBodyVariables_1DF];
+            // Displacement
+            result[0] = previousResult[0] + deltaDisplacement;
+            // Velocity
+            result[1] = -2 * previousResult[1] - (input.TimeStep / 2) * previousResult[2] + (3 / input.TimeStep) * deltaDisplacement;
+            // Acceleration
+            result[2] = -(input.Damping * result[1] + input.Stiffness * result[0] + input.Force * Math.Sin(input.AngularFrequency * time)) / input.Mass;
+
+            return Task.FromResult(result);
         }
 
         /// <summary>

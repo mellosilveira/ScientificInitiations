@@ -79,14 +79,17 @@ namespace IcVibracoes.Core.Operations
 
             if ((ForceType)forceType == ForceType.Harmonic)
             {
-                if (request.InitialAngularFrequency > request.FinalAngularFrequency)
+                if (request.FinalAngularFrequency != 0)
                 {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"Final angular frequency: '{request.InitialAngularFrequency}' must be grether than initial angular frequency: '{request.InitialAngularFrequency}'.");
-                }
+                    if (request.InitialAngularFrequency > request.FinalAngularFrequency)
+                    {
+                        response.AddError(OperationErrorCode.RequestValidationError, $"Final angular frequency: '{request.FinalAngularFrequency}' must be grether than initial angular frequency: '{request.InitialAngularFrequency}'.");
+                    }
 
-                if (request.AngularFrequencyStep == 0)
-                {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"Angular frequency step: '{request.AngularFrequencyStep}' cannot be zero.");
+                    if (request.AngularFrequencyStep == 0)
+                    {
+                        response.AddError(OperationErrorCode.RequestValidationError, $"Angular frequency step: '{request.AngularFrequencyStep}' cannot be zero.");
+                    }
                 }
             }
 

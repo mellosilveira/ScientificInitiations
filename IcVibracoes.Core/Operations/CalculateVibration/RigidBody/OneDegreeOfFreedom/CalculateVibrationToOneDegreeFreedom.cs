@@ -47,7 +47,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="request"></param>
         /// <returns></returns>
         public override Task<double[]> BuildInitialConditions(OneDegreeOfFreedomRequest request)
-            => Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]);
+        {
+            var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod);
+            if (numericalMethod == NumericalMethod.RungeKuttaForthOrder)
+            {
+                // For Runge Kutta Forth Order numerical method, is used only 2 varibles.
+                return Task.FromResult(new double[2]);
+            }
+
+            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]);
+        }
 
         /// <summary>
         /// This method creates the input to numerical integration method.

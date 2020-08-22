@@ -121,7 +121,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                         {
                             // Step 10.1 - Writes the initial values into a file.
                             streamWriter.WriteResult(time, y);
-                            
+
                             while (time <= input.FinalTime)
                             {
                                 // Step 10.2 - Calculates the analysis results.
@@ -129,7 +129,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                                 // Step 10.3 - Writes the analysis results into a file.
                                 streamWriter.WriteResult(time + input.TimeStep, y);
-                                
+
                                 time += input.TimeStep;
 
                                 // Step 11 - Compares the previous results with the new calculated to catch the maximum values.
@@ -160,7 +160,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                         response.SetInternalServerError();
                         return response;
                     }
-
+                    
                     input.AngularFrequency += input.AngularFrequencyStep;
                 }
             }

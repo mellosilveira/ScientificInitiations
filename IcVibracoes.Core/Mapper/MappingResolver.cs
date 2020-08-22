@@ -1,4 +1,10 @@
 ﻿using IcVibracoes.Common.Classes;
+using IcVibracoes.Core.Calculator.NaturalFrequency;
+using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.ExtensionMethods;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,6 +16,17 @@ namespace IcVibracoes.Core.Mapper
     /// </summary>
     public class MappingResolver : IMappingResolver
     {
+        private readonly INaturalFrequency _naturalFrequency;
+
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="naturalFrequency"></param>
+        public MappingResolver(INaturalFrequency naturalFrequency)
+        {
+            this._naturalFrequency = naturalFrequency;
+        }
+
         /// <summary>
         /// This method builds the force vector.
         /// </summary>
@@ -69,6 +86,68 @@ namespace IcVibracoes.Core.Mapper
             }
 
             return Task.FromResult(beamFastenings);
+        }
+
+        /// <summary>
+        /// This method builds a <see cref="FiniteElementMethodInput"/> based on <see cref="TwoDegreesOfFreedomInput"/>.
+        /// It is used in the matricial form of two degrees of freedom solution.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Task<FiniteElementMethodInput> BuildFiniteElementMethodInput(TwoDegreesOfFreedomInput input)
+        {
+            double[,] mass = new double[,] { { input.Mass, 0 }, { 0, input.SecondaryMass } };
+            double[,] stiffness = new double[,] { { input.Stiffness + input.SecondaryStiffness, -input.SecondaryStiffness }, { -input.SecondaryStiffness, input.SecondaryStiffness } };
+            double[,] damping = new double[,] { { input.Damping + input.SecondaryDamping, -input.SecondaryDamping }, { -input.SecondaryDamping, input.SecondaryDamping } };
+
+            return Task.FromResult(new FiniteElementMethodInput(NumericalMethod.Newmark)
+            {
+                Mass = mass,
+                Damping = damping,
+                Stiffness = stiffness,
+                OriginalForce = new double[] { input.Force, 0 },
+                AngularFrequency = input.AngularFrequency,
+                AngularFrequencyStep = input.AngularFrequencyStep,
+                FinalAngularFrequency = input.FinalAngularFrequency,
+                FinalTime = input.FinalTime,
+                NumberOfTrueBoundaryConditions = 2,
+                TimeStep = input.TimeStep,
+            });
+        }
+
+        /// <summary>
+        /// This method builds the finite element result from a vector with variables: displacement, velocity and acceleration, and the force value.
+        /// This method is used in two degrees os freedom matricial analysis.
+        /// </summary>
+        /// <param name="y"></param>
+        /// <param name="force"></param>
+        /// <returns></returns>
+        public Task<FiniteElementResult> BuildFiniteElementResult(double[] y, double force)
+        {
+            var result = new FiniteElementResult
+            {
+                Displacement = new double[] { y[0], y[1] },
+                Velocity = new double[] { y[2], y[3] },
+                Acceleration = new double[] { y[4], y[5] },
+                Force = new double[] { force, 0 }
+            };
+
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// This method builds the vector with variables: displacement, velocity and acceleration, from a finite element result.
+        /// This method is used in two degrees os freedom matricial analysis.
+        /// </summary>
+        /// <param name="finiteElementResult"></param>
+        /// <returns></returns>
+        public Task<double[]> BuildVariableVector(FiniteElementResult finiteElementResult)
+        {
+            double[] y = finiteElementResult.Displacement
+                .CombineVectors(finiteElementResult.Velocity)
+                .CombineVectors(finiteElementResult.Acceleration);
+
+            return Task.FromResult(y);
         }
     }
 }
