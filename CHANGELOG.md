@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## UNRELEASED
+###Added
+- Analysis to one and two degress of freedom to numerical methods Newmark-Beta and Newmark.
 ### Changed
 - Operations in ArrayOperation and BoundaryCondition converted to extension methods.
 - Beam main matrix calculator.
@@ -13,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Name of parameter in class Constant from DegreesOfFreedom to DegreesOfFreedomPerNode.
 - Improve inheritance, summary and organization of classes to calculate main matrixes.
 - Validate angular frequencies if force type is impact.
+- Method CreateInput on CalculateVibration operation from abstract to virtual, it instantiate the angular frequencies correctly to impact analysis and when is informed just the initial angular frequency.
 ### Removed
 - Parameter Dimensions in class Constant.
 

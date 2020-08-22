@@ -15,7 +15,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         where TRequest : OperationRequestBase
         where TResponse : OperationResponseBase<TResponseData>, new()
         where TResponseData : OperationResponseData
-        where TInput : NumericalMethodInput
+        where TInput : NumericalMethodInput, new()
     {
         /// <summary>
         /// The numerical method.
@@ -27,7 +27,17 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="TInput"/>.</returns>
-        public abstract Task<TInput> CreateInput(TRequest request);
+        public virtual Task<TInput> CreateInput(TRequest request)
+        {
+            return Task.FromResult(new TInput
+            {
+                AngularFrequency = request.InitialAngularFrequency,
+                // The default angular frequency step is 1.
+                AngularFrequencyStep = request.AngularFrequencyStep == 0 ? 1 : request.AngularFrequencyStep,
+                // If the final angular frequency is not informed, only one iteration must be made, so the final angular frequency receives the initial angular frequency.
+                FinalAngularFrequency = request.FinalAngularFrequency == 0 ? request.InitialAngularFrequency : request.FinalAngularFrequency,
+            });
+        }
 
         /// <summary>
         /// This method creates the path to save the solution files.

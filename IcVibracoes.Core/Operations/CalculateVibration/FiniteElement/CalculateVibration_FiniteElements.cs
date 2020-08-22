@@ -70,6 +70,8 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
         public override async Task<FiniteElementMethodInput> CreateInput(TRequest request)
         {
+            FiniteElementMethodInput initialInput = await base.CreateInput(request).ConfigureAwait(false);
+
             uint degreesOfFreedom = await this.CalculateDegreesOfFreedom(request.NumberOfElements).ConfigureAwait(false);
 
             TBeam beam = await this.BuildBeam(request, degreesOfFreedom);
@@ -97,11 +99,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 
                 NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
 
-                AngularFrequency = request.InitialAngularFrequency,
+                AngularFrequency = initialInput.AngularFrequency,
 
-                AngularFrequencyStep = request.AngularFrequencyStep,
+                AngularFrequencyStep = initialInput.AngularFrequencyStep,
 
-                FinalAngularFrequency = request.FinalAngularFrequency
+                FinalAngularFrequency = initialInput.FinalAngularFrequency,
             };
 
             return input;

@@ -63,13 +63,15 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="TwoDegreesOfFreedomInput"/>.</returns>
-        public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
+        public override async Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
         {
-            return Task.FromResult(new TwoDegreesOfFreedomInput
+            TwoDegreesOfFreedomInput initialInput = await base.CreateInput(request).ConfigureAwait(false);
+
+            return new TwoDegreesOfFreedomInput
             {
-                AngularFrequency = request.InitialAngularFrequency,
-                AngularFrequencyStep = request.AngularFrequencyStep,
-                FinalAngularFrequency = request.FinalAngularFrequency,
+                AngularFrequency = initialInput.AngularFrequency,
+                AngularFrequencyStep = initialInput.AngularFrequencyStep,
+                FinalAngularFrequency = initialInput.FinalAngularFrequency,
                 DampingRatio = request.DampingRatios.FirstOrDefault(),
                 Force = request.Force,
                 ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
@@ -77,7 +79,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
                 Mass = request.PrimaryElementData.Mass,
                 SecondaryStiffness = request.SecondaryElementData.Stiffness,
                 SecondaryMass = request.SecondaryElementData.Mass
-            });
+            };
         }
 
         /// <summary>
