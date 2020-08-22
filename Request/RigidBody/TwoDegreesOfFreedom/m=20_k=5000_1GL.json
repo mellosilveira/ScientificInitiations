@@ -1,0 +1,24 @@
+{
+  "primaryElementData": {
+    "mass": 20,
+    "stiffness": 5000
+  },
+  "secondaryElementData": {
+    "mass": 1,
+    "stiffness": 250
+  },
+  "dampingRatios": [
+    0, 
+	0.05, 
+	1
+  ],
+  "force": 10,
+  "author": "Bruno Silveira",
+  "numericalMethod": "RungeKuttaForthOrder",
+  "forceType": "Harmonic",
+  "periodCount": 10,
+  "periodDivision": 100,
+  "initialAngularFrequency": 10,
+  "angularFrequencyStep": 1,
+  "finalAngularFrequency": 90
+}
