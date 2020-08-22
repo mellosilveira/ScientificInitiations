@@ -1,4 +1,5 @@
 ﻿using IcVibracoes.Core.DTO;
+using IcVibracoes.Core.DTO.NumericalMethodInput;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.ExtensionMethods;
@@ -29,12 +30,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// Integration constants.
         /// </summary>
         public double a0, a1, a2, a3, a4, a5, a6, a7;
-
-        /// <summary>
-        /// Constants used to calculate the integration constants.
-        /// </summary>
-        public const double Beta = 0.25;
-        public const double Gama = 0.5;
 
         /// <summary>
         /// Calculates the result for the initial time for a finite element analysis using Newmark integration method.
@@ -69,7 +64,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 Force = previousResult.Force
             };
 
-            this.CalculateIngrationContants(input.TimeStep);
+            this.CalculateIngrationContants(input);
 
             double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
             double[,] inversedEquivalentStiffness = await equivalentStiffness.InverseMatrixAsync().ConfigureAwait(false);
@@ -179,17 +174,17 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <summary>
         /// Calculates the ingration constants to be used in method.
         /// </summary>
-        /// <param name="timeStep"></param>
-        public void CalculateIngrationContants(double timeStep)
+        /// <param name="input"></param>
+        public void CalculateIngrationContants(NumericalMethodInput input)
         {
-            this.a0 = 1 / (Beta * Math.Pow(timeStep, 2));
-            this.a1 = Gama / (Beta * timeStep);
-            this.a2 = 1 / (Beta * timeStep);
-            this.a3 = 1 / (2 * Beta) - 1;
-            this.a4 = Gama / Beta - 1;
-            this.a5 = (timeStep / 2) * (Gama / Beta - 2);
-            this.a6 = timeStep * (1 - Gama);
-            this.a7 = Gama * timeStep;
+            this.a0 = 1 / (input.Beta * Math.Pow(input.TimeStep, 2));
+            this.a1 = input.Gama / (input.Beta * input.TimeStep);
+            this.a2 = 1 / (input.Beta * input.TimeStep);
+            this.a3 = 1 / (2 * input.Beta) - 1;
+            this.a4 = input.Gama / input.Beta - 1;
+            this.a5 = (input.TimeStep / 2) * (input.Gama / input.Beta - 2);
+            this.a6 = input.TimeStep * (1 - input.Gama);
+            this.a7 = input.Gama * input.TimeStep;
         }
 
         /// <summary>
@@ -201,7 +196,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <returns></returns>
         public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
         {
-            this.CalculateIngrationContants(input.TimeStep);
+            this.CalculateIngrationContants(input);
 
             double equivalentStiffness = input.Stiffness + this.a0 * input.Mass + this.a1 * input.DampingRatio;
             double equivalentForce =
