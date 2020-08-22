@@ -86,9 +86,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 
             double[] forces = await this._mainMatrix.CalculateForce(beam).ConfigureAwait(false);
 
-            var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
-            FiniteElementMethodInput input = new FiniteElementMethodInput(numericalMethod)
+            FiniteElementMethodInput input = new FiniteElementMethodInput
             {
+                NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true),
+
                 Mass = await mass.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
 
                 Stiffness = await stiffness.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
