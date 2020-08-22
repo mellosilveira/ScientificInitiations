@@ -88,7 +88,7 @@ namespace IcVibracoes.Core.Mapper
             double[,] stiffness = new double[,] { { input.Stiffness + input.SecondaryStiffness, -input.SecondaryStiffness }, { -input.SecondaryStiffness, input.SecondaryStiffness } };
             double[,] damping = new double[,] { { input.Damping + input.SecondaryDamping, -input.SecondaryDamping }, { -input.SecondaryDamping, input.SecondaryDamping } };
 
-            return Task.FromResult(new FiniteElementMethodInput(NumericalMethod.Newmark)
+            return Task.FromResult(new FiniteElementMethodInput
             {
                 Mass = mass,
                 Damping = damping,
@@ -100,6 +100,7 @@ namespace IcVibracoes.Core.Mapper
                 FinalTime = input.FinalTime,
                 NumberOfTrueBoundaryConditions = 2,
                 TimeStep = input.TimeStep,
+                NumericalMethod = input.NumericalMethod
             });
         }
 
