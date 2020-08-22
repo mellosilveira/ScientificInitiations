@@ -2,3 +2,9 @@ ANOTAÇÕES - IC VIBRAÇÕES
 
 Matrizes de rigidez e massa para um elemento
 - Livro: Craig, Structure Dynamics, pg 202 no pdf
+
+Na introdução
+	Colocar onde está sendo usado o piezoelétrico.
+	
+1.2 Aplicação do piezoelétrico
+Procurar 5 aplicações.
