@@ -1,9 +1,6 @@
 ﻿using IcVibracoes.Core.Calculator.Force;
-using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.BeamCharacteristics;
-using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
@@ -13,7 +10,6 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
     /// </summary>
     public class DifferentialEquationOfMotion : IDifferentialEquationOfMotion
     {
-        private readonly INaturalFrequency _naturalFrequency;
         private readonly IForce _force;
 
         /// <summary>
@@ -21,10 +17,8 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
         /// </summary>
         /// <param name="naturalFrequency"></param>
         public DifferentialEquationOfMotion(
-            INaturalFrequency naturalFrequency,
             IForce force)
         {
-            this._naturalFrequency = naturalFrequency;
             this._force = force;
         }
 

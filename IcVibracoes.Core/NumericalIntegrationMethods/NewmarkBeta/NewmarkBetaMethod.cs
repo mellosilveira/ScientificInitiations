@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Common.Classes;
+﻿using IcVibracoes.Core.Calculator.Force;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
@@ -14,6 +14,17 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
     /// </summary>
     public class NewmarkBetaMethod : NumericalIntegrationMethod, INewmarkBetaMethod
     {
+        private readonly IForce _force;
+
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="force"></param>
+        public NewmarkBetaMethod(IForce force)
+        {
+            this._force = force;
+        }
+
         /// <summary>
         /// Calculates and write in a file the results for a finite element analysis using Newmark-Beta integration method.
         /// </summary>
@@ -165,13 +176,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
+        public override async Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
         {
             double equivalentStiffness = (6 / Math.Pow(input.TimeStep, 2)) * input.Mass + (3 / input.TimeStep) * input.Damping + input.Stiffness;
             double equivalentDamping = (6 / input.TimeStep) * input.Mass + 3 * input.Damping;
             double equivalentMass = 3 * input.Mass + (input.TimeStep / 2) * input.Damping;
-            double deltaForce = Force
-                input.Force * (Math.Sin(input.AngularFrequency * time) - Math.Sin(input.AngularFrequency * (time - input.TimeStep)));
+            double deltaForce =
+                await this._force.CalculateForceByType(input.Force, input.AngularFrequency, time, input.ForceType).ConfigureAwait(false)
+                - await this._force.CalculateForceByType(input.Force, input.AngularFrequency, time - input.TimeStep, input.ForceType).ConfigureAwait(false);
 
             double deltaDisplacement = (deltaForce + equivalentDamping * previousResult[1] + equivalentMass * previousResult[2]) / equivalentStiffness;
 
@@ -183,7 +195,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.NewmarkBeta
             // Acceleration
             result[2] = -(input.Damping * result[1] + input.Stiffness * result[0] + input.Force * Math.Sin(input.AngularFrequency * time)) / input.Mass;
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>

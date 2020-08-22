@@ -44,18 +44,15 @@ namespace IcVibracoes.Core.Models
             switch ((NumericalMethod)Enum.Parse(typeof(NumericalMethod), numericalMethod, ignoreCase: true))
             {
                 case NumericalMethod.CentralDifferenceMethod:
-                    return new NewmarkBetaMethod();
+                    return new NewmarkBetaMethod(new Force());
                 case NumericalMethod.ImplicitLinearAccelerationMethod:
-                    return new NewmarkBetaMethod();
+                    return new NewmarkBetaMethod(new Force());
                 case NumericalMethod.NewmarkBeta:
-                    return new NewmarkBetaMethod();
+                    return new NewmarkBetaMethod(new Force());
                 case NumericalMethod.Newmark:
-                    return new NewmarkMethod(new MappingResolver(new NaturalFrequency(new Eigenvalue())));
+                    return new NewmarkMethod(new MappingResolver());
                 case NumericalMethod.RungeKuttaForthOrder:
-                    return new RungeKuttaForthOrderMethod(
-                        new DifferentialEquationOfMotion(
-                            new NaturalFrequency(new Eigenvalue()), 
-                            new Force()));
+                    return new RungeKuttaForthOrderMethod(new DifferentialEquationOfMotion(new Force()));
                 default:
                     break;
             }

@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Common.Classes;
-using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
@@ -16,17 +15,6 @@ namespace IcVibracoes.Core.Mapper
     /// </summary>
     public class MappingResolver : IMappingResolver
     {
-        private readonly INaturalFrequency _naturalFrequency;
-
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="naturalFrequency"></param>
-        public MappingResolver(INaturalFrequency naturalFrequency)
-        {
-            this._naturalFrequency = naturalFrequency;
-        }
-
         /// <summary>
         /// This method builds the force vector.
         /// </summary>
