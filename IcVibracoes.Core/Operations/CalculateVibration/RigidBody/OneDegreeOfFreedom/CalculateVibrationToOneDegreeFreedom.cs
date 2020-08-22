@@ -65,19 +65,14 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <returns>A new instance of class <see cref="OneDegreeOfFreedomInput"/>.</returns>
         public override async Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request)
         {
-            OneDegreeOfFreedomInput initialInput = await base.CreateInput(request).ConfigureAwait(false);
+            OneDegreeOfFreedomInput input = await base.CreateInput(request).ConfigureAwait(false);
+            input.Mass = request.ElementData.Mass;
+            input.Stiffness = request.ElementData.Stiffness;
+            input.DampingRatio = request.DampingRatios.FirstOrDefault();
+            input.Force = request.Force;
+            input.ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true);
 
-            return new OneDegreeOfFreedomInput
-            {
-                AngularFrequency = initialInput.AngularFrequency,
-                AngularFrequencyStep = initialInput.AngularFrequencyStep,
-                FinalAngularFrequency = initialInput.FinalAngularFrequency,
-                DampingRatio = request.DampingRatios.FirstOrDefault(),
-                Force = request.Force,
-                ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
-                Stiffness = request.ElementData.Stiffness,
-                Mass = request.ElementData.Mass
-            };
+            return input;
         }
 
         /// <summary>
@@ -92,9 +87,17 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeOfFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}");
+                $"Solutions\\RigidBody\\OneDegreeOfFreedom\\m={input.Mass}_k={input.Stiffness}\\{input.ForceType}\\DampingRatio={input.DampingRatio}");
 
-            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"{request.AnalysisType}_w={input.AngularFrequency}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"{request.AnalysisType}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 
@@ -115,10 +118,18 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeOFFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}",
+                $"Solutions\\RigidBody\\OneDegreeOFFreedom\\m={input.Mass}_k={input.Stiffness}\\{input.ForceType}",
                 "MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_w0={request.InitialAngularFrequency}_wf={request.FinalAngularFrequency}_dampingRatio={input.DampingRatio}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_dampingRatio={input.DampingRatio}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 

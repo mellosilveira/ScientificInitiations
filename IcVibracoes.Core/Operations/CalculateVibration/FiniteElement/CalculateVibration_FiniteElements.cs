@@ -3,7 +3,7 @@ using IcVibracoes.Core.Calculator.MainMatrixes;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
@@ -70,8 +70,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
         public override async Task<FiniteElementMethodInput> CreateInput(TRequest request)
         {
-            FiniteElementMethodInput initialInput = await base.CreateInput(request).ConfigureAwait(false);
-
             uint degreesOfFreedom = await this.CalculateDegreesOfFreedom(request.NumberOfElements).ConfigureAwait(false);
 
             TBeam beam = await this.BuildBeam(request, degreesOfFreedom);
@@ -85,27 +83,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
             double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
 
             double[] forces = await this._mainMatrix.CalculateForce(beam).ConfigureAwait(false);
-
-            FiniteElementMethodInput input = new FiniteElementMethodInput
-            {
-                NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true),
-
-                Mass = await mass.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
-
-                Stiffness = await stiffness.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
-
-                Damping = await damping.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
-
-                OriginalForce = await forces.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false),
-
-                NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions,
-
-                AngularFrequency = initialInput.AngularFrequency,
-
-                AngularFrequencyStep = initialInput.AngularFrequencyStep,
-
-                FinalAngularFrequency = initialInput.FinalAngularFrequency,
-            };
+            
+            FiniteElementMethodInput input = await base.CreateInput(request).ConfigureAwait(false);
+            input.NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
+            input.Mass = await mass.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.Stiffness = await stiffness.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.Damping = await damping.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.OriginalForce = await forces.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions;
 
             return input;
         }

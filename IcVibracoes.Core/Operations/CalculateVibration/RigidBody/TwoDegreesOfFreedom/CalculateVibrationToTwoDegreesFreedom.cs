@@ -65,21 +65,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <returns>A new instance of class <see cref="TwoDegreesOfFreedomInput"/>.</returns>
         public override async Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
         {
-            TwoDegreesOfFreedomInput initialInput = await base.CreateInput(request).ConfigureAwait(false);
+            TwoDegreesOfFreedomInput input = await base.CreateInput(request).ConfigureAwait(false);
+            input.Mass = request.PrimaryElementData.Mass;
+            input.SecondaryMass = request.SecondaryElementData.Mass;
+            input.Stiffness = request.PrimaryElementData.Stiffness;
+            input.SecondaryStiffness = request.SecondaryElementData.Stiffness;
+            input.DampingRatio = request.DampingRatios.FirstOrDefault();
+            input.Force = request.Force;
+            input.ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true);
 
-            return new TwoDegreesOfFreedomInput
-            {
-                AngularFrequency = initialInput.AngularFrequency,
-                AngularFrequencyStep = initialInput.AngularFrequencyStep,
-                FinalAngularFrequency = initialInput.FinalAngularFrequency,
-                DampingRatio = request.DampingRatios.FirstOrDefault(),
-                Force = request.Force,
-                ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
-                Stiffness = request.PrimaryElementData.Stiffness,
-                Mass = request.PrimaryElementData.Mass,
-                SecondaryStiffness = request.SecondaryElementData.Stiffness,
-                SecondaryMass = request.SecondaryElementData.Mass
-            };
+            return input;
         }
 
         /// <summary>
@@ -92,11 +87,19 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
-
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/TwoDegreesOfFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}/DampingRatio={input.DampingRatio}");
+                $"Solutions\\RigidBody\\TwoDegreesOfFreedom\\m1={input.Mass}_k1={input.Stiffness}\\m2={input.SecondaryMass}_k2={input.SecondaryStiffness}\\DampingRatio={input.DampingRatio}");
+
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"{request.AnalysisType}_w={input.AngularFrequency}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"{request.AnalysisType}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 
@@ -117,10 +120,18 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/TwoDegreesOfFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}",
+                $"Solutions\\RigidBody\\TwoDegreesOfFreedom\\m1={input.Mass}_k1={input.Stiffness}\\m2={input.SecondaryMass}_k2={input.SecondaryStiffness}",
                 "MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_w0={request.InitialAngularFrequency}_wf={request.FinalAngularFrequency}_dampingRatio={input.DampingRatio}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_dampingRatio={input.DampingRatio}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 

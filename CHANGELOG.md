@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Name of parameter in class Constant from DegreesOfFreedom to DegreesOfFreedomPerNode.
 - Improve inheritance, summary and organization of classes to calculate main matrixes.
 - Validate angular frequencies if force type is impact.
-- Method CreateInput on CalculateVibration operation from abstract to virtual, it instantiate the angular frequencies correctly to impact analysis and when is informed just the initial angular frequency.
+- Method CreateInput on CalculateVibration operation from abstract to virtual, it instantiate the angular frequencies correctly to impact analysis and when is informed just the initial angular frequency and the numerical method.
+- Moved properties NumericalMethod, Beta and Gama from FiniteElementMethodInput to NumericalMethodInput.
 ### Removed
 - Parameter Dimensions in class Constant.
 

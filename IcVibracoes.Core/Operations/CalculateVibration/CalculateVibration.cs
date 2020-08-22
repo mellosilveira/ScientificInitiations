@@ -1,6 +1,8 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput;
+using IcVibracoes.Core.Models;
 using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.DataContracts;
+using System;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration
@@ -31,11 +33,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         {
             return Task.FromResult(new TInput
             {
+                NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true),
                 AngularFrequency = request.InitialAngularFrequency,
                 // The default angular frequency step is 1.
                 AngularFrequencyStep = request.AngularFrequencyStep == 0 ? 1 : request.AngularFrequencyStep,
                 // If the final angular frequency is not informed, only one iteration must be made, so the final angular frequency receives the initial angular frequency.
-                FinalAngularFrequency = request.FinalAngularFrequency == 0 ? request.InitialAngularFrequency : request.FinalAngularFrequency,
+                FinalAngularFrequency = request.FinalAngularFrequency == 0 ? request.InitialAngularFrequency : request.FinalAngularFrequency
             });
         }
 
