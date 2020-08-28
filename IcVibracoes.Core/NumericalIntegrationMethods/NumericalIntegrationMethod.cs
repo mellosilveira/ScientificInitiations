@@ -1,6 +1,7 @@
 ﻿using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.Mapper;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods
@@ -10,6 +11,17 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
     /// </summary>
     public abstract class NumericalIntegrationMethod : INumericalIntegrationMethod
     {
+        private readonly IMappingResolver _mappingResolver;
+
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="mappingResolver"></param>
+        public NumericalIntegrationMethod(IMappingResolver mappingResolver)
+        {
+            this._mappingResolver = mappingResolver;
+        }
+
         /// <summary>
         /// Calculates the result for the initial time for a finite element analysis.
         /// </summary>
@@ -31,17 +43,27 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public abstract Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] y);
+        public abstract Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult);
 
         /// <summary>
         /// Calculates and write in a file the results for two degrees of freedom analysis.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public abstract Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] y);
+        public virtual async Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
+        {
+            FiniteElementMethodInput finiteElementMethodInput = await this._mappingResolver.BuildFiniteElementMethodInput(input).ConfigureAwait(false);
+            FiniteElementResult previousFiniteElementResult = await this._mappingResolver.BuildFiniteElementResult(previousResult, input.Force).ConfigureAwait(false);
+
+            FiniteElementResult finiteElementResult = await this.CalculateFiniteElementResult(finiteElementMethodInput, previousFiniteElementResult, time).ConfigureAwait(false);
+
+            double[] result = await this._mappingResolver.BuildVariableVector(finiteElementResult).ConfigureAwait(false);
+
+            return result;
+        }
     }
 }

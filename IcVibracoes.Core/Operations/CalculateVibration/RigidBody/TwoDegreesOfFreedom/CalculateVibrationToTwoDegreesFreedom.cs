@@ -14,7 +14,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with two degrees freedom.
     /// </summary>
-    public class CalculateVibrationToTwoDegreesFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesFreedom
+    public class CalculateVibrationToTwoDegreesOfFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesOfFreedom
     {
         private readonly IMechanicalPropertiesValidator _mechanicalPropertiesValidator;
 
@@ -23,7 +23,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="mechanicalPropertiesValidator"></param>
         /// <param name="time"></param>
-        public CalculateVibrationToTwoDegreesFreedom(
+        public CalculateVibrationToTwoDegreesOfFreedom(
             IMechanicalPropertiesValidator mechanicalPropertiesValidator,
             ITime time)
             : base(time)
@@ -36,44 +36,44 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateRigidBodyResult(TwoDegreesOfFreedomInput input, double time, double[] y)
-            => base._numericalMethod.CalculateTwoDegreesOfFreedomResult(input, time, y);
+        public override Task<double[]> CalculateRigidBodyResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
+            => base._numericalMethod.CalculateTwoDegreesOfFreedomResult(input, time, previousResult);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequest request) => Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_2DF]);
+        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequest request)
+        {
+            var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod);
+            if (numericalMethod == NumericalMethod.RungeKuttaForthOrder)
+            {
+                // For Runge Kutta Forth Order numerical method, is used only 4 varibles.
+                return Task.FromResult(new double[4]);
+            }
+
+            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_2DF]);
+        }
 
         /// <summary>
         /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="TwoDegreesOfFreedomInput"/>.</returns>
-        public override Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomResponse response)
+        public override async Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
         {
-            if (request == null || request.PrimaryElementData == null || request.SecondaryElementData == null)
-            {
-                return null;
-            }
+            TwoDegreesOfFreedomInput input = await base.CreateInput(request).ConfigureAwait(false);
+            input.Mass = request.PrimaryElementData.Mass;
+            input.SecondaryMass = request.SecondaryElementData.Mass;
+            input.Stiffness = request.PrimaryElementData.Stiffness;
+            input.SecondaryStiffness = request.SecondaryElementData.Stiffness;
+            input.DampingRatio = request.DampingRatios.FirstOrDefault();
+            input.Force = request.Force;
 
-            return Task.FromResult(new TwoDegreesOfFreedomInput
-            {
-                AngularFrequency = request.InitialAngularFrequency,
-                AngularFrequencyStep = request.AngularFrequencyStep,
-                FinalAngularFrequency = request.FinalAngularFrequency,
-                DampingRatio = request.DampingRatios.FirstOrDefault(),
-                Force = request.Force,
-                ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
-                Stiffness = request.PrimaryElementData.Stiffness,
-                Mass = request.PrimaryElementData.Mass,
-                SecondaryStiffness = request.SecondaryElementData.Stiffness,
-                SecondaryMass = request.SecondaryElementData.Mass
-            });
+            return input;
         }
 
         /// <summary>
@@ -86,11 +86,19 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
-            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
-
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/TwoDegreesOfFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}/DampingRatio={input.DampingRatio}");
+                $"Solutions\\RigidBody\\TwoDegreesOfFreedom\\m1={input.Mass}_k1={input.Stiffness}\\m2={input.SecondaryMass}_k2={input.SecondaryStiffness}\\DampingRatio={input.DampingRatio}");
+
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"{request.AnalysisType}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 
@@ -111,10 +119,18 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/TwoDegreesOfFreedom/m1={input.Mass}_k1={input.Stiffness}/m2={input.SecondaryMass}_k2={input.SecondaryStiffness}",
+                $"Solutions\\RigidBody\\TwoDegreesOfFreedom\\m1={input.Mass}_k1={input.Stiffness}\\m2={input.SecondaryMass}_k2={input.SecondaryStiffness}",
                 "MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_dampingRatio={input.DampingRatio}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 

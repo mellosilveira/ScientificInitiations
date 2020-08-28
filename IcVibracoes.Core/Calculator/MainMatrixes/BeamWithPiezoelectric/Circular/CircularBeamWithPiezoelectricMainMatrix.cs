@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
 using IcVibracoes.Core.Models.Beams;
 using System;
 using System.Threading.Tasks;
@@ -12,21 +11,24 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circula
     public class CircularBeamWithPiezoelectricMainMatrix : BeamWithPiezoelectricMainMatrix<CircularProfile>, ICircularBeamWithPiezoelectricMainMatrix
     {
         /// <summary>
-        /// Class constructor.
+        /// This method calculates the element piezoelectric capacitance matrix.
+        /// This method is not implemented.
         /// </summary>
-        /// <param name="arrayOperation"></param>
-        public CircularBeamWithPiezoelectricMainMatrix(
-            IArrayOperation arrayOperation) 
-            : base(arrayOperation)
-        {
-        }
-
-        public override Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<CircularProfile> beamWithPiezoelectric, uint elementIndex)
+        /// <param name="beam"></param>
+        /// <param name="elementIndex"></param>
+        /// <returns>The elementary piezoelectric capacitance matrix.</returns>
+        public override Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<CircularProfile> beam, uint elementIndex)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<CircularProfile> beamWithPiezoelectric)
+        /// <summary>
+        /// This method calculates the electromechanical coupling matrix of an element of beam with piezoelectric plates.
+        /// This method is not implemented.
+        /// </summary>
+        /// <param name="beam"></param>
+        /// <returns>The element's electromechanical coupling matrix.</returns>
+        public override Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<CircularProfile> beam)
         {
             throw new NotImplementedException();
         }

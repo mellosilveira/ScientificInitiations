@@ -1,4 +1,6 @@
-﻿namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
+﻿using System;
+
+namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
 {
     /// <summary>
     /// It contains the input 'data' to two degrees of freedom numerical methods.
@@ -16,5 +18,17 @@
         /// Unity: N/m (Newton per meter).
         /// </summary>
         public double SecondaryStiffness { get; set; }
+
+        /// <summary>
+        /// Damping of secondary object.
+        /// Unity: Ns/m (Newton-second per meter).
+        /// </summary>
+        public double SecondaryDamping
+        {
+            get
+            {
+                return this.DampingRatio * 2 * this.SecondaryMass * Math.Sqrt(this.SecondaryStiffness / this.SecondaryMass);
+            }
+        }
     }
 }

@@ -59,7 +59,7 @@ namespace IcVibracoes.Controllers
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("two-degree-freedom")]
         public async Task<ActionResult<TwoDegreesOfFreedomResponse>> CalculateVibration(
-            [FromServices] ICalculateVibrationToTwoDegreesFreedom calculateVibration,
+            [FromServices] ICalculateVibrationToTwoDegreesOfFreedom calculateVibration,
             [FromBody] TwoDegreesOfFreedomRequest request)
         {
             TwoDegreesOfFreedomResponse response = await calculateVibration.Process(request).ConfigureAwait(false);

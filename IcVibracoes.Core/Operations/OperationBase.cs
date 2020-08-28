@@ -2,11 +2,11 @@
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.DataContracts;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations
 {
-    // TODO: Refatorar 
     /// <summary>
     /// It represents the base for all operations in the application.
     /// </summary>
@@ -57,16 +57,6 @@ namespace IcVibracoes.Core.Operations
                 response.AddError(OperationErrorCode.RequestValidationError, $"Invalid numerical method: '{request.NumericalMethod}'.");
             }
 
-            if (string.IsNullOrWhiteSpace(request.ForceType))
-            {
-                response.AddError(OperationErrorCode.RequestValidationError, "ForceType cannot be null or white space.");
-            }
-
-            if (Enum.TryParse(typeof(ForceType), request.ForceType, ignoreCase: true, out object _) == false)
-            {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid force type: '{request.ForceType}'.");
-            }
-
             if (request.PeriodCount <= 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, "PeriodCount must be greather than zero.");
@@ -77,14 +67,30 @@ namespace IcVibracoes.Core.Operations
                 response.AddError(OperationErrorCode.RequestValidationError, "PeriodDivision must be greather than zero.");
             }
 
-            if (request.InitialAngularFrequency > request.FinalAngularFrequency)
+            if (string.IsNullOrWhiteSpace(request.ForceType))
             {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Final angular frequency: '{request.InitialAngularFrequency}' must be grether than initial angular frequency: '{request.InitialAngularFrequency}'.");
+                response.AddError(OperationErrorCode.RequestValidationError, "ForceType cannot be null or white space.");
             }
 
-            if (request.AngularFrequencyStep == 0)
+            if (Enum.TryParse(typeof(ForceType), request.ForceType, ignoreCase: true, out object forceType) == false)
             {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Angular frequency step: '{request.AngularFrequencyStep}' cannot be zero.");
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid force type: '{request.ForceType}'.");
+            }
+
+            if ((ForceType)forceType == ForceType.Harmonic)
+            {
+                if (request.FinalAngularFrequency != 0)
+                {
+                    if (request.InitialAngularFrequency > request.FinalAngularFrequency)
+                    {
+                        response.AddError(OperationErrorCode.RequestValidationError, $"Final angular frequency: '{request.FinalAngularFrequency}' must be grether than initial angular frequency: '{request.InitialAngularFrequency}'.");
+                    }
+
+                    if (request.AngularFrequencyStep == 0)
+                    {
+                        response.AddError(OperationErrorCode.RequestValidationError, $"Angular frequency step: '{request.AngularFrequencyStep}' cannot be zero.");
+                    }
+                }
             }
 
             return Task.FromResult(response);
@@ -115,7 +121,7 @@ namespace IcVibracoes.Core.Operations
             catch (Exception ex)
             {
                 response = new TResponse();
-                response.AddError(OperationErrorCode.InternalServerError, $"{ex.Message}");
+                response.AddError(OperationErrorCode.InternalServerError, $"{ex.Message}", HttpStatusCode.InternalServerError);
             }
 
             return response;

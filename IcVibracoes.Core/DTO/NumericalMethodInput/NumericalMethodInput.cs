@@ -1,10 +1,20 @@
-﻿namespace IcVibracoes.Core.DTO.NumericalMethodInput
+﻿using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using System;
+
+namespace IcVibracoes.Core.DTO.NumericalMethodInput
 {
     /// <summary>
     /// It contains the input 'data' to all numerical methods.
     /// </summary>
     public class NumericalMethodInput
     {
+        /// <summary>
+        /// The type of the force.
+        /// Can be harmonic or impact.
+        /// </summary>
+        public ForceType ForceType { get; set; }
+
         /// <summary>
         /// The initial time.
         /// Unit: s (second).
@@ -43,5 +53,65 @@
         /// Unit: Hz (Hertz).
         /// </summary>
         public double FinalAngularFrequency { get; set; }
+
+        /// <summary>
+        /// The numerical method used in the finite element analysis.
+        /// </summary>
+        public NumericalMethod NumericalMethod { get; set; }
+
+        /// <summary>
+        /// Integration constant used in numerical method calculations.
+        /// Valid values:
+        /// 1. 0 --> Central difference method.
+        /// 2. 1/4 --> Newmark method is implicit and unconditionally stable. In this case the acceleration within the time interval [ti, ti+1) is presumed to be constant.
+        /// 3. 1/6 --> Linear acceleration method. In this case the acceleration within the time interval [ti, ti+1) is presumed to be linear.
+        /// </summary>
+        public double Beta
+        {
+            get
+            {
+                switch (this.NumericalMethod)
+                {
+                    case NumericalMethod.ImplicitLinearAcceleration:
+                        return (double)1 / 6;
+
+                    case NumericalMethod.NewmarkBeta:
+                    case NumericalMethod.Newmark:
+                        return 0.25;
+
+                    case NumericalMethod.CentralDifference:
+                    case NumericalMethod.RungeKuttaForthOrder:
+                        return 0;
+
+                    default:
+                        throw new NotImplementedException($"The numerical method '{this.NumericalMethod}' was not implemented.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Integration constant used in numerical method calculations.
+        /// For Gama = 1 / 2 the numerical method is at least second-order accurate, it is first order accurate for all other values of.
+        /// </summary>
+        public double Gama
+        {
+            get
+            {
+                switch (this.NumericalMethod)
+                {
+                    case NumericalMethod.CentralDifference:
+                    case NumericalMethod.ImplicitLinearAcceleration:
+                    case NumericalMethod.NewmarkBeta:
+                    case NumericalMethod.Newmark:
+                        return 0.5;
+
+                    case NumericalMethod.RungeKuttaForthOrder:
+                        return 0;
+
+                    default:
+                        throw new NotImplementedException($"The numerical method '{this.NumericalMethod}' was not implemented.");
+                }
+            }
+        }
     }
 }

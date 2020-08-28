@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IcVibracoes", "IcVibracoes\IcVibracoes.csproj", "{AC6EB2D8-60DC-4FEC-A48F-95D3316F3E4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IcVibracoes.Application", "IcVibracoes\IcVibracoes.Application.csproj", "{AC6EB2D8-60DC-4FEC-A48F-95D3316F3E4A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1486B460-922B-4F74-A69A-DFA452D5A8EC}"
 EndProject

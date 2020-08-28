@@ -14,7 +14,7 @@ namespace IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom
         {
             get
             {
-                return "RigidBody_TwoDegreesFreedom";
+                return "RigidBody_TwoDegreesOfFreedom";
             }
         }
 

@@ -1,6 +1,4 @@
-﻿using IcVibracoes.DataContracts;
-using System;
-using System.Net;
+﻿using System;
 
 namespace IcVibracoes.Core.Models.BeamCharacteristics
 {
@@ -63,12 +61,9 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
         /// This method creates an instance of class <seealso cref="FasteningType"/>.
         /// It can be <seealso cref="None"/>, <seealso cref="Fixed"/> or <seealso cref="Pinned"/>.
         /// </summary>
-        /// <typeparam name="TResponseData"></typeparam>
         /// <param name="fastening"></param>
-        /// <param name="response"></param>
         /// <returns></returns>
-        public static FasteningType Create<TResponseData>(string fastening, OperationResponseBase<TResponseData> response)
-            where TResponseData : OperationResponseData
+        public static FasteningType Create(string fastening)
         {
             switch ((Fastenings)Enum.Parse(typeof(Fastenings), fastening, ignoreCase: true))
             {
@@ -82,8 +77,7 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
                     break;
             }
 
-            response.AddError(OperationErrorCode.InternalServerError, $"Invalid fastening: '{fastening}'.", HttpStatusCode.InternalServerError);
-            return null;
+            throw new Exception($"Invalid fastening: '{fastening}'.");
         }
     }
 }

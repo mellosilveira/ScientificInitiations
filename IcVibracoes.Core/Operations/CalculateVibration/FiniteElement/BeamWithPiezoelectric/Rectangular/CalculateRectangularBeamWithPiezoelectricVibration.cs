@@ -1,6 +1,4 @@
 ﻿using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
-using IcVibracoes.Core.BoundaryCondition;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
@@ -18,24 +16,20 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="boundaryCondition"></param>
-        /// <param name="arrayOperation"></param>
         /// <param name="geometricProperty"></param>
         /// <param name="mappingResolver"></param>
-        /// <param name="mainMatrix"></param>
         /// <param name="profileValidator"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
+        /// <param name="mainMatrix"></param>
         public CalculateRectangularBeamWithPiezoelectricVibration(
-            IBoundaryCondition boundaryCondition,
-            IArrayOperation arrayOperation,
             IRectangularGeometricProperty geometricProperty,
             IMappingResolver mappingResolver,
-            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix,
             IRectangularProfileValidator profileValidator,
             ITime time,
-            INaturalFrequency naturalFrequency)
-            : base(boundaryCondition, arrayOperation, geometricProperty, mappingResolver, mainMatrix, profileValidator, time, naturalFrequency)
+            INaturalFrequency naturalFrequency,
+            IRectangularBeamWithPiezoelectricMainMatrix mainMatrix)
+            : base(geometricProperty, mappingResolver, profileValidator, time, naturalFrequency, mainMatrix)
         { }
     }
 }

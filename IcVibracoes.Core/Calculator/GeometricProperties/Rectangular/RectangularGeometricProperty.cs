@@ -1,6 +1,6 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
-using IcVibracoes.Core.ArrayOperations;
+using IcVibracoes.Core.ExtensionMethods;
 using System;
 using System.Threading.Tasks;
 
@@ -11,17 +11,6 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
     /// </summary>
     public class RectangularGeometricProperty : GeometricProperty<RectangularProfile>, IRectangularGeometricProperty
     {
-        private readonly IArrayOperation _arrayOperation;
-
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="arrayOperation"></param>
-        public RectangularGeometricProperty(IArrayOperation arrayOperation)
-        {
-            this._arrayOperation = arrayOperation;
-        }
-
         /// <summary>
         /// This method calculates the vector with the beam or piezoelectric area.
         /// </summary>
@@ -41,7 +30,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
                 area = (profile.Height * profile.Width) - ((profile.Height - 2 * profile.Thickness.Value) * (profile.Width - 2 * profile.Thickness.Value));
             }
 
-            return await this._arrayOperation.CreateVector(area, numberOfElements).ConfigureAwait(false);
+            return await ArrayFactory.CreateVectorAsync(area, numberOfElements).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -63,7 +52,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
                 momentOfInertia = (Math.Pow(profile.Height, 3) * profile.Width - (Math.Pow(profile.Height - 2 * profile.Thickness.Value, 3) * (profile.Width - 2 * profile.Thickness.Value))) / 12;
             }
 
-            return await this._arrayOperation.CreateVector(momentOfInertia, numberOfElements).ConfigureAwait(false);
+            return await ArrayFactory.CreateVectorAsync(momentOfInertia, numberOfElements).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -88,7 +77,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
 
             area *= numberOfPiezoelectricPerElement;
 
-            return await this._arrayOperation.CreateVector(area, numberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
+            return await ArrayFactory.CreateVectorAsync(area, numberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -112,7 +101,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
                 throw new NotImplementedException($"Not implemented moment of inertia calculation to number of piezoelectric:{numberOfPiezoelectricsPerElement}.");
             }
 
-            return await this._arrayOperation.CreateVector(momentOfInertia, numberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
+            return await ArrayFactory.CreateVectorAsync(momentOfInertia, numberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
         }
     }
 }

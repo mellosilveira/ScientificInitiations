@@ -36,10 +36,10 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] y)
-            => base._numericalMethod.CalculateOneDegreeOfFreedomResult(input, time, y);
+        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
+            => base._numericalMethod.CalculateOneDegreeOfFreedomResult(input, time, previousResult);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
@@ -47,32 +47,31 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="request"></param>
         /// <returns></returns>
         public override Task<double[]> BuildInitialConditions(OneDegreeOfFreedomRequest request)
-            => Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]);
+        {
+            var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod);
+            if (numericalMethod == NumericalMethod.RungeKuttaForthOrder)
+            {
+                // For Runge Kutta Forth Order numerical method, is used only 2 varibles.
+                return Task.FromResult(new double[2]);
+            }
+
+            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]);
+        }
 
         /// <summary>
         /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="OneDegreeOfFreedomInput"/>.</returns>
-        public override Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomResponse response)
+        public override async Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request)
         {
-            if (request == null || request.ElementData == null)
-            {
-                return null;
-            }
+            OneDegreeOfFreedomInput input = await base.CreateInput(request).ConfigureAwait(false);
+            input.Mass = request.ElementData.Mass;
+            input.Stiffness = request.ElementData.Stiffness;
+            input.DampingRatio = request.DampingRatios.FirstOrDefault();
+            input.Force = request.Force;
 
-            return Task.FromResult(new OneDegreeOfFreedomInput
-            {
-                AngularFrequency = request.InitialAngularFrequency,
-                AngularFrequencyStep = request.AngularFrequencyStep,
-                FinalAngularFrequency = request.FinalAngularFrequency,
-                DampingRatio = request.DampingRatios.FirstOrDefault(),
-                Force = request.Force,
-                ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
-                Stiffness = request.ElementData.Stiffness,
-                Mass = request.ElementData.Mass
-            });
+            return input;
         }
 
         /// <summary>
@@ -87,9 +86,17 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeOfFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}/DampingRatio={input.DampingRatio}");
+                $"Solutions\\RigidBody\\OneDegreeOfFreedom\\m={input.Mass}_k={input.Stiffness}\\{input.ForceType}\\DampingRatio={input.DampingRatio}");
 
-            string fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"{request.AnalysisType}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 
@@ -110,10 +117,18 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             string fileUri = Path.Combine(
                 previousPath,
-                $"Solutions/RigidBody/OneDegreeOFFreedom/m={input.Mass}_k={input.Stiffness}/{input.ForceType}",
+                $"Solutions\\RigidBody\\OneDegreeOFFreedom\\m={input.Mass}_k={input.Stiffness}\\{input.ForceType}",
                 "MaxValues");
 
-            string fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
+            string fileName = null;
+            if (input.ForceType == ForceType.Harmonic)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
+            }
+            else if (input.ForceType == ForceType.Impact)
+            {
+                fileName = $"MaxValues_{request.AnalysisType}_dampingRatio={input.DampingRatio}.csv";
+            }
 
             string path = Path.Combine(fileUri, fileName);
 

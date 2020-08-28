@@ -11,6 +11,11 @@ namespace IcVibracoes.Core.Models.Beams
         where TProfile : Profile, new()
     {
         /// <summary>
+        /// Piezoelectric degrees of freedom.
+        /// </summary>
+        public uint PiezoelectricDegreesOfFreedom { get; set; }
+
+        /// <summary>
         /// Piezoelectric Young Modulus.
         /// </summary>
         public double PiezoelectricYoungModulus { get; set; }

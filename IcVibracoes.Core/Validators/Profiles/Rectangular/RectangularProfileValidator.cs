@@ -33,7 +33,7 @@ namespace IcVibracoes.Core.Validators.Profiles.Rectangular
 
             if (profile.Height > 0 && profile.Width > 0)
             {
-                if (profile.Area != 0 || profile.MomentOfInertia != 0)
+                if (profile.Area != null || profile.MomentOfInertia != null)
                 {
                     response.AddError(OperationErrorCode.RequestValidationError, $"When heigth and width are informed, Area: {profile.Area} and Moment of Inertia: {profile.MomentOfInertia} cannot be informed.");
 

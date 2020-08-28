@@ -1,8 +1,9 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.Calculator.MainMatrixes;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
 using IcVibracoes.Core.DTO;
-using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElement;
+using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
@@ -33,6 +34,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         private readonly IProfileValidator<TProfile> _profileValidator;
         private readonly ITime _time;
         private readonly INaturalFrequency _naturalFrequency;
+        private readonly IMainMatrix<TBeam, TProfile> _mainMatrix;
 
         /// <summary>
         /// Class constructor.
@@ -43,11 +45,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         public CalculateVibration_FiniteElement(
             IProfileValidator<TProfile> profileValidator,
             ITime time,
-            INaturalFrequency naturalFrequency)
+            INaturalFrequency naturalFrequency,
+            IMainMatrix<TBeam, TProfile> mainMatrix)
         {
             this._profileValidator = profileValidator;
             this._time = time;
             this._naturalFrequency = naturalFrequency;
+            this._mainMatrix = mainMatrix;
         }
 
         /// <summary>
@@ -56,9 +60,40 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="request"></param>
         /// <param name="degreesOfFreedom"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
-        public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom, FiniteElementResponse response);
+        public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
+
+        /// <summary>
+        /// This method creates the input to be used in finite element analysis.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
+        public override async Task<FiniteElementMethodInput> CreateInput(TRequest request)
+        {
+            uint degreesOfFreedom = await this.CalculateDegreesOfFreedom(request.NumberOfElements).ConfigureAwait(false);
+
+            TBeam beam = await this.BuildBeam(request, degreesOfFreedom);
+
+            (bool[] boundaryConditions, uint numberOfTrueBoundaryConditions) = await this._mainMatrix.CalculateBoundaryConditions(beam, degreesOfFreedom).ConfigureAwait(false);
+
+            double[,] mass = await this._mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
+
+            double[,] stiffness = await this._mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
+
+            double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
+
+            double[] forces = await this._mainMatrix.CalculateForce(beam).ConfigureAwait(false);
+            
+            FiniteElementMethodInput input = await base.CreateInput(request).ConfigureAwait(false);
+            input.NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
+            input.Mass = await mass.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.Stiffness = await stiffness.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.Damping = await damping.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.OriginalForce = await forces.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions;
+
+            return input;
+        }
 
         /// <summary>
         /// This method calculates the vibration using finite element concepts and writes the results in a file.
@@ -72,10 +107,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
             response.SetSuccessCreated();
 
             // Step 1 - Sets the numerical method to be used in analysis.
-            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod, response);
+            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             // Step 2 - Creates the input to numerical method.
-            FiniteElementMethodInput input = await this.CreateInput(request, response).ConfigureAwait(false);
+            FiniteElementMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
 
             // Step 3 - Generates the path to save the maximum values of analysis results and save the file URI.
             string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
@@ -92,6 +127,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                 // Step 5 - Generates the path to save the analysis results.
                 // Each combination of damping ratio and angular frequency will have a specific path.
                 string solutionPath = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
+
+                string solutionFolder = Path.GetDirectoryName(solutionPath);
+
+                if (fileUris.Contains(solutionFolder) == false)
+                {
+                    fileUris.Add(Path.GetDirectoryName(solutionPath));
+                }
 
                 var previousResult = new FiniteElementResult
                 {
@@ -178,7 +220,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        protected Task<uint> CalculateDegreesOfFreedomMaximum(uint numberOfElements)
+        protected Task<uint> CalculateDegreesOfFreedom(uint numberOfElements)
         {
             return Task.FromResult((numberOfElements + 1) * Constant.NodesPerElement);
         }
@@ -269,7 +311,10 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                 }
             }
 
-            await this._profileValidator.Execute(request.Profile, response).ConfigureAwait(false);
+            if (await this._profileValidator.Execute(request.Profile, response).ConfigureAwait(false) == false)
+            {
+                response.AddError(OperationErrorCode.RequestValidationError, "Invalid beam profile.");
+            }
 
             return response;
         }

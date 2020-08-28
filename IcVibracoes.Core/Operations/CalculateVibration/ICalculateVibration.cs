@@ -14,15 +14,14 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         where TRequest : OperationRequestBase
         where TResponse : OperationResponseBase<TResponseData>, new()
         where TResponseData : OperationResponseData
-        where TInput : NumericalMethodInput
+        where TInput : NumericalMethodInput, new()
     {
         /// <summary>
         /// This method creates the input to numerical integration method.
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="response"></param>
         /// <returns>A new instance of class <see cref="TInput"/>.</returns>
-        Task<TInput> CreateInput(TRequest request, TResponse response);
+        Task<TInput> CreateInput(TRequest request);
 
         /// <summary>
         /// This method creates the file path to write the results.

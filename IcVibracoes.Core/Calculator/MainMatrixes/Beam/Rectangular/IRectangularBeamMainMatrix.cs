@@ -2,7 +2,8 @@
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.Beam.Rectangular
 {
-    public interface IRectangularBeamMainMatrix : IBeamMainMatrix<RectangularProfile>
-    {
-    }
+    /// <summary>
+    /// It's responsible to calculate the circular beam main matrixes.
+    /// </summary>
+    public interface IRectangularBeamMainMatrix : IBeamMainMatrix<RectangularProfile> { }
 }

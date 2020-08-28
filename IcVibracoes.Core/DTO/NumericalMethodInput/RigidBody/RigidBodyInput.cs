@@ -1,4 +1,4 @@
-﻿using IcVibracoes.Core.Models.BeamCharacteristics;
+﻿using System;
 
 namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
 {
@@ -30,15 +30,21 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
         public double DampingRatio { get; set; }
 
         /// <summary>
+        /// Damping of primary object.
+        /// Unity: Ns/m (Newton-second per meter).
+        /// </summary>
+        public double Damping
+        {
+            get
+            {
+                return this.DampingRatio * 2 * this.Mass * Math.Sqrt(this.Stiffness / this.Mass);
+            }
+        }
+
+        /// <summary>
         /// The force applied in the analyzed system.
         /// Unit: N (Newton).
         /// </summary>
         public double Force { get; set; }
-
-        /// <summary>
-        /// The type of the force.
-        /// Can be harmonic or impact.
-        /// </summary>
-        public ForceType ForceType { get; set; }
     }
 }
