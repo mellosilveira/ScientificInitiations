@@ -15,16 +15,13 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
     /// </summary>
     public class NewmarkMethod : NumericalIntegrationMethod, INewmarkMethod
     {
-        private readonly IMappingResolver _mappingResolver;
-
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="mappingResolver"></param>
         public NewmarkMethod(IMappingResolver mappingResolver)
-        {
-            this._mappingResolver = mappingResolver;
-        }
+            : base(mappingResolver)
+        { }
 
         /// <summary>
         /// Integration constants.
@@ -213,25 +210,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             result[1] = previousResult[1] + this.a6 * previousResult[2] + this.a7 * result[2];
 
             return Task.FromResult(result);
-        }
-
-        /// <summary>
-        /// Calculates and write in a file the results for two degrees of freedom analysis using Newmark integration method.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="time"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public override async Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] y)
-        {
-            FiniteElementMethodInput finiteElementMethodInput = await this._mappingResolver.BuildFiniteElementMethodInput(input).ConfigureAwait(false);
-            FiniteElementResult previousResult = await this._mappingResolver.BuildFiniteElementResult(y, input.Force).ConfigureAwait(false);
-
-            FiniteElementResult finiteElementResult = await this.CalculateFiniteElementResult(finiteElementMethodInput, previousResult, time).ConfigureAwait(false);
-
-            double[] result = await this._mappingResolver.BuildVariableVector(finiteElementResult).ConfigureAwait(false);
-
-            return result;
         }
     }
 }

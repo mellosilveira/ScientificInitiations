@@ -100,7 +100,8 @@ namespace IcVibracoes.Core.Mapper
                 FinalTime = input.FinalTime,
                 NumberOfTrueBoundaryConditions = 2,
                 TimeStep = input.TimeStep,
-                NumericalMethod = input.NumericalMethod
+                NumericalMethod = input.NumericalMethod,
+                ForceType = input.ForceType
             });
         }
 
@@ -108,20 +109,20 @@ namespace IcVibracoes.Core.Mapper
         /// This method builds the finite element result from a vector with variables: displacement, velocity and acceleration, and the force value.
         /// This method is used in two degrees os freedom matricial analysis.
         /// </summary>
-        /// <param name="y"></param>
+        /// <param name="result"></param>
         /// <param name="force"></param>
         /// <returns></returns>
-        public Task<FiniteElementResult> BuildFiniteElementResult(double[] y, double force)
+        public Task<FiniteElementResult> BuildFiniteElementResult(double[] result, double force)
         {
-            var result = new FiniteElementResult
+            var finiteElementResult = new FiniteElementResult
             {
-                Displacement = new double[] { y[0], y[1] },
-                Velocity = new double[] { y[2], y[3] },
-                Acceleration = new double[] { y[4], y[5] },
+                Displacement = new double[] { result[0], result[1] },
+                Velocity = new double[] { result[2], result[3] },
+                Acceleration = new double[] { result[4], result[5] },
                 Force = new double[] { force, 0 }
             };
 
-            return Task.FromResult(result);
+            return Task.FromResult(finiteElementResult);
         }
 
         /// <summary>
@@ -132,11 +133,11 @@ namespace IcVibracoes.Core.Mapper
         /// <returns></returns>
         public Task<double[]> BuildVariableVector(FiniteElementResult finiteElementResult)
         {
-            double[] y = finiteElementResult.Displacement
+            double[] previousResult = finiteElementResult.Displacement
                 .CombineVectors(finiteElementResult.Velocity)
                 .CombineVectors(finiteElementResult.Acceleration);
 
-            return Task.FromResult(y);
+            return Task.FromResult(previousResult);
         }
     }
 }

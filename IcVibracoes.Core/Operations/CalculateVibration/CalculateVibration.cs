@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput;
 using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.NumericalIntegrationMethods;
 using IcVibracoes.DataContracts;
 using System;
@@ -33,12 +34,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         {
             return Task.FromResult(new TInput
             {
+                ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true),
                 NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true),
                 AngularFrequency = request.InitialAngularFrequency,
-                // The default angular frequency step is 1.
+                // The default angular frequency step is 1 rad/s.
                 AngularFrequencyStep = request.AngularFrequencyStep == 0 ? 1 : request.AngularFrequencyStep,
                 // If the final angular frequency is not informed, only one iteration must be made, so the final angular frequency receives the initial angular frequency.
                 FinalAngularFrequency = request.FinalAngularFrequency == 0 ? request.InitialAngularFrequency : request.FinalAngularFrequency
+
+                //AngularFrequency = 2 * Math.PI * request.InitialAngularFrequency,
+                //// The default angular frequency step is 2pi rad/s (1 Hz).
+                //AngularFrequencyStep = request.AngularFrequencyStep == 0 ? 2 * Math.PI : 2 * Math.PI * request.AngularFrequencyStep,
+                //// If the final angular frequency is not informed, only one iteration must be made, so the final angular frequency receives the initial angular frequency.
+                //FinalAngularFrequency = request.FinalAngularFrequency == 0 ? 2 * Math.PI * request.InitialAngularFrequency : 2 * Math.PI * request.FinalAngularFrequency
             });
         }
 

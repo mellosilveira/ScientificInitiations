@@ -44,9 +44,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public abstract Task<double[]> CalculateRigidBodyResult(TInput input, double time, double[] y);
+        public abstract Task<double[]> CalculateRigidBodyResult(TInput input, double time, double[] previousResult);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
@@ -73,7 +73,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
             TInput input = await this.CreateInput(request).ConfigureAwait(false);
 
             // Step 3 - Creates the initial conditions for displacement and velocity.
-            double[] initial_y = await this.BuildInitialConditions(request).ConfigureAwait(false);
+            double[] previousResult = await this.BuildInitialConditions(request).ConfigureAwait(false);
 
             ICollection<string> fileUris = new Collection<string>();
 
@@ -99,7 +99,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                     input.TimeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
                     input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
 
-                    double[] maxValues = new double[initial_y.Length];
+                    double[] maxValues = new double[previousResult.Length];
 
                     // Step 8 - Generates the path to save the analysis results.
                     // Each combination of damping ratio and angular frequency will have a specific path.
@@ -112,7 +112,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
 
                     // Step 9 - Sets the initial conditions for time, displacement and velocity.
                     double time = 0;
-                    double[] y = initial_y;
+                    double[] result = previousResult;
 
                     try
                     {
@@ -120,20 +120,20 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                         using (StreamWriter streamWriter = new StreamWriter(solutionPath))
                         {
                             // Step 10.1 - Writes the initial values into a file.
-                            streamWriter.WriteResult(time, y);
+                            streamWriter.WriteResult(time, result);
 
                             while (time <= input.FinalTime)
                             {
                                 // Step 10.2 - Calculates the analysis results.
-                                y = await this.CalculateRigidBodyResult(input, time, y).ConfigureAwait(false);
+                                result = await this.CalculateRigidBodyResult(input, time, result).ConfigureAwait(false);
 
                                 // Step 10.3 - Writes the analysis results into a file.
-                                streamWriter.WriteResult(time + input.TimeStep, y);
+                                streamWriter.WriteResult(time + input.TimeStep, result);
 
                                 time += input.TimeStep;
 
                                 // Step 11 - Compares the previous results with the new calculated to catch the maximum values.
-                                await this.CompareValuesAndUpdateMaxValuesResult(y, maxValues).ConfigureAwait(false);
+                                await this.CompareValuesAndUpdateMaxValuesResult(result, maxValues).ConfigureAwait(false);
                             }
                         }
                     }
@@ -160,7 +160,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                         response.SetInternalServerError();
                         return response;
                     }
-                    
+
                     input.AngularFrequency += input.AngularFrequencyStep;
                 }
             }

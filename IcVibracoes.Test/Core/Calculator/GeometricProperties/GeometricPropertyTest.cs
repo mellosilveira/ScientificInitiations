@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.Calculator.GeometricProperties
@@ -44,7 +45,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties
         }
 
         [Fact(DisplayName = @"Feature: CalculateArea | When: Execute. | Given: Profile with thickness. | Should: Calculate correctly.")]
-        public async void CalculateArea_GivenProfileWithThickness_Should_CalculateCorrectly()
+        public async Task CalculateArea_GivenProfileWithThickness_Should_CalculateCorrectly()
         {
             // Arrange
             var result = await this._calculator.CalculateArea(this._beamProfileWithThickness, this._numberOfElements).ConfigureAwait(false);
@@ -54,7 +55,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties
         }
 
         [Fact(DisplayName = @"Feature: CalculateMomentOfInertia | When: Execute. | Given: Profile with thickness. | Should: Calculate correctly.")]
-        public async void CalculateMomentOfInertia_GivenProfileWithThickness_Should_CalculateCorrectly()
+        public async Task CalculateMomentOfInertia_GivenProfileWithThickness_Should_CalculateCorrectly()
         {
             // Arrange
             var result = await this._calculator.CalculateMomentOfInertia(this._beamProfileWithThickness, this._numberOfElements).ConfigureAwait(false);
@@ -64,7 +65,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties
         }
 
         [Fact(DisplayName = @"Feature: CalculateArea | When: Execute. | Given: Profile without thickness. | Should: Calculate correctly.")]
-        public async void CalculateArea_GivenProfileWithoutThickness_Should_CalculateCorrectly()
+        public async Task CalculateArea_GivenProfileWithoutThickness_Should_CalculateCorrectly()
         {
             // Arrange
             var result = await this._calculator.CalculateArea(this._beamProfileWithoutThickness, this._numberOfElements).ConfigureAwait(false);
@@ -74,7 +75,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties
         }
 
         [Fact(DisplayName = @"Feature: CalculateMomentOfInertia | When: Execute. | Given: Profile without thickness. | Should: Calculate correctly.")]
-        public async void CalculateMomentOfInertia_GivenProfileWithoutThickness_Should_CalculateCorrectly()
+        public async Task CalculateMomentOfInertia_GivenProfileWithoutThickness_Should_CalculateCorrectly()
         {
             // Arrange
             var result = await this._calculator.CalculateMomentOfInertia(this._beamProfileWithoutThickness, this._numberOfElements).ConfigureAwait(false);

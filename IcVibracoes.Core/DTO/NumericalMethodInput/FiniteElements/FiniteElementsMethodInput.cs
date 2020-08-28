@@ -26,11 +26,6 @@
         public double[] OriginalForce { get; set; }
 
         /// <summary>
-        /// The force matrix with values for a specific time.
-        /// </summary>
-        public double[] Force { get; set; }
-
-        /// <summary>
         /// The number of true boundary conditions.
         /// </summary>
         public uint NumberOfTrueBoundaryConditions { get; set; }

@@ -226,10 +226,10 @@ namespace IcVibracoes.Core.ExtensionMethods
         }
 
         /// <summary>
-        /// This method sums three vectors.
+        /// This method sums any vectors.
         /// </summary>
         /// <param name="vector1"></param>
-        /// <param name="vectorsToAdd"></param>
+        /// <param name="vectors"></param>
         /// <returns></returns>
         public static Task<double[]> SumAsync(this double[] vector1, params double[][] vectors)
         {

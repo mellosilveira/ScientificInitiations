@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Core.Models.BeamCharacteristics;
-using System;
+﻿using System;
 
 namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
 {
@@ -47,11 +46,5 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
         /// Unit: N (Newton).
         /// </summary>
         public double Force { get; set; }
-
-        /// <summary>
-        /// The type of the force.
-        /// Can be harmonic or impact.
-        /// </summary>
-        public ForceType ForceType { get; set; }
     }
 }

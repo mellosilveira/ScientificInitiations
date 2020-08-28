@@ -48,10 +48,10 @@ namespace IcVibracoes.Core.Mapper
         /// This method builds the finite element result from a vector with variables: displacement, velocity and acceleration, and the force value.
         /// This method is used in two degrees os freedom matricial analysis.
         /// </summary>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <param name="force"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> BuildFiniteElementResult(double[] y, double force);
+        Task<FiniteElementResult> BuildFiniteElementResult(double[] previousResult, double force);
 
         /// <summary>
         /// This method builds the vector with variables: displacement, velocity and acceleration, from a finite element result.

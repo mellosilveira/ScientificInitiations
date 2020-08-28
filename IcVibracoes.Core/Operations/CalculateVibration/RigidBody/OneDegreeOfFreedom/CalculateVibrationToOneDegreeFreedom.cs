@@ -36,10 +36,10 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] y)
-            => base._numericalMethod.CalculateOneDegreeOfFreedomResult(input, time, y);
+        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
+            => base._numericalMethod.CalculateOneDegreeOfFreedomResult(input, time, previousResult);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
@@ -70,7 +70,6 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
             input.Stiffness = request.ElementData.Stiffness;
             input.DampingRatio = request.DampingRatios.FirstOrDefault();
             input.Force = request.Force;
-            input.ForceType = (ForceType)Enum.Parse(typeof(ForceType), request.ForceType, ignoreCase: true);
 
             return input;
         }
@@ -92,7 +91,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
             string fileName = null;
             if (input.ForceType == ForceType.Harmonic)
             {
-                fileName = $"{request.AnalysisType}_w={input.AngularFrequency}.csv";
+                fileName = $"{request.AnalysisType}_w={Math.Round(input.AngularFrequency, 2)}.csv";
             }
             else if (input.ForceType == ForceType.Impact)
             {
@@ -124,7 +123,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
             string fileName = null;
             if (input.ForceType == ForceType.Harmonic)
             {
-                fileName = $"MaxValues_{request.AnalysisType}_w0={request.InitialAngularFrequency}_wf={request.FinalAngularFrequency}_dampingRatio={input.DampingRatio}.csv";
+                fileName = $"MaxValues_{request.AnalysisType}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_dampingRatio={input.DampingRatio}.csv";
             }
             else if (input.ForceType == ForceType.Impact)
             {

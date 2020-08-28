@@ -2,6 +2,7 @@
 using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.Mapper;
 using System;
 using System.Threading.Tasks;
 
@@ -18,7 +19,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// Class constructor.
         /// </summary>
         /// <param name="differentialEquationOfMotion"></param>
-        public RungeKuttaForthOrderMethod(IDifferentialEquationOfMotion differentialEquationOfMotion)
+        public RungeKuttaForthOrderMethod(IDifferentialEquationOfMotion differentialEquationOfMotion, IMappingResolver mappingResolver)
+            : base(mappingResolver)
         {
             this._differentialEquationOfMotion = differentialEquationOfMotion;
         }
@@ -28,9 +30,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public delegate Task<double[]> CalculateDifferentialEquationOfMotion<TInput>(TInput input, double time, double[] y)
+        public delegate Task<double[]> CalculateDifferentialEquationOfMotion<TInput>(TInput input, double time, double[] previousResult)
             where TInput : RigidBodyInput;
 
         /// <summary>
@@ -38,34 +40,34 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateResult<TInput>(CalculateDifferentialEquationOfMotion<TInput> calculateDifferentialEquationOfMotion, TInput input, double time, double[] y)
+        public async Task<double[]> CalculateResult<TInput>(CalculateDifferentialEquationOfMotion<TInput> calculateDifferentialEquationOfMotion, TInput input, double time, double[] previousResult)
             where TInput : RigidBodyInput
         {
-            int arrayLength = y.Length;
+            int arrayLength = previousResult.Length;
 
             double[] result = new double[arrayLength];
             double[] t1 = new double[arrayLength];
             double[] t2 = new double[arrayLength];
             double[] t3 = new double[arrayLength];
 
-            double[] y1 = await calculateDifferentialEquationOfMotion(input, time, y).ConfigureAwait(false);
+            double[] y1 = await calculateDifferentialEquationOfMotion(input, time, previousResult).ConfigureAwait(false);
             for (int i = 0; i < arrayLength; i++)
             {
-                t1[i] = y[i] + 0.5 * input.TimeStep * y1[i];
+                t1[i] = previousResult[i] + 0.5 * input.TimeStep * y1[i];
             }
 
             double[] y2 = await calculateDifferentialEquationOfMotion(input, time + input.TimeStep / 2, t1).ConfigureAwait(false);
             for (int i = 0; i < arrayLength; i++)
             {
-                t2[i] = y[i] + 0.5 * input.TimeStep * y2[i];
+                t2[i] = previousResult[i] + 0.5 * input.TimeStep * y2[i];
             }
 
             double[] y3 = await calculateDifferentialEquationOfMotion(input, time + input.TimeStep / 2, t2).ConfigureAwait(false);
             for (int i = 0; i < arrayLength; i++)
             {
-                t3[i] = y[i] + input.TimeStep * y3[i];
+                t3[i] = previousResult[i] + input.TimeStep * y3[i];
             }
 
             double[] y4 = await calculateDifferentialEquationOfMotion(input, time + input.TimeStep, t3).ConfigureAwait(false);
@@ -105,11 +107,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] y)
+        public override async Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
         {
-            return await this.CalculateResult(this._differentialEquationOfMotion.CalculateForOneDegreeOfFreedom, input, time, y).ConfigureAwait(false);
+            return await this.CalculateResult(this._differentialEquationOfMotion.CalculateForOneDegreeOfFreedom, input, time, previousResult).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -117,11 +119,11 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// </summary>
         /// <param name="input"></param>
         /// <param name="time"></param>
-        /// <param name="y"></param>
+        /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] y)
+        public override async Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
         {
-            return await this.CalculateResult(this._differentialEquationOfMotion.CalculateForTwoDegreedOfFreedom, input, time, y).ConfigureAwait(false);
+            return await this.CalculateResult(this._differentialEquationOfMotion.CalculateForTwoDegreedOfFreedom, input, time, previousResult).ConfigureAwait(false);
         }
     }
 }

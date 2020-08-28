@@ -39,5 +39,25 @@ namespace IcVibracoes.Core.Calculator.Force
 
             return Task.FromResult(force);
         }
+
+        /// <summary>
+        /// Calculates the force for a aspecific time based on its type.
+        /// </summary>
+        /// <param name="originalForce"></param>
+        /// <param name="angularFrequency"></param>
+        /// <param name="time"></param>
+        /// <param name="forceType"></param>
+        /// <returns></returns>
+        public async Task<double[]> CalculateForceByType(double[] originalForce, double angularFrequency, double time, ForceType forceType)
+        {
+            double[] force = new double[originalForce.Length];
+
+            for (int i = 0; i < originalForce.Length; i++)
+            {
+                force[i] = await this.CalculateForceByType(originalForce[i], angularFrequency, time, forceType).ConfigureAwait(false);
+            }
+
+            return force;
+        }
     }
 }

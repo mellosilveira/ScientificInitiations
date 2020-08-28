@@ -16,9 +16,9 @@
   "author": "Bruno Silveira",
   "numericalMethod": "RungeKuttaForthOrder",
   "forceType": "Harmonic",
-  "periodCount": 10,
+  "periodCount": 100,
   "periodDivision": 100,
-  "initialAngularFrequency": 10,
+  "initialAngularFrequency": 0,
   "angularFrequencyStep": 1,
-  "finalAngularFrequency": 90
+  "finalAngularFrequency": 30
 }

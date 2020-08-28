@@ -1,6 +1,7 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.GeometricProperties.Rectangular;
 using IcVibracoes.Test.Helper;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.Calculator.GeometricProperties.Rectangular
@@ -30,7 +31,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties.Rectangular
         }
 
         [Fact(DisplayName = @"Feature: CalculatePiezoelectricArea | When: Execute. | Given: Valid parameters. | Should: Calculate correctly.")]
-        public async void CalculatePiezoelectricArea_Should_CalculateCorrectly()
+        public async Task CalculatePiezoelectricArea_Should_CalculateCorrectly()
         {
             // Arrange
             var result = await base._calculator.CalculatePiezoelectricArea(this._piezoelectricProfile, this._numberOfElements, this._elementsWithPiezoelectric, this._numberOfPiezoelectricPerElement).ConfigureAwait(false);
@@ -40,7 +41,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties.Rectangular
         }
 
         [Fact(DisplayName = @"Feature: CalculatePiezoelectricMomentOfInertia | When: Execute. | Given: Valid parameters. | Should: Calculate correctly.")]
-        public async void CalculatePiezoelectricMomentOfInertia_Should_CalculateCorrectly()
+        public async Task CalculatePiezoelectricMomentOfInertia_Should_CalculateCorrectly()
         {
             // Arrange
             var result = await base._calculator.CalculatePiezoelectricMomentOfInertia(this._piezoelectricProfile, this._beamProfileWithThickness, this._numberOfElements, this._elementsWithPiezoelectric, this._numberOfPiezoelectricPerElement).ConfigureAwait(false);

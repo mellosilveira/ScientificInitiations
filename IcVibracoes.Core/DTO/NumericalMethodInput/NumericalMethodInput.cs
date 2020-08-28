@@ -1,4 +1,5 @@
 ﻿using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
 using System;
 
 namespace IcVibracoes.Core.DTO.NumericalMethodInput
@@ -8,6 +9,12 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput
     /// </summary>
     public class NumericalMethodInput
     {
+        /// <summary>
+        /// The type of the force.
+        /// Can be harmonic or impact.
+        /// </summary>
+        public ForceType ForceType { get; set; }
+
         /// <summary>
         /// The initial time.
         /// Unit: s (second).

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## UNRELEASED
+## [2.4.0] - 2020-08-28
 ###Added
 - Analysis to one and two degress of freedom to numerical methods Newmark-Beta and Newmark.
 ### Changed
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Method CreateInput on CalculateVibration operation from abstract to virtual, it instantiate the angular frequencies correctly to impact analysis and when is informed just the initial angular frequency and the numerical method.
 - Moved properties NumericalMethod, Beta and Gama from FiniteElementMethodInput to NumericalMethodInput.
 - Name of parameters on enum NumericalMethod from CentralDifferenceMethod and ImplicitLinearAccelerationMethod to CentralDifference and ImplicitLinearAcceleration.
+- Moved property ForceType from class RigidBodyInput to NumericalMethodInput.
 ### Removed
 - Parameter Dimensions in class Constant.
 

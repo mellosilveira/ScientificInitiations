@@ -44,11 +44,11 @@ namespace IcVibracoes.Core.Models
                 case NumericalMethod.CentralDifference:
                 case NumericalMethod.ImplicitLinearAcceleration:
                 case NumericalMethod.NewmarkBeta:
-                    return new NewmarkBetaMethod(new Force());
+                    return new NewmarkBetaMethod(new Force(), new MappingResolver());
                 case NumericalMethod.Newmark:
                     return new NewmarkMethod(new MappingResolver());
                 case NumericalMethod.RungeKuttaForthOrder:
-                    return new RungeKuttaForthOrderMethod(new DifferentialEquationOfMotion(new Force()));
+                    return new RungeKuttaForthOrderMethod(new DifferentialEquationOfMotion(new Force()), new MappingResolver());
                 default:
                     break;
             }
