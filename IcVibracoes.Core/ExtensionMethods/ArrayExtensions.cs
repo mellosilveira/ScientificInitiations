@@ -197,17 +197,6 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns>A new vector with the result of subtraction between two vectors.</returns>
         public static double[] SubtractAsync(this double[] vector1, double[] vector2)
         {
-            //int size = vector1.Length;
-
-            //double[] result = new double[size];
-
-            //for (int i = 0; i < size; i++)
-            //{
-            //    result[i] = vector1[i] - vector2[i];
-            //}
-
-            //return result;
-
             return vector1.Zip(vector2, (v1, v2) => v1 - v2).ToArray();
         }
 
@@ -240,17 +229,6 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns>A new array with the result of sum between two vectors.</returns>
         public static double[] Sum(this double[] vector1, double[] vector2)
         {
-            //int size = vector1.Length;
-
-            //double[] result = new double[size];
-
-            //for (int i = 0; i < size; i++)
-            //{
-            //    result[i] = vector1[i] + vector2[i];
-            //}
-
-            //return result;
-            
             return vector1.Zip(vector2, (v1, v2) => v1 + v2).ToArray();
         }
 
@@ -321,20 +299,6 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns></returns>
         public static double[] ApplyBoundaryConditions(this double[] vector, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
         {
-            //int count = 0;
-
-            //double[] matrixBc = new double[numberOfTrueBoundaryConditions];
-
-            //for (int i = 0; i < vector.Length; i++)
-            //{
-            //    if (boundaryConditions[i])
-            //    {
-            //        matrixBc[count++] = vector[i];
-            //    }
-            //}
-
-            //return matrixBc;
-
             return vector
                 .Where((item, index) => boundaryConditions[index])
                 .ToArray();
@@ -347,17 +311,6 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns>The vector's minimum value.</returns>
         public static double GetMinValue(this double[] vector)
         {
-            //double minValue = vector[0];
-            //for (int i = 1; i < vector.Length; i++)
-            //{
-            //    if (vector[i] < minValue)
-            //    {
-            //        minValue = vector[i];
-            //    }
-            //}
-
-            //return minValue;
-
             return vector.Min();
         }
 
@@ -369,15 +322,6 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns>A new vector with the multiplication result.</returns>
         public static double[] MultiplyEachElement(this double[] vector, double value)
         {
-            //double[] result = new double[vector.Length];
-
-            //for (int i = 0; i < vector.Length; i++)
-            //{
-            //    result[i] = vector[i] * value;
-            //}
-
-            //return result;
-
             return vector
                 .Select(item => item * value)
                 .ToArray();
