@@ -16,15 +16,10 @@ namespace IcVibracoes.Core.Models
     public enum NumericalMethod
     {
         CentralDifference = 1,
-
         ImplicitLinearAcceleration = 2,
-
         NewmarkBeta = 3,
-
         Newmark = 4,
-
-        RungeKuttaForthOrder = 5
-    }
+        RungeKuttaForthOrder = 5 }
 
     /// <summary>
     /// It's responsible to manipulate the enum <see cref="NumericalMethod"/> based in a string.
@@ -49,8 +44,6 @@ namespace IcVibracoes.Core.Models
                     return new NewmarkMethod(new MappingResolver());
                 case NumericalMethod.RungeKuttaForthOrder:
                     return new RungeKuttaForthOrderMethod(new DifferentialEquationOfMotion(new Force()), new MappingResolver());
-                default:
-                    break;
             }
 
             throw new Exception($"Invalid numerical method: '{numericalMethod}'.");

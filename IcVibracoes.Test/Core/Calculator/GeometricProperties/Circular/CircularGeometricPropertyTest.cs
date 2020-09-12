@@ -3,7 +3,6 @@ using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.GeometricProperties.Circular;
 using IcVibracoes.Test.Helper;
 using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.Calculator.GeometricProperties.Circular
@@ -36,7 +35,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties.Circular
         public void CalculatePiezoelectricArea_Should_ThrowNotImplementedException()
         {
             // Arrange
-            Func<Task> func = async () => await base._calculator.CalculatePiezoelectricArea(this._piezoelectricProfile, this._numberOfElements, this._elementsWithPiezoelectric, this._numberOfPiezoelectricPerElement).ConfigureAwait(false);
+            Action func = () => base._calculator.CalculatePiezoelectricArea(this._piezoelectricProfile, this._numberOfElements, this._elementsWithPiezoelectric, this._numberOfPiezoelectricPerElement);
 
             // Assert
             func.Should().Throw<NotImplementedException>();
@@ -46,7 +45,7 @@ namespace IcVibracoes.Test.Core.Calculator.GeometricProperties.Circular
         public void CalculatePiezoelectricMomentOfInertia_Should_ThrowNotImplementedException()
         {
             // Arrange
-            Func<Task> func = async () => await base._calculator.CalculatePiezoelectricMomentOfInertia(this._piezoelectricProfile, this._beamProfileWithThickness, this._numberOfElements, this._elementsWithPiezoelectric, this._numberOfPiezoelectricPerElement).ConfigureAwait(false);
+            Action func = () => base._calculator.CalculatePiezoelectricMomentOfInertia(this._piezoelectricProfile, this._beamProfileWithThickness, this._numberOfElements, this._elementsWithPiezoelectric, this._numberOfPiezoelectricPerElement);
 
             // Assert
             func.Should().Throw<NotImplementedException>();

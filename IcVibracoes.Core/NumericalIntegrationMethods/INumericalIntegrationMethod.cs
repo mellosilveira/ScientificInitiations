@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods
 {
@@ -15,7 +14,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input);
+        FiniteElementResult CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input);
 
         /// <summary>
         /// Calculates and write in a file the results for a finite element analysis.
@@ -24,7 +23,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// <param name="previousResult"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time);
+        FiniteElementResult CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time);
 
         /// <summary>
         /// Calculates and write in a file the results for one degree of freedom analysis.
@@ -33,7 +32,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult);
+        double[] CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult);
 
         /// <summary>
         /// Calculates and write in a file the results for two degrees of freedom analysis.
@@ -42,6 +41,6 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult);
+        double[] CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult);
     }
 }

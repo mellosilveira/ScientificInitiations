@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput;
 using IcVibracoes.DataContracts;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration
 {
@@ -10,6 +9,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <typeparam name="TResponseData"></typeparam>
+    /// <typeparam name="TInput"></typeparam>
     public interface ICalculateVibration<TRequest, TResponse, TResponseData, TInput> : IOperationBase<TRequest, TResponse, TResponseData>
         where TRequest : OperationRequestBase
         where TResponse : OperationResponseBase<TResponseData>, new()
@@ -21,7 +21,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="TInput"/>.</returns>
-        Task<TInput> CreateInput(TRequest request);
+        TInput CreateInput(TRequest request);
 
         /// <summary>
         /// This method creates the file path to write the results.
@@ -29,7 +29,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The solution path.</returns>
-        Task<string> CreateSolutionPath(TRequest request, TInput input);
+        string CreateSolutionPath(TRequest request, TInput input);
 
         /// <summary>
         /// This method creates the file path to write the maximum values calculated in the analysis.
@@ -37,6 +37,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The maximum values solution path.</returns>
-        Task<string> CreateMaxValuesPath(TRequest request, TInput input);
+        string CreateMaxValuesPath(TRequest request, TInput input);
     }
 }

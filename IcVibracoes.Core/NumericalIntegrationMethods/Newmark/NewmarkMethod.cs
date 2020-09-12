@@ -7,7 +7,6 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 {
@@ -34,15 +33,15 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public override Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input)
+        public override FiniteElementResult CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input)
         {
-            return Task.FromResult(new FiniteElementResult
+            return new FiniteElementResult
             {
                 Displacement = new double[input.NumberOfTrueBoundaryConditions],
                 Velocity = new double[input.NumberOfTrueBoundaryConditions],
                 Acceleration = new double[input.NumberOfTrueBoundaryConditions],
                 Force = input.OriginalForce
-            });
+            };
         }
 
         /// <summary>
@@ -52,7 +51,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousResult"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public override async Task<FiniteElementResult> CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time)
+        public override FiniteElementResult CalculateFiniteElementResult(FiniteElementMethodInput input,
+            FiniteElementResult previousResult, double time)
         {
             FiniteElementResult result = new FiniteElementResult
             {
@@ -64,21 +64,21 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
             this.CalculateIngrationContants(input);
 
-            double[,] equivalentStiffness = await this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
-            double[,] inversedEquivalentStiffness = await equivalentStiffness.InverseMatrixAsync().ConfigureAwait(false);
+            double[,] equivalentStiffness = this.CalculateEquivalentStiffness(input.Mass, input.Stiffness, input.Damping, input.NumberOfTrueBoundaryConditions);
+            double[,] inversedEquivalentStiffness = equivalentStiffness.InverseMatrix();
 
-            double[] equivalentForce = await this.CalculateEquivalentForce(input, previousResult.Displacement, previousResult.Velocity, previousResult.Acceleration, time).ConfigureAwait(false);
+            double[] equivalentForce = this.CalculateEquivalentForce(input, previousResult.Displacement, previousResult.Velocity, previousResult.Acceleration, time);
 
-            result.Displacement = await inversedEquivalentStiffness.MultiplyAsync(equivalentForce).ConfigureAwait(false);
+            result.Displacement = inversedEquivalentStiffness.Multiply(equivalentForce);
 
             string path = @"C:\Users\bruno\OneDrive\Área de Trabalho\Testes - IC Vibrações\Matrizes resultantes\master.csv";
-            using (StreamWriter streamWriter = new StreamWriter(path))
+            using (var streamWriter = new StreamWriter(path))
             {
-                this.WriteMatrix(streamWriter, equivalentStiffness, "Keq");
-                this.WriteMatrix(streamWriter, inversedEquivalentStiffness, "IKeq");
+                WriteMatrix(streamWriter, equivalentStiffness, "Keq");
+                WriteMatrix(streamWriter, inversedEquivalentStiffness, "IKeq");
 
-                this.WriteVector(streamWriter, equivalentForce, "Feq");
-                this.WriteVector(streamWriter, result.Displacement, "Y");
+                WriteVector(streamWriter, equivalentForce, "Feq");
+                WriteVector(streamWriter, result.Displacement, "Y");
             }
 
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
@@ -90,7 +90,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             return result;
         }
 
-        public void WriteMatrix(StreamWriter streamWriter, double[,] matrix, string matrixName)
+        private static void WriteMatrix(StreamWriter streamWriter, double[,] matrix, string matrixName)
         {
             streamWriter.Write(string.Format(matrixName));
             streamWriter.Write(streamWriter.NewLine);
@@ -99,7 +99,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    streamWriter.Write(string.Format("{0}; ", matrix[i, j]));
+                    streamWriter.Write($"{matrix[i, j]}; ");
                 }
 
                 streamWriter.Write(streamWriter.NewLine);
@@ -108,14 +108,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
             streamWriter.Write(streamWriter.NewLine);
         }
 
-        public void WriteVector(StreamWriter streamWriter, double[] vector, string matrixName)
+        private static void WriteVector(StreamWriter streamWriter, double[] vector, string matrixName)
         {
             streamWriter.Write(string.Format(matrixName));
             streamWriter.Write(streamWriter.NewLine);
 
-            for (int i = 0; i < vector.Length; i++)
+            foreach (var t in vector)
             {
-                streamWriter.Write(string.Format("{0}; ", vector[i]));
+                streamWriter.Write($"{t}; ");
             }
 
             streamWriter.Write(streamWriter.NewLine);
@@ -129,33 +129,33 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousVelocity"></param>
         /// <param name="previousAcceleration"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateEquivalentForce(FiniteElementMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, double time)
+        public double[] CalculateEquivalentForce(FiniteElementMethodInput input, double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, double time)
         {
-            double[] equivalentVelocity = await this.CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
-            double[] equivalentAcceleration = await this.CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions).ConfigureAwait(false);
+            double[] equivalentVelocity = this.CalculateEquivalentVelocity(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
+            double[] equivalentAcceleration = this.CalculateEquivalentAcceleration(previousDisplacement, previousVelocity, previousAcceleration, input.NumberOfTrueBoundaryConditions);
 
-            double[] mass_accel = await input.Mass.MultiplyAsync(equivalentAcceleration).ConfigureAwait(false);
-            double[] damping_vel = await input.Damping.MultiplyAsync(equivalentVelocity).ConfigureAwait(false);
+            double[] massAcceleration = input.Mass.Multiply(equivalentAcceleration);
+            double[] dampingVel = input.Damping.Multiply(equivalentVelocity);
 
             double[] equivalentForce = new double[input.NumberOfTrueBoundaryConditions];
 
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
-                equivalentForce[i] = input.OriginalForce[i] * Math.Sin(input.AngularFrequency * time) + mass_accel[i] + damping_vel[i];
+                equivalentForce[i] = input.OriginalForce[i] * Math.Sin(input.AngularFrequency * time) + massAcceleration[i] + dampingVel[i];
             }
 
             return equivalentForce;
         }
 
         /// <summary>
-        /// Calculates the equivalent aceleration to calculate the equivalent force.
+        /// Calculates the equivalent acceleration to calculate the equivalent force.
         /// </summary>
         /// <param name="previousDisplacement"></param>
         /// <param name="previousVelocity"></param>
         /// <param name="previousAcceleration"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public Task<double[]> CalculateEquivalentAcceleration(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBoundaryConditions)
+        private double[] CalculateEquivalentAcceleration(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBoundaryConditions)
         {
             double[] equivalentAcceleration = new double[numberOfTrueBoundaryConditions];
 
@@ -164,7 +164,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 equivalentAcceleration[i] = a0 * previousDisplacement[i] + a2 * previousVelocity[i] + a3 * previousAcceleration[i];
             }
 
-            return Task.FromResult(equivalentAcceleration);
+            return equivalentAcceleration;
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="previousAcceleration"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public Task<double[]> CalculateEquivalentVelocity(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBoundaryConditions)
+        private double[] CalculateEquivalentVelocity(double[] previousDisplacement, double[] previousVelocity, double[] previousAcceleration, uint numberOfTrueBoundaryConditions)
         {
             double[] equivalentVelocity = new double[numberOfTrueBoundaryConditions];
 
@@ -184,7 +184,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 equivalentVelocity[i] = a1 * previousDisplacement[i] + a4 * previousVelocity[i] + a5 * previousAcceleration[i];
             }
 
-            return Task.FromResult(equivalentVelocity);
+            return equivalentVelocity;
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="stiffness"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public Task<double[,]> CalculateEquivalentStiffness(double[,] mass, double[,] stiffness, double[,] damping, uint numberOfTrueBoundaryConditions)
+        public double[,] CalculateEquivalentStiffness(double[,] mass, double[,] stiffness, double[,] damping, uint numberOfTrueBoundaryConditions)
         {
             double[,] equivalentStiffness = new double[numberOfTrueBoundaryConditions, numberOfTrueBoundaryConditions];
 
@@ -207,14 +207,14 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 }
             }
 
-            return Task.FromResult(equivalentStiffness);
+            return equivalentStiffness;
         }
 
         /// <summary>
         /// Calculates the ingration constants to be used in method.
         /// </summary>
         /// <param name="input"></param>
-        public void CalculateIngrationContants(NumericalMethodInput input)
+        private void CalculateIngrationContants(NumericalMethodInput input)
         {
             this.a0 = 1 / (input.Beta * Math.Pow(input.TimeStep, 2));
             this.a1 = input.Gama / (input.Beta * input.TimeStep);
@@ -233,7 +233,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
+        public override double[] CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
         {
             this.CalculateIngrationContants(input);
 
@@ -243,15 +243,18 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
                 + input.Mass * (this.a0 * previousResult[0] + this.a2 * previousResult[1] + this.a3 * previousResult[2])
                 + input.Damping * (this.a1 * previousResult[0] + this.a4 * previousResult[1] + this.a5 * previousResult[2]);
 
-            var result = new double[Constant.NumberOfRigidBodyVariables_1DF];
+            var result = new double[Constants.NumberOfRigidBodyVariables1Df];
+            
             // Displacement
             result[0] = equivalentForce / equivalentStiffness;
+            
             // Acceleration
             result[2] = this.a0 * (result[0] - previousResult[0]) - this.a2 * previousResult[1] - this.a3 * previousResult[2];
+            
             // Velocity
             result[1] = previousResult[1] + this.a6 * previousResult[2] + this.a7 * result[2];
 
-            return Task.FromResult(result);
+            return result;
         }
     }
 }

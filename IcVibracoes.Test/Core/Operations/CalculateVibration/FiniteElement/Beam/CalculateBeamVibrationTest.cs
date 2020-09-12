@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using IcVibracoes.Calculator.GeometricProperties;
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
@@ -9,6 +8,7 @@ using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam;
 using IcVibracoes.Core.Validators.Profiles;
 using Moq;
 using System;
+using IcVibracoes.Core.Calculator.GeometricProperties;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.Operations.CalculateVibration.FiniteElement.Beam

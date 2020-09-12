@@ -4,7 +4,6 @@ using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes
 {
@@ -24,11 +23,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="specificMass"></param>
         /// <param name="elementLength"></param>
         /// <returns>The elementary mass matrix.</returns>
-        public Task<double[,]> CalculateElementMass(double area, double specificMass, double elementLength)
+        public double[,] CalculateElementMass(double area, double specificMass, double elementLength)
         {
             double constant = area * specificMass * elementLength / 420;
 
-            double[,] elementMass = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
+            double[,] elementMass = new double[Constants.DegreesOfFreedomElement, Constants.DegreesOfFreedomElement];
             elementMass[0, 0] = 156 * constant;
             elementMass[0, 1] = 22 * elementLength * constant;
             elementMass[0, 2] = 54 * constant;
@@ -46,7 +45,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
             elementMass[3, 2] = -22 * elementLength * constant;
             elementMass[3, 3] = 4 * Math.Pow(elementLength, 2) * constant;
 
-            return Task.FromResult(elementMass);
+            return elementMass;
         }
 
         /// <summary>
@@ -55,18 +54,18 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The structure mass matrix.</returns>
-        public async virtual Task<double[,]> CalculateMass(TBeam beam, uint degreesOfFreedom)
+        public virtual double[,] CalculateMass(TBeam beam, uint degreesOfFreedom)
         {
             double[,] mass = new double[degreesOfFreedom, degreesOfFreedom];
 
             for (uint n = 0; n < beam.NumberOfElements; n++)
             {
                 double length = beam.Length / beam.NumberOfElements;
-                double[,] elementMass = await this.CalculateElementMass(beam.GeometricProperty.Area[n], beam.Material.SpecificMass, length).ConfigureAwait(false);
+                double[,] elementMass = this.CalculateElementMass(beam.GeometricProperty.Area[n], beam.Material.SpecificMass, length);
 
-                for (uint i = 2 * n; i < 2 * n + Constant.DegreesOfFreedomElement; i++)
+                for (uint i = 2 * n; i < 2 * n + Constants.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = 2 * n; j < 2 * n + Constant.DegreesOfFreedomElement; j++)
+                    for (uint j = 2 * n; j < 2 * n + Constants.DegreesOfFreedomElement; j++)
                     {
                         mass[i, j] += elementMass[i - 2 * n, j - 2 * n];
                     }
@@ -83,11 +82,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="youngModulus"></param>
         /// <param name="elementLength"></param>
         /// <returns>The elementary stiffness matrix.</returns>
-        public Task<double[,]> CalculateElementStiffness(double momentOfInertia, double youngModulus, double elementLength)
+        public double[,] CalculateElementStiffness(double momentOfInertia, double youngModulus, double elementLength)
         {
             double constant = momentOfInertia * youngModulus / Math.Pow(elementLength, 3);
 
-            double[,] elementStiffness = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
+            double[,] elementStiffness = new double[Constants.DegreesOfFreedomElement, Constants.DegreesOfFreedomElement];
             elementStiffness[0, 0] = 12 * constant;
             elementStiffness[0, 1] = 6 * elementLength * constant;
             elementStiffness[0, 2] = -12 * constant;
@@ -105,7 +104,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
             elementStiffness[3, 2] = -6 * elementLength * constant;
             elementStiffness[3, 3] = 4 * Math.Pow(elementLength, 2) * constant;
 
-            return Task.FromResult(elementStiffness);
+            return elementStiffness;
         }
 
         /// <summary>
@@ -114,18 +113,18 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The structure stiffness matrix.</returns>
-        public async virtual Task<double[,]> CalculateStiffness(TBeam beam, uint degreesOfFreedom)
+        public virtual double[,] CalculateStiffness(TBeam beam, uint degreesOfFreedom)
         {
             double[,] stiffness = new double[degreesOfFreedom, degreesOfFreedom];
 
             for (uint n = 0; n < beam.NumberOfElements; n++)
             {
                 double length = beam.Length / beam.NumberOfElements;
-                double[,] elementStiffness = await this.CalculateElementStiffness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, length).ConfigureAwait(false);
+                double[,] elementStiffness = this.CalculateElementStiffness(beam.GeometricProperty.MomentOfInertia[n], beam.Material.YoungModulus, length);
 
-                for (uint i = 2 * n; i < 2 * n + Constant.DegreesOfFreedomElement; i++)
+                for (uint i = 2 * n; i < 2 * n + Constants.DegreesOfFreedomElement; i++)
                 {
-                    for (uint j = 2 * n; j < 2 * n + Constant.DegreesOfFreedomElement; j++)
+                    for (uint j = 2 * n; j < 2 * n + Constants.DegreesOfFreedomElement; j++)
                     {
                         stiffness[i, j] += elementStiffness[i - 2 * n, j - 2 * n];
                     }
@@ -141,7 +140,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
         /// <returns>The structure damping matrix.</returns>
-        public Task<double[,]> CalculateDamping(double[,] mass, double[,] stiffness)
+        public double[,] CalculateDamping(double[,] mass, double[,] stiffness)
         {
             int size = mass.GetLength(0);
 
@@ -151,11 +150,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
             {
                 for (int j = 0; j < size; j++)
                 {
-                    damping[i, j] = Constant.Mi * mass[i, j] + Constant.Alpha * stiffness[i, j];
+                    damping[i, j] = Constants.Mi * mass[i, j] + Constants.Alpha * stiffness[i, j];
                 }
             }
 
-            return Task.FromResult(damping);
+            return damping;
         }
 
         /// <summary>
@@ -163,7 +162,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The structure force matrix.</returns>
-        public virtual Task<double[]> CalculateForce(TBeam beam) => Task.FromResult(beam.Forces);
+        public virtual double[] CalculateForce(TBeam beam) => beam.Forces;
 
         /// <summary>
         /// This method builds the boundary condition matrix and the number of true boundary conditions.
@@ -171,7 +170,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The boundary conditions matrix and the number of true boundary conditions.</returns>
-        public virtual Task<(bool[], uint)> CalculateBoundaryConditions(TBeam beam, uint degreesOfFreedom)
+        public virtual (bool[], uint) CalculateBoundaryConditions(TBeam beam, uint degreesOfFreedom)
         {
             bool[] boundaryConditions = new bool[degreesOfFreedom];
 
@@ -182,8 +181,8 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
 
             foreach (KeyValuePair<uint, FasteningType> fastening in beam.Fastenings)
             {
-                boundaryConditions[2 * fastening.Key] = fastening.Value.AlowLinearDisplacement;
-                boundaryConditions[2 * fastening.Key + 1] = fastening.Value.AlowAngularDisplacement;
+                boundaryConditions[2 * fastening.Key] = fastening.Value.AllowLinearDisplacement;
+                boundaryConditions[2 * fastening.Key + 1] = fastening.Value.AllowAngularDisplacement;
             }
 
             uint numberOfTrueBoundaryConditions = 0;
@@ -195,7 +194,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
                 }
             }
 
-            return Task.FromResult((boundaryConditions, numberOfTrueBoundaryConditions));
+            return (boundaryConditions, numberOfTrueBoundaryConditions);
         }
     }
 }

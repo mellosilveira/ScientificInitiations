@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElement;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.Profiles.Rectangular
 {
@@ -16,9 +15,9 @@ namespace IcVibracoes.Core.Validators.Profiles.Rectangular
         /// <param name="profile"></param>
         /// <param name="response"></param>
         /// <returns>True, if the values in the rectangular profile can be used in the analysis. False, otherwise.</returns>
-        public override async Task<bool> Execute(RectangularProfile profile, FiniteElementResponse response)
+        public override bool Execute(RectangularProfile profile, FiniteElementResponse response)
         {
-            if (await base.Execute(profile, response).ConfigureAwait(false) == false)
+            if (base.Execute(profile, response) == false)
             {
                 return false;
             }
@@ -51,7 +50,7 @@ namespace IcVibracoes.Core.Validators.Profiles.Rectangular
             }
             else if (profile.Height < 0 || profile.Width < 0)
             {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value to heigth: {profile.Height} and widht: {profile.Width}. Height and width must be greather than zero");
+                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value to heigth: {profile.Height} and widht: {profile.Width}. Height and width must be greater than zero");
 
                 return false;
             }
@@ -75,7 +74,7 @@ namespace IcVibracoes.Core.Validators.Profiles.Rectangular
             else
             {
                 response.AddError(OperationErrorCode.RequestValidationError,
-                    $"Area: {profile.Area} and Moment of Inertia: {profile.MomentOfInertia} must be greather than zero.");
+                    $"Area: {profile.Area} and Moment of Inertia: {profile.MomentOfInertia} must be greater than zero.");
 
                 return false;
             }

@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
-using System.Threading.Tasks;
 
-namespace IcVibracoes.Calculator.GeometricProperties
+namespace IcVibracoes.Core.Calculator.GeometricProperties
 {
     /// <summary>
     /// It's responsible to calculate any geometric property.
@@ -15,7 +14,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        Task<double[]> CalculateArea(TProfile profile, uint numberOfElements);
+        double[] CalculateArea(TProfile profile, uint numberOfElements);
 
         /// <summary>
         /// This method calculates the vector with the beam moment of inertia.
@@ -23,7 +22,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        Task<double[]> CalculateMomentOfInertia(TProfile profile, uint numberOfElements);
+        double[] CalculateMomentOfInertia(TProfile profile, uint numberOfElements);
 
         /// <summary>
         /// This method calculates the vector with the piezoelectric area.
@@ -33,7 +32,7 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="elementsWithPiezoelectric"></param>
         /// <param name="numberOfPiezoelectricPerElement"></param>
         /// <returns></returns>
-        Task<double[]> CalculatePiezoelectricArea(TProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricPerElement);
+        double[] CalculatePiezoelectricArea(TProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricPerElement);
 
         /// <summary>
         /// This method calculates the vector with the piezoelectric moment of inertia.
@@ -44,6 +43,6 @@ namespace IcVibracoes.Calculator.GeometricProperties
         /// <param name="elementsWithPiezoelectric"></param>
         /// <param name="numberOfPiezoelectricsPerElement"></param>
         /// <returns></returns>
-        Task<double[]> CalculatePiezoelectricMomentOfInertia(TProfile piezoelectricProfile, TProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricsPerElement);
+        double[] CalculatePiezoelectricMomentOfInertia(TProfile piezoelectricProfile, TProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricsPerElement);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models.Beams;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
 {
@@ -16,9 +15,9 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The strucutal mass matrix.</returns>
-        public async override Task<double[,]> CalculateMass(BeamWithDva<TProfile> beam, uint degreesOfFreedom)
+        public override double[,] CalculateMass(BeamWithDva<TProfile> beam, uint degreesOfFreedom)
         {
-            double[,] beamMass = await base.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] beamMass = base.CalculateMass(beam, degreesOfFreedom);
 
             double[,] massWithDva = new double[beamMass.GetLength(0) + beam.DvaMasses.Length, beamMass.GetLength(1) + beam.DvaMasses.Length];
 
@@ -45,9 +44,9 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The strucutal stiffness matrix.</returns>
-        public async override Task<double[,]> CalculateStiffness(BeamWithDva<TProfile> beam, uint degreesOfFreedom)
+        public override double[,] CalculateStiffness(BeamWithDva<TProfile> beam, uint degreesOfFreedom)
         {
-            double[,] beamStiffness = await base.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] beamStiffness = base.CalculateStiffness(beam, degreesOfFreedom);
 
             double[,] stiffnessWithDva = new double[beamStiffness.GetLength(0) + beam.DvaStiffnesses.Length, beamStiffness.GetLength(1) + beam.DvaStiffnesses.Length];
 
@@ -76,11 +75,11 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The boundary conditions matrix and the number of true boundary conditions.</returns>
-        public async override Task<(bool[], uint)> CalculateBoundaryConditions(BeamWithDva<TProfile> beam, uint degreesOfFreedom)
+        public override (bool[], uint) CalculateBoundaryConditions(BeamWithDva<TProfile> beam, uint degreesOfFreedom)
         {
             uint numberOfDvas = (uint)beam.DvaNodePositions.Length;
 
-            (bool[] boundaryCondition, uint numberOfTrueBoundaryConditions) = await base.CalculateBoundaryConditions(beam, degreesOfFreedom + numberOfDvas).ConfigureAwait(false);
+            (bool[] boundaryCondition, uint numberOfTrueBoundaryConditions) = base.CalculateBoundaryConditions(beam, degreesOfFreedom + numberOfDvas);
 
             return (boundaryCondition, numberOfTrueBoundaryConditions);
         }

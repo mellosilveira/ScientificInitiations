@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace IcVibracoes.Core.Calculator.NaturalFrequency
+﻿namespace IcVibracoes.Core.Calculator.NaturalFrequency
 {
     /// <summary>
     /// It's responsible to calculate the structure natural frequencies for different cases.
@@ -8,7 +6,7 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
     public interface INaturalFrequency
     {
         /// <summary>
-        /// Calculates the main natural frequency of strucuture using rigid body concepts.
+        /// Calculates the main natural frequency of structure using rigid body concepts.
         /// Base equation: wn = sqrt(K / M)
         /// wn - Natural frequency.
         /// K - Structure stiffness.
@@ -17,7 +15,7 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
         /// <returns></returns>
-        Task<double> Calculate(double mass, double stiffness);
+        double Calculate(double mass, double stiffness);
 
         /// <summary>
         /// Calculates the max value to natural frequency of structure using finite element concepts.
@@ -31,7 +29,7 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <param name="stiffness"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
-        Task<double> CalculateByInversePowerMethod(double[,] mass, double[,] stiffness, double tolerance);
+        double CalculateByInversePowerMethod(double[,] mass, double[,] stiffness, double tolerance);
 
         /// <summary>
         /// Calculates the main natural frequencies of structure using finite element concepts.
@@ -44,6 +42,6 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <param name="stiffness"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
-        Task<double[]> CalculateByQRDecomposition(double[,] mass, double[,] stiffness, double tolerance);
+        double[] CalculateByQRDecomposition(double[,] mass, double[,] stiffness, double tolerance);
     }
 }

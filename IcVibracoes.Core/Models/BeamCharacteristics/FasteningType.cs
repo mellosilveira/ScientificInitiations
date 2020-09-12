@@ -5,41 +5,49 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
     /// <summary>
     /// It represents the degrees of freedom for a generic fastening.
     /// </summary>
-    public abstract class FasteningType
+    public class FasteningType
     {
-        public abstract bool AlowLinearDisplacement { get; }
+        public bool AllowLinearDisplacement { get; }
 
-        public abstract bool AlowAngularDisplacement { get; }
-    }
+        public bool AllowAngularDisplacement { get; }
 
-    /// <summary>
-    /// It represents the degrees of freedom for a fixed type fastening.
-    /// </summary>
-    public class Fixed : FasteningType
-    {
-        public override bool AlowLinearDisplacement => false;
+        private FasteningType(bool allowLinearDisplacement, bool allowAngularDisplacement)
+        {
+            AllowLinearDisplacement = allowLinearDisplacement;
+            AllowAngularDisplacement = allowAngularDisplacement;
+        }
 
-        public override bool AlowAngularDisplacement => false;
-    }
+        /// <summary>
+        /// It represents the degrees of freedom for a fixed type fastening.
+        /// </summary>
+        public static readonly FasteningType Fixed = new FasteningType(false, false);
 
-    /// <summary>
-    /// It represents the degrees of freedom for a pinned type fastening.
-    /// </summary>
-    public class Pinned : FasteningType
-    {
-        public override bool AlowLinearDisplacement => false;
+        /// <summary>
+        /// It represents the degrees of freedom for a pinned type fastening.
+        /// </summary>
+        public static readonly FasteningType Pinned = new FasteningType(false, true);
 
-        public override bool AlowAngularDisplacement => true;
-    }
+        /// <summary>
+        /// It represents the degrees of freedom for a case without fastening.
+        /// </summary>
+        public static readonly FasteningType None = new FasteningType(true, true);
 
-    /// <summary>
-    /// It represents the degrees of freedom for a case without fastening.
-    /// </summary>
-    public class None : FasteningType
-    {
-        public override bool AlowLinearDisplacement => true;
-
-        public override bool AlowAngularDisplacement => true;
+        /// <summary>
+        /// This method creates an instance of class <seealso cref="FasteningType"/>.
+        /// It can be <seealso cref="None"/>, <seealso cref="Fixed"/> or <seealso cref="Pinned"/>.
+        /// </summary>
+        /// <param name="fastening"></param>
+        /// <returns></returns>
+        public static FasteningType Create(string fastening)
+        {
+            return (Fastenings) Enum.Parse(typeof(Fastenings), fastening, ignoreCase: true) switch
+            {
+                Fastenings.Fixed => Fixed,
+                Fastenings.Pinned => Pinned,
+                Fastenings.None => None,
+                _ => throw new Exception($"Invalid fastening: '{fastening}'.")
+            };
+        }
     }
 
     /// <summary>
@@ -50,34 +58,5 @@ namespace IcVibracoes.Core.Models.BeamCharacteristics
         None = 0,
         Pinned = 1,
         Fixed = 2,
-    }
-
-    /// <summary>
-    /// It's responsible to manipulate the enum <see cref="Fastenings"/> based in a string.
-    /// </summary>
-    public class FasteningFactory
-    {
-        /// <summary>
-        /// This method creates an instance of class <seealso cref="FasteningType"/>.
-        /// It can be <seealso cref="None"/>, <seealso cref="Fixed"/> or <seealso cref="Pinned"/>.
-        /// </summary>
-        /// <param name="fastening"></param>
-        /// <returns></returns>
-        public static FasteningType Create(string fastening)
-        {
-            switch ((Fastenings)Enum.Parse(typeof(Fastenings), fastening, ignoreCase: true))
-            {
-                case Fastenings.Fixed:
-                    return new Fixed();
-                case Fastenings.Pinned:
-                    return new Pinned();
-                case Fastenings.None:
-                    return new None();
-                default:
-                    break;
-            }
-
-            throw new Exception($"Invalid fastening: '{fastening}'.");
-        }
     }
 }

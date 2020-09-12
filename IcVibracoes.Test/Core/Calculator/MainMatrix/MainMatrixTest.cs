@@ -6,7 +6,6 @@ using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using Moq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.Calculator.MainMatrix
@@ -35,19 +34,15 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix
 
             uint numberOfElements = 2;
             uint numberOfNodes = numberOfElements + 1;
-            this._degressOfFreedom = numberOfNodes * Constant.DegreesOfFreedomPerNode;
+            this._degressOfFreedom = numberOfNodes * Constants.DegreesOfFreedomPerNode;
 
             this._beam = new TBeam
             {
-                Fastenings = new Dictionary<uint, FasteningType> { { 0, new Pinned() }, { numberOfNodes, new Pinned() } },
+                Fastenings = new Dictionary<uint, FasteningType> { { 0, FasteningType.Pinned }, { numberOfNodes, FasteningType.Pinned } },
                 Forces = new double[] { 0, 0, _forceValue, 0, 0, 0 },
-                GeometricProperty = new GeometricProperty
-                {
-                    Area = new double[] { },
-                    MomentOfInertia = new double[] { }
-                },
+                GeometricProperty = GeometricProperty.Empty,
                 Length = 1,
-                Material = new Steel1020(),
+                Material = Material.Steel1020,
                 NumberOfElements = numberOfElements,
                 //Profile = new TProfile
                 //{
@@ -56,9 +51,9 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix
                 //}
             };
 
-            this._elementMass = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
+            this._elementMass = new double[Constants.DegreesOfFreedomElement, Constants.DegreesOfFreedomElement];
 
-            this._elementStiffness = new double[Constant.DegreesOfFreedomElement, Constant.DegreesOfFreedomElement];
+            this._elementStiffness = new double[Constants.DegreesOfFreedomElement, Constants.DegreesOfFreedomElement];
 
             this._mass = new double[this._degressOfFreedom, this._degressOfFreedom];
 
@@ -90,10 +85,10 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix
         //}
 
         [Fact(DisplayName = @"Feature: CalculateMass | When: Execute. | Given: Valid parameters. | Should: Return the element's mass matrix.")]
-        public async Task CalculateMass_Should_ReturnElementMassMatrix()
+        public void CalculateMass_Should_ReturnElementMassMatrix()
         {
             // Act
-            var result = await this._operationMock.Object.CalculateMass(this._beam, this._degressOfFreedom).ConfigureAwait(false);
+            var result = this._operationMock.Object.CalculateMass(this._beam, this._degressOfFreedom);
 
             // Assert
             for (int i = 0; i < result.GetLength(0); i++)

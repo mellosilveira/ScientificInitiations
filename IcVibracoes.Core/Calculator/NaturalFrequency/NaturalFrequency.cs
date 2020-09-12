@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Core.Calculator.Eigenvalue;
 using IcVibracoes.Core.ExtensionMethods;
 using System;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.NaturalFrequency
 {
@@ -15,10 +14,8 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <summary>
         /// Class constructor.
         /// </summary>
-        /// <param name="arrayOperation"></param>
         /// <param name="calculateEigenvalue"></param>
-        public NaturalFrequency(
-            IEigenvalue calculateEigenvalue)
+        public NaturalFrequency(IEigenvalue calculateEigenvalue)
         {
             this._calculateEigenvalue = calculateEigenvalue;
         }
@@ -35,14 +32,14 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <param name="stiffness"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
-        public async Task<double> CalculateByInversePowerMethod(double[,] mass, double[,] stiffness, double tolerance)
+        public double CalculateByInversePowerMethod(double[,] mass, double[,] stiffness, double tolerance)
         {
-            double[,] inversedStiffness = await stiffness.InverseMatrixAsync().ConfigureAwait(false);
+            double[,] inversedStiffness = stiffness.InverseMatrix();
 
-            double[,] dynamicalMatrix = await inversedStiffness.MultiplyAsync(mass).ConfigureAwait(false);
-            double[,] inversetDynamicalMatrix = await dynamicalMatrix.InverseMatrixAsync().ConfigureAwait(false);
+            double[,] dynamicalMatrix = inversedStiffness.Multiply(mass);
+            double[,] inversetDynamicalMatrix = dynamicalMatrix.InverseMatrix();
 
-            double naturalFrequency = await this._calculateEigenvalue.PowerMethod(inversetDynamicalMatrix, tolerance).ConfigureAwait(false);
+            double naturalFrequency = this._calculateEigenvalue.PowerMethod(inversetDynamicalMatrix, tolerance);
 
             return naturalFrequency;
         }
@@ -58,19 +55,19 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <param name="stiffness"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateByQRDecomposition(double[,] mass, double[,] stiffness, double tolerance)
+        public double[] CalculateByQRDecomposition(double[,] mass, double[,] stiffness, double tolerance)
         {
-            double[,] inversedStiffness = await stiffness.InverseMatrixAsync().ConfigureAwait(false);
+            double[,] inversedStiffness = stiffness.InverseMatrix();
 
-            double[,] dynamicalMatrix = await inversedStiffness.MultiplyAsync(mass).ConfigureAwait(false);
+            double[,] dynamicalMatrix = inversedStiffness.Multiply(mass);
 
-            double[] naturalFrequencies = await this._calculateEigenvalue.QR_Decomposition(dynamicalMatrix, tolerance).ConfigureAwait(false);
+            double[] naturalFrequencies = this._calculateEigenvalue.QR_Decomposition(dynamicalMatrix, tolerance);
 
             return naturalFrequencies;
         }
 
         /// <summary>
-        /// Calculates the main natural frequency of strucuture using rigid body concepts.
+        /// Calculates the main natural frequency of structure using rigid body concepts.
         /// Base equation: wn = sqrt(K / M)
         /// wn - Natural frequency.
         /// K - Structure stiffness.
@@ -79,11 +76,6 @@ namespace IcVibracoes.Core.Calculator.NaturalFrequency
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
         /// <returns></returns>
-        public Task<double> Calculate(double mass, double stiffness)
-        {
-            double naturalAngularFrequency = Math.Sqrt(stiffness / mass);
-
-            return Task.FromResult(naturalAngularFrequency);
-        }
+        public double Calculate(double mass, double stiffness) => Math.Sqrt(stiffness / mass);
     }
 }

@@ -1,21 +1,24 @@
-﻿using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
-using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.BeamCharacteristics;
-using IcVibracoes.Core.Validators.MechanicalProperties;
-using IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using IcVibracoes.Core.Calculator.Time;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFreedom;
+using IcVibracoes.Core.Validators.MechanicalProperties;
+using IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom;
 
-namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFreedom
+namespace IcVibracoes.Core.Operations.CalculateVibration.RigidBody.OneDegreeOfFreedom
 {
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with one degrees freedom.
     /// </summary>
-    public class CalculateVibrationToOneDegreeFreedom : CalculateVibration_RigidBody<OneDegreeOfFreedomRequest, OneDegreeOfFreedomResponse, OneDegreeOfFreedomResponseData, OneDegreeOfFreedomInput>, ICalculateVibrationToOneDegreeFreedom
+    public class CalculateVibrationToOneDegreeFreedom : CalculateVibrationRigidBody<OneDegreeOfFreedomRequest, OneDegreeOfFreedomResponse, OneDegreeOfFreedomResponseData, OneDegreeOfFreedomInput>, ICalculateVibrationToOneDegreeFreedom
     {
+        private static readonly string TemplateBasePath = Path.Combine(Directory.GetCurrentDirectory(), "Solutions\\RigidBody\\OneDegreeOfFreedom");
+
         private readonly IMechanicalPropertiesValidator _mechanicalPropertiesValidator;
 
         /// <summary>
@@ -25,8 +28,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="time"></param>
         public CalculateVibrationToOneDegreeFreedom(
             IMechanicalPropertiesValidator mechanicalPropertiesValidator,
-            ITime time)
-            : base(time)
+            ITime time) : base(time)
         {
             this._mechanicalPropertiesValidator = mechanicalPropertiesValidator;
         }
@@ -38,24 +40,24 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
-            => base._numericalMethod.CalculateOneDegreeOfFreedomResult(input, time, previousResult);
+        public override double[] CalculateRigidBodyResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
+            => base.NumericalMethod.CalculateOneDegreeOfFreedomResult(input, time, previousResult);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(OneDegreeOfFreedomRequest request)
+        public override double[] BuildInitialConditions(OneDegreeOfFreedomRequest request)
         {
             var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod);
-            if (numericalMethod == NumericalMethod.RungeKuttaForthOrder)
+            if (numericalMethod == Models.NumericalMethod.RungeKuttaForthOrder)
             {
                 // For Runge Kutta Forth Order numerical method, is used only 2 varibles.
-                return Task.FromResult(new double[2]);
+                return new double[2];
             }
 
-            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_1DF]);
+            return new double[Constants.NumberOfRigidBodyVariables1Df];
         }
 
         /// <summary>
@@ -63,9 +65,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="OneDegreeOfFreedomInput"/>.</returns>
-        public override async Task<OneDegreeOfFreedomInput> CreateInput(OneDegreeOfFreedomRequest request)
+        public override OneDegreeOfFreedomInput CreateInput(OneDegreeOfFreedomRequest request)
         {
-            OneDegreeOfFreedomInput input = await base.CreateInput(request).ConfigureAwait(false);
+            OneDegreeOfFreedomInput input = base.CreateInput(request);
             input.Mass = request.ElementData.Mass;
             input.Stiffness = request.ElementData.Stiffness;
             input.DampingRatio = request.DampingRatios.FirstOrDefault();
@@ -80,13 +82,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the solution files.</returns>
-        public override Task<string> CreateSolutionPath(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomInput input)
+        public override string CreateSolutionPath(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomInput input)
         {
-            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
-
             string fileUri = Path.Combine(
-                previousPath,
-                $"Solutions\\RigidBody\\OneDegreeOfFreedom\\m={input.Mass}_k={input.Stiffness}\\{input.ForceType}\\DampingRatio={input.DampingRatio}");
+                TemplateBasePath,
+                $"m={input.Mass}_k={input.Stiffness}\\{input.ForceType}\\DampingRatio={input.DampingRatio}");
 
             string fileName = null;
             if (input.ForceType == ForceType.Harmonic)
@@ -102,7 +102,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             Directory.CreateDirectory(fileUri);
 
-            return Task.FromResult(path);
+            return path;
         }
 
         /// <summary>
@@ -111,13 +111,11 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
-        public override Task<string> CreateMaxValuesPath(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomInput input)
+        public override string CreateMaxValuesPath(OneDegreeOfFreedomRequest request, OneDegreeOfFreedomInput input)
         {
-            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
-
             string fileUri = Path.Combine(
-                previousPath,
-                $"Solutions\\RigidBody\\OneDegreeOFFreedom\\m={input.Mass}_k={input.Stiffness}\\{input.ForceType}",
+                TemplateBasePath,
+                $"m={input.Mass}_k={input.Stiffness}\\{input.ForceType}",
                 "MaxValues");
 
             string fileName = null;
@@ -134,7 +132,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
 
             Directory.CreateDirectory(fileUri);
 
-            return Task.FromResult(path);
+            return path;
         }
 
         /// <summary>
@@ -142,9 +140,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFr
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<OneDegreeOfFreedomResponse> ValidateOperation(OneDegreeOfFreedomRequest request)
+        protected override async Task<OneDegreeOfFreedomResponse> ValidateOperationAsync(OneDegreeOfFreedomRequest request)
         {
-            OneDegreeOfFreedomResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+            OneDegreeOfFreedomResponse response = await base.ValidateOperationAsync(request).ConfigureAwait(false);
 
             await this._mechanicalPropertiesValidator.Execute(request.ElementData, response).ConfigureAwait(false);
 

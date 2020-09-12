@@ -3,17 +3,12 @@ using System.Net;
 
 namespace IcVibracoes.DataContracts
 {
-    /// <summary>
-    /// It contains the content of response for all operations.
-    /// </summary>
-    /// <typeparam name="TResponseData"></typeparam>
-    public class OperationResponseBase<TResponseData>
-        where TResponseData : OperationResponseData
+    public abstract class OperationResponseBase
     {
         /// <summary>
         /// Class constructor.
         /// </summary>
-        public OperationResponseBase()
+        protected OperationResponseBase()
         {
             this.Errors = new List<OperationError>();
         }
@@ -32,26 +27,6 @@ namespace IcVibracoes.DataContracts
         /// The list of errors.
         /// </summary>
         public List<OperationError> Errors { get; protected set; }
-
-        /// <summary>
-        /// It represents the 'data' content of all operation response.
-        /// </summary>
-        public TResponseData Data { get; set; }
-
-
-        /// <summary>
-        /// This method adds error on list of errors.
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="message"></param>
-        /// <param name="httpStatusCode"></param>
-        public void AddError(string code, string message, HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest)
-        {
-            this.Errors.Add(new OperationError(code, message));
-
-            this.HttpStatusCode = httpStatusCode;
-            this.Success = false;
-        }
 
         /// <summary>
         /// Set success to true. The HttpStatusCode will be set to 201 (Created).
@@ -97,5 +72,32 @@ namespace IcVibracoes.DataContracts
             this.HttpStatusCode = HttpStatusCode.NotImplemented;
             this.Success = false;
         }
+
+        /// <summary>
+        /// This method adds error on list of errors.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="message"></param>
+        /// <param name="httpStatusCode"></param>
+        public void AddError(string code, string message, HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest)
+        {
+            this.Errors.Add(new OperationError(code, message));
+
+            this.HttpStatusCode = httpStatusCode;
+            this.Success = false;
+        }
+    }
+
+    /// <summary>
+    /// It contains the content of response for all operations.
+    /// </summary>
+    /// <typeparam name="TResponseData"></typeparam>
+    public class OperationResponseBase<TResponseData> : OperationResponseBase
+        where TResponseData : OperationResponseData
+    {
+        /// <summary>
+        /// It represents the 'data' content of all operation response.
+        /// </summary>
+        public TResponseData Data { get; set; }
     }
 }

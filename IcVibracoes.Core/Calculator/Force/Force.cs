@@ -1,11 +1,10 @@
 ﻿using IcVibracoes.Core.Models.BeamCharacteristics;
 using System;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.Force
 {
     /// <summary>
-    /// It contains additionals operations evolving force.
+    /// It contains additional operations evolving force.
     /// </summary>
     public class Force : IForce
     {
@@ -17,44 +16,34 @@ namespace IcVibracoes.Core.Calculator.Force
         /// <param name="time"></param>
         /// <param name="forceType"></param>
         /// <returns></returns>
-        public Task<double> CalculateForceByType(double originalForce, double angularFrequency, double time, ForceType forceType)
+        public double CalculateForceByType(double originalForce, double angularFrequency, double time,
+            ForceType forceType)
         {
-            double force = 0;
-
-            if (forceType == ForceType.Harmonic)
+            var force = forceType switch
             {
-                force = originalForce * Math.Sin(angularFrequency * time);
-            }
-            else if (forceType == ForceType.Impact)
-            {
-                if (time == 0)
-                {
-                    force = originalForce;
-                }
-                else
-                {
-                    force = 0;
-                }
-            }
+                ForceType.Harmonic => (originalForce * Math.Sin(angularFrequency * time)),
+                ForceType.Impact => ((time == 0) ? originalForce : 0),
+                _ => 0
+            };
 
-            return Task.FromResult(force);
+            return force;
         }
 
         /// <summary>
-        /// Calculates the force for a aspecific time based on its type.
+        /// Calculates the force for a specific time based on its type.
         /// </summary>
         /// <param name="originalForce"></param>
         /// <param name="angularFrequency"></param>
         /// <param name="time"></param>
         /// <param name="forceType"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateForceByType(double[] originalForce, double angularFrequency, double time, ForceType forceType)
+        public double[] CalculateForceByType(double[] originalForce, double angularFrequency, double time, ForceType forceType)
         {
             double[] force = new double[originalForce.Length];
 
             for (int i = 0; i < originalForce.Length; i++)
             {
-                force[i] = await this.CalculateForceByType(originalForce[i], angularFrequency, time, forceType).ConfigureAwait(false);
+                force[i] = this.CalculateForceByType(originalForce[i], angularFrequency, time, forceType);
             }
 
             return force;

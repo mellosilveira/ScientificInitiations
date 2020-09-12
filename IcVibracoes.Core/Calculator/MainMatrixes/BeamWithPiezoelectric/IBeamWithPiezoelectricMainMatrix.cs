@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models.Beams;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
 {
@@ -17,7 +16,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The structure mass matrix.</returns>
-        Task<double[,]> CalculateStructureMass(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
+        double[,] CalculateStructureMass(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
 
         /// <summary>
         /// This method calculates stiffness matrix of an element of beam with piezoelectric plates.
@@ -26,7 +25,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <param name="momentOfInertia"></param>
         /// <param name="length"></param>
         /// <returns>The element's piezoelectric stiffness matrix.</returns>
-        Task<double[,]> CalculatePiezoelectricElementStiffness(double elasticityConstant, double momentOfInertia, double length);
+        double[,] CalculatePiezoelectricElementStiffness(double elasticityConstant, double momentOfInertia, double length);
 
         /// <summary>
         /// This method calculates the stiffness matrix of beam with piezoelectric plates.
@@ -34,14 +33,14 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The structure stiffness matrix.</returns>
-        Task<double[,]> CalculateStructureStiffness(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
+        double[,] CalculateStructureStiffness(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
 
         /// <summary>
         /// This method calculates the electromechanical coupling matrix of an element of beam with piezoelectric plates.
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The element's electromechanical coupling matrix.</returns>
-        Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beam);
+        double[,] CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beam);
 
         /// <summary>
         /// This method calculates electromechanical coupling matrix of beam with piezoelectric plates.
@@ -49,7 +48,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The structure piezoelectric electromechanical coupling matrix.</returns>
-        Task<double[,]> CalculatePiezoelectricElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
+        double[,] CalculatePiezoelectricElectromechanicalCoupling(BeamWithPiezoelectric<TProfile> beam, uint degreesOfFreedom);
 
         /// <summary>
         /// This method calculates the element piezoelectric capacitance matrix.
@@ -57,13 +56,13 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric
         /// <param name="beam"></param>
         /// <param name="elementIndex"></param>
         /// <returns>The element's piezoelectric capacitance matrix.</returns>
-        Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beam, uint elementIndex);
+        double[,] CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beam, uint elementIndex);
 
         /// <summary>
         /// This method calculates the piezoelectric capacitance matrix of beam with piezoelectric plates.
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The structure piezoelectric capacitance matrix.</returns>
-        Task<double[,]> CalculatePiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beam);
+        double[,] CalculatePiezoelectricCapacitance(BeamWithPiezoelectric<TProfile> beam);
     }
 }

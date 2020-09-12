@@ -4,7 +4,6 @@ using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Mapper
 {
@@ -19,7 +18,7 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="forces"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns></returns>
-        Task<double[]> BuildForceVector(List<Force> forces, uint degreesOfFreedom);
+        double[] BuildForceVector(List<Force> forces, uint degreesOfFreedom);
 
         /// <summary>
         /// Thid method builds the electrical charge vector.
@@ -27,14 +26,14 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="electricalCharges"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns></returns>
-        Task<double[]> BuildElectricalChargeVector(List<ElectricalCharge> electricalCharges, uint degreesOfFreedom);
+        double[] BuildElectricalChargeVector(List<ElectricalCharge> electricalCharges, uint degreesOfFreedom);
 
         /// <summary>
         /// Thid method builds the fastenings of the beam.
         /// </summary>
         /// <param name="fastenings"></param>
         /// <returns></returns>
-        Task<IDictionary<uint, FasteningType>> BuildFastenings(List<Fastening> fastenings);
+        IDictionary<uint, FasteningType> BuildFastenings(List<Fastening> fastenings);
 
         /// <summary>
         /// This method builds a <see cref="FiniteElementMethodInput"/> based on <see cref="TwoDegreesOfFreedomInput"/>.
@@ -42,7 +41,7 @@ namespace IcVibracoes.Core.Mapper
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<FiniteElementMethodInput> BuildFiniteElementMethodInput(TwoDegreesOfFreedomInput input);
+        FiniteElementMethodInput BuildFiniteElementMethodInput(TwoDegreesOfFreedomInput input);
 
         /// <summary>
         /// This method builds the finite element result from a vector with variables: displacement, velocity and acceleration, and the force value.
@@ -51,7 +50,7 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="previousResult"></param>
         /// <param name="force"></param>
         /// <returns></returns>
-        Task<FiniteElementResult> BuildFiniteElementResult(double[] previousResult, double force);
+        FiniteElementResult BuildFiniteElementResult(double[] previousResult, double force);
 
         /// <summary>
         /// This method builds the vector with variables: displacement, velocity and acceleration, from a finite element result.
@@ -59,6 +58,6 @@ namespace IcVibracoes.Core.Mapper
         /// </summary>
         /// <param name="finiteElementResult"></param>
         /// <returns></returns>
-        Task<double[]> BuildVariableVector(FiniteElementResult finiteElementResult);
+        double[] BuildVariableVector(FiniteElementResult finiteElementResult);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace IcVibracoes.DataContracts.RigidBody
+﻿namespace IcVibracoes.DataContracts.RigidBody
 {
     /// <summary>
     /// It contains the 'data' content of RigidBody response operation.

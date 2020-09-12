@@ -2,7 +2,6 @@
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ExtensionMethods;
 using System;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
 {
@@ -17,20 +16,16 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateArea(RectangularProfile profile, uint numberOfElements)
+        public override double[] CalculateArea(RectangularProfile profile, uint numberOfElements)
         {
-            double area;
+            double area = profile.Height * profile.Width;
 
-            if (profile.Thickness == null)
-            {
-                area = profile.Height * profile.Width;
-            }
-            else
-            {
+            if (profile.Thickness != null)
+            { 
                 area = (profile.Height * profile.Width) - ((profile.Height - 2 * profile.Thickness.Value) * (profile.Width - 2 * profile.Thickness.Value));
             }
 
-            return await ArrayFactory.CreateVectorAsync(area, numberOfElements).ConfigureAwait(false);
+            return ArrayFactory.CreateVector(area, numberOfElements);
         }
 
         /// <summary>
@@ -39,20 +34,16 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateMomentOfInertia(RectangularProfile profile, uint numberOfElements)
+        public override double[] CalculateMomentOfInertia(RectangularProfile profile, uint numberOfElements)
         {
-            double momentOfInertia;
+            double momentOfInertia = Math.Pow(profile.Height, 3) * profile.Width / 12;
 
-            if (profile.Thickness == null)
-            {
-                momentOfInertia = Math.Pow(profile.Height, 3) * profile.Width / 12;
-            }
-            else
+            if (profile.Thickness != null)
             {
                 momentOfInertia = (Math.Pow(profile.Height, 3) * profile.Width - (Math.Pow(profile.Height - 2 * profile.Thickness.Value, 3) * (profile.Width - 2 * profile.Thickness.Value))) / 12;
             }
 
-            return await ArrayFactory.CreateVectorAsync(momentOfInertia, numberOfElements).ConfigureAwait(false);
+            return ArrayFactory.CreateVector(momentOfInertia, numberOfElements);
         }
 
         /// <summary>
@@ -60,35 +51,36 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
         /// </summary>
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
+        /// <param name="elementsWithPiezoelectric"></param>
         /// <param name="numberOfPiezoelectricPerElement"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculatePiezoelectricArea(RectangularProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricPerElement)
+        public override double[] CalculatePiezoelectricArea(RectangularProfile profile, uint numberOfElements,
+            uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricPerElement)
         {
-            double area;
+            double area = profile.Height * profile.Width;
 
-            if (profile.Thickness == null)
-            {
-                area = profile.Height * profile.Width;
-            }
-            else
+            if (profile.Thickness != null)
             {
                 area = (profile.Height * profile.Width) - ((profile.Height - 2 * profile.Thickness.Value) * (profile.Width - 2 * profile.Thickness.Value));
             }
 
             area *= numberOfPiezoelectricPerElement;
 
-            return await ArrayFactory.CreateVectorAsync(area, numberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
+            return ArrayFactory.CreateVector(area, numberOfElements, elementsWithPiezoelectric);
         }
 
         /// <summary>
         /// This method calculates the vector with the piezoelectric moment of inertia.
         /// </summary>
         /// <param name="piezoelectricProfile"></param>
+        /// <param name="beamProfile"></param>
         /// <param name="numberOfElements"></param>
         /// <param name="elementsWithPiezoelectric"></param>
         /// <param name="numberOfPiezoelectricsPerElement"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculatePiezoelectricMomentOfInertia(RectangularProfile piezoelectricProfile, RectangularProfile beamProfile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricsPerElement)
+        public override double[] CalculatePiezoelectricMomentOfInertia(RectangularProfile piezoelectricProfile,
+            RectangularProfile beamProfile, uint numberOfElements, uint[] elementsWithPiezoelectric,
+            uint numberOfPiezoelectricsPerElement)
         {
             double momentOfInertia;
 
@@ -101,7 +93,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Rectangular
                 throw new NotImplementedException($"Not implemented moment of inertia calculation to number of piezoelectric:{numberOfPiezoelectricsPerElement}.");
             }
 
-            return await ArrayFactory.CreateVectorAsync(momentOfInertia, numberOfElements, elementsWithPiezoelectric).ConfigureAwait(false);
+            return ArrayFactory.CreateVector(momentOfInertia, numberOfElements, elementsWithPiezoelectric);
         }
     }
 }

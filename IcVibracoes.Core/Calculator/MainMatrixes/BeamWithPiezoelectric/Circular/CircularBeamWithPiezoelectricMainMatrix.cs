@@ -1,7 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models.Beams;
 using System;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circular
 {
@@ -17,7 +16,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circula
         /// <param name="beam"></param>
         /// <param name="elementIndex"></param>
         /// <returns>The elementary piezoelectric capacitance matrix.</returns>
-        public override Task<double[,]> CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<CircularProfile> beam, uint elementIndex)
+        public override double[,] CalculateElementPiezoelectricCapacitance(BeamWithPiezoelectric<CircularProfile> beam, uint elementIndex)
         {
             throw new NotImplementedException();
         }
@@ -28,7 +27,8 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Circula
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The element's electromechanical coupling matrix.</returns>
-        public override Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(BeamWithPiezoelectric<CircularProfile> beam)
+        public override double[,] CalculatePiezoelectricElementElectromechanicalCoupling(
+            BeamWithPiezoelectric<CircularProfile> beam)
         {
             throw new NotImplementedException();
         }

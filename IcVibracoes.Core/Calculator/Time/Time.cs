@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Core.Calculator.NaturalFrequency;
 using System;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.Time
 {
@@ -26,21 +25,17 @@ namespace IcVibracoes.Core.Calculator.Time
         /// <param name="angularFrequency"></param>
         /// <param name="periodDivision"></param>
         /// <returns></returns>
-        public Task<double> CalculateTimeStep(double angularFrequency, uint periodDivision)
+        public double CalculateTimeStep(double angularFrequency, uint periodDivision)
         {
             if (angularFrequency == 0)
             {
-                double stepTime = 2 * Math.PI / periodDivision;
-
-                return Task.FromResult(stepTime);
+                return 2 * Math.PI / periodDivision;
             }
-            else
-            {
-                double period = 2 * Math.PI / angularFrequency;
-                double stepTime = period / periodDivision;
 
-                return Task.FromResult(stepTime);
-            }
+            double period = 2 * Math.PI / angularFrequency;
+            double stepTime = period / periodDivision;
+
+            return stepTime;
         }
 
         /// <summary>
@@ -49,21 +44,17 @@ namespace IcVibracoes.Core.Calculator.Time
         /// <param name="angularFrequency"></param>
         /// <param name="periodCount"></param>
         /// <returns></returns>
-        public Task<double> CalculateFinalTime(double angularFrequency, uint periodCount)
+        public double CalculateFinalTime(double angularFrequency, uint periodCount)
         {
             if (angularFrequency == 0)
             {
-                double finalTime = 2 * Math.PI;
-
-                return Task.FromResult(finalTime);
+                return 2 * Math.PI;
             }
-            else
-            {
-                double period = 2 * Math.PI / angularFrequency;
-                double finalTime = period * periodCount;
+            
+            double period = 2 * Math.PI / angularFrequency;
+            double finalTime = period * periodCount;
 
-                return Task.FromResult(finalTime);
-            }
+            return finalTime;
         }
 
         /// <summary>
@@ -74,9 +65,9 @@ namespace IcVibracoes.Core.Calculator.Time
         /// <param name="angularFrequency"></param>
         /// <param name="periodDivision"></param>
         /// <returns></returns>
-        public async Task<double> CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision)
+        public double CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision)
         {
-            double naturalPeriod = await this.CalculateNaturalPeriod(mass, stiffness).ConfigureAwait(false);
+            double naturalPeriod = this.CalculateNaturalPeriod(mass, stiffness);
 
             double period = 2 * Math.PI / angularFrequency;
             double timeStep = period / periodDivision;
@@ -86,10 +77,8 @@ namespace IcVibracoes.Core.Calculator.Time
             {
                 return timeStep;
             }
-            else
-            {
-                return naturalPeriod / periodDivision;
-            }
+
+            return naturalPeriod / periodDivision;
         }
 
         /// <summary>
@@ -98,9 +87,9 @@ namespace IcVibracoes.Core.Calculator.Time
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
         /// <returns></returns>
-        public async Task<double> CalculateNaturalPeriod(double mass, double stiffness)
+        public double CalculateNaturalPeriod(double mass, double stiffness)
         {
-            double naturalFrequency = await this._naturalFrequency.Calculate(mass, stiffness).ConfigureAwait(false);
+            double naturalFrequency = this._naturalFrequency.Calculate(mass, stiffness);
 
             double naturalPeriod = 2 * Math.PI / naturalFrequency;
 

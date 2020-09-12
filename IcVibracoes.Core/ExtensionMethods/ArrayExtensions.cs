@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace IcVibracoes.Core.ExtensionMethods
 {
@@ -16,7 +16,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="values"></param>
         /// <param name="nodePositions"></param>
         /// <returns></returns>
-        public static Task AddPerNodePositionAsync(this double[,] matrixToAdd, double[] values, uint[] nodePositions)
+        public static void AddPerNodePositionAsync(this double[,] matrixToAdd, double[] values, uint[] nodePositions)
         {
             int size = values.Length;
 
@@ -24,8 +24,6 @@ namespace IcVibracoes.Core.ExtensionMethods
             {
                 matrixToAdd[2 * nodePositions[i], 2 * nodePositions[i]] += values[i];
             }
-
-            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -34,7 +32,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="vector1"></param>
         /// <param name="vector2"></param>
         /// <returns>The inner product between two matrixes.</returns>
-        public static Task<double> CalculateInnerProductAsync(this double[] vector1, double[] vector2)
+        public static double CalculateInnerProduct(this double[] vector1, double[] vector2)
         {
             double result = 0;
 
@@ -43,7 +41,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 result += vector1[i] * vector2[i];
             }
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -51,7 +49,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns>The inversed matrix using the Gauss-Jordan method.</returns>
-        public static Task<double[,]> InverseMatrixAsync(this double[,] matrix)
+        public static double[,] InverseMatrix(this double[,] matrix)
         {
             double[,] matrixCopy = matrix.Clone() as double[,];
 
@@ -63,14 +61,7 @@ namespace IcVibracoes.Core.ExtensionMethods
             {
                 for (int j = 0; j < n; j++)
                 {
-                    if (i == j)
-                    {
-                        matrizInv[i, j] = 1;
-                    }
-                    else
-                    {
-                        matrizInv[i, j] = 0;
-                    }
+                    matrizInv[i, j] = (i == j) ? 1 : 0;
                 }
             }
 
@@ -116,7 +107,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 }
             }
 
-            return Task.FromResult(matrizInv);
+            return matrizInv;
         }
 
         /// <summary>
@@ -133,14 +124,7 @@ namespace IcVibracoes.Core.ExtensionMethods
 
             for (int i = 0; i < size; i++)
             {
-                if (i < vector1Length)
-                {
-                    mergedVector[i] = vector1[i];
-                }
-                else
-                {
-                    mergedVector[i] = vector2[i - vector1Length];
-                }
+                mergedVector[i] = (i < vector1Length) ? vector1[i] : vector2[i - vector1Length];
             }
 
             return mergedVector;
@@ -152,7 +136,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="matrix"></param>
         /// <param name="vector"></param>
         /// <returns>A new vector with the result of multiplication between a matrix and a vector.</returns>
-        public static Task<double[]> MultiplyAsync(this double[,] matrix, double[] vector)
+        public static double[] Multiply(this double[,] matrix, double[] vector)
         {
             int rows1 = matrix.GetLength(0);
             int columns1 = matrix.GetLength(1);
@@ -171,7 +155,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 vectorMultiplication[i] = sum;
             }
 
-            return Task.FromResult(vectorMultiplication);
+            return vectorMultiplication;
         }
 
         /// <summary>
@@ -180,7 +164,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="matrix1"></param>
         /// <param name="matrix2"></param>
         /// <returns>A new matrix with the result of multiplication between two matrixes.</returns>
-        public static Task<double[,]> MultiplyAsync(this double[,] matrix1, double[,] matrix2)
+        public static double[,] Multiply(this double[,] matrix1, double[,] matrix2)
         {
             int rows1 = matrix1.GetLength(0);
             int columns2 = matrix2.GetLength(1);
@@ -202,7 +186,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 }
             }
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -211,18 +195,20 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="vector1"></param>
         /// <param name="vector2"></param>
         /// <returns>A new vector with the result of subtraction between two vectors.</returns>
-        public static Task<double[]> SubtractAsync(this double[] vector1, double[] vector2)
+        public static double[] SubtractAsync(this double[] vector1, double[] vector2)
         {
-            int size = vector1.Length;
+            //int size = vector1.Length;
 
-            double[] result = new double[size];
+            //double[] result = new double[size];
 
-            for (int i = 0; i < size; i++)
-            {
-                result[i] = vector1[i] - vector2[i];
-            }
+            //for (int i = 0; i < size; i++)
+            //{
+            //    result[i] = vector1[i] - vector2[i];
+            //}
 
-            return Task.FromResult(result);
+            //return result;
+
+            return vector1.Zip(vector2, (v1, v2) => v1 - v2).ToArray();
         }
 
         /// <summary>
@@ -231,7 +217,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="vector1"></param>
         /// <param name="vectors"></param>
         /// <returns></returns>
-        public static Task<double[]> SumAsync(this double[] vector1, params double[][] vectors)
+        public static double[] Sum(this double[] vector1, params double[][] vectors)
         {
             double[] vectorSum = vector1;
 
@@ -243,7 +229,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 }
             }
 
-            return Task.FromResult(vectorSum);
+            return vectorSum;
         }
 
         /// <summary>
@@ -252,18 +238,20 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="vector1"></param>
         /// <param name="vector2"></param>
         /// <returns>A new array with the result of sum between two vectors.</returns>
-        public static Task<double[]> SumAsync(this double[] vector1, double[] vector2)
+        public static double[] Sum(this double[] vector1, double[] vector2)
         {
-            int size = vector1.Length;
+            //int size = vector1.Length;
 
-            double[] result = new double[size];
+            //double[] result = new double[size];
 
-            for (int i = 0; i < size; i++)
-            {
-                result[i] = vector1[i] + vector2[i];
-            }
+            //for (int i = 0; i < size; i++)
+            //{
+            //    result[i] = vector1[i] + vector2[i];
+            //}
 
-            return Task.FromResult(result);
+            //return result;
+            
+            return vector1.Zip(vector2, (v1, v2) => v1 + v2).ToArray();
         }
 
         /// <summary>
@@ -271,7 +259,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns>The transposed matrix.</returns>
-        public static Task<double[,]> TransposeMatrixAsync(this double[,] matrix)
+        public static double[,] TransposeMatrixAsync(this double[,] matrix)
         {
             int row = matrix.GetLength(0);
             int column = matrix.GetLength(1);
@@ -285,7 +273,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 }
             }
 
-            return Task.FromResult(matrixTransposed);
+            return matrixTransposed;
         }
 
         /// <summary>
@@ -295,17 +283,15 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="boundaryConditions"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public static Task<double[,]> ApplyBoundaryConditionsAsync(this double[,] matrix, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
+        public static double[,] ApplyBoundaryConditions(this double[,] matrix, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
         {
-            int count1, count2;
+            double[,] matrixBc = new double[numberOfTrueBoundaryConditions, numberOfTrueBoundaryConditions];
 
-            double[,] matrixBC = new double[numberOfTrueBoundaryConditions, numberOfTrueBoundaryConditions];
-
-            count1 = 0;
+            var count1 = 0;
 
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
-                count2 = 0;
+                var count2 = 0;
 
                 if (boundaryConditions[i] == true)
                 {
@@ -313,7 +299,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                     {
                         if (boundaryConditions[j] == true)
                         {
-                            matrixBC[count1, count2] = matrix[i, j];
+                            matrixBc[count1, count2] = matrix[i, j];
 
                             count2 += 1;
                         }
@@ -323,7 +309,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 }
             }
 
-            return Task.FromResult(matrixBC);
+            return matrixBc;
         }
 
         /// <summary>
@@ -333,43 +319,27 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="boundaryConditions"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public static Task<double[]> ApplyBoundaryConditionsAsync(this double[] vector, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
+        public static double[] ApplyBoundaryConditions(this double[] vector, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
         {
-            int count1 = 0;
+            //int count = 0;
 
-            double[] matrixBC = new double[numberOfTrueBoundaryConditions];
+            //double[] matrixBc = new double[numberOfTrueBoundaryConditions];
 
-            for (int i = 0; i < vector.Length; i++)
-            {
-                if (boundaryConditions[i] == true)
-                {
-                    matrixBC[count1] = vector[i];
-                    count1 += 1;
-                }
-            }
+            //for (int i = 0; i < vector.Length; i++)
+            //{
+            //    if (boundaryConditions[i])
+            //    {
+            //        matrixBc[count++] = vector[i];
+            //    }
+            //}
 
-            return Task.FromResult(matrixBC);
+            //return matrixBc;
+
+            return vector
+                .Where((item, index) => boundaryConditions[index])
+                .ToArray();
         }
-
-        /// <summary>
-        /// This method gets the vector's maximum value.
-        /// </summary>
-        /// <param name="vector"></param>
-        /// <returns>The vector's maximum value.</returns>
-        public static double GetMaxValue(this double[] vector)
-        {
-            double maxValue = vector[0];
-            for (int i = 1; i < vector.Length; i++)
-            {
-                if (vector[i] > maxValue)
-                {
-                    maxValue = vector[i];
-                }
-            }
-
-            return maxValue;
-        }
-
+        
         /// <summary>
         /// This method gets the vector's minimum value.
         /// </summary>
@@ -377,16 +347,18 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns>The vector's minimum value.</returns>
         public static double GetMinValue(this double[] vector)
         {
-            double minValue = vector[0];
-            for (int i = 1; i < vector.Length; i++)
-            {
-                if (vector[i] < minValue)
-                {
-                    minValue = vector[i];
-                }
-            }
+            //double minValue = vector[0];
+            //for (int i = 1; i < vector.Length; i++)
+            //{
+            //    if (vector[i] < minValue)
+            //    {
+            //        minValue = vector[i];
+            //    }
+            //}
 
-            return minValue;
+            //return minValue;
+
+            return vector.Min();
         }
 
         /// <summary>
@@ -397,14 +369,18 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns>A new vector with the multiplication result.</returns>
         public static double[] MultiplyEachElement(this double[] vector, double value)
         {
-            double[] result = new double[vector.Length];
+            //double[] result = new double[vector.Length];
 
-            for (int i = 0; i < vector.Length; i++)
-            {
-                result[i] = vector[i] * value;
-            }
+            //for (int i = 0; i < vector.Length; i++)
+            //{
+            //    result[i] = vector[i] * value;
+            //}
 
-            return result;
+            //return result;
+
+            return vector
+                .Select(item => item * value)
+                .ToArray();
         }
 
         /// <summary>
@@ -490,12 +466,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <returns></returns>
         public static double CalculateVectorNorm(this double[] vector)
         {
-            double result = 0;
-
-            for (int i = 0; i < vector.Length; i++)
-            {
-                result += Math.Pow(vector[i], 2);
-            }
+            double result = vector.Sum(v => Math.Pow(v, 2));
 
             return Math.Sqrt(result);
         }
@@ -527,49 +498,6 @@ namespace IcVibracoes.Core.ExtensionMethods
             }
 
             return maxValue;
-        }
-    }
-
-    /// <summary>
-    /// It is responsible to create arrays.
-    /// </summary>
-    public class ArrayFactory
-    {
-        /// <summary>
-        /// This method creates a vector with an unique value in the informed element positions with a size that is informed too.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="size"></param>
-        /// <param name="elementPositions"></param>
-        /// <returns>A new instance of <see cref="double[]"/> with an unique value at the positions informed.</returns>
-        public static Task<double[]> CreateVectorAsync(double value, uint size, uint[] elementPositions)
-        {
-            double[] newVector = new double[size];
-
-            for (int i = 0; i < elementPositions.Length; i++)
-            {
-                newVector[elementPositions[i] - 1] = value;
-            }
-
-            return Task.FromResult(newVector);
-        }
-
-        /// <summary>
-        /// This method creates a matrix with a unique value in all positions with a size that is informed.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="size"></param>
-        /// <returns>A new instance of <see cref="double[]"/> with an unique value at all positions.</returns>
-        public static Task<double[]> CreateVectorAsync(double value, uint size)
-        {
-            double[] newVector = new double[size];
-
-            for (int i = 0; i < size; i++)
-            {
-                newVector[i] = value;
-            }
-
-            return Task.FromResult(newVector);
         }
     }
 }

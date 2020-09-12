@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.Profiles;
+using IcVibracoes.Core.ExtensionMethods;
 using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElement;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.Profiles.Circular
 {
@@ -16,9 +16,9 @@ namespace IcVibracoes.Core.Validators.Profiles.Circular
         /// <param name="profile"></param>
         /// <param name="response"></param>
         /// <returns>True, if the values in the circular profile can be used in the analysis. False, otherwise.</returns>
-        public override async Task<bool> Execute(CircularProfile profile, FiniteElementResponse response)
+        public override bool Execute(CircularProfile profile, FiniteElementResponse response)
         {
-            if (await base.Execute(profile, response).ConfigureAwait(false) == false)
+            if (base.Execute(profile, response) == false)
             {
                 return false;
             }
@@ -26,7 +26,7 @@ namespace IcVibracoes.Core.Validators.Profiles.Circular
             if (profile.Area == 0 && profile.MomentOfInertia == 0 && profile.Diameter == 0)
             {
                 response.AddError(OperationErrorCode.RequestValidationError,
-                    $"Some parameter must be informed. If diameter is informed, Area and Moment of Inertia cannot be informed. If Area and Moment of Inertia are informed, diameter cannot be informed.");
+                    "Some parameter must be informed. If diameter is informed, Area and Moment of Inertia cannot be informed. If Area and Moment of Inertia are informed, diameter cannot be informed.");
 
                 return false;
             }
@@ -49,10 +49,8 @@ namespace IcVibracoes.Core.Validators.Profiles.Circular
 
                 return true;
             }
-            else if (profile.Diameter < 0)
-            {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Invalid value to diameter: {profile.Diameter}. Diameter must be greather than zero");
-            }
+
+            response.AddErrorIf(() => (profile.Diameter < 0), $"Invalid value to diameter: {profile.Diameter}. Diameter must be greater than zero");
 
             if (profile.Area > 0 && profile.MomentOfInertia > 0)
             {
@@ -70,13 +68,11 @@ namespace IcVibracoes.Core.Validators.Profiles.Circular
 
                 return true;
             }
-            else
-            {
-                response.AddError(OperationErrorCode.RequestValidationError,
-                    $"Area: {profile.Area} and Moment of Inertia: {profile.MomentOfInertia} must be greather than zero.");
 
-                return false;
-            }
+            response.AddError(OperationErrorCode.RequestValidationError,
+                $"Area: {profile.Area} and Moment of Inertia: {profile.MomentOfInertia} must be greater than zero.");
+
+            return false;
         }
     }
 }

@@ -2,7 +2,6 @@
 using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.ExtensionMethods;
 using System;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
 {
@@ -17,7 +16,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateArea(CircularProfile profile, uint numberOfElements)
+        public override double[] CalculateArea(CircularProfile profile, uint numberOfElements)
         {
             double area;
 
@@ -30,7 +29,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
                 area = (Math.PI / 4) * (Math.Pow(profile.Diameter, 2) - Math.Pow(profile.Diameter - 2 * profile.Thickness.Value, 2));
             }
 
-            return await ArrayFactory.CreateVectorAsync(area, numberOfElements).ConfigureAwait(false);
+            return ArrayFactory.CreateVector(area, numberOfElements);
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateMomentOfInertia(CircularProfile profile, uint numberOfElements)
+        public override double[] CalculateMomentOfInertia(CircularProfile profile, uint numberOfElements)
         {
             double momentOfInertia;
 
@@ -52,7 +51,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
                 momentOfInertia = (Math.PI / 64) * (Math.Pow(profile.Diameter, 4) - Math.Pow(profile.Diameter - 2 * profile.Thickness.Value, 4));
             }
 
-            return await ArrayFactory.CreateVectorAsync(momentOfInertia, numberOfElements).ConfigureAwait(false);
+            return ArrayFactory.CreateVector(momentOfInertia, numberOfElements);
         }
 
         /// <summary>
@@ -60,9 +59,10 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
         /// </summary>
         /// <param name="profile"></param>
         /// <param name="numberOfElements"></param>
+        /// <param name="elementsWithPiezoelectric"></param>
         /// <param name="numberOfPiezoelectricPerElement"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculatePiezoelectricArea(CircularProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricPerElement)
+        public override double[] CalculatePiezoelectricArea(CircularProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricPerElement)
         {
             throw new NotImplementedException();
         }
@@ -76,7 +76,7 @@ namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
         /// <param name="elementsWithPiezoelectric"></param>
         /// <param name="numberOfPiezoelectricsPerElement"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculatePiezoelectricMomentOfInertia(CircularProfile piezoelectricProfile, CircularProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricsPerElement)
+        public override double[] CalculatePiezoelectricMomentOfInertia(CircularProfile piezoelectricProfile, CircularProfile profile, uint numberOfElements, uint[] elementsWithPiezoelectric, uint numberOfPiezoelectricsPerElement)
         {
             throw new NotImplementedException();
         }

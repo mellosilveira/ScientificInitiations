@@ -1,7 +1,7 @@
 ﻿using IcVibracoes.Common.Classes;
-using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.RigidBody;
 using System.Threading.Tasks;
+using IcVibracoes.Core.ExtensionMethods;
 
 namespace IcVibracoes.Core.Validators.MechanicalProperties
 {
@@ -20,15 +20,9 @@ namespace IcVibracoes.Core.Validators.MechanicalProperties
         public Task Execute<TResponseData>(MechanicalProperty mechanicalProperty, RigidBodyResponse<TResponseData> response)
             where TResponseData : RigidBodyResponseData, new()
         {
-            if(mechanicalProperty.Mass < 0)
-            {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Mass: {mechanicalProperty.Mass} cannot be less than zero.");
-            }
-
-            if (mechanicalProperty.Stiffness < 0)
-            {
-                response.AddError(OperationErrorCode.RequestValidationError, $"Stiffness: {mechanicalProperty.Stiffness} cannot be less than zero.");
-            }
+            response
+                .AddErrorIf(() => mechanicalProperty.Mass < 0, $"Mass: {mechanicalProperty.Mass} cannot be less than zero.")
+                .AddErrorIf(() => mechanicalProperty.Stiffness < 0, $"Stiffness: {mechanicalProperty.Stiffness} cannot be less than zero.");
 
             return Task.CompletedTask;
         }

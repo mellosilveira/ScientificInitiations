@@ -9,19 +9,13 @@ namespace IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric
     /// It represents the request content of CalculatePiezoelectric operations.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public class BeamWithPiezoelectricRequest<TProfile> : FiniteElementRequest<TProfile>
+    public sealed class BeamWithPiezoelectricRequest<TProfile> : FiniteElementRequest<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>
         /// The analysis type. 
         /// </summary>
-        public override string AnalysisType 
-        {
-            get
-            {
-                return "FiniteElement_BeamWithPiezoelectric";
-            }
-        }
+        public override string AnalysisType => "FiniteElement_BeamWithPiezoelectric";
 
         /// <summary>
         /// Piezoelectric Young Modulus.

@@ -21,6 +21,8 @@ using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva.C
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva.Rectangular;
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric.Circular;
 using IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithPiezoelectric.Rectangular;
+using IcVibracoes.Core.Operations.CalculateVibration.RigidBody.OneDegreeOfFreedom;
+using IcVibracoes.Core.Operations.CalculateVibration.RigidBody.TwoDegreesOfFreedom;
 using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.OneDegreeOfFreedom;
 using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom;
 using IcVibracoes.Core.Validators.MechanicalProperties;
@@ -30,7 +32,6 @@ using IcVibracoes.Core.Validators.TimeStep;
 using IcVibracoes.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -38,24 +39,10 @@ namespace IcVibracoes
 {
     /// <summary>
     /// The application startup.
-    /// It configures the dependecy injection and adds all necessary configuration.
+    /// It configures the dependency injection and adds all necessary configuration.
     /// </summary>
     public class Startup
     {
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="configuration"></param>
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        /// <summary>
-        /// The configuration used in application.
-        /// </summary>
-        public IConfiguration Configuration { get; }
-
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
@@ -133,7 +120,7 @@ namespace IcVibracoes
         }
 
         /// <summary>
-        /// Configures the application dependecies and web hosting environment.
+        /// Configures the application dependencies and web hosting environment.
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
@@ -145,15 +132,8 @@ namespace IcVibracoes
             }
 
             app.UseSwaggerDocs();
-
             app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

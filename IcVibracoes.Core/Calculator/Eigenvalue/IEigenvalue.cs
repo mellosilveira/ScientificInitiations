@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace IcVibracoes.Core.Calculator.Eigenvalue
+﻿namespace IcVibracoes.Core.Calculator.Eigenvalue
 {
     /// <summary>
     /// It's responsible to calculate the eigenvalues to a matrix.
@@ -19,7 +17,7 @@ namespace IcVibracoes.Core.Calculator.Eigenvalue
         /// <param name="matrix"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
-        Task<double> PowerMethod(double[,] matrix, double tolerance);
+        double PowerMethod(double[,] matrix, double tolerance);
 
         /// <summary>
         /// Calculates the eigenvalues of a matrix using QR Decomposition.
@@ -30,6 +28,6 @@ namespace IcVibracoes.Core.Calculator.Eigenvalue
         /// <param name="matrix"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
-        Task<double[]> QR_Decomposition(double[,] matrix, double tolerance);
+        double[] QR_Decomposition(double[,] matrix, double tolerance);
     }
 }

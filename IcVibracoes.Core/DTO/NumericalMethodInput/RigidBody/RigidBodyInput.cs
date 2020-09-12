@@ -22,9 +22,9 @@ namespace IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody
         /// <summary>
         /// Represents the relation between damping by critical damping.
         /// If it is equals to zero, the vibration is harmonic.
-        /// If it is greather than zero and less than 1, the vibration is underdamped.
+        /// If it is greater than zero and less than 1, the vibration is underdamped.
         /// If it is equals to one, the vibration is critical damped.
-        /// If it is greather than 1, the vibration is overdamped.
+        /// If it is greater than 1, the vibration is overdamped.
         /// Unit: dimensionless.
         /// </summary>
         public double DampingRatio { get; set; }

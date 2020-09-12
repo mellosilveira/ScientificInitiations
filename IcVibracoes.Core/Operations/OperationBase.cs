@@ -30,7 +30,7 @@ namespace IcVibracoes.Core.Operations
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected virtual Task<TResponse> ValidateOperation(TRequest request)
+        protected virtual Task<TResponse> ValidateOperationAsync(TRequest request)
         {
             TResponse response = new TResponse();
             response.SetSuccessCreated();
@@ -59,12 +59,12 @@ namespace IcVibracoes.Core.Operations
 
             if (request.PeriodCount <= 0)
             {
-                response.AddError(OperationErrorCode.RequestValidationError, "PeriodCount must be greather than zero.");
+                response.AddError(OperationErrorCode.RequestValidationError, "PeriodCount must be greater than zero.");
             }
 
             if (request.PeriodDivision <= 0)
             {
-                response.AddError(OperationErrorCode.RequestValidationError, "PeriodDivision must be greather than zero.");
+                response.AddError(OperationErrorCode.RequestValidationError, "PeriodDivision must be greater than zero.");
             }
 
             if (string.IsNullOrWhiteSpace(request.ForceType))
@@ -108,7 +108,7 @@ namespace IcVibracoes.Core.Operations
 
             try
             {
-                //response = await this.ValidateOperation(request).ConfigureAwait(false);
+                //response = await this.ValidateOperationAsync(request).ConfigureAwait(false);
                 //if (response.Success == false)
                 //{
                 //    response.SetBadRequestError();

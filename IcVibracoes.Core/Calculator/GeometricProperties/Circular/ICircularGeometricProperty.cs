@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Calculator.GeometricProperties;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 
 namespace IcVibracoes.Core.Calculator.GeometricProperties.Circular
 {

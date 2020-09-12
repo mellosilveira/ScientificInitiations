@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace IcVibracoes.Core.Calculator.Time
+﻿namespace IcVibracoes.Core.Calculator.Time
 {
     /// <summary>
     /// It contains operations evolving the time for the analysis.
@@ -13,7 +11,7 @@ namespace IcVibracoes.Core.Calculator.Time
         /// <param name="angularFrequency"></param>
         /// <param name="periodDivision"></param>
         /// <returns></returns>
-        Task<double> CalculateTimeStep(double angularFrequency, uint periodDivision);
+        double CalculateTimeStep(double angularFrequency, uint periodDivision);
 
         /// <summary>
         /// Calculates the final time for finite element analysis.
@@ -21,17 +19,17 @@ namespace IcVibracoes.Core.Calculator.Time
         /// <param name="angularFrequency"></param>
         /// <param name="periodCount"></param>
         /// <returns></returns>
-        Task<double> CalculateFinalTime(double angularFrequency, uint periodCount);
+        double CalculateFinalTime(double angularFrequency, uint periodCount);
 
         /// <summary>
         /// Calculates the time step for Runge Kutta Forth Order Method.
         /// </summary>
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
-        /// <param name="periodDivision"></param>
         /// <param name="angularFrequency"></param>
+        /// <param name="periodDivision"></param>
         /// <returns></returns>
-        Task<double> CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision);
+        double CalculateTimeStep(double mass, double stiffness, double angularFrequency, uint periodDivision);
 
         /// <summary>
         /// Calculates the natural period for rigid body analysis.
@@ -39,6 +37,6 @@ namespace IcVibracoes.Core.Calculator.Time
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
         /// <returns></returns>
-        Task<double> CalculateNaturalPeriod(double mass, double stiffness);
+        double CalculateNaturalPeriod(double mass, double stiffness);
     }
 }

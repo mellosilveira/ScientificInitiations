@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
 {
@@ -15,7 +14,7 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<double[]> CalculateForOneDegreeOfFreedom(OneDegreeOfFreedomInput input, double time, double[] previousResult);
+        double[] CalculateForOneDegreeOfFreedom(OneDegreeOfFreedomInput input, double time, double[] previousResult);
 
         /// <summary>
         /// Calculates the value of the differential equation of motion used for the two degrees of freedom case for a specific time, based on the force and angular frequency that are passed.
@@ -24,6 +23,6 @@ namespace IcVibracoes.Core.Calculator.DifferentialEquationOfMotion
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        Task<double[]> CalculateForTwoDegreedOfFreedom(TwoDegreesOfFreedomInput input, double time, double[] previousResult);
+        double[] CalculateForTwoDegreedOfFreedom(TwoDegreesOfFreedomInput input, double time, double[] previousResult);
     }
 }

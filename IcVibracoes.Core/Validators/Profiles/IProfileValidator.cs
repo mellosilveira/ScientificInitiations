@@ -1,6 +1,5 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.DataContracts.FiniteElement;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.Profiles
 {
@@ -17,6 +16,6 @@ namespace IcVibracoes.Core.Validators.Profiles
         /// <param name="profile"></param>
         /// <param name="response"></param>
         /// <returns>True, if the values passed in the profile can be used in the analysis. False, otherwise.</returns>
-        Task<bool> Execute(TProfile profile, FiniteElementResponse response);
+        bool Execute(TProfile profile, FiniteElementResponse response);
     }
 }

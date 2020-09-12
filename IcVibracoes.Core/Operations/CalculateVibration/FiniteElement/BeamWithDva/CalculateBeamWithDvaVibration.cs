@@ -1,6 +1,4 @@
-﻿using IcVibracoes.Calculator.GeometricProperties;
-using IcVibracoes.Common.Classes;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.BeamWithDva;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
@@ -10,12 +8,13 @@ using IcVibracoes.Core.Mapper;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.Core.Validators.Profiles;
-using IcVibracoes.DataContracts;
 using IcVibracoes.DataContracts.FiniteElement;
 using IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using IcVibracoes.Core.Calculator.GeometricProperties;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithDva
 {
@@ -23,9 +22,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
     /// It's responsible to calculate the vibration in a beam with dynamic vibration absorber.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamWithDvaVibration<TProfile> : CalculateVibration_FiniteElement<BeamWithDvaRequest<TProfile>, TProfile, BeamWithDva<TProfile>>, ICalculateBeamWithDvaVibration<TProfile>
+    public abstract class CalculateBeamWithDvaVibration<TProfile> : CalculateVibrationFiniteElement<BeamWithDvaRequest<TProfile>, TProfile, BeamWithDva<TProfile>>, ICalculateBeamWithDvaVibration<TProfile>
         where TProfile : Profile, new()
     {
+        private static readonly string TemplateBasePath = Path.Combine(Directory.GetCurrentDirectory(), "Solutions/FiniteElement/BeamWithDva");
+
         private readonly IGeometricProperty<TProfile> _geometricProperty;
         private readonly IMappingResolver _mappingResolver;
 
@@ -38,14 +39,13 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
         /// <param name="mainMatrix"></param>
-        public CalculateBeamWithDvaVibration(
+        protected CalculateBeamWithDvaVibration(
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IProfileValidator<TProfile> profileValidator, 
             ITime time, 
             INaturalFrequency naturalFrequency, 
-            IBeamWithDvaMainMatrix<TProfile> mainMatrix) 
-            : base(profileValidator, time, naturalFrequency, mainMatrix)
+            IBeamWithDvaMainMatrix<TProfile> mainMatrix) : base(profileValidator, time, naturalFrequency, mainMatrix)
         {
             this._geometricProperty = geometricProperty;
             this._mappingResolver = mappingResolver;
@@ -58,49 +58,47 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// <param name="request"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>A new instance of class <see cref="Beam{TProfile}"/>.</returns>
-        public override async Task<BeamWithDva<TProfile>> BuildBeam(BeamWithDvaRequest<TProfile> request, uint degreesOfFreedom)
+        public override BeamWithDva<TProfile> BuildBeam(BeamWithDvaRequest<TProfile> request, uint degreesOfFreedom)
         {
             double[] dvaMasses = new double[request.Dvas.Count];
             double[] dvaStiffnesses = new double[request.Dvas.Count];
             uint[] dvaNodePositions = new uint[request.Dvas.Count];
 
-            int i = 0;
-            foreach (DynamicVibrationAbsorber dva in request.Dvas)
+            foreach (var item in request.Dvas.Select((dva, index) => new { Dva = dva, Index = index }))
             {
-                dvaMasses[i] = dva.Mass;
-                dvaStiffnesses[i] = dva.Stiffness;
-                dvaNodePositions[i] = dva.NodePosition;
-                i += 1;
+                dvaMasses[item.Index] = item.Dva.Mass;
+                dvaStiffnesses[item.Index] = item.Dva.Stiffness;
+                dvaNodePositions[item.Index] = item.Dva.NodePosition;
             }
 
-            GeometricProperty geometricProperty = new GeometricProperty();
+            GeometricProperty geometricProperty;
 
             if (request.Profile.Area != 0 && request.Profile.MomentOfInertia != 0)
             {
-                geometricProperty.Area = await ArrayFactory.CreateVectorAsync(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await ArrayFactory.CreateVectorAsync(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty = GeometricProperty.Create(
+                    area: ArrayFactory.CreateVector(request.Profile.Area.Value, request.NumberOfElements),
+                    momentOfInertia: ArrayFactory.CreateVector(request.Profile.MomentOfInertia.Value, request.NumberOfElements));
             }
             else
             {
-                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.Profile, request.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Profile, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty = GeometricProperty.Create(
+                    area: this._geometricProperty.CalculateArea(request.Profile, request.NumberOfElements), 
+                    momentOfInertia: this._geometricProperty.CalculateMomentOfInertia(request.Profile, request.NumberOfElements));
             }
 
-            var beam = new BeamWithDva<TProfile>()
+            return new BeamWithDva<TProfile>
             {
                 DvaMasses = dvaMasses,
                 DvaNodePositions = dvaNodePositions,
                 DvaStiffnesses = dvaStiffnesses,
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings).ConfigureAwait(false),
-                Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom + (uint)request.Dvas.Count).ConfigureAwait(false),
+                Fastenings = this._mappingResolver.BuildFastenings(request.Fastenings),
+                Forces = this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom + (uint)request.Dvas.Count),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
-                Material = MaterialFactory.Create(request.Material),
+                Material = Material.Create(request.Material),
                 NumberOfElements = request.NumberOfElements,
                 Profile = request.Profile
             };
-
-            return beam;
         }
 
         /// <summary>
@@ -109,21 +107,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the solution files.</returns>
-        public override Task<string> CreateSolutionPath(BeamWithDvaRequest<TProfile> request, FiniteElementMethodInput input)
+        public override string CreateSolutionPath(BeamWithDvaRequest<TProfile> request, FiniteElementMethodInput input)
         {
-            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+            var fileInfo = new FileInfo(Path.Combine(
+                TemplateBasePath,
+                $"{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}",
+                $"{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            string fileUri = Path.Combine(
-                previousPath,
-                $"Solutions/FiniteElement/BeamWithDva/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}");
-
-            string fileName = $"{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
-
-            string path = Path.Combine(fileUri, fileName);
-
-            Directory.CreateDirectory(fileUri);
-
-            return Task.FromResult(path);
+            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            {
+                fileInfo.Directory.Create();
+            }
+            
+            return fileInfo.FullName;
         }
 
         /// <summary>
@@ -132,21 +128,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
-        public override Task<string> CreateMaxValuesPath(BeamWithDvaRequest<TProfile> request, FiniteElementMethodInput input)
+        public override string CreateMaxValuesPath(BeamWithDvaRequest<TProfile> request, FiniteElementMethodInput input)
         {
-            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+            var fileInfo = new FileInfo(Path.Combine(
+                TemplateBasePath,
+                $"MaxValues/{request.NumericalMethod}",
+                $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            string fileUri = Path.Combine(
-                previousPath,
-                $"Solutions/FiniteElement/BeamWithDva/MaxValues/{request.NumericalMethod}");
+            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            {
+                fileInfo.Directory.Create();
+            }
 
-            string fileName = $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
-
-            string path = Path.Combine(fileUri, fileName);
-
-            Directory.CreateDirectory(fileUri);
-
-            return Task.FromResult(path);
+            return fileInfo.FullName;
         }
 
         /// <summary>
@@ -154,26 +148,16 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<FiniteElementResponse> ValidateOperation(BeamWithDvaRequest<TProfile> request)
+        protected override async Task<FiniteElementResponse> ValidateOperationAsync(BeamWithDvaRequest<TProfile> request)
         {
-            FiniteElementResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+            var response = await base.ValidateOperationAsync(request).ConfigureAwait(false);
 
             foreach (var dva in request.Dvas)
             {
-                if (dva.Mass < 0)
-                {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"DVA Mass: {dva.Mass} cannot be less than zero. DVA index: {request.Dvas.IndexOf(dva)}.");
-                }
-
-                if (dva.Stiffness < 0)
-                {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"DVA Stiffness: {dva.Stiffness} cannot be less than zero. DVA index: {request.Dvas.IndexOf(dva)}.");
-                }
-
-                if (dva.NodePosition < 0 || dva.NodePosition > request.NumberOfElements)
-                {
-                    response.AddError(OperationErrorCode.RequestValidationError, $"DVA NodePosition: {dva.NodePosition} must be greather than zero and less than number of elements: {request.NumberOfElements}. DVA index: {request.Dvas.IndexOf(dva)}.");
-                }
+                response
+                    .AddErrorIf(() => dva.Mass < 0, $"DVA Mass: {dva.Mass} cannot be less than zero. DVA index: {request.Dvas.IndexOf(dva)}.")
+                    .AddErrorIf(() => dva.Stiffness < 0, $"DVA Stiffness: {dva.Stiffness} cannot be less than zero. DVA index: {request.Dvas.IndexOf(dva)}.")
+                    .AddErrorIf(() => dva.NodePosition < 0 || dva.NodePosition > request.NumberOfElements, $"DVA NodePosition: {dva.NodePosition} must be greater than zero and less than number of elements: {request.NumberOfElements}. DVA index: {request.Dvas.IndexOf(dva)}.");
             }
 
             return response;

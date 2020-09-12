@@ -1,5 +1,4 @@
 ﻿using IcVibracoes.DataContracts;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Validators.TimeStep
 {
@@ -18,7 +17,7 @@ namespace IcVibracoes.Core.Validators.TimeStep
         /// <param name="stiffness"></param>
         /// <param name="timeStep"></param>
         /// <returns></returns>
-        Task<bool> RungeKutta<TResponse, TResponseData>(TResponse response, double mass, double stiffness, double timeStep)
+        bool RungeKutta<TResponse, TResponseData>(TResponse response, double mass, double stiffness, double timeStep)
             where TResponse : OperationResponseBase<TResponseData>
             where TResponseData : OperationResponseData;
     }

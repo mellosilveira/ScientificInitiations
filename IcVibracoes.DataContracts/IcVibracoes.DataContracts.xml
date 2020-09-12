@@ -186,22 +186,22 @@
             It contains the operation error codes that the application can return.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.RequestValidationError">
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.RequestValidationError">
             <summary>
             This error means that the request do not passed in the validation.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.UnauthorizedError">
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.UnauthorizedError">
             <summary>
             This error means that the client is not authorized to access the endpoint or the resource.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.InternalServerError">
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.InternalServerError">
             <summary>
             This error means that some error ocurred while processing the request.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationErrorCode.NotImplementedError">
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.NotImplementedError">
             <summary>
             This error means that some resource or endpoint was not implemented.
             </summary>
@@ -269,38 +269,52 @@
             </summary>
             <example>50</example>
         </member>
-        <member name="T:IcVibracoes.DataContracts.OperationResponseBase`1">
-            <summary>
-            It contains the content of response for all operations.
-            </summary>
-            <typeparam name="TResponseData"></typeparam>
-        </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.#ctor">
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.#ctor">
             <summary>
             Class constructor.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Success">
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase.Success">
             <summary>
             The success status of operation.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.HttpStatusCode">
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase.HttpStatusCode">
             <summary>
             The HTTP status code.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Errors">
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase.Errors">
             <summary>
             The list of errors.
             </summary>
         </member>
-        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Data">
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetSuccessCreated">
             <summary>
-            It represents the 'data' content of all operation response.
+            Set success to true. The HttpStatusCode will be set to 201 (Created).
             </summary>
         </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.AddError(System.String,System.String,System.Net.HttpStatusCode)">
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetBadRequestError">
+            <summary>
+            Set success to false. The HttpStatusCode will be set to 400 (BadRequest).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetUnauthorizedError">
+            <summary>
+            Set success to false. The HttpStatusCode will be set to 401 (Unauthorized).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetInternalServerError">
+            <summary>
+            Set Success to false. The HttpStatusCode will be set to 500 (InternalServerError).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetNotImplementedError">
+            <summary>
+            Set Success to false. The HttpStatusCode will be set to 501 (NotImplemented).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.AddError(System.String,System.String,System.Net.HttpStatusCode)">
             <summary>
             This method adds error on list of errors.
             </summary>
@@ -308,29 +322,15 @@
             <param name="message"></param>
             <param name="httpStatusCode"></param>
         </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetSuccessCreated">
+        <member name="T:IcVibracoes.DataContracts.OperationResponseBase`1">
             <summary>
-            Set success to true. The HttpStatusCode will be set to 201 (Created).
+            It contains the content of response for all operations.
             </summary>
+            <typeparam name="TResponseData"></typeparam>
         </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetBadRequestError">
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Data">
             <summary>
-            Set success to false. The HttpStatusCode will be set to 400 (BadRequest).
-            </summary>
-        </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetUnauthorizedError">
-            <summary>
-            Set success to false. The HttpStatusCode will be set to 401 (Unauthorized).
-            </summary>
-        </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetInternalServerError">
-            <summary>
-            Set Success to false. The HttpStatusCode will be set to 500 (InternalServerError).
-            </summary>
-        </member>
-        <member name="M:IcVibracoes.DataContracts.OperationResponseBase`1.SetNotImplementedError">
-            <summary>
-            Set Success to false. The HttpStatusCode will be set to 501 (NotImplemented).
+            It represents the 'data' content of all operation response.
             </summary>
         </member>
         <member name="T:IcVibracoes.DataContracts.OperationResponseData">
@@ -389,9 +389,9 @@
             For each value in the list, it is made a new analysis.
             Damping ratio represents the relation between damping by critical damping.
             If it is equals to zero, the vibration is harmonic.
-            If it is greather than zero and less than 1, the vibration is underdamped.
+            If it is greater than zero and less than 1, the vibration is underdamped.
             If it is equals to one, the vibration is critical damped.
-            If it is greather than 1, the vibration is overdamped.
+            If it is greater than 1, the vibration is overdamped.
             Unit: Dimensionless.
             </summary>
             <example>0.05</example>

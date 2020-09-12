@@ -1,5 +1,4 @@
-﻿using IcVibracoes.Calculator.GeometricProperties;
-using IcVibracoes.Common.Profiles;
+﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Calculator.MainMatrixes.Beam;
 using IcVibracoes.Core.Calculator.NaturalFrequency;
 using IcVibracoes.Core.Calculator.Time;
@@ -12,7 +11,7 @@ using IcVibracoes.Core.Validators.Profiles;
 using IcVibracoes.DataContracts.FiniteElement.Beam;
 using System;
 using System.IO;
-using System.Threading.Tasks;
+using IcVibracoes.Core.Calculator.GeometricProperties;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
 {
@@ -20,9 +19,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
     /// It's responsible to calculate the vibration in a beam.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public abstract class CalculateBeamVibration<TProfile> : CalculateVibration_FiniteElement<BeamRequest<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
+    public abstract class CalculateBeamVibration<TProfile> : CalculateVibrationFiniteElement<BeamRequest<TProfile>, TProfile, Beam<TProfile>>, ICalculateBeamVibration<TProfile>
         where TProfile : Profile, new()
     {
+        private static readonly string TemplateBasePath = Path.Combine(Directory.GetCurrentDirectory(), "Solutions/FiniteElement/Beam");
+
         private readonly IGeometricProperty<TProfile> _geometricProperty;
         private readonly IMappingResolver _mappingResolver;
 
@@ -35,7 +36,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="profileValidator"></param>
         /// <param name="time"></param>
         /// <param name="naturalFrequency"></param>
-        public CalculateBeamVibration(
+        protected CalculateBeamVibration(
             IGeometricProperty<TProfile> geometricProperty,
             IMappingResolver mappingResolver,
             IBeamMainMatrix<TProfile> mainMatrix,
@@ -55,33 +56,33 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="request"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>A new instance of class <see cref="Beam{TProfile}"/>.</returns>
-        public override async Task<Beam<TProfile>> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom)
+        public override Beam<TProfile> BuildBeam(BeamRequest<TProfile> request, uint degreesOfFreedom)
         {
-            GeometricProperty geometricProperty = new GeometricProperty();
+            GeometricProperty geometricProperty;
 
             if (request.Profile.Area != null && request.Profile.MomentOfInertia != null)
             {
-                geometricProperty.Area = await ArrayFactory.CreateVectorAsync(request.Profile.Area.Value, request.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await ArrayFactory.CreateVectorAsync(request.Profile.MomentOfInertia.Value, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty = GeometricProperty.Create(
+                    area: ArrayFactory.CreateVector(request.Profile.Area.Value, request.NumberOfElements),
+                    momentOfInertia: ArrayFactory.CreateVector(request.Profile.MomentOfInertia.Value, request.NumberOfElements));
             }
             else
             {
-                geometricProperty.Area = await this._geometricProperty.CalculateArea(request.Profile, request.NumberOfElements).ConfigureAwait(false);
-                geometricProperty.MomentOfInertia = await this._geometricProperty.CalculateMomentOfInertia(request.Profile, request.NumberOfElements).ConfigureAwait(false);
+                geometricProperty = GeometricProperty.Create(
+                    area: this._geometricProperty.CalculateArea(request.Profile, request.NumberOfElements),
+                    momentOfInertia: this._geometricProperty.CalculateMomentOfInertia(request.Profile, request.NumberOfElements));
             }
 
-            var beam = new Beam<TProfile>()
+            return new Beam<TProfile>
             {
-                Fastenings = await this._mappingResolver.BuildFastenings(request.Fastenings).ConfigureAwait(false),
-                Forces = await this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom).ConfigureAwait(false),
+                Fastenings = this._mappingResolver.BuildFastenings(request.Fastenings),
+                Forces = this._mappingResolver.BuildForceVector(request.Forces, degreesOfFreedom),
                 GeometricProperty = geometricProperty,
                 Length = request.Length,
-                Material = MaterialFactory.Create(request.Material),
+                Material = Material.Create(request.Material),
                 NumberOfElements = request.NumberOfElements,
                 Profile = request.Profile
             };
-
-            return beam;
         }
 
         /// <summary>
@@ -90,21 +91,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the solution files.</returns>
-        public override Task<string> CreateSolutionPath(BeamRequest<TProfile> request, FiniteElementMethodInput input)
+        public override string CreateSolutionPath(BeamRequest<TProfile> request, FiniteElementMethodInput input)
         {
-            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+            var fileInfo = new FileInfo(Path.Combine(
+                TemplateBasePath,
+                $"{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}",
+                $"{request.AnalysisType}_{request.Profile.GetType().Name}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            string fileUri = Path.Combine(
-                previousPath,
-                $"Solutions/FiniteElement/Beam/{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}");
+            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            {
+                fileInfo.Directory.Create();
+            }
 
-            string fileName = $"{request.AnalysisType}_{request.Profile.GetType().Name}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
-
-            string path = Path.Combine(fileUri, fileName);
-
-            Directory.CreateDirectory(fileUri);
-
-            return Task.FromResult(path);
+            return fileInfo.FullName;
         }
 
         /// <summary>
@@ -113,21 +112,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.Beam
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
-        public override Task<string> CreateMaxValuesPath(BeamRequest<TProfile> request, FiniteElementMethodInput input)
+        public override string CreateMaxValuesPath(BeamRequest<TProfile> request, FiniteElementMethodInput input)
         {
-            string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
+            var fileInfo = new FileInfo(Path.Combine(
+                TemplateBasePath, 
+                $"MaxValues/{request.NumericalMethod}",
+                $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            string fileUri = Path.Combine(
-                previousPath,
-                $"Solutions/FiniteElement/Beam/MaxValues/{request.NumericalMethod}");
+            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            {
+                fileInfo.Directory.Create();
+            }
 
-            string fileName = $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv";
-
-            string path = Path.Combine(fileUri, fileName);
-
-            Directory.CreateDirectory(fileUri);
-
-            return Task.FromResult(path);
+            return fileInfo.FullName;
         }
     }
 }

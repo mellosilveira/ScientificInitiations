@@ -9,19 +9,13 @@ namespace IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorb
     /// It represents the request content of CalculateBeamWithDva operation.
     /// </summary>
     /// <typeparam name="TProfile"></typeparam>
-    public class BeamWithDvaRequest<TProfile> : FiniteElementRequest<TProfile>
+    public sealed class BeamWithDvaRequest<TProfile> : FiniteElementRequest<TProfile>
         where TProfile : Profile, new()
     {
         /// <summary>
         /// The analysis type. 
         /// </summary>
-        public override string AnalysisType 
-        { 
-            get
-            {
-                return "FiniteElement_BeamWithDva";
-            }
-        }
+        public override string AnalysisType => "FiniteElement_BeamWithDva";
 
         /// <summary>
         /// List of dynamic vibration absorber.

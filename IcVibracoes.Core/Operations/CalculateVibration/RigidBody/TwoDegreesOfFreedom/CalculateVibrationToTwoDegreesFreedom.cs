@@ -1,20 +1,21 @@
-﻿using IcVibracoes.Core.Calculator.Time;
-using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
-using IcVibracoes.Core.Models;
-using IcVibracoes.Core.Models.BeamCharacteristics;
-using IcVibracoes.Core.Validators.MechanicalProperties;
-using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using IcVibracoes.Core.Calculator.Time;
+using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
+using IcVibracoes.Core.Models;
+using IcVibracoes.Core.Models.BeamCharacteristics;
+using IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom;
+using IcVibracoes.Core.Validators.MechanicalProperties;
+using IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom;
 
-namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfFreedom
+namespace IcVibracoes.Core.Operations.CalculateVibration.RigidBody.TwoDegreesOfFreedom
 {
     /// <summary>
     /// It is responsible to calculate the vibration for a rigid body with two degrees freedom.
     /// </summary>
-    public class CalculateVibrationToTwoDegreesOfFreedom : CalculateVibration_RigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesOfFreedom
+    public class CalculateVibrationToTwoDegreesOfFreedom : CalculateVibrationRigidBody<TwoDegreesOfFreedomRequest, TwoDegreesOfFreedomResponse, TwoDegreesOfFreedomResponseData, TwoDegreesOfFreedomInput>, ICalculateVibrationToTwoDegreesOfFreedom
     {
         private readonly IMechanicalPropertiesValidator _mechanicalPropertiesValidator;
 
@@ -25,8 +26,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <param name="time"></param>
         public CalculateVibrationToTwoDegreesOfFreedom(
             IMechanicalPropertiesValidator mechanicalPropertiesValidator,
-            ITime time)
-            : base(time)
+            ITime time) : base(time)
         {
             this._mechanicalPropertiesValidator = mechanicalPropertiesValidator;
         }
@@ -38,24 +38,24 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override Task<double[]> CalculateRigidBodyResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
-            => base._numericalMethod.CalculateTwoDegreesOfFreedomResult(input, time, previousResult);
+        public override double[] CalculateRigidBodyResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
+            => base.NumericalMethod.CalculateTwoDegreesOfFreedomResult(input, time, previousResult);
 
         /// <summary>
         /// Builds the vector with the initial conditions to analysis.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public override Task<double[]> BuildInitialConditions(TwoDegreesOfFreedomRequest request)
+        public override double[] BuildInitialConditions(TwoDegreesOfFreedomRequest request)
         {
             var numericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod);
-            if (numericalMethod == NumericalMethod.RungeKuttaForthOrder)
+            if (numericalMethod == Models.NumericalMethod.RungeKuttaForthOrder)
             {
-                // For Runge Kutta Forth Order numerical method, is used only 4 varibles.
-                return Task.FromResult(new double[4]);
+                // For Runge Kutta Forth Order numerical method, is used only 4 variables.
+                return new double[4];
             }
 
-            return Task.FromResult(new double[Constant.NumberOfRigidBodyVariables_2DF]);
+            return new double[Constants.NumberOfRigidBodyVariables2Df];
         }
 
         /// <summary>
@@ -63,9 +63,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="TwoDegreesOfFreedomInput"/>.</returns>
-        public override async Task<TwoDegreesOfFreedomInput> CreateInput(TwoDegreesOfFreedomRequest request)
+        public override TwoDegreesOfFreedomInput CreateInput(TwoDegreesOfFreedomRequest request)
         {
-            TwoDegreesOfFreedomInput input = await base.CreateInput(request).ConfigureAwait(false);
+            TwoDegreesOfFreedomInput input = base.CreateInput(request);
             input.Mass = request.PrimaryElementData.Mass;
             input.SecondaryMass = request.SecondaryElementData.Mass;
             input.Stiffness = request.PrimaryElementData.Stiffness;
@@ -82,7 +82,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the solution files.</returns>
-        public override Task<string> CreateSolutionPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
+        public override string CreateSolutionPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -104,7 +104,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
 
             Directory.CreateDirectory(fileUri);
 
-            return Task.FromResult(path);
+            return path;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// <param name="request"></param>
         /// <param name="input"></param>
         /// <returns>The path to save the file with the maximum values for each angular frequency.</returns>
-        public override Task<string> CreateMaxValuesPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
+        public override string CreateMaxValuesPath(TwoDegreesOfFreedomRequest request, TwoDegreesOfFreedomInput input)
         {
             string previousPath = Path.GetDirectoryName(Directory.GetCurrentDirectory());
 
@@ -136,7 +136,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
 
             Directory.CreateDirectory(fileUri);
 
-            return Task.FromResult(path);
+            return path;
         }
 
         /// <summary>
@@ -144,9 +144,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration.TwoDegreesOfF
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<TwoDegreesOfFreedomResponse> ValidateOperation(TwoDegreesOfFreedomRequest request)
+        protected override async Task<TwoDegreesOfFreedomResponse> ValidateOperationAsync(TwoDegreesOfFreedomRequest request)
         {
-            TwoDegreesOfFreedomResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+            TwoDegreesOfFreedomResponse response = await base.ValidateOperationAsync(request).ConfigureAwait(false);
 
             await this._mechanicalPropertiesValidator.Execute(request.PrimaryElementData, response).ConfigureAwait(false);
 

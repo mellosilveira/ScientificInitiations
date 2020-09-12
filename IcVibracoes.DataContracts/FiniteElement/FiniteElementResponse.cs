@@ -3,5 +3,5 @@
     /// <summary>
     /// It represents the response content of Finite Element operations.
     /// </summary>
-    public class FiniteElementResponse : OperationResponseBase<FiniteElementResponseData> { }
+    public sealed class FiniteElementResponse : OperationResponseBase<FiniteElementResponseData> { }
 }

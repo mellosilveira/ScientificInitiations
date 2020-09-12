@@ -3,10 +3,9 @@ using IcVibracoes.Core.DTO;
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.ExtensionMethods;
-using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.BeamCharacteristics;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace IcVibracoes.Core.Mapper
 {
@@ -21,7 +20,7 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="forces"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns></returns>
-        public Task<double[]> BuildForceVector(List<Force> forces, uint degreesOfFreedom)
+        public double[] BuildForceVector(List<Force> forces, uint degreesOfFreedom)
         {
             if (forces == null)
             {
@@ -29,12 +28,12 @@ namespace IcVibracoes.Core.Mapper
             }
 
             double[] force = new double[degreesOfFreedom];
-            foreach (Force applyedForce in forces)
+            foreach (Force appliedForce in forces)
             {
-                force[2 * applyedForce.NodePosition] = applyedForce.Value;
+                force[2 * appliedForce.NodePosition] = appliedForce.Value;
             }
 
-            return Task.FromResult(force);
+            return force;
         }
 
         /// <summary>
@@ -43,20 +42,20 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="electricalCharges"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns></returns>
-        public Task<double[]> BuildElectricalChargeVector(List<ElectricalCharge> electricalCharges, uint degreesOfFreedom)
+        public double[] BuildElectricalChargeVector(List<ElectricalCharge> electricalCharges, uint degreesOfFreedom)
         {
             if (electricalCharges == null)
             {
                 return null;
             }
 
-            double[] electricalCharge = new double[degreesOfFreedom];
+            var electricalCharge = new double[degreesOfFreedom];
             foreach (ElectricalCharge eC in electricalCharges)
             {
                 electricalCharge[2 * eC.NodePosition] = eC.Value;
             }
 
-            return Task.FromResult(electricalCharge);
+            return electricalCharge;
         }
 
         /// <summary>
@@ -64,16 +63,9 @@ namespace IcVibracoes.Core.Mapper
         /// </summary>
         /// <param name="fastenings"></param>
         /// <returns></returns>
-        public Task<IDictionary<uint, FasteningType>> BuildFastenings(List<Fastening> fastenings)
+        public IDictionary<uint, FasteningType> BuildFastenings(List<Fastening> fastenings)
         {
-            IDictionary<uint, FasteningType> beamFastenings = new Dictionary<uint, FasteningType>();
-
-            foreach (var fastening in fastenings)
-            {
-                beamFastenings.Add(fastening.NodePosition, FasteningFactory.Create(fastening.Type));
-            }
-
-            return Task.FromResult(beamFastenings);
+            return fastenings.ToDictionary(fastening => fastening.NodePosition, fastening => FasteningType.Create(fastening.Type));
         }
 
         /// <summary>
@@ -82,18 +74,29 @@ namespace IcVibracoes.Core.Mapper
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Task<FiniteElementMethodInput> BuildFiniteElementMethodInput(TwoDegreesOfFreedomInput input)
+        public FiniteElementMethodInput BuildFiniteElementMethodInput(TwoDegreesOfFreedomInput input)
         {
-            double[,] mass = new double[,] { { input.Mass, 0 }, { 0, input.SecondaryMass } };
-            double[,] stiffness = new double[,] { { input.Stiffness + input.SecondaryStiffness, -input.SecondaryStiffness }, { -input.SecondaryStiffness, input.SecondaryStiffness } };
-            double[,] damping = new double[,] { { input.Damping + input.SecondaryDamping, -input.SecondaryDamping }, { -input.SecondaryDamping, input.SecondaryDamping } };
-
-            return Task.FromResult(new FiniteElementMethodInput
+            var finiteElementMethodInput = new FiniteElementMethodInput
             {
-                Mass = mass,
-                Damping = damping,
-                Stiffness = stiffness,
-                OriginalForce = new double[] { input.Force, 0 },
+                Mass = new[,] 
+                {
+                    { input.Mass, 0 }, 
+                    { 0, input.SecondaryMass }
+                },
+                Damping = new[,] 
+                {
+                    { input.Damping + input.SecondaryDamping, -input.SecondaryDamping}, 
+                    { -input.SecondaryDamping, input.SecondaryDamping }
+                },
+                Stiffness = new[,] 
+                {
+                    { input.Stiffness + input.SecondaryStiffness, -input.SecondaryStiffness }, 
+                    { -input.SecondaryStiffness, input.SecondaryStiffness }
+                },
+                OriginalForce = new[]
+                {
+                    input.Force, 0
+                },
                 AngularFrequency = input.AngularFrequency,
                 AngularFrequencyStep = input.AngularFrequencyStep,
                 FinalAngularFrequency = input.FinalAngularFrequency,
@@ -102,7 +105,9 @@ namespace IcVibracoes.Core.Mapper
                 TimeStep = input.TimeStep,
                 NumericalMethod = input.NumericalMethod,
                 ForceType = input.ForceType
-            });
+            };
+
+            return finiteElementMethodInput;
         }
 
         /// <summary>
@@ -112,17 +117,29 @@ namespace IcVibracoes.Core.Mapper
         /// <param name="result"></param>
         /// <param name="force"></param>
         /// <returns></returns>
-        public Task<FiniteElementResult> BuildFiniteElementResult(double[] result, double force)
+        public FiniteElementResult BuildFiniteElementResult(double[] result, double force)
         {
             var finiteElementResult = new FiniteElementResult
             {
-                Displacement = new double[] { result[0], result[1] },
-                Velocity = new double[] { result[2], result[3] },
-                Acceleration = new double[] { result[4], result[5] },
-                Force = new double[] { force, 0 }
+                Displacement = new[]
+                {
+                    result[0], result[1]
+                },
+                Velocity = new[]
+                {
+                    result[2], result[3]
+                },
+                Acceleration = new[]
+                {
+                    result[4], result[5]
+                },
+                Force = new[]
+                {
+                    force, 0
+                }
             };
 
-            return Task.FromResult(finiteElementResult);
+            return finiteElementResult;
         }
 
         /// <summary>
@@ -131,13 +148,13 @@ namespace IcVibracoes.Core.Mapper
         /// </summary>
         /// <param name="finiteElementResult"></param>
         /// <returns></returns>
-        public Task<double[]> BuildVariableVector(FiniteElementResult finiteElementResult)
+        public double[] BuildVariableVector(FiniteElementResult finiteElementResult)
         {
             double[] previousResult = finiteElementResult.Displacement
                 .CombineVectors(finiteElementResult.Velocity)
                 .CombineVectors(finiteElementResult.Acceleration);
 
-            return Task.FromResult(previousResult);
+            return previousResult;
         }
     }
 }

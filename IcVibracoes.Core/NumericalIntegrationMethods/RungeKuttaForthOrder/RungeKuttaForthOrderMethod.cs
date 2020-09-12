@@ -4,7 +4,6 @@ using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Mapper;
 using System;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
 {
@@ -32,7 +31,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public delegate Task<double[]> CalculateDifferentialEquationOfMotion<TInput>(TInput input, double time, double[] previousResult)
+        public delegate double[] CalculateDifferentialEquationOfMotion<TInput>(TInput input, double time, double[] previousResult)
             where TInput : RigidBodyInput;
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public async Task<double[]> CalculateResult<TInput>(CalculateDifferentialEquationOfMotion<TInput> calculateDifferentialEquationOfMotion, TInput input, double time, double[] previousResult)
+        public double[] CalculateResult<TInput>(CalculateDifferentialEquationOfMotion<TInput> calculateDifferentialEquationOfMotion, TInput input, double time, double[] previousResult)
             where TInput : RigidBodyInput
         {
             int arrayLength = previousResult.Length;
@@ -52,25 +51,25 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
             double[] t2 = new double[arrayLength];
             double[] t3 = new double[arrayLength];
 
-            double[] y1 = await calculateDifferentialEquationOfMotion(input, time, previousResult).ConfigureAwait(false);
+            double[] y1 = calculateDifferentialEquationOfMotion(input, time, previousResult);
             for (int i = 0; i < arrayLength; i++)
             {
                 t1[i] = previousResult[i] + 0.5 * input.TimeStep * y1[i];
             }
 
-            double[] y2 = await calculateDifferentialEquationOfMotion(input, time + input.TimeStep / 2, t1).ConfigureAwait(false);
+            double[] y2 = calculateDifferentialEquationOfMotion(input, time + input.TimeStep / 2, t1);
             for (int i = 0; i < arrayLength; i++)
             {
                 t2[i] = previousResult[i] + 0.5 * input.TimeStep * y2[i];
             }
 
-            double[] y3 = await calculateDifferentialEquationOfMotion(input, time + input.TimeStep / 2, t2).ConfigureAwait(false);
+            double[] y3 = calculateDifferentialEquationOfMotion(input, time + input.TimeStep / 2, t2);
             for (int i = 0; i < arrayLength; i++)
             {
                 t3[i] = previousResult[i] + input.TimeStep * y3[i];
             }
 
-            double[] y4 = await calculateDifferentialEquationOfMotion(input, time + input.TimeStep, t3).ConfigureAwait(false);
+            double[] y4 = calculateDifferentialEquationOfMotion(input, time + input.TimeStep, t3);
 
             for (int i = 0; i < arrayLength; i++)
             {
@@ -85,7 +84,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public override Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input)
+        public override FiniteElementResult CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input)
         {
             throw new NotImplementedException();
         }
@@ -97,7 +96,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// <param name="previousResult"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public override Task<FiniteElementResult> CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time)
+        public override FiniteElementResult CalculateFiniteElementResult(FiniteElementMethodInput input,
+            FiniteElementResult previousResult, double time)
         {
             throw new NotImplementedException();
         }
@@ -109,9 +109,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
+        public override double[] CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult)
         {
-            return await this.CalculateResult(this._differentialEquationOfMotion.CalculateForOneDegreeOfFreedom, input, time, previousResult).ConfigureAwait(false);
+            return this.CalculateResult((input1, time1, previousResult1) => this._differentialEquationOfMotion.CalculateForOneDegreeOfFreedom(input1, time1, previousResult1), input, time, previousResult);
         }
 
         /// <summary>
@@ -121,9 +121,9 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.RungeKuttaForthOrder
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public override async Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
+        public override double[] CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
         {
-            return await this.CalculateResult(this._differentialEquationOfMotion.CalculateForTwoDegreedOfFreedom, input, time, previousResult).ConfigureAwait(false);
+            return this.CalculateResult((input1, time1, previousResult1) => this._differentialEquationOfMotion.CalculateForTwoDegreedOfFreedom(input1, time1, previousResult1), input, time, previousResult);
         }
     }
 }

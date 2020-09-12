@@ -2,7 +2,6 @@
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.Models.Beams;
 using IcVibracoes.DataContracts.FiniteElement;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
 {
@@ -22,6 +21,6 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <param name="request"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
-        Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
+        TBeam BuildBeam(TRequest request, uint degreesOfFreedom);
     }
 }

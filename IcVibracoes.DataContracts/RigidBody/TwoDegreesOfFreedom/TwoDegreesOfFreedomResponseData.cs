@@ -3,7 +3,7 @@
     /// <summary>
     /// It contains the response 'data' content of Rigid Body analysis with Two Degrees of Freedom.
     /// </summary>
-    public class TwoDegreesOfFreedomResponseData : RigidBodyResponseData
+    public sealed class TwoDegreesOfFreedomResponseData : RigidBodyResponseData
     {
         /// <summary>
         /// The time corresponding for each value in that class.

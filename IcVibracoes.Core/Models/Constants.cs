@@ -3,7 +3,7 @@
     /// <summary>
     /// It contains the constants used in the application.
     /// </summary>
-    public class Constant
+    public class Constants
     {
         /// <summary>
         /// Nodes per element in a 1D analysis.
@@ -42,11 +42,11 @@
         /// <summary>
         /// Number of variables in a one degree freedom rigid body analysis.
         /// </summary>
-        public const byte NumberOfRigidBodyVariables_1DF = 3;
+        public const byte NumberOfRigidBodyVariables1Df = 3;
 
         /// <summary>
         /// Number of variables in a two degrees freedom rigid body analysis.
         /// </summary>
-        public const byte NumberOfRigidBodyVariables_2DF = 6;
+        public const byte NumberOfRigidBodyVariables2Df = 6;
     }
 }

@@ -2,7 +2,6 @@
 using IcVibracoes.Core.DTO.NumericalMethodInput.FiniteElements;
 using IcVibracoes.Core.DTO.NumericalMethodInput.RigidBody;
 using IcVibracoes.Core.Mapper;
-using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.NumericalIntegrationMethods
 {
@@ -17,7 +16,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// Class constructor.
         /// </summary>
         /// <param name="mappingResolver"></param>
-        public NumericalIntegrationMethod(IMappingResolver mappingResolver)
+        protected NumericalIntegrationMethod(IMappingResolver mappingResolver)
         {
             this._mappingResolver = mappingResolver;
         }
@@ -27,7 +26,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public abstract Task<FiniteElementResult> CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input);
+        public abstract FiniteElementResult CalculateFiniteElementResultForInitialTime(FiniteElementMethodInput input);
 
         /// <summary>
         /// Calculates and write in a file the results for a finite element analysis.
@@ -36,7 +35,8 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// <param name="previousResult"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public abstract Task<FiniteElementResult> CalculateFiniteElementResult(FiniteElementMethodInput input, FiniteElementResult previousResult, double time);
+        public abstract FiniteElementResult CalculateFiniteElementResult(FiniteElementMethodInput input,
+            FiniteElementResult previousResult, double time);
 
         /// <summary>
         /// Calculates and write in a file the results for one degree of freedom analysis.
@@ -45,7 +45,7 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public abstract Task<double[]> CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult);
+        public abstract double[] CalculateOneDegreeOfFreedomResult(OneDegreeOfFreedomInput input, double time, double[] previousResult);
 
         /// <summary>
         /// Calculates and write in a file the results for two degrees of freedom analysis.
@@ -54,14 +54,15 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods
         /// <param name="time"></param>
         /// <param name="previousResult"></param>
         /// <returns></returns>
-        public virtual async Task<double[]> CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time, double[] previousResult)
+        public virtual double[] CalculateTwoDegreesOfFreedomResult(TwoDegreesOfFreedomInput input, double time,
+            double[] previousResult)
         {
-            FiniteElementMethodInput finiteElementMethodInput = await this._mappingResolver.BuildFiniteElementMethodInput(input).ConfigureAwait(false);
-            FiniteElementResult previousFiniteElementResult = await this._mappingResolver.BuildFiniteElementResult(previousResult, input.Force).ConfigureAwait(false);
+            FiniteElementMethodInput finiteElementMethodInput = this._mappingResolver.BuildFiniteElementMethodInput(input);
+            FiniteElementResult previousFiniteElementResult = this._mappingResolver.BuildFiniteElementResult(previousResult, input.Force);
 
-            FiniteElementResult finiteElementResult = await this.CalculateFiniteElementResult(finiteElementMethodInput, previousFiniteElementResult, time).ConfigureAwait(false);
+            FiniteElementResult finiteElementResult = this.CalculateFiniteElementResult(finiteElementMethodInput, previousFiniteElementResult, time);
 
-            double[] result = await this._mappingResolver.BuildVariableVector(finiteElementResult).ConfigureAwait(false);
+            double[] result = this._mappingResolver.BuildVariableVector(finiteElementResult);
 
             return result;
         }
