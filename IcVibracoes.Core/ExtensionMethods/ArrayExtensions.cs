@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.ExtensionMethods
 {
@@ -261,7 +262,7 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="boundaryConditions"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public static double[,] ApplyBoundaryConditions(this double[,] matrix, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
+        public static Task<double[,]> ApplyBoundaryConditionsAsync(this double[,] matrix, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
         {
             double[,] matrixBc = new double[numberOfTrueBoundaryConditions, numberOfTrueBoundaryConditions];
 
@@ -287,7 +288,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                 }
             }
 
-            return matrixBc;
+            return Task.FromResult(matrixBc);
         }
 
         /// <summary>
@@ -297,11 +298,11 @@ namespace IcVibracoes.Core.ExtensionMethods
         /// <param name="boundaryConditions"></param>
         /// <param name="numberOfTrueBoundaryConditions"></param>
         /// <returns></returns>
-        public static double[] ApplyBoundaryConditions(this double[] vector, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
+        public static Task<double[]> ApplyBoundaryConditionsAsync(this double[] vector, bool[] boundaryConditions, uint numberOfTrueBoundaryConditions)
         {
-            return vector
+            return Task.FromResult(vector
                 .Where((item, index) => boundaryConditions[index])
-                .ToArray();
+                .ToArray());
         }
         
         /// <summary>
@@ -345,7 +346,7 @@ namespace IcVibracoes.Core.ExtensionMethods
                     result[i] = vector[i] / vectorToDivide[i];
                 }
             }
-            catch (Exception ex)
+            catch (DivideByZeroException ex)
             {
                 throw new DivideByZeroException($"The vector to divide has invalid value: {vectorToDivide[i]} at position: {i}.", ex);
             }

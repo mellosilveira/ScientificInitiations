@@ -23,7 +23,7 @@ namespace IcVibracoes.Core.Operations
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected abstract Task<TResponse> ProcessOperation(TRequest request);
+        protected abstract Task<TResponse> ProcessOperationAsync(TRequest request);
 
         /// <summary>
         /// This method validates the operation.
@@ -116,7 +116,7 @@ namespace IcVibracoes.Core.Operations
                 //    return response;
                 //}
 
-                response = await this.ProcessOperation(request).ConfigureAwait(false);
+                response = await this.ProcessOperationAsync(request).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

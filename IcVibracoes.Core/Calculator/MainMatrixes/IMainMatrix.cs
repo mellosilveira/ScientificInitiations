@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Common.Profiles;
 using IcVibracoes.Core.Models.Beams;
+using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes
 {
@@ -19,7 +20,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="specificMass"></param>
         /// <param name="elementLength"></param>
         /// <returns>The elementary mass matrix.</returns>
-        double[,] CalculateElementMass(double area, double specificMass, double elementLength);
+        Task<double[,]> CalculateElementMass(double area, double specificMass, double elementLength);
 
         /// <summary>
         /// This method calculates the beam's mass matrix.
@@ -27,7 +28,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The structure mass matrix.</returns>
-        double[,] CalculateMass(TBeam beam, uint degreesOfFreedom);
+        Task<double[,]> CalculateMassAsync(TBeam beam, uint degreesOfFreedom);
 
         /// <summary>
         /// This method calculates the element's stiffness matrix.
@@ -36,7 +37,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="youngModulus"></param>
         /// <param name="elementLength"></param>
         /// <returns>The elementary stiffness matrix.</returns>
-        double[,] CalculateElementStiffness(double momentOfInertia, double youngModulus, double elementLength);
+        Task<double[,]> CalculateElementStiffness(double momentOfInertia, double youngModulus, double elementLength);
 
         /// <summary>
         /// This method calculates the beam's stiffness matrix.
@@ -44,7 +45,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The structure stiffness matrix.</returns>
-        double[,] CalculateStiffness(TBeam beam, uint degreesOfFreedom);
+        Task<double[,]> CalculateStiffnessAsync(TBeam beam, uint degreesOfFreedom);
 
         /// <summary>
         /// This method calculates the beam's damping matrix.
@@ -52,14 +53,14 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="mass"></param>
         /// <param name="stiffness"></param>
         /// <returns>The structure damping matrix.</returns>
-        double[,] CalculateDamping(double[,] mass, double[,] stiffness);
+        Task<double[,]> CalculateDamping(double[,] mass, double[,] stiffness);
 
         /// <summary>
         /// This method calculates the beam's force matrix.
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The structure force matrix.</returns>
-        double[] CalculateForce(TBeam beam);
+        Task<double[]> CalculateForce(TBeam beam);
 
         /// <summary>
         /// This method builds the boundary condition matrix and the number of true boundary conditions.
@@ -67,6 +68,6 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes
         /// <param name="beam"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>The boundary conditions matrix and the number of true boundary conditions.</returns>
-        (bool[], uint) CalculateBoundaryConditions(TBeam beam, uint degreesOfFreedom);
+        Task<(bool[], uint)> CalculateBoundaryConditionsAsync(TBeam beam, uint degreesOfFreedom);
     }
 }

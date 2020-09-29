@@ -62,7 +62,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.RigidBody
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<TResponse> ProcessOperation(TRequest request)
+        protected override async Task<TResponse> ProcessOperationAsync(TRequest request)
         {
             var response = new TResponse { Data = new TResponseData() };
             response.SetSuccessCreated();
@@ -71,7 +71,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.RigidBody
             base.NumericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             // Step 2 - Creates the input to numerical method.
-            TInput input = this.CreateInput(request);
+            TInput input = await this.CreateInputAsync(request).ConfigureAwait(false);
 
             // Step 3 - Creates the initial conditions for displacement and velocity.
             double[] previousResult = this.BuildInitialConditions(request);

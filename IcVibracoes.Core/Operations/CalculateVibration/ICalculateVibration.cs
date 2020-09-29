@@ -1,5 +1,6 @@
 ﻿using IcVibracoes.Core.DTO.NumericalMethodInput;
 using IcVibracoes.DataContracts;
+using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Operations.CalculateVibration
 {
@@ -21,7 +22,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="TInput"/>.</returns>
-        TInput CreateInput(TRequest request);
+        Task<TInput> CreateInputAsync(TRequest request);
 
         /// <summary>
         /// This method creates the file path to write the results.

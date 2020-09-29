@@ -114,11 +114,11 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
                 $"{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/{request.NumericalMethod}",
                 $"{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            if (!fileInfo.Exists && !fileInfo.Directory.Exists)
             {
                 fileInfo.Directory.Create();
             }
-            
+
             return fileInfo.FullName;
         }
 
@@ -135,7 +135,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithD
                 $"MaxValues/{request.NumericalMethod}",
                 $"MaxValues_{request.AnalysisType}_{request.Profile.GetType().Name}_NumberOfDvas={request.Dvas.Count}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            if (!fileInfo.Exists && !fileInfo.Directory.Exists)
             {
                 fileInfo.Directory.Create();
             }

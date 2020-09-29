@@ -6,6 +6,7 @@ using IcVibracoes.Core.Models.BeamCharacteristics;
 using IcVibracoes.Core.Models.Beams;
 using Moq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace IcVibracoes.Test.Core.Calculator.MainMatrix
@@ -85,10 +86,10 @@ namespace IcVibracoes.Test.Core.Calculator.MainMatrix
         //}
 
         [Fact(DisplayName = @"Feature: CalculateMass | When: Execute. | Given: Valid parameters. | Should: Return the element's mass matrix.")]
-        public void CalculateMass_Should_ReturnElementMassMatrix()
+        public async Task CalculateMass_Should_ReturnElementMassMatrix()
         {
             // Act
-            var result = this._operationMock.Object.CalculateMass(this._beam, this._degressOfFreedom);
+            var result = await this._operationMock.Object.CalculateMassAsync(this._beam, this._degressOfFreedom).ConfigureAwait(false);
 
             // Assert
             for (int i = 0; i < result.GetLength(0); i++)

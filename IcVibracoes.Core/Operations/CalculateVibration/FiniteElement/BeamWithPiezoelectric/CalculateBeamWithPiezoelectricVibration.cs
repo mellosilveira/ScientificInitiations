@@ -141,7 +141,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 $"{request.Profile.GetType().Name}/nEl={request.NumberOfElements}/Piezoelectric {Regex.Replace(request.PiezoelectricPosition, @"\s", "")}/{request.NumericalMethod}",
                 $"{request.AnalysisType}_{Regex.Replace(request.PiezoelectricPosition, @"\s", "")}_{request.Profile.GetType().Name}_w={Math.Round(input.AngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            if (!fileInfo.Exists && !fileInfo.Directory.Exists)
             {
                 fileInfo.Directory.Create();
             }
@@ -163,7 +163,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement.BeamWithP
                 request.NumericalMethod,
                 $"MaxValues_{request.AnalysisType}_{Regex.Replace(request.PiezoelectricPosition, @"\s", "")}_{request.Profile.GetType().Name}_w0={Math.Round(request.InitialAngularFrequency, 2)}_wf={Math.Round(request.FinalAngularFrequency, 2)}_nEl={request.NumberOfElements}.csv"));
 
-            if (fileInfo.Exists && !fileInfo.Directory.Exists)
+            if (!fileInfo.Exists && !fileInfo.Directory.Exists)
             {
                 fileInfo.Directory.Create();
             }

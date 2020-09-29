@@ -63,9 +63,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.RigidBody.TwoDegreesOfF
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="TwoDegreesOfFreedomInput"/>.</returns>
-        public override TwoDegreesOfFreedomInput CreateInput(TwoDegreesOfFreedomRequest request)
+        public override async Task<TwoDegreesOfFreedomInput> CreateInputAsync(TwoDegreesOfFreedomRequest request)
         {
-            TwoDegreesOfFreedomInput input = base.CreateInput(request);
+            TwoDegreesOfFreedomInput input = await base.CreateInputAsync(request).ConfigureAwait(false);
             input.Mass = request.PrimaryElementData.Mass;
             input.SecondaryMass = request.SecondaryElementData.Mass;
             input.Stiffness = request.PrimaryElementData.Stiffness;

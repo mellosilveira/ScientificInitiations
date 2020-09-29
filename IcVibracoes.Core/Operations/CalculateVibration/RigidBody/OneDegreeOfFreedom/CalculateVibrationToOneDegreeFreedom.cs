@@ -65,9 +65,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.RigidBody.OneDegreeOfFr
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="OneDegreeOfFreedomInput"/>.</returns>
-        public override OneDegreeOfFreedomInput CreateInput(OneDegreeOfFreedomRequest request)
+        public override async Task<OneDegreeOfFreedomInput> CreateInputAsync(OneDegreeOfFreedomRequest request)
         {
-            OneDegreeOfFreedomInput input = base.CreateInput(request);
+            OneDegreeOfFreedomInput input = await base.CreateInputAsync(request).ConfigureAwait(false);
             input.Mass = request.ElementData.Mass;
             input.Stiffness = request.ElementData.Stiffness;
             input.DampingRatio = request.DampingRatios.FirstOrDefault();

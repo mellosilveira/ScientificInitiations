@@ -61,30 +61,30 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <param name="request"></param>
         /// <param name="degreesOfFreedom"></param>
         /// <returns>A new instance of class <see cref="TBeam"/>.</returns>
-        public abstract Task<TBeam> BuildBeam(TRequest request, uint degreesOfFreedom);
+        public abstract TBeam BuildBeam(TRequest request, uint degreesOfFreedom);
 
         /// <summary>
         /// This method creates the input to be used in finite element analysis.
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
-        public override async Task<FiniteElementMethodInput> CreateInput(TRequest request)
+        public override async Task<FiniteElementMethodInput> CreateInputAsync(TRequest request)
         {
             uint degreesOfFreedom = await this.CalculateDegreesOfFreedom(request.NumberOfElements).ConfigureAwait(false);
 
-            TBeam beam = await this.BuildBeam(request, degreesOfFreedom);
+            TBeam beam = this.BuildBeam(request, degreesOfFreedom);
 
-            (bool[] boundaryConditions, uint numberOfTrueBoundaryConditions) = await this._mainMatrix.CalculateBoundaryConditions(beam, degreesOfFreedom).ConfigureAwait(false);
+            (bool[] boundaryConditions, uint numberOfTrueBoundaryConditions) = await this._mainMatrix.CalculateBoundaryConditionsAsync(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] mass = await this._mainMatrix.CalculateMass(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] mass = await this._mainMatrix.CalculateMassAsync(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] stiffness = await this._mainMatrix.CalculateStiffness(beam, degreesOfFreedom).ConfigureAwait(false);
+            double[,] stiffness = await this._mainMatrix.CalculateStiffnessAsync(beam, degreesOfFreedom).ConfigureAwait(false);
 
             double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
 
             double[] forces = await this._mainMatrix.CalculateForce(beam).ConfigureAwait(false);
             
-            FiniteElementMethodInput input = await base.CreateInput(request).ConfigureAwait(false);
+            FiniteElementMethodInput input = await base.CreateInputAsync(request).ConfigureAwait(false);
             input.NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
             input.Mass = await mass.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
             input.Stiffness = await stiffness.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
@@ -101,19 +101,19 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<FiniteElementResponse> ProcessOperation(TRequest request)
+        protected override async Task<FiniteElementResponse> ProcessOperationAsync(TRequest request)
         {
             var response = new FiniteElementResponse { Data = new FiniteElementResponseData() };
             response.SetSuccessCreated();
 
             // Step 1 - Sets the numerical method to be used in analysis.
-            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
+            base.NumericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             // Step 2 - Creates the input to numerical method.
-            FiniteElementMethodInput input = await this.CreateInput(request).ConfigureAwait(false);
+            FiniteElementMethodInput input = await this.CreateInputAsync(request).ConfigureAwait(false);
 
             // Step 3 - Generates the path to save the maximum values of analysis results and save the file URI.
-            string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
+            string maxValuesPath = this.CreateMaxValuesPath(request, input);
 
             ICollection<string> fileUris = new Collection<string>();
             fileUris.Add(Path.GetDirectoryName(maxValuesPath));
@@ -121,12 +121,12 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
             while (input.AngularFrequency <= input.FinalAngularFrequency)
             {
                 // Step 4 - Sets the value for time step and final time based on angular frequency and element mechanical properties.
-                input.TimeStep = await this._time.CalculateTimeStep(input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
-                input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
+                input.TimeStep = this._time.CalculateTimeStep(input.AngularFrequency, request.PeriodDivision);
+                input.FinalTime = this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount);
 
                 // Step 5 - Generates the path to save the analysis results.
                 // Each combination of damping ratio and angular frequency will have a specific path.
-                string solutionPath = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
+                string solutionPath = this.CreateSolutionPath(request, input);
 
                 string solutionFolder = Path.GetDirectoryName(solutionPath);
 
@@ -156,7 +156,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                     using (StreamWriter streamWriter = new StreamWriter(solutionPath))
                     {
                         // Step 6 - Calculates the initial results and writes it into a file.
-                        FiniteElementResult result = await this._numericalMethod.CalculateFiniteElementResultForInitialTime(input).ConfigureAwait(false);
+                        FiniteElementResult result = base.NumericalMethod.CalculateFiniteElementResultForInitialTime(input);
                         streamWriter.WriteResult(input.InitialTime, result.Displacement);
 
                         // Step 7 - Sets the next time.
@@ -165,7 +165,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                         while (time <= input.FinalTime)
                         {
                             // Step 8 - Calculates the results and writes it into a file.
-                            result = await this._numericalMethod.CalculateFiniteElementResult(input, previousResult, time).ConfigureAwait(false);
+                            result = base.NumericalMethod.CalculateFiniteElementResult(input, previousResult, time);
                             streamWriter.WriteResult(time, result.Displacement);
 
                             previousResult = result;
@@ -222,7 +222,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// <returns></returns>
         protected Task<uint> CalculateDegreesOfFreedom(uint numberOfElements)
         {
-            return Task.FromResult((numberOfElements + 1) * Constant.NodesPerElement);
+            return Task.FromResult((numberOfElements + 1) * Constants.NodesPerElement);
         }
 
         /// <summary>
@@ -266,9 +266,9 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<FiniteElementResponse> ValidateOperation(TRequest request)
+        protected override async Task<FiniteElementResponse> ValidateOperationAsync(TRequest request)
         {
-            FiniteElementResponse response = await base.ValidateOperation(request).ConfigureAwait(false);
+            FiniteElementResponse response = await base.ValidateOperationAsync(request).ConfigureAwait(false);
 
             if (response.Success == false)
             {
@@ -280,7 +280,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                 response.AddError(OperationErrorCode.RequestValidationError, "Number of elements must be greather than zero.");
             }
 
-            if (Enum.TryParse(typeof(Materials), request.Material, out _) == false)
+            if (Enum.TryParse(typeof(MaterialType), request.Material, out _) == false)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, $"Invalid material: '{request.Material}'.");
             }
@@ -311,7 +311,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
                 }
             }
 
-            if (await this._profileValidator.Execute(request.Profile, response).ConfigureAwait(false) == false)
+            if (this._profileValidator.Execute(request.Profile, response) == false)
             {
                 response.AddError(OperationErrorCode.RequestValidationError, "Invalid beam profile.");
             }

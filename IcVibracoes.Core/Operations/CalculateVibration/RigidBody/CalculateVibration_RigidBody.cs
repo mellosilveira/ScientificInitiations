@@ -61,16 +61,16 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<TResponse> ProcessOperation(TRequest request)
+        protected override async Task<TResponse> ProcessOperationAsync(TRequest request)
         {
             var response = new TResponse { Data = new TResponseData() };
             response.SetSuccessCreated();
 
             // Step 1 - Sets the numerical method to be used in analysis.
-            base._numericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
+            base.NumericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             // Step 2 - Creates the input to numerical method.
-            TInput input = await this.CreateInput(request).ConfigureAwait(false);
+            TInput input = await this.CreateInputAsync(request).ConfigureAwait(false);
 
             // Step 3 - Creates the initial conditions for displacement and velocity.
             double[] previousResult = await this.BuildInitialConditions(request).ConfigureAwait(false);
@@ -86,7 +86,7 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                 input.DampingRatio = dampingRatio;
 
                 // Step 6 - Generates the path to save the maximum values of analysis results and save the file URI.
-                string maxValuesPath = await this.CreateMaxValuesPath(request, input).ConfigureAwait(false);
+                string maxValuesPath = this.CreateMaxValuesPath(request, input);
 
                 if (fileUris.Contains(Path.GetDirectoryName(maxValuesPath)) == false)
                 {
@@ -96,14 +96,14 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
                 while (input.AngularFrequency <= input.FinalAngularFrequency)
                 {
                     // Step 7 - Sets the value for time step and final time based on angular frequency and element mechanical properties.
-                    input.TimeStep = await this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.PeriodDivision).ConfigureAwait(false);
-                    input.FinalTime = await this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount).ConfigureAwait(false);
+                    input.TimeStep = this._time.CalculateTimeStep(input.Mass, input.Stiffness, input.AngularFrequency, request.PeriodDivision);
+                    input.FinalTime = this._time.CalculateFinalTime(input.AngularFrequency, request.PeriodCount);
 
                     double[] maxValues = new double[previousResult.Length];
 
                     // Step 8 - Generates the path to save the analysis results.
                     // Each combination of damping ratio and angular frequency will have a specific path.
-                    string solutionPath = await this.CreateSolutionPath(request, input).ConfigureAwait(false);
+                    string solutionPath = this.CreateSolutionPath(request, input);
 
                     if (fileUris.Contains(Path.GetDirectoryName(solutionPath)) == false)
                     {
@@ -198,9 +198,9 @@ namespace IcVibracoes.Core.Operations.RigidBody.CalculateVibration
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<TResponse> ValidateOperation(TRequest request)
+        protected override async Task<TResponse> ValidateOperationAsync(TRequest request)
         {
-            var response = await base.ValidateOperation(request).ConfigureAwait(false);
+            var response = await base.ValidateOperationAsync(request).ConfigureAwait(false);
 
             if (response.Success == false)
             {

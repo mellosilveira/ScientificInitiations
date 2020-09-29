@@ -176,18 +176,7 @@
         <member name="T:IcVibracoes.Startup">
             <summary>
             The application startup.
-            It configures the dependecy injection and adds all necessary configuration.
-            </summary>
-        </member>
-        <member name="M:IcVibracoes.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            Class constructor.
-            </summary>
-            <param name="configuration"></param>
-        </member>
-        <member name="P:IcVibracoes.Startup.Configuration">
-            <summary>
-            The configuration used in application.
+            It configures the dependency injection and adds all necessary configuration.
             </summary>
         </member>
         <member name="M:IcVibracoes.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -198,7 +187,7 @@
         </member>
         <member name="M:IcVibracoes.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
-            Configures the application dependecies and web hosting environment.
+            Configures the application dependencies and web hosting environment.
             </summary>
             <param name="app"></param>
             <param name="env"></param>

@@ -2,6 +2,7 @@
 using IcVibracoes.Core.Models;
 using IcVibracoes.Core.Models.Beams;
 using System;
+using System.Threading.Tasks;
 
 namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectangular
 {
@@ -16,7 +17,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
         /// <param name="beam"></param>
         /// <param name="elementIndex"></param>
         /// <returns>The elementary piezoelectric capacitance matrix.</returns>
-        public override double[,] CalculateElementPiezoelectricCapacitance(
+        public override Task<double[,]> CalculateElementPiezoelectricCapacitance(
             BeamWithPiezoelectric<RectangularProfile> beam, uint elementIndex)
         {
             double elementLength = beam.Length / beam.NumberOfElements;
@@ -28,7 +29,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
             piezoelectricCapacitance[1, 0] = -constant;
             piezoelectricCapacitance[1, 1] = constant;
 
-            return piezoelectricCapacitance;
+            return Task.FromResult(piezoelectricCapacitance);
         }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
         /// </summary>
         /// <param name="beam"></param>
         /// <returns>The element's electromechanical coupling matrix.</returns>
-        public override double[,] CalculatePiezoelectricElementElectromechanicalCoupling(
+        public override Task<double[,]> CalculatePiezoelectricElementElectromechanicalCoupling(
             BeamWithPiezoelectric<RectangularProfile> beam)
         {
             double elementLength = beam.Length / beam.NumberOfElements;
@@ -63,7 +64,7 @@ namespace IcVibracoes.Core.Calculator.MainMatrixes.BeamWithPiezoelectric.Rectang
             //electromechanicalCoupling[3, 0] = elementLength * constant;
             //electromechanicalCoupling[3, 1] = -elementLength * constant;
 
-            return electromechanicalCoupling;
+            return Task.FromResult(electromechanicalCoupling);
         }
     }
 }

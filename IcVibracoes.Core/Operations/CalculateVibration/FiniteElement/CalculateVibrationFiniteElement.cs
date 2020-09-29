@@ -69,28 +69,28 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A new instance of class <see cref="FiniteElementMethodInput"/>.</returns>
-        public override FiniteElementMethodInput CreateInput(TRequest request)
+        public override async Task<FiniteElementMethodInput> CreateInputAsync(TRequest request)
         {
             uint degreesOfFreedom = CalculateDegreesOfFreedom(request.NumberOfElements);
 
             TBeam beam = this.BuildBeam(request, degreesOfFreedom);
 
-            (bool[] boundaryConditions, uint numberOfTrueBoundaryConditions) = this._mainMatrix.CalculateBoundaryConditions(beam, degreesOfFreedom);
+            (bool[] boundaryConditions, uint numberOfTrueBoundaryConditions) = await this._mainMatrix.CalculateBoundaryConditionsAsync(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] mass = this._mainMatrix.CalculateMass(beam, degreesOfFreedom);
+            double[,] mass = await this._mainMatrix.CalculateMassAsync(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] stiffness = this._mainMatrix.CalculateStiffness(beam, degreesOfFreedom);
+            double[,] stiffness = await this._mainMatrix.CalculateStiffnessAsync(beam, degreesOfFreedom).ConfigureAwait(false);
 
-            double[,] damping = this._mainMatrix.CalculateDamping(mass, stiffness);
+            double[,] damping = await this._mainMatrix.CalculateDamping(mass, stiffness).ConfigureAwait(false);
 
-            double[] forces = this._mainMatrix.CalculateForce(beam);
+            double[] forces = await this._mainMatrix.CalculateForce(beam).ConfigureAwait(false);
             
-            FiniteElementMethodInput input = base.CreateInput(request);
+            FiniteElementMethodInput input = await base.CreateInputAsync(request).ConfigureAwait(false);
             input.NumericalMethod = (NumericalMethod)Enum.Parse(typeof(NumericalMethod), request.NumericalMethod, ignoreCase: true);
-            input.Mass = mass.ApplyBoundaryConditions(boundaryConditions, numberOfTrueBoundaryConditions);
-            input.Stiffness = stiffness.ApplyBoundaryConditions(boundaryConditions, numberOfTrueBoundaryConditions);
-            input.Damping = damping.ApplyBoundaryConditions(boundaryConditions, numberOfTrueBoundaryConditions);
-            input.OriginalForce = forces.ApplyBoundaryConditions(boundaryConditions, numberOfTrueBoundaryConditions);
+            input.Mass = await mass.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.Stiffness = await stiffness.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.Damping = await damping.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
+            input.OriginalForce = await forces.ApplyBoundaryConditionsAsync(boundaryConditions, numberOfTrueBoundaryConditions).ConfigureAwait(false);
             input.NumberOfTrueBoundaryConditions = numberOfTrueBoundaryConditions;
 
             return input;
@@ -102,7 +102,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override async Task<FiniteElementResponse> ProcessOperation(TRequest request)
+        protected override async Task<FiniteElementResponse> ProcessOperationAsync(TRequest request)
         {
             await Task.Delay(0);
 
@@ -113,7 +113,7 @@ namespace IcVibracoes.Core.Operations.CalculateVibration.FiniteElement
             base.NumericalMethod = NumericalMethodFactory.CreateMethod(request.NumericalMethod);
 
             // Step 2 - Creates the input to numerical method.
-            FiniteElementMethodInput input = this.CreateInput(request);
+            FiniteElementMethodInput input = await this.CreateInputAsync(request).ConfigureAwait(false);
 
             // Step 3 - Generates the path to save the maximum values of analysis results and save the file URI.
             string maxValuesPath = this.CreateMaxValuesPath(request, input);
