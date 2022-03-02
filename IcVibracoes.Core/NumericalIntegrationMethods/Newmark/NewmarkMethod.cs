@@ -71,15 +71,15 @@ namespace IcVibracoes.Core.NumericalIntegrationMethods.Newmark
 
             result.Displacement = inversedEquivalentStiffness.Multiply(equivalentForce);
 
-            string path = @"C:\Users\bruno\OneDrive\Área de Trabalho\Testes - IC Vibrações\Matrizes resultantes\master.csv";
-            using (var streamWriter = new StreamWriter(path))
-            {
-                WriteMatrix(streamWriter, equivalentStiffness, "Keq");
-                WriteMatrix(streamWriter, inversedEquivalentStiffness, "IKeq");
-
-                WriteVector(streamWriter, equivalentForce, "Feq");
-                WriteVector(streamWriter, result.Displacement, "Y");
-            }
+            //string path = @"C:\Users\bruno\OneDrive\Área de Trabalho\Testes - IC Vibrações\Matrizes resultantes\master.csv";
+            //using (var streamWriter = new StreamWriter(path))
+            //{
+            //    WriteMatrix(streamWriter, equivalentStiffness, "Keq");
+            //    WriteMatrix(streamWriter, inversedEquivalentStiffness, "IKeq");
+            //
+            //    WriteVector(streamWriter, equivalentForce, "Feq");
+            //    WriteVector(streamWriter, result.Displacement, "Y");
+            //}
 
             for (int i = 0; i < input.NumberOfTrueBoundaryConditions; i++)
             {
