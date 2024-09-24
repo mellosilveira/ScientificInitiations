@@ -1,0 +1,52 @@
+{
+  "data": {
+    "piezoelectricYoungModulus": 63e9,
+    "piezoelectricConstant": 190e-12,
+    "dielectricConstant": 7.33e-9,
+    "dielectricPermissiveness": 30.705,
+    "elasticityConstant": 1.076e11,
+    "electricalCharges": [
+      {
+        "value": 0,
+        "nodePosition": 0
+      }
+    ],
+    "piezoelectricSpecificMass": 7650,
+    "piezoelectricPosition": "Down",
+    "piezoelectricProfile": {
+      "height": 0.267e-3,
+      "width": 25e-3
+    },
+    "numberOfElements": 32,
+    "material": "Aluminum",
+    "length": 0.8,
+    "fastenings": [
+      {
+        "nodePosition": 0,
+        "type": "Pinned"
+      },
+      {
+        "nodePosition": 32,
+        "type": "Pinned"
+      }
+    ],
+    "forces": [
+      {
+        "nodePosition": 16,
+        "value": 10
+      }
+    ],
+    "profile": {
+      "height": 3e-3,
+      "width": 25e-3
+    },
+    "forceType": "Harmonic",
+    "initialTime": 0,
+    "periodCount": 10,
+    "periodDivision": 30,
+    "initialAngularFrequency": 10,
+    "angularFrequencyStep": 1,
+    "finalAngularFrequency": 90
+  },
+  "author": "Bruno Silveira"
+}

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "mechanicalProperties": {
+      "mass": 20,
+      "stiffness": 5000
+    },
+    "initialDisplacement": 0,
+    "initialVelocity": 0,
+    "dampingRatioList": [
+      0.05
+    ],
+    "force": 10,
+    "forceType": "Harmonic",
+    "initialTime": 0,
+    "periodCount": 10,
+    "periodDivision": 10,
+    "initialAngularFrequency": 15.8113883,
+    "angularFrequencyStep": 0,
+    "finalAngularFrequency": 15.8113883
+  },
+  "author": "Bruno Silveira"
+}

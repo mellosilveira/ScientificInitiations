@@ -1,0 +1,20 @@
+{
+  "primaryElementData": {
+    "mass": 20,
+    "stiffness": 5000
+  },
+  "secondaryElementData": {
+    "mass": 1,
+    "stiffness": 250
+  },
+  "dampingRatios": [
+    0.05
+  ],
+  "force": 10,
+  "author": "Bruno Silveira",
+  "numericalMethod": "ImplicitLinearAcceleration",
+  "forceType": "Harmonic",
+  "periodCount": 100,
+  "periodDivision": 1000,
+  "initialAngularFrequency": 15.8113883
+}
