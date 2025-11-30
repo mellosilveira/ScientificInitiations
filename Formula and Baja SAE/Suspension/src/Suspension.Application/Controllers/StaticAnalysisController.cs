@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MelloSilveiraTools.Application.Operations;
+using MelloSilveiraTools.ExtensionMethods;
+using MelloSilveiraTools.MechanicsOfMaterials.Models.Profiles;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MudRunner.Commons.DataContracts.Models.Profiles;
-using MudRunner.Commons.DataContracts.Operation;
-using MudRunner.Suspension.Application.Extensions;
-using MudRunner.Suspension.Core.Operations.RunAnalysis.Static.CircularProfile;
-using MudRunner.Suspension.Core.Operations.RunAnalysis.Static.RectangularProfile;
+using MudRunner.Suspension.Core.Operations.RunAnalysis;
 using MudRunner.Suspension.DataContracts.RunAnalysis.Static;
 using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@ namespace MudRunner.Suspension.Application.Controllers
     public class StaticAnalysisController : Controller
     {
         /// <summary>
-        /// This operation run the analysis considering that all geometry uses a cicular beam profile.
+        /// Runs the analysis considering that all geometry uses a cicular beam profile.
         /// </summary>
         /// <param name="operation"></param>
         /// <param name="request"></param>
@@ -28,8 +27,8 @@ namespace MudRunner.Suspension.Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("circular-profile/run")]
-        public async Task<ActionResult<OperationResponse<RunStaticAnalysisResponseData>>> RunAnalysis(
-            [FromServices] IRunCircularProfileStaticAnalysis operation,
+        public async Task<ActionResult<OperationResponseBase<RunStaticAnalysisResponseData>>> RunAnalysis(
+            [FromServices] RunStaticAnalysis<CircularProfile> operation,
             [FromBody] RunStaticAnalysisRequest<CircularProfile> request)
         {
             var response = await operation.ProcessAsync(request).ConfigureAwait(false);
@@ -37,7 +36,7 @@ namespace MudRunner.Suspension.Application.Controllers
         }
 
         /// <summary>
-        /// This operation run the analysis considering that all geometry uses a rectangular beam profile.
+        /// Runs the analysis considering that all geometry uses a rectangular beam profile.
         /// </summary>
         /// <param name="operation"></param>
         /// <param name="request"></param>
@@ -51,8 +50,8 @@ namespace MudRunner.Suspension.Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("rectangular-profile/run")]
-        public async Task<ActionResult<OperationResponse<RunStaticAnalysisResponseData>>> RunAnalysis(
-            [FromServices] IRunRectangularProfileStaticAnalysis operation,
+        public async Task<ActionResult<OperationResponseBase<RunStaticAnalysisResponseData>>> RunAnalysis(
+            [FromServices] RunStaticAnalysis<RectangularProfile> operation,
             [FromQuery] RunStaticAnalysisRequest<RectangularProfile> request)
         {
             var response = await operation.ProcessAsync(request).ConfigureAwait(false);

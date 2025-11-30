@@ -1,61 +1,59 @@
-﻿using MudRunner.Commons.Core.ExtensionMethods;
-using MudRunner.Commons.DataContracts.Models;
-using MudRunner.Commons.DataContracts.Models.Profiles;
-using MudRunner.Suspension.Core.ExtensionMethods;
+﻿using MelloSilveiraTools.ExtensionMethods;
+using MelloSilveiraTools.MechanicsOfMaterials.Models;
+using MelloSilveiraTools.MechanicsOfMaterials.Models.Profiles;
 
-namespace MudRunner.Suspension.Core.Models.SuspensionComponents
+namespace MudRunner.Suspension.Core.Models.SuspensionComponents;
+
+/// <summary>
+/// It contains the points to a single suspension component.
+/// </summary>
+public class SingleComponent
 {
     /// <summary>
-    /// It contains the points to a single suspension component.
+    /// The absolut applied force.
     /// </summary>
-    public class SingleComponent
-    {
-        /// <summary>
-        /// The absolut applied force.
-        /// </summary>
-        public double AppliedForce { get; set; }
-
-        /// <summary>
-        /// The pivot point at chassis.
-        /// </summary>
-        public Point3D PivotPoint { get; set; }
-
-        /// <summary>
-        /// The fastening point.
-        /// </summary>
-        public Point3D FasteningPoint { get; set; }
-
-        /// <summary>
-        /// The vector that represents the direction of single component.
-        /// </summary>
-        public Vector3D VectorDirection => Vector3D.Create(this.PivotPoint, this.FasteningPoint);
-
-        /// <summary>
-        /// The normalized vector that represents the direction of single component.
-        /// </summary>
-        public Vector3D NormalizedDirection => this.VectorDirection.Normalize();
-
-        /// <summary>
-        /// The length.
-        /// </summary>
-        public double Length => this.VectorDirection.Length;
-    }
+    public double AppliedForce { get; set; }
 
     /// <summary>
-    /// It contains the points to a single suspension component.
+    /// The pivot point at chassis.
     /// </summary>
-    /// <typeparam name="TProfile"></typeparam>
-    public class SingleComponent<TProfile> : SingleComponent
-        where TProfile : Profile
-    {
-        /// <summary>
-        /// The material.
-        /// </summary>
-        public Material Material { get; set; }
+    public Point3D PivotPoint { get; set; }
 
-        /// <summary>
-        /// The profile.
-        /// </summary>
-        public TProfile Profile { get; set; }
-    }
+    /// <summary>
+    /// The fastening point.
+    /// </summary>
+    public Point3D FasteningPoint { get; set; }
+
+    /// <summary>
+    /// The vector that represents the direction of single component.
+    /// </summary>
+    public Vector3D VectorDirection => Vector3D.Create(PivotPoint, FasteningPoint);
+
+    /// <summary>
+    /// The normalized vector that represents the direction of single component.
+    /// </summary>
+    public Vector3D NormalizedDirection => VectorDirection.Normalize();
+
+    /// <summary>
+    /// The length.
+    /// </summary>
+    public double Length => VectorDirection.Length;
+}
+
+/// <summary>
+/// It contains the points to a single suspension component.
+/// </summary>
+/// <typeparam name="TProfile"></typeparam>
+public class SingleComponent<TProfile> : SingleComponent
+    where TProfile : Profile
+{
+    /// <summary>
+    /// The material.
+    /// </summary>
+    public Material Material { get; set; }
+
+    /// <summary>
+    /// The profile.
+    /// </summary>
+    public TProfile Profile { get; set; }
 }

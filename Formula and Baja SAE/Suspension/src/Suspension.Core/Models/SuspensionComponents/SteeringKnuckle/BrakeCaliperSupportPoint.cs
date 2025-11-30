@@ -1,4 +1,4 @@
-﻿using MudRunner.Commons.DataContracts.Models;
+﻿using MelloSilveiraTools.MechanicsOfMaterials.Models;
 using DataContract = MudRunner.Suspension.DataContracts.Models.SuspensionComponents.SteeringKnuckle;
 
 namespace MudRunner.Suspension.Core.Models.SuspensionComponents.SteeringKnuckle
@@ -19,7 +19,7 @@ namespace MudRunner.Suspension.Core.Models.SuspensionComponents.SteeringKnuckle
         public Point3D Point2 { get; set; }
 
         /// <summary>
-        /// This method creates a new instance of <see cref="BrakeCaliperSupportPoint"/>.
+        /// Creates a new instance of <see cref="BrakeCaliperSupportPoint"/>.
         /// </summary>
         /// <param name="brakeCaliperSupportPoint"></param>
         /// <returns></returns>

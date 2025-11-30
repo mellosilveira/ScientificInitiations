@@ -1,4 +1,4 @@
-﻿using MudRunner.Commons.DataContracts.Operation;
+﻿using MelloSilveiraTools.Application.Operations;
 using MudRunner.Suspension.DataContracts.Models.SuspensionComponents;
 
 namespace MudRunner.Suspension.DataContracts.CalculateReactions
@@ -6,7 +6,7 @@ namespace MudRunner.Suspension.DataContracts.CalculateReactions
     /// <summary>
     /// It represents the request content to CalculateReactions operation.
     /// </summary>
-    public class CalculateReactionsRequest : OperationRequestBase
+    public record CalculateReactionsRequest : OperationRequestBase
     {
         /// <summary>
         /// True, if result should be rounded. False, otherwise.

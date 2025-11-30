@@ -8,7 +8,7 @@ namespace MudRunner.Suspension.Core.ExtensionMethods
     public static class EnumerableExtensions
     {
         /// <summary>
-        /// This method indicates if the list is null or empty.
+        /// Indicates if the list is null or empty.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>

@@ -1,6 +1,6 @@
-﻿using MudRunner.Commons.DataContracts.Models;
-using MudRunner.Commons.DataContracts.Models.Enums;
-using MudRunner.Commons.DataContracts.Models.Profiles;
+﻿using MelloSilveiraTools.MechanicsOfMaterials.Models;
+using MelloSilveiraTools.MechanicsOfMaterials.Models.Enums;
+using MelloSilveiraTools.MechanicsOfMaterials.Models.Profiles;
 using MudRunner.Suspension.DataContracts.Models.SuspensionComponents;
 using DataContract = MudRunner.Suspension.DataContracts.Models.SuspensionComponents;
 
@@ -12,7 +12,7 @@ namespace MudRunner.Suspension.Core.Models.SuspensionComponents
     public class TieRod : SingleComponent
     {
         /// <summary>
-        /// This method creates a <see cref="TieRod"/> based on <see cref="TieRodPoint"/>.
+        /// Creates a <see cref="TieRod"/> based on <see cref="TieRodPoint"/>.
         /// </summary>
         /// <param name="tieRod"></param>
         /// <param name="appliedForce"></param>
@@ -36,7 +36,7 @@ namespace MudRunner.Suspension.Core.Models.SuspensionComponents
         where TProfile : Profile
     {
         /// <summary>
-        /// This method creates a <see cref="TieRod{TProfile}"/> based on <see cref="DataContract.TieRod{TProfile}"/>.
+        /// Creates a <see cref="TieRod{TProfile}"/> based on <see cref="DataContract.TieRod{TProfile}"/>.
         /// </summary>
         /// <param name="tieRod"></param>
         /// <param name="material"></param>

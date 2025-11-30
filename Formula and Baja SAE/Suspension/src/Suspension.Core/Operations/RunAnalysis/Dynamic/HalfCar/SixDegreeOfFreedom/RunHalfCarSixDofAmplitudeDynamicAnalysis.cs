@@ -1,5 +1,7 @@
-﻿using MudRunner.Suspension.Core.Models;
+﻿using MelloSilveiraTools.Infrastructure.Logger;
+using MudRunner.Suspension.Core.Models;
 using MudRunner.Suspension.DataContracts.RunAnalysis.Dynamic.HalfCar.SixDegreeOfFreedom;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,22 +9,15 @@ using System.Threading.Tasks;
 namespace MudRunner.Suspension.Core.Operations.RunAnalysis.Dynamic.HalfCar.SixDegreeOfFreedom
 {
     /// <summary>
-    /// It is responsible to run the dynamic analysis to suspension system focusing in the amplitude of the system 
+    /// Run the dynamic analysis to suspension system focusing in the amplitude of the system 
     /// considering half car and six degrees of freedom.
     /// </summary>
-    public class RunHalfCarSixDofAmplitudeDynamicAnalysis :
-        RunAmplitudeDynamicAnalysis<
-            RunHalfCarSixDofAmplitudeDynamicAnalysisRequest,
-            RunHalfCarSixDofDynamicAnalysisRequest>,
-        IRunHalfCarSixDofAmplitudeDynamicAnalysis
+    public class RunHalfCarSixDofAmplitudeDynamicAnalysis(
+        ILogger logger,
+        RunHalfCarSixDofDynamicAnalysis runHalfCarSixDofDynamicAnalysis,
+        TimeProvider timeProvider) :
+        RunAmplitudeDynamicAnalysis<RunHalfCarSixDofAmplitudeDynamicAnalysisRequest, RunHalfCarSixDofDynamicAnalysisRequest>(logger, runHalfCarSixDofDynamicAnalysis, timeProvider)
     {
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="runHalfCarSixDofDynamicAnalysis"></param>
-        public RunHalfCarSixDofAmplitudeDynamicAnalysis(IRunHalfCarSixDofDynamicAnalysis runHalfCarSixDofDynamicAnalysis)
-            : base(runHalfCarSixDofDynamicAnalysis) { }
-
         /// <inheritdoc/>
         protected override uint NumberOfBoundaryConditions => 6;
 
@@ -86,7 +81,7 @@ namespace MudRunner.Suspension.Core.Operations.RunAnalysis.Dynamic.HalfCar.SixDe
                                                                                                         ConsiderLargeDisplacements = request.ConsiderLargeDisplacements,
                                                                                                         TimeStep = request.TimeStep,
                                                                                                         FinalTime = request.FinalTime,
-                                                                                                        DifferentialEquationMethodEnum = request.DifferentialEquationMethodEnum,
+                                                                                                        DifferentialEquationMethodType = request.DifferentialEquationMethodType,
                                                                                                         BaseExcitation = request.BaseExcitation,
                                                                                                         FrontMassDistribution = frontMassDistribution,
                                                                                                         RearMassDistribution = rearMassDistribution,

@@ -1,7 +1,7 @@
-﻿using MudRunner.Commons.Core.ExtensionMethods;
-using MudRunner.Commons.Core.Operation;
-using MudRunner.Commons.DataContracts.Models;
-using MudRunner.Commons.DataContracts.Operation;
+﻿using MelloSilveiraTools.Application.Operations;
+using MelloSilveiraTools.ExtensionMethods;
+using MelloSilveiraTools.Infrastructure.Logger;
+using MelloSilveiraTools.MechanicsOfMaterials.Models;
 using MudRunner.Suspension.Core.ExtensionMethods;
 using MudRunner.Suspension.Core.Mapper;
 using MudRunner.Suspension.Core.Models.SuspensionComponents;
@@ -9,47 +9,37 @@ using MudRunner.Suspension.DataContracts.CalculateReactions;
 using System;
 using System.Threading.Tasks;
 
-namespace MudRunner.Suspension.Core.Operations.CalculateReactions
+namespace MudRunner.Suspension.Core.Operations
 {
     // TODO: para formula SAE precisa pensar melhor como fazer no caso da traseira já que o eixo pode ser estrutural.
     /// <summary>
-    /// It is responsible to calculate the reactions to suspension system.
+    /// Calculate the reactions to suspension system.
     /// </summary>
-    public class CalculateReactions : OperationBase<CalculateReactionsRequest, OperationResponse<CalculateReactionsResponseData>>, ICalculateReactions
+    public class CalculateReactions(
+        ILogger logger,
+        IMappingResolver mappingResolver) : OperationBaseWithData<CalculateReactionsRequest, CalculateReactionsResponseData>(logger)
     {
         private readonly double _precision = 1e-3;
-        private readonly IMappingResolver _mappingResolver;
-
-        /// <summary>
-        /// Class constructor.
-        /// </summary>
-        /// <param name="mappingResolver"></param>
-        public CalculateReactions(IMappingResolver mappingResolver)
-        {
-            this._mappingResolver = mappingResolver;
-        }
+        private readonly IMappingResolver _mappingResolver = mappingResolver;
 
         /// <summary>
         /// Asynchronously, this method calculates the reactions to suspension system.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override Task<OperationResponse<CalculateReactionsResponseData>> ProcessOperationAsync(CalculateReactionsRequest request)
+        protected override Task<OperationResponseBase<CalculateReactionsResponseData>> ProcessOperationAsync(CalculateReactionsRequest request)
         {
-            OperationResponse<CalculateReactionsResponseData> response = new();
-            response.SetSuccessOk();
-
             // Step 1 - Creates the necessary informations about the coordinates of the suspension system components.
-            SuspensionSystem suspensionSystem = this._mappingResolver.MapFrom(request);
+            SuspensionSystem suspensionSystem = _mappingResolver.MapFrom(request);
 
             // Step 2 - Calculates the matrix with:
             //    The normalized direction of reactions at suspension system.
             //    The displacements between origin and suspension system points.
-            double[,] displacement = this.BuildDisplacementMatrix(suspensionSystem, Point3D.Create(request.Origin));
+            double[,] displacement = BuildDisplacementMatrix(suspensionSystem, Point3D.Create(request.Origin));
 
             // Step 3 - Calculates the applied efforts.
             Vector3D forceApplied = Vector3D.Create(request.AppliedForce);
-            double[] effort = this.BuildEffortsVector(forceApplied);
+            double[] effort = BuildEffortsVector(forceApplied);
 
             double[] result;
             try
@@ -58,31 +48,28 @@ namespace MudRunner.Suspension.Core.Operations.CalculateReactions
                 // The equation used: 
                 //    [Displacement] * [Reactions] = [Efforts]
                 //    [Reactions] = inv([Displacement]) * [Efforts]
-                result = displacement
-                    .InverseMatrix()
-                    .Multiply(effort);
+                result = displacement.InverseMatrix().Multiply(effort);
             }
             catch (DivideByZeroException ex)
             {
-                response.SetInternalServerError($"Occurred error while inversing displacement matrix. It happens because exists some error in suspension geometry. '{ex.Message}'.");
-
-                return Task.FromResult(response);
+                return OperationResponse
+                    .CreateInternalServerError<OperationResponseBase<CalculateReactionsResponseData>>($"Occurred error while inversing displacement matrix. It happens because exists some error in suspension geometry. '{ex.Message}'.")
+                    .AsTask();
             }
             catch (Exception ex)
             {
-                response.SetInternalServerError($"Ocurred error while calculating result. '{ex}'.");
-
-                return Task.FromResult(response);
+                return OperationResponse
+                    .CreateInternalServerError<OperationResponseBase<CalculateReactionsResponseData>>($"Ocurred error while calculating result. '{ex}'.")
+                    .AsTask();
             }
 
             // Step 5 - Map the results to response.
-            response.Data = this.MapToResponseData(suspensionSystem, result, request.ShouldRoundResults, request.NumberOfDecimalsToRound.GetValueOrDefault());
+            CalculateReactionsResponseData responseData = MapToResponseData(suspensionSystem, result, request.ShouldRoundResults, request.NumberOfDecimalsToRound.GetValueOrDefault());
+            return OperationResponse.CreateSuccessOk(responseData).AsTask();
 
             // Step 6 - Check if sum of forces is equals to zero, indicanting that the structure is static.
             // This method was commented because some error ocurred and must be investigated.
-            //this.CheckForceAndMomentSum(response, forceApplied);
-
-            return Task.FromResult(response);
+            //CheckForceAndMomentSum(response, forceApplied);
         }
 
         /// <summary>
@@ -90,28 +77,21 @@ namespace MudRunner.Suspension.Core.Operations.CalculateReactions
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected override Task<OperationResponse<CalculateReactionsResponseData>> ValidateOperationAsync(CalculateReactionsRequest request)
-        {
-            OperationResponse<CalculateReactionsResponseData> response = new();
-            response.SetSuccessOk();
-
-            if (Vector3D.Create(request.AppliedForce).IsZero())
-            {
-                response.SetBadRequestError("The applied force must have at least one coordinate different than zero.");
-            }
-
-            return Task.FromResult(response);
-        }
+        protected override Task<OperationResponseBase<CalculateReactionsResponseData>> ValidateOperationAsync(CalculateReactionsRequest request)
+            => OperationResponse
+                .CreateSuccessOk<OperationResponseBase<CalculateReactionsResponseData>>()
+                .AddErrorIf(Vector3D.Create(request.AppliedForce).IsZero(), "The applied force must have at least one coordinate different than zero.")
+                .AsTask();
 
         /// <summary>
-        /// This method builds the efforts vector.
+        /// Builds the efforts vector.
         /// </summary>
         /// <param name="force"></param>
         /// <returns></returns>
-        public double[] BuildEffortsVector(Vector3D force) => new double[6] { force.X, force.Y, force.Z, 0, 0, 0 };
+        public double[] BuildEffortsVector(Vector3D force) => [force.X, force.Y, force.Z, 0, 0, 0];
 
         /// <summary>
-        /// This method builds the matrix with normalized force directions and displacements.
+        /// Builds the matrix with normalized force directions and displacements.
         /// </summary>
         /// <param name="suspensionSystem"></param>
         /// <param name="origin"></param>
@@ -144,7 +124,7 @@ namespace MudRunner.Suspension.Core.Operations.CalculateReactions
         }
 
         /// <summary>
-        /// This method maps the analysis result to response data.
+        /// Maps the analysis result to response data.
         /// </summary>
         /// <param name="suspensionSystem"></param>
         /// <param name="result"></param>
@@ -168,26 +148,16 @@ namespace MudRunner.Suspension.Core.Operations.CalculateReactions
         }
 
         /// <summary>
-        /// This method checks if sum of forces and moment is equals to zero, indicanting that the structure is static.
+        /// Checks if sum of forces and moment is equals to zero, indicanting that the structure is static.
         /// </summary>
         /// <param name="response"></param>
         /// <param name="appliedForce"></param>
-        public void CheckForceAndMomentSum(OperationResponse<CalculateReactionsResponseData> response, Vector3D appliedForce)
+        public void CheckForceAndMomentSum(OperationResponseBase<CalculateReactionsResponseData> response, Vector3D appliedForce)
         {
-            if (Math.Abs(response.Data.CalculateForceXSum(appliedForce.X)) > this._precision)
-            {
-                response.SetInternalServerError("The sum of forces at axis X is not equals to zero.");
-            }
-
-            if (Math.Abs(response.Data.CalculateForceYSum(appliedForce.Y)) > this._precision)
-            {
-                response.SetInternalServerError("The sum of forces at axis Y is not equals to zero.");
-            }
-
-            if (Math.Abs(response.Data.CalculateForceZSum(appliedForce.Z)) > this._precision)
-            {
-                response.SetInternalServerError("The sum of forces at axis Z is not equals to zero.");
-            }
+            response
+                .AddErrorIf(Math.Abs(response.Data.CalculateForceXSum(appliedForce.X)) > _precision, "The sum of forces at axis X is not equals to zero.")
+                .AddErrorIf(Math.Abs(response.Data.CalculateForceYSum(appliedForce.Y)) > _precision, "The sum of forces at axis Y is not equals to zero.")
+                .AddErrorIf(Math.Abs(response.Data.CalculateForceZSum(appliedForce.Z)) > _precision, "The sum of forces at axis Z is not equals to zero.");
         }
     }
 }

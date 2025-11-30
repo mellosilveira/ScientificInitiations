@@ -16,7 +16,7 @@
 
 //        public CircularProfileMechanicsOfMaterialsTest()
 //        {
-//            this._operation = new CircularProfileMechanicsOfMaterials();
+//            _operation = new CircularProfileMechanicsOfMaterials();
 //        }
 
 //        [MemberData(nameof(EquivalentStressParameters))]
@@ -24,7 +24,7 @@
 //        public void CalculateEquivalentStress_ValidParameters_Should_ReturnValidValue(double normalStress, double flexuralStress, double shearStress, double torsionalStress, double expected)
 //        {
 //            // Act
-//            double result = this._operation.CalculateEquivalentStress(normalStress, flexuralStress, shearStress, torsionalStress);
+//            double result = _operation.CalculateEquivalentStress(normalStress, flexuralStress, shearStress, torsionalStress);
 
 //            // Assert
 //            result.Should().BeApproximately(expected, _precision);
@@ -38,7 +38,7 @@
 //        public void CalculateNormalStress_ValidParameters_Should_ReturnValidValue(double normalForce, double area, double expectedValue)
 //        {
 //            // Act
-//            double result = this._operation.CalculateNormalStress(normalForce, area);
+//            double result = _operation.CalculateNormalStress(normalForce, area);
 
 //            // Assert
 //            result.Should().BeApproximately(expectedValue, _precision);
@@ -55,7 +55,7 @@
 //        public void CalculateNormalStress_InvalidArea_Should_ThrowException(double area)
 //        {
 //            // Act
-//            Action act = () => this._operation.CalculateNormalStress(normalForce: 1, area);
+//            Action act = () => _operation.CalculateNormalStress(normalForce: 1, area);
 
 //            // Assert
 //            act.Should().ThrowExactly<ArgumentOutOfRangeException>();
@@ -66,7 +66,7 @@
 //        public void CalculateCriticalBucklingForce_ValidParameters_Should_ReturnValidParameters(double youngModulus, double momentOfInertia, double length, FasteningType fasteningType, double expected)
 //        {
 //            // Act
-//            double result = this._operation.CalculateCriticalBucklingForce(youngModulus, momentOfInertia, length, fasteningType);
+//            double result = _operation.CalculateCriticalBucklingForce(youngModulus, momentOfInertia, length, fasteningType);
 
 //            // Assert
 //            result.Should().BeApproximately(expected, _precision);
@@ -77,7 +77,7 @@
 //        public void CalculateCriticalBucklingForce_InvalidParameters_Should_ThrowArgumentOutOfRangeException(double momentOfInertia, double length)
 //        {
 //            // Act
-//            Action act = () => this._operation.CalculateCriticalBucklingForce(youngModulus: 1, momentOfInertia, length);
+//            Action act = () => _operation.CalculateCriticalBucklingForce(youngModulus: 1, momentOfInertia, length);
 
 //            // Assert
 //            act.Should().ThrowExactly<ArgumentOutOfRangeException>();
@@ -88,7 +88,7 @@
 //        public void CalculateColumnEffectiveLengthFactor_ValidFasteningType_Should_ReturnValidParameters(FasteningType fasteningType, double expected)
 //        {
 //            // Act
-//            double result = this._operation.CalculateColumnEffectiveLengthFactor(fasteningType);
+//            double result = _operation.CalculateColumnEffectiveLengthFactor(fasteningType);
 
 //            // Assert
 //            result.Should().BeApproximately(expected, _precision);
@@ -98,7 +98,7 @@
 //        public void CalculateColumnEffectiveLengthFactor_InvalidFasteningType_Should_ThrowArgumentOutOfRangeException()
 //        {
 //            // Act
-//            Action act = () => this._operation.CalculateColumnEffectiveLengthFactor(default);
+//            Action act = () => _operation.CalculateColumnEffectiveLengthFactor(default);
 
 //            // Assert
 //            act.Should().ThrowExactly<ArgumentOutOfRangeException>();

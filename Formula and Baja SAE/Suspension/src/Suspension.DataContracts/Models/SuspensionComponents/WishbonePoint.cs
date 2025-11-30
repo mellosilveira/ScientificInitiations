@@ -1,4 +1,4 @@
-﻿using MudRunner.Commons.DataContracts.Models.Profiles;
+﻿using MelloSilveiraTools.MechanicsOfMaterials.Models.Profiles;
 
 namespace MudRunner.Suspension.DataContracts.Models.SuspensionComponents
 {
@@ -25,7 +25,7 @@ namespace MudRunner.Suspension.DataContracts.Models.SuspensionComponents
         public string RearPivot { get; set; }
 
         /// <summary>
-        /// This method creates a <see cref="WishbonePoint"/> based on <see cref="Wishbone{TProfile}"/>.
+        /// Creates a <see cref="WishbonePoint"/> based on <see cref="Wishbone{TProfile}"/>.
         /// </summary>
         /// <typeparam name="TProfile"></typeparam>
         /// <param name="wishbone"></param>

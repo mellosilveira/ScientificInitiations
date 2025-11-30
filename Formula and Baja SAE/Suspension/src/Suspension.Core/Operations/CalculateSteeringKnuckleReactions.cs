@@ -1,41 +1,32 @@
-﻿using MudRunner.Commons.Core.ExtensionMethods;
-using MudRunner.Commons.Core.Operation;
-using MudRunner.Commons.DataContracts.Models;
-using MudRunner.Commons.DataContracts.Operation;
+﻿using MelloSilveiraTools.Application.Operations;
+using MelloSilveiraTools.ExtensionMethods;
+using MelloSilveiraTools.Infrastructure.Logger;
+using MelloSilveiraTools.MechanicsOfMaterials.Models;
 using MudRunner.Suspension.Core.Models.SuspensionComponents.SteeringKnuckle;
-using MudRunner.Suspension.Core.Operations.CalculateReactions;
 using MudRunner.Suspension.DataContracts.CalculateReactions;
 using MudRunner.Suspension.DataContracts.CalculateSteeringKnuckleReactions;
 using MudRunner.Suspension.DataContracts.Models.Enums;
 using System.Threading.Tasks;
 
-namespace MudRunner.Suspension.Core.Operations.CalculateStearingKnuckleReactions
+namespace MudRunner.Suspension.Core.Operations
 {
     /// <summary>
-    /// It is responsible to calculate the reactions to steering knuckle. 
+    /// Calculate the reactions to steering knuckle. 
     /// </summary>
-    public class CalculateSteeringKnuckleReactions : OperationBase<CalculateSteeringKnuckleReactionsRequest, OperationResponse<CalculateSteeringKnuckleReactionsResponseData>>, ICalculateSteeringKnuckleReactions
+    public class CalculateSteeringKnuckleReactions(
+        ILogger logger,
+        CalculateReactions calculateReactions)
+        : OperationBaseWithData<CalculateSteeringKnuckleReactionsRequest, CalculateSteeringKnuckleReactionsResponseData>(logger)
     {
-        private readonly ICalculateReactions _calculateReactions;
-
-        public CalculateSteeringKnuckleReactions(ICalculateReactions calculateReactions)
-        {
-            this._calculateReactions = calculateReactions;
-        }
+        private readonly CalculateReactions _calculateReactions = calculateReactions;
 
         public Force CalculateTieRodReactions(Force tieRodReaction, string steeringWheelForce, SuspensionPosition suspensionPosition)
-        {
-            if (suspensionPosition == SuspensionPosition.Rear)
-                return tieRodReaction;
-
-            return tieRodReaction.Sum(Force.Create(steeringWheelForce));
-        }
+            => suspensionPosition == SuspensionPosition.Rear ? tieRodReaction : tieRodReaction.Sum(Force.Create(steeringWheelForce));
 
         public double CalculateBearingReaction(CalculateSteeringKnuckleReactionsRequest request)
         {
             var bearing = Bearing.Create(request.BearingType);
-
-            return (request.BearingTorque / bearing.EffectiveRadius) * bearing.RadialLoadFactor;
+            return request.BearingTorque / bearing.EffectiveRadius * bearing.RadialLoadFactor;
         }
 
         public (Force Reaction1, Force Reaction2) CalculateBrakeCaliperReactions(CalculateSteeringKnuckleReactionsRequest request)
@@ -48,15 +39,15 @@ namespace MudRunner.Suspension.Core.Operations.CalculateStearingKnuckleReactions
             var vector1 = Vector3D.Create(brakeCaliperSupport.Point2, brakeCaliperSupport.Point1);
             var vector2 = Vector3D.Create(inertialForceCoordinate, brakeCaliperSupport.Point1);
 
-            double[] effort = new double[6]
-            {
+            double[] effort =
+            [
                 inertialForce.X,
                 inertialForce.Y,
                 inertialForce.Z,
                 -vector2.X * inertialForce.Y + vector2.Y * inertialForce.X,
                 -vector2.Y * inertialForce.Z + vector2.Z * inertialForce.Y,
                 -vector2.Z * inertialForce.X + vector2.X * inertialForce.Z
-            };
+            ];
 
             double[,] displacement = new double[6, 6]
             {
@@ -68,16 +59,14 @@ namespace MudRunner.Suspension.Core.Operations.CalculateStearingKnuckleReactions
                 { 0, 0, 0, vector1.Z, 0, -vector1.X }
             };
 
-            double[] result = displacement
-                .InverseMatrix()
-                .Multiply(effort);
+            double[] result = displacement.InverseMatrix().Multiply(effort);
 
             return (new Force(result[0], result[1], result[2]), new Force(result[3], result[4], result[5]));
         }
 
-        protected override async Task<OperationResponse<CalculateSteeringKnuckleReactionsResponseData>> ProcessOperationAsync(CalculateSteeringKnuckleReactionsRequest request)
+        protected override async Task<OperationResponseBase<CalculateSteeringKnuckleReactionsResponseData>> ProcessOperationAsync(CalculateSteeringKnuckleReactionsRequest request)
         {
-            OperationResponse<CalculateSteeringKnuckleReactionsResponseData> response = new();
+            var response = OperationResponse.CreateSuccessOk<OperationResponseBase<CalculateSteeringKnuckleReactionsResponseData>>();
 
             CalculateReactionsResponseData suspensionSystemEfforts;
             if (request.CalculateReactionsResponseData != null)
@@ -86,10 +75,10 @@ namespace MudRunner.Suspension.Core.Operations.CalculateStearingKnuckleReactions
             }
             else
             {
-                var calculateReactionsResponse = await this._calculateReactions.ProcessAsync(request.CalculateReactionsRequest).ConfigureAwait(false);
+                var calculateReactionsResponse = await _calculateReactions.ProcessAsync(request.CalculateReactionsRequest).ConfigureAwait(false);
                 if (calculateReactionsResponse.Success == false)
                 {
-                    response.AddMessages(calculateReactionsResponse.Messages);
+                    response.ErrorMessages.AddRange(calculateReactionsResponse.ErrorMessages);
                     response.SetInternalServerError("Occurred error while calculating reactions on suspension system.");
                     return response;
                 }
@@ -100,24 +89,17 @@ namespace MudRunner.Suspension.Core.Operations.CalculateStearingKnuckleReactions
             // Step X - Calculates the reactions.
             response.Data.UpperWishboneReaction = suspensionSystemEfforts.UpperWishboneReaction1.Sum(suspensionSystemEfforts.UpperWishboneReaction2);
             response.Data.LowerWishboneReaction = suspensionSystemEfforts.LowerWishboneReaction1.Sum(suspensionSystemEfforts.LowerWishboneReaction2);
-            response.Data.TieRodReaction = this.CalculateTieRodReactions(suspensionSystemEfforts.TieRodReaction, request.SteeringWheelForce, request.SuspensionPosition);
-            response.Data.BearingReaction = this.CalculateBearingReaction(request);
-            (response.Data.BrakeCaliperSupportReaction1, response.Data.BrakeCaliperSupportReaction2) = this.CalculateBrakeCaliperReactions(request);
+            response.Data.TieRodReaction = CalculateTieRodReactions(suspensionSystemEfforts.TieRodReaction, request.SteeringWheelForce, request.SuspensionPosition);
+            response.Data.BearingReaction = CalculateBearingReaction(request);
+            (response.Data.BrakeCaliperSupportReaction1, response.Data.BrakeCaliperSupportReaction2) = CalculateBrakeCaliperReactions(request);
 
             return response;
         }
 
-        protected override Task<OperationResponse<CalculateSteeringKnuckleReactionsResponseData>> ValidateOperationAsync(CalculateSteeringKnuckleReactionsRequest request)
-        {
-            OperationResponse<CalculateSteeringKnuckleReactionsResponseData> response = new();
-            response.SetSuccessOk();
-
-            if (request.CalculateReactionsRequest == null && request.CalculateReactionsResponseData == null)
-            {
-                response.SetBadRequestError("The forces applied to the steering knukle or the suspension points must be passed on request");
-            }
-
-            return Task.FromResult(response);
-        }
+        protected override Task<OperationResponseBase<CalculateSteeringKnuckleReactionsResponseData>> ValidateOperationAsync(CalculateSteeringKnuckleReactionsRequest request) 
+            => OperationResponse
+                .CreateSuccessOk<OperationResponseBase<CalculateSteeringKnuckleReactionsResponseData>>()
+                .AddErrorIf(request.CalculateReactionsRequest == null && request.CalculateReactionsResponseData == null, "The forces applied to the steering knukle or the suspension points must be passed on request")
+                .AsTask();
     }
 }

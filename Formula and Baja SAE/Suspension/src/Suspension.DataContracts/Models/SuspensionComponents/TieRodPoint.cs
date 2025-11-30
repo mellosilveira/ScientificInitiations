@@ -1,26 +1,25 @@
-﻿using MudRunner.Commons.DataContracts.Models.Profiles;
+﻿using MelloSilveiraTools.MechanicsOfMaterials.Models.Profiles;
 
-namespace MudRunner.Suspension.DataContracts.Models.SuspensionComponents
+namespace MudRunner.Suspension.DataContracts.Models.SuspensionComponents;
+
+/// <summary>
+/// It represents the points of tie rod.
+/// </summary>
+public class TieRodPoint : SingleComponentPoint 
 {
     /// <summary>
-    /// It represents the points of tie rod.
+    /// Creates a <see cref="TieRodPoint"/> based on <see cref="TieRod{TProfile}"/>.
     /// </summary>
-    public class TieRodPoint : SingleComponentPoint 
+    /// <typeparam name="TProfile"></typeparam>
+    /// <param name="tieRod"></param>
+    /// <returns></returns>
+    public static TieRodPoint Create<TProfile>(TieRod<TProfile> tieRod)
+        where TProfile : Profile
     {
-        /// <summary>
-        /// This method creates a <see cref="TieRodPoint"/> based on <see cref="TieRod{TProfile}"/>.
-        /// </summary>
-        /// <typeparam name="TProfile"></typeparam>
-        /// <param name="tieRod"></param>
-        /// <returns></returns>
-        public static TieRodPoint Create<TProfile>(TieRod<TProfile> tieRod)
-            where TProfile : Profile
+        return new TieRodPoint
         {
-            return new TieRodPoint
-            {
-                FasteningPoint = tieRod.FasteningPoint,
-                PivotPoint = tieRod.PivotPoint
-            };
-        }
+            FasteningPoint = tieRod.FasteningPoint,
+            PivotPoint = tieRod.PivotPoint
+        };
     }
 }

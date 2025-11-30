@@ -12,7 +12,7 @@ namespace MudRunner.Suspension.DataContracts.RunAnalysis.Dynamic
         /// </summary>
         public RunAmplitudeDynamicAnalysisResponseData()
         {
-            this.FullFileNames = new List<string>();
+            FullFileNames = new List<string>();
         }
 
         /// <summary>

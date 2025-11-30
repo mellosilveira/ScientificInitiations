@@ -8,7 +8,7 @@ namespace MudRunner.Suspension.Core.ExtensionMethods
     public static class CalculateReactionsResponseDataExtensions
     {
         /// <summary>
-        /// This method calculates the sum of forces at axis X.
+        /// Calculates the sum of forces at axis X.
         /// </summary>
         /// <param name="responseData"></param>
         /// <param name="appliedForce"></param>
@@ -22,7 +22,7 @@ namespace MudRunner.Suspension.Core.ExtensionMethods
         }
 
         /// <summary>
-        /// This method calculates the sum of forces at axis Y.
+        /// Calculates the sum of forces at axis Y.
         /// </summary>
         /// <param name="responseData"></param>
         /// <param name="appliedForce"></param>
@@ -36,7 +36,7 @@ namespace MudRunner.Suspension.Core.ExtensionMethods
         }
 
         /// <summary>
-        /// This method calculates the sum of forces at axis Z.
+        /// Calculates the sum of forces at axis Z.
         /// </summary>
         /// <param name="responseData"></param>
         /// <param name="appliedForce"></param>

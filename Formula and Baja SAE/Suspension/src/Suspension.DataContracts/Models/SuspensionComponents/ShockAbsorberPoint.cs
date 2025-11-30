@@ -6,7 +6,7 @@
     public class ShockAbsorberPoint : SingleComponentPoint
     {
         /// <summary>
-        /// This method creates a <see cref="ShockAbsorberPoint"/> based on a <see cref="ShockAbsorber"/>.
+        /// Creates a <see cref="ShockAbsorberPoint"/> based on a <see cref="ShockAbsorber"/>.
         /// </summary>
         /// <param name="shockAbsorber"></param>
         /// <returns></returns>

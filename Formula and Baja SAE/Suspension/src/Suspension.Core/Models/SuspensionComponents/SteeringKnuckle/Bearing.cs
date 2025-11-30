@@ -42,7 +42,7 @@ namespace MudRunner.Suspension.Core.Models.SuspensionComponents.SteeringKnuckle
         public double RadialLoadFactor { get; }
 
         /// <summary>
-        /// This method creates a new instance of <see cref="Bearing"/> based on <see cref="BearingType"/>.
+        /// Creates a new instance of <see cref="Bearing"/> based on <see cref="BearingType"/>.
         /// </summary>
         /// <param name="bearingType"></param>
         /// <returns></returns>

@@ -1,4 +1,4 @@
-﻿using MudRunner.Commons.DataContracts.Models;
+﻿using MelloSilveiraTools.MechanicsOfMaterials.Models;
 
 namespace MudRunner.Suspension.DataContracts.RunAnalysis.Fatigue
 {

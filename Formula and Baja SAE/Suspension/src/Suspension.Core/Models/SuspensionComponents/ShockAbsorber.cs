@@ -1,4 +1,4 @@
-﻿using MudRunner.Commons.DataContracts.Models;
+﻿using MelloSilveiraTools.MechanicsOfMaterials.Models;
 using DataContract = MudRunner.Suspension.DataContracts.Models.SuspensionComponents;
 
 namespace MudRunner.Suspension.Core.Models.SuspensionComponents
@@ -9,7 +9,7 @@ namespace MudRunner.Suspension.Core.Models.SuspensionComponents
     public class ShockAbsorber : SingleComponent 
     {
         /// <summary>
-        /// This method creates a <see cref="ShockAbsorber"/> based on <see cref="DataContract.ShockAbsorberPoint"/>.
+        /// Creates a <see cref="ShockAbsorber"/> based on <see cref="DataContract.ShockAbsorberPoint"/>.
         /// </summary>
         /// <param name="shockAbsorber"></param>
         /// <param name="appliedForce"></param>

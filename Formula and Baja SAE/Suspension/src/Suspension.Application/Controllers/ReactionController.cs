@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MelloSilveiraTools.Application.Operations;
+using MelloSilveiraTools.ExtensionMethods;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MudRunner.Commons.DataContracts.Operation;
-using MudRunner.Suspension.Application.Extensions;
-using MudRunner.Suspension.Core.Operations.CalculateReactions;
-using MudRunner.Suspension.Core.Operations.CalculateStearingKnuckleReactions;
+using MudRunner.Suspension.Core.Operations;
 using MudRunner.Suspension.DataContracts.CalculateReactions;
 using MudRunner.Suspension.DataContracts.CalculateSteeringKnuckleReactions;
 using System.Threading.Tasks;
@@ -28,8 +27,8 @@ namespace MudRunner.Suspension.Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("calculate")]
-        public async Task<ActionResult<OperationResponse<CalculateSteeringKnuckleReactionsResponseData>>> CalculateReactions(
-            [FromServices] ICalculateReactions operation,
+        public async Task<ActionResult<OperationResponseBase<CalculateSteeringKnuckleReactionsResponseData>>> CalculateReactions(
+            [FromServices] CalculateReactions operation,
             [FromBody] CalculateReactionsRequest request)
         {
             var response = await operation.ProcessAsync(request).ConfigureAwait(false);
@@ -51,8 +50,8 @@ namespace MudRunner.Suspension.Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("steering-knuckle/calculate")]
-        public async Task<ActionResult<OperationResponse<CalculateSteeringKnuckleReactionsResponseData>>> CalculateSteeringKnuckleReactions(
-            [FromServices] ICalculateSteeringKnuckleReactions operation,
+        public async Task<ActionResult<OperationResponseBase<CalculateSteeringKnuckleReactionsResponseData>>> CalculateSteeringKnuckleReactions(
+            [FromServices] CalculateSteeringKnuckleReactions operation,
             [FromBody] CalculateSteeringKnuckleReactionsRequest request)
         {
             var response = await operation.ProcessAsync(request).ConfigureAwait(false);

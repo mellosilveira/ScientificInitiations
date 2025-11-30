@@ -1,4 +1,4 @@
-﻿using MudRunner.Suspension.DataContracts.Models.Enums;
+﻿using MelloSilveiraTools.Domain.Models;
 using System.Collections.Generic;
 
 namespace MudRunner.Suspension.DataContracts.Models

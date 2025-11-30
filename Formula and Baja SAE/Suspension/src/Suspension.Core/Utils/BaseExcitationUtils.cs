@@ -1,6 +1,6 @@
-﻿using MudRunner.Commons.Core.Models;
+﻿using MelloSilveiraTools.Domain.Models;
+using MelloSilveiraTools.MechanicsOfMaterials.Models;
 using MudRunner.Suspension.DataContracts.Models;
-using MudRunner.Suspension.DataContracts.Models.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ namespace MudRunner.Suspension.Core.Utils
     public static class BaseExcitationUtils
     {
         /// <summary>
-        /// This method calculates the displacement for the base excitation to a specific time.
+        /// Calculates the displacement for the base excitation to a specific time.
         /// </summary>
         /// <param name="baseExcitation"></param>
         /// <param name="time"></param>
@@ -80,7 +80,7 @@ namespace MudRunner.Suspension.Core.Utils
         }
 
         /// <summary>
-        /// This method calculates the velocity for the base excitation to a specific time.
+        /// Calculates the velocity for the base excitation to a specific time.
         /// </summary>
         /// <param name="baseExcitation"></param>
         /// <param name="time"></param>
@@ -147,7 +147,7 @@ namespace MudRunner.Suspension.Core.Utils
         }
 
         /// <summary>
-        /// This method calculates the acceleration for the base excitation to a specific time.
+        /// Calculates the acceleration for the base excitation to a specific time.
         /// </summary>
         /// <param name="baseExcitation"></param>
         /// <param name="time"></param>

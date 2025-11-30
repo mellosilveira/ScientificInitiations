@@ -1,4 +1,4 @@
-﻿using MudRunner.Commons.DataContracts.Models.Profiles;
+﻿using MelloSilveiraTools.MechanicsOfMaterials.Models.Profiles;
 
 namespace MudRunner.Suspension.Core.Models.SuspensionComponents
 {

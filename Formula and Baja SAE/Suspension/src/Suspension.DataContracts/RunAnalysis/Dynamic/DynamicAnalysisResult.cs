@@ -32,10 +32,10 @@ namespace MudRunner.Suspension.DataContracts.RunAnalysis.Dynamic
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            return $"{string.Join(',', this.Displacement)}" +
-                $",{string.Join(',', this.Velocity)}" +
-                $",{string.Join(',', this.Acceleration)}";
-                //$",{string.Join(',', this.EquivalentForce)}";
+            return $"{string.Join(',', Displacement)}" +
+                $",{string.Join(',', Velocity)}" +
+                $",{string.Join(',', Acceleration)}";
+                //$",{string.Join(',', EquivalentForce)}";
         }
     }
 }

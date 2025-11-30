@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MelloSilveiraTools.Application.Operations;
+using MelloSilveiraTools.ExtensionMethods;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MudRunner.Commons.DataContracts.Operation;
-using MudRunner.Suspension.Application.Extensions;
 using MudRunner.Suspension.Core.Operations.RunAnalysis.Dynamic.HalfCar.SixDegreeOfFreedom;
 using MudRunner.Suspension.DataContracts.RunAnalysis.Dynamic;
 using MudRunner.Suspension.DataContracts.RunAnalysis.Dynamic.HalfCar.SixDegreeOfFreedom;
@@ -13,7 +13,7 @@ namespace MudRunner.Suspension.Application.Controllers
     public class DynamicAnalysisController : Controller
     {
         /// <summary>
-        /// This operation runs the dynamic analysis to suspension system considering half car and six degrees of freedom.
+        /// Runss the dynamic analysis to suspension system considering half car and six degrees of freedom.
         /// </summary>
         /// <param name="operation"></param>
         /// <param name="request"></param>
@@ -27,8 +27,8 @@ namespace MudRunner.Suspension.Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("half-car/six-degrees-of-freedom")]
-        public async Task<ActionResult<OperationResponse<RunDynamicAnalysisResponseData>>> RunAnalysis(
-            [FromServices] IRunHalfCarSixDofDynamicAnalysis operation,
+        public async Task<ActionResult<OperationResponseBase<RunDynamicAnalysisResponseData>>> RunAnalysis(
+            [FromServices] RunHalfCarSixDofDynamicAnalysis operation,
             [FromBody] RunHalfCarSixDofDynamicAnalysisRequest request)
         {
             var response = await operation.ProcessAsync(request).ConfigureAwait(false);
@@ -36,7 +36,7 @@ namespace MudRunner.Suspension.Application.Controllers
         }
 
         /// <summary>
-        /// This operation runs the dynamic analysis to suspension system focusing in the amplitude of the system 
+        /// Runss the dynamic analysis to suspension system focusing in the amplitude of the system 
         /// considering half car and six degrees of freedom.
         /// </summary>
         /// <param name="operation"></param>
@@ -51,8 +51,8 @@ namespace MudRunner.Suspension.Application.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [HttpPost("half-car/six-degrees-of-freedom/amplitude")]
-        public async Task<ActionResult<OperationResponse<RunDynamicAnalysisResponseData>>> RunAmplitudeAnalysis(
-            [FromServices] IRunHalfCarSixDofAmplitudeDynamicAnalysis operation,
+        public async Task<ActionResult<OperationResponseBase<RunDynamicAnalysisResponseData>>> RunAmplitudeAnalysis(
+            [FromServices] RunHalfCarSixDofAmplitudeDynamicAnalysis operation,
             [FromBody] RunHalfCarSixDofAmplitudeDynamicAnalysisRequest request)
         {
             var response = await operation.ProcessAsync(request).ConfigureAwait(false);

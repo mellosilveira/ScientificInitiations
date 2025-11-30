@@ -1,7 +1,7 @@
-﻿using MudRunner.Commons.Core.ExtensionMethods;
-using MudRunner.Commons.DataContracts.Models;
-using MudRunner.Commons.DataContracts.Models.Enums;
-using MudRunner.Commons.DataContracts.Models.Profiles;
+﻿using MelloSilveiraTools.ExtensionMethods;
+using MelloSilveiraTools.MechanicsOfMaterials.Models;
+using MelloSilveiraTools.MechanicsOfMaterials.Models.Enums;
+using MelloSilveiraTools.MechanicsOfMaterials.Models.Profiles;
 using MudRunner.Suspension.DataContracts.Models.SuspensionComponents;
 using DataContract = MudRunner.Suspension.DataContracts.Models.SuspensionComponents;
 
@@ -42,35 +42,35 @@ namespace MudRunner.Suspension.Core.Models.SuspensionComponents
         /// <summary>
         /// The vector that represents the direction of wishbone to one segment of wishbone.
         /// </summary>
-        public Vector3D VectorDirection1 => Vector3D.Create(this.FrontPivot, this.OuterBallJoint);
+        public Vector3D VectorDirection1 => Vector3D.Create(FrontPivot, OuterBallJoint);
 
         /// <summary>
         /// The vector that represents the direction of wishbone to another segment of wishbone.
         /// </summary>
-        public Vector3D VectorDirection2 => Vector3D.Create(this.RearPivot, this.OuterBallJoint);
+        public Vector3D VectorDirection2 => Vector3D.Create(RearPivot, OuterBallJoint);
 
         /// <summary>
         /// The normalized vector that represents the direction of wishbone to one segment of wishbone.
         /// </summary>
-        public Vector3D NormalizedDirection1 => this.VectorDirection1.Normalize();
+        public Vector3D NormalizedDirection1 => VectorDirection1.Normalize();
 
         /// <summary>
         /// The normalized vector that represents the direction of wishbone to anoher segment of wishbone.
         /// </summary>
-        public Vector3D NormalizedDirection2 => this.VectorDirection2.Normalize();
+        public Vector3D NormalizedDirection2 => VectorDirection2.Normalize();
 
         /// <summary>
         /// The length to one segment of wishbone.
         /// </summary>
-        public double Length1 => this.VectorDirection1.Length;
+        public double Length1 => VectorDirection1.Length;
 
         /// <summary>
         /// The length to another segment of wishbone.
         /// </summary>
-        public double Length2 => this.VectorDirection2.Length;
+        public double Length2 => VectorDirection2.Length;
 
         /// <summary>
-        /// This method creates a <see cref="Wishbone"/> based on <see cref="WishbonePoint"/>.
+        /// Creates a <see cref="Wishbone"/> based on <see cref="WishbonePoint"/>.
         /// </summary>
         /// <param name="wishbone"></param>
         /// <param name="appliedForce1"></param>
@@ -106,7 +106,7 @@ namespace MudRunner.Suspension.Core.Models.SuspensionComponents
         public TProfile Profile { get; set; }
 
         /// <summary>
-        /// This method creates a <see cref="Wishbone{TProfile}"/> based on <see cref="DataContract.Wishbone{TProfile}"/>.
+        /// Creates a <see cref="Wishbone{TProfile}"/> based on <see cref="DataContract.Wishbone{TProfile}"/>.
         /// </summary>
         /// <param name="wishbone"></param>
         /// <param name="material"></param>
