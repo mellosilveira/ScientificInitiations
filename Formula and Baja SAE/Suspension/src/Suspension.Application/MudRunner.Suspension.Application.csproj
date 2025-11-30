@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<ItemGroup>
+		<ProjectReference Include="..\Suspension.Core\MudRunner.Suspension.Core.csproj" />
+		<ProjectReference Include="..\Suspension.DataContracts\MudRunner.Suspension.DataContracts.csproj" />
+	</ItemGroup>
+
+
+</Project>

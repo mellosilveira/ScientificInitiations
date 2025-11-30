@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+	  <None Remove="packages.config" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="MelloSilveiraTools" Version="1.2.0-rc03" />
+	</ItemGroup>
+	
+</Project>

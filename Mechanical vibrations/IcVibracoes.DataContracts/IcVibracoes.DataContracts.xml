@@ -1,0 +1,472 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IcVibracoes.DataContracts</name>
+    </assembly>
+    <members>
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1">
+            <summary>
+            It represents the request content of CalculateBeamWithDva operation.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.AnalysisType">
+            <summary>
+            The analysis type. 
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithDynamicVibrationAbsorber.BeamWithDvaRequest`1.Dvas">
+            <summary>
+            List of dynamic vibration absorber.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1">
+            <summary>
+            It represents the request content of CalculatePiezoelectric operations.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.AnalysisType">
+            <summary>
+            The analysis type. 
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricYoungModulus">
+            <summary>
+            Piezoelectric Young Modulus.
+            Unit: Pa (Pascal)
+            </summary>
+            <example>63e9</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricConstant">
+            <summary>
+            Piezoelectric constant. Variable: d31.
+            Unit: m/V (meter per Volts)
+            </summary>
+            <example>190e-12</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricConstant">
+            <summary>
+            Dielectric constant. Variable: k33.
+            Unit: F/m (Farad per meter)
+            </summary>
+            <example>7.33e-9</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElasticityConstant">
+            <summary>
+            Elasticity value for constant electric field. Variable: c11.
+            Unit: N/m² (Newton per square meter)
+            </summary>
+            <example>1.076e11</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.DielectricPermissiveness">
+            <summary>
+            Dielectric permissiveness. Variable: e31.
+            Unit: C/m² (Coulomb per square meter)
+            </summary>
+            <example>30.705</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElectricalCharges">
+            <summary>
+            Electrical charges on piezoelectric surface.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricSpecificMass">
+            <summary>
+            Piezoelectric specific mass.
+            Unit: kg/m³ (kilogrameter per cubic meter)
+            </summary>
+            <example>7650</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.ElementsWithPiezoelectric">
+            <summary>
+            Elements with piezoelectric.
+            When it is not passed, is assumed that all elements have piezoelectric, because already exist an endpoint to do a anlysis in a beam without piezoelectric.
+            </summary>
+            <example>1, 2</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricPosition">
+            <summary>
+            Piezoelectric position on the beam. Can be: up, down, up and down.
+            </summary>
+            <example>Up And Down</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.BeamWithPiezoelectric.BeamWithPiezoelectricRequest`1.PiezoelectricProfile">
+            <summary>
+            Piezoelectric profile.
+            </summary>
+            <example>RectangularProfile</example>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.Beam.BeamRequest`1">
+            <summary>
+            It represents the request content of CalculateBeam operations.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.Beam.BeamRequest`1.AnalysisType">
+            <summary>
+            Tha analysis type.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1">
+            <summary>
+            It represents the request content of Finite Element operations.
+            </summary>
+            <typeparam name="TProfile"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.NumberOfElements">
+            <summary>
+            Number of elements in the beam.
+            </summary>
+            <example>2</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Material">
+            <summary>
+            Beam material.
+            </summary>
+            <example>Steel 1020</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Length">
+            <summary>
+            Beam length.
+            Unit: m (meter)
+            </summary>
+            <example>0.5</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Fastenings">
+            <summary>
+            The beam fastenings.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Forces">
+            <summary>
+            Applied forces in the beam.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.FiniteElement.FiniteElementRequest`1.Profile">
+            <summary>
+            Beam profile.
+            </summary>
+            <example>RectangularProfile</example>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.FiniteElementResponse">
+            <summary>
+            It represents the response content of Finite Element operations.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.FiniteElement.FiniteElementResponseData">
+            <summary>
+            It contains the 'data' content of Finite Element response operation.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.OperationError">
+            <summary>
+            It contains the content 'data' of the error class used in application.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationError.#ctor(System.String,System.String)">
+            <summary>
+            Class constructor.
+            </summary>
+            <param name="code"></param>
+            <param name="message"></param>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationError.Message">
+            <summary>
+            The erro message.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationError.Code">
+            <summary>
+            The error code.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.OperationErrorCode">
+            <summary>
+            It contains the operation error codes that the application can return.
+            </summary>
+        </member>
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.RequestValidationError">
+            <summary>
+            This error means that the request do not passed in the validation.
+            </summary>
+        </member>
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.UnauthorizedError">
+            <summary>
+            This error means that the client is not authorized to access the endpoint or the resource.
+            </summary>
+        </member>
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.InternalServerError">
+            <summary>
+            This error means that some error ocurred while processing the request.
+            </summary>
+        </member>
+        <member name="F:IcVibracoes.DataContracts.OperationErrorCode.NotImplementedError">
+            <summary>
+            This error means that some resource or endpoint was not implemented.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.OperationRequestBase">
+            <summary>
+            It represents the essencial request content to operations.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.AnalysisType">
+            <summary>
+            The analysis type. 
+            Example: Circular Beam, Rectangular Beam with DVA, Square Beam With Piezoelectric.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.Author">
+            <summary>
+            Who is doing the analysis.
+            </summary>
+            <example>Bruno Silveira</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.NumericalMethod">
+            <summary>
+            The numerical method that have to be used in the analysis.
+            </summary>
+            <example>Newmark</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.ForceType">
+            <summary>
+            The force type.
+            Can be harmonic or impact.
+            </summary>
+            <example>Harmonic</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.PeriodCount">
+            <summary>
+            Number of periods.
+            </summary>
+            <example>10</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.PeriodDivision">
+            <summary>
+            Divisions on period.
+            </summary>
+            <example>20</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.InitialAngularFrequency">
+            <summary>
+            Initial angular frequency.
+            Unit: Hz (Hertz)
+            </summary>
+            <example>30</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.AngularFrequencyStep">
+            <summary>
+            Delta angular frequency.
+            Unit: Hz (Hertz)
+            </summary>
+            <example>1</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationRequestBase.FinalAngularFrequency">
+            <summary>
+            Final angular frequency.
+            Unit: Hz (Hertz)
+            </summary>
+            <example>50</example>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.#ctor">
+            <summary>
+            Class constructor.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase.Success">
+            <summary>
+            The success status of operation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase.HttpStatusCode">
+            <summary>
+            The HTTP status code.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase.Errors">
+            <summary>
+            The list of errors.
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetSuccessCreated">
+            <summary>
+            Set success to true. The HttpStatusCode will be set to 201 (Created).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetBadRequestError">
+            <summary>
+            Set success to false. The HttpStatusCode will be set to 400 (BadRequest).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetUnauthorizedError">
+            <summary>
+            Set success to false. The HttpStatusCode will be set to 401 (Unauthorized).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetInternalServerError">
+            <summary>
+            Set Success to false. The HttpStatusCode will be set to 500 (InternalServerError).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.SetNotImplementedError">
+            <summary>
+            Set Success to false. The HttpStatusCode will be set to 501 (NotImplemented).
+            </summary>
+        </member>
+        <member name="M:IcVibracoes.DataContracts.OperationResponseBase.AddError(System.String,System.String,System.Net.HttpStatusCode)">
+            <summary>
+            This method adds error on list of errors.
+            </summary>
+            <param name="code"></param>
+            <param name="message"></param>
+            <param name="httpStatusCode"></param>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.OperationResponseBase`1">
+            <summary>
+            It contains the content of response for all operations.
+            </summary>
+            <typeparam name="TResponseData"></typeparam>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseBase`1.Data">
+            <summary>
+            It represents the 'data' content of all operation response.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.OperationResponseData">
+            <summary>
+            It represents the 'data' content of all operation response.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseData.Author">
+            <summary>
+            Who made the analysis.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseData.AnalysisExplanation">
+            <summary>
+            A simple analysis explanation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.OperationResponseData.FileUris">
+            <summary>
+            The file URI with the solution files.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest">
+            <summary>
+            It contains the request content of Rigid Body analysis with One Degree of Freedom.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest.AnalysisType">
+            <summary>
+            The analysis type. 
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomRequest.ElementData">
+            <summary>
+            The data of element to be analyzed.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomResponse">
+            <summary>
+            It contains the response content of Rigid Body analysis with One Degree of Freedom.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.OneDegreeOfFreedom.OneDegreeOfFreedomResponseData">
+            <summary>
+            It contains the response 'data' content of Rigid Body analysis with One Degree of Freedom.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest">
+            <summary>
+            It contains the request content to Rigid Body operation.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest.DampingRatios">
+            <summary>
+            List of damping ratio of system.
+            For each value in the list, it is made a new analysis.
+            Damping ratio represents the relation between damping by critical damping.
+            If it is equals to zero, the vibration is harmonic.
+            If it is greater than zero and less than 1, the vibration is underdamped.
+            If it is equals to one, the vibration is critical damped.
+            If it is greater than 1, the vibration is overdamped.
+            Unit: Dimensionless.
+            </summary>
+            <example>0.05</example>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.RigidBodyRequest.Force">
+            <summary>
+            The force applied in the main object.
+            Unit: N (Newton)
+            </summary>
+            <example>10</example>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyResponse`1">
+            <summary>
+            It contains the response content of Rigid Body operation.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.RigidBodyResponseData">
+            <summary>
+            It contains the 'data' content of RigidBody response operation.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest">
+            <summary>
+            It contains the request content of Rigid Body analysis with Two Degrees of Freedom.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest.AnalysisType">
+            <summary>
+            The analysis type. 
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest.PrimaryElementData">
+            <summary>
+            The data of main element to be analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomRequest.SecondaryElementData">
+            <summary>
+            The data of secondary element to be analyzed.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponse">
+            <summary>
+            It contains the response content of Rigid Body analysis with Two Degrees of Freedom.
+            </summary>
+        </member>
+        <member name="T:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData">
+            <summary>
+            It contains the response 'data' content of Rigid Body analysis with Two Degrees of Freedom.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.Time">
+            <summary>
+            The time corresponding for each value in that class.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.PrimaryDisplacement">
+            <summary>
+            Displacement of the primary object analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.PrimaryVelocity">
+            <summary>
+            Velocity of the primary object analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.SecondaryDisplacement">
+            <summary>
+            Displacement of the secondary object analyzed.
+            </summary>
+        </member>
+        <member name="P:IcVibracoes.DataContracts.RigidBody.TwoDegreesOfFreedom.TwoDegreesOfFreedomResponseData.SecondaryVelocity">
+            <summary>
+            Velocity of the secondary object analyzed.
+            </summary>
+        </member>
+    </members>
+</doc>
