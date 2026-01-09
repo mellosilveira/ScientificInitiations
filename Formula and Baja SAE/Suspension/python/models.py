@@ -9,6 +9,12 @@ from typing import Optional
 # Z: Longitudinal (Positive = Front)
 # Units: Millimeters (mm), Newtons (N), Degrees (deg)
 
+# Constant for floating point comparisons to avoid precision errors
+EPSILON = 1e-9
+
+# Constant for gravity acceleration (m/s²)
+g = 9.81
+
 # ==========================================
 # GEOMETRY PRIMITIVES
 # ==========================================
@@ -82,19 +88,60 @@ class SuspensionGeometry3D:
     fx_tire: float          # Longitudinal force at the contact patch (e.g., Braking)
 
 @dataclass(frozen=True)
-class BajaParameters:
+class SuspensionParameters:
     """
-    Parameters for the dynamic sweep simulation (CG height variation).
+    Parameters for the dynamic simulation.
     """
-    h_min: float            # Minimum CG height to simulate
-    h_max: float            # Maximum CG height to simulate
-    step: float             # Increment step
+    h: float                # Minimum CG height to simulate
     mass: float             # Vehicle total mass
     ay: float               # Lateral acceleration (in g's or m/s^2)
     track: float            # Track width
     h_ro: float             # Roll Center height (from 2D calculation)
     scrub_radius: float     # Distance from kingpin axis intersection to contact patch center
     clearance: float        # Ground clearance (affects moment arm calculation)
+
+@dataclass(frozen=True)
+class SuspensionIteratorParameters:
+    """
+    Parameters for the dynamic sweep simulation (CG height variation).
+    """
+    h_min: float            # Minimum CG height to simulate
+    h_max: float            # Maximum CG height to simulate
+    h_step: float           # Increment step for CG height
+    mass: float             # Vehicle total mass
+    ay: float               # Lateral acceleration (in g's or m/s^2)
+    track: float            # Track width
+    h_ro: float             # Roll Center height (from 2D calculation)
+    scrub_radius: float     # Distance from kingpin axis intersection to contact patch center
+    clearance: float        # Ground clearance (affects moment arm calculation)
+
+@dataclass(frozen=True)
+class ForceAngleParameters:
+    """
+    Parameters for the Force vs Angle optimization analysis.
+    """
+    f_load: float           # Total lateral load to be resisted by the suspension
+    angle_sup_base: float   # Base angle of the upper arm (degrees)
+    angle_inf_base: float   # Base angle of the lower arm (degrees)
+    k_sup: float            # Stiffness of the upper arm
+    k_inf: float            # Stiffness of the lower arm
+    limit: float            # Maximum allowable force in each arm
+    ang: float              # Angle delta to analyze
+
+@dataclass(frozen=True)
+class ForceAngleIteratorParameters:
+    """
+    Parameters for the Force vs Angle optimization analysis.
+    """
+    f_load: float           # Total lateral load to be resisted by the suspension
+    angle_sup_base: float   # Base angle of the upper arm (degrees)
+    angle_inf_base: float   # Base angle of the lower arm (degrees)
+    k_sup: float            # Stiffness of the upper arm
+    k_inf: float            # Stiffness of the lower arm
+    limit: float            # Maximum allowable force in each arm
+    ang_min: int            # Minimum angle delta to analyze
+    ang_max: int            # Maximum angle delta to analyze
+    step: int               # Step size for angle delta
 
 # ==========================================
 # CALCULATION RESULTS
@@ -136,7 +183,7 @@ class AlignmentResult:
     ic_frontal: Optional[Point2D] # Projected IC on the front plane
 
 @dataclass(frozen=True)
-class BajaSimRow:
+class SuspensionResult:
     """Data row for one step of the CG simulation."""
     h_cg: float     # Height of CG
     m_roll: float   # Roll Moment
@@ -146,7 +193,7 @@ class BajaSimRow:
     m_sp: float     # Spindle Moment (Steering effort)
 
 @dataclass(frozen=True)
-class ForceAngleRow:
+class ForceAngleResult:
     """Stores result for the Force vs Angle optimization analysis."""
     angle_delta: float
     force_sup: float

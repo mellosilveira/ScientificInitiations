@@ -1,11 +1,9 @@
-import math
 from typing import Optional
 from models import (
     Point2D, LineCoefficients, SuspensionGeometry2D, 
-    RollCenterResult, CamberGainResult
+    RollCenterResult, CamberGainResult, EPSILON
 )
 from utils import to_deg
-import utils  # Import utils to access EPSILON
 
 def get_line_coefficients(p1: Point2D, p2: Point2D) -> LineCoefficients:
     """
@@ -25,7 +23,7 @@ def solve_intersection(l1: LineCoefficients, l2: LineCoefficients) -> Optional[P
     det = l1.a * l2.b - l2.a * l1.b
     
     # Check for parallel lines (Instant Center at infinity)
-    if abs(det) < utils.EPSILON:
+    if abs(det) < EPSILON:
         return None
         
     x = (l1.b * l2.c - l2.b * l1.c) / det
@@ -56,7 +54,7 @@ def calculate_roll_center(geo: SuspensionGeometry2D) -> RollCenterResult:
     # The Roll Center lies on the line connecting the IC and the Wheel Center (W).
     # We need the height where this line crosses x=0.
     
-    if abs(ic.x - w_x) < utils.EPSILON:
+    if abs(ic.x - w_x) < EPSILON:
         h_ro = None
         q = None
     else:
@@ -69,7 +67,7 @@ def calculate_roll_center(geo: SuspensionGeometry2D) -> RollCenterResult:
         # 4. Calculate q-factor (Reimpell stability metric)
         # q = p * bf / h_ro^2 (approximation)
         p = ic.y - w_y # Vertical distance IC to ground
-        q = (p * geo.track_width) / (h_ro**2) if abs(h_ro) > utils.EPSILON else 0.0
+        q = (p * geo.track_width) / (h_ro**2) if abs(h_ro) > EPSILON else 0.0
         
     return RollCenterResult(ic, h_ro, q)
 
@@ -77,7 +75,7 @@ def calculate_camber_gain(geo: SuspensionGeometry2D) -> CamberGainResult:
     """
     Calculates kinematic camber gain indicators based on wheel travel.
     """
-    if abs(geo.track_width) < utils.EPSILON:
+    if abs(geo.track_width) < EPSILON:
         return CamberGainResult(0.0, 0.0, None)
     
     # d_phi: Approximate body roll angle based on suspension travel difference
@@ -88,6 +86,6 @@ def calculate_camber_gain(geo: SuspensionGeometry2D) -> CamberGainResult:
     d_gamma = (geo.camber_out_deg - geo.camber_in_deg) / 2.0
     
     # k_gamma ratio
-    k_gamma = (d_gamma / d_phi_deg) if abs(d_phi_deg) > utils.EPSILON else 0.0
+    k_gamma = (d_gamma / d_phi_deg) if abs(d_phi_deg) > EPSILON else 0.0
     
     return CamberGainResult(d_phi_deg, d_gamma, k_gamma)

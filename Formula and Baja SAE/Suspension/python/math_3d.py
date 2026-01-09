@@ -2,7 +2,7 @@ import math
 from typing import Optional
 from models import (
     Point2D, Point3D, ForceVector, ForceResult3D, 
-    SuspensionGeometry3D, AlignmentResult
+    SuspensionGeometry3D, AlignmentResult, EPSILON
 )
 from utils import to_deg
 import utils
@@ -29,16 +29,16 @@ def calculate_alignment(geo: SuspensionGeometry3D) -> AlignmentResult:
     # 2. Camber (Front Plane X-Y)
     dx = geo.spindle_sup.x - geo.spindle_inf.x
     dy = geo.spindle_sup.y - geo.spindle_inf.y
-    camber = to_deg(math.atan(dx/dy)) if abs(dy) > utils.EPSILON else 0.0
+    camber = to_deg(math.atan(dx/dy)) if abs(dy) > EPSILON else 0.0
     
     # 3. Caster (Side Plane Z-Y)
     dz_cast = geo.spindle_sup.z - geo.spindle_inf.z
-    caster = to_deg(math.atan(dz_cast/dy)) if abs(dy) > utils.EPSILON else 0.0
+    caster = to_deg(math.atan(dz_cast/dy)) if abs(dy) > EPSILON else 0.0
     
     # 4. Toe (Top Plane X-Z)
     dx_toe = geo.toe_front.x - geo.toe_rear.x
     dz_toe = geo.toe_front.z - geo.toe_rear.z
-    toe = to_deg(math.atan(dx_toe/dz_toe)) if abs(dz_toe) > utils.EPSILON else 0.0
+    toe = to_deg(math.atan(dx_toe/dz_toe)) if abs(dz_toe) > EPSILON else 0.0
     
     return AlignmentResult(camber, caster, toe, ic)
 
@@ -50,7 +50,7 @@ def calculate_forces(geo: SuspensionGeometry3D) -> Optional[ForceResult3D]:
     l_sup = vector_len(geo.sup_in, geo.sup_out)
     l_inf = vector_len(geo.inf_in, geo.inf_out)
     
-    if l_sup < utils.EPSILON or l_inf < utils.EPSILON:
+    if l_sup < EPSILON or l_inf < EPSILON:
         return None
         
     # Calculate Z-axis direction cosine
@@ -60,7 +60,7 @@ def calculate_forces(geo: SuspensionGeometry3D) -> Optional[ForceResult3D]:
     # Equilibrium equation: F_sup_z + F_inf_z = Fx_tire
     denom = (geo.stiffness_ratio_sup * ez_sup) + (geo.stiffness_ratio_inf * ez_inf)
     
-    if abs(denom) < utils.EPSILON:
+    if abs(denom) < EPSILON:
         return None # Geometry cannot react to longitudinal force
         
     k_force = geo.fx_tire / denom
@@ -98,13 +98,13 @@ def calculate_anti_dive(fx: float, fy_total: float, h_cg: float, wheelbase: floa
     Calculates Anti-Dive percentage.
     Formula: % = (Fy_suspension / Fz_transfer_needed) * 100
     """
-    if abs(wheelbase) < utils.EPSILON: 
+    if abs(wheelbase) < EPSILON: 
         return None
     
     # Theoretical load transfer required for 100% anti-dive
     fz_needed = fx * (h_cg / wheelbase)
     
-    if abs(fz_needed) < utils.EPSILON:
+    if abs(fz_needed) < EPSILON:
         return 0.0
         
     return (fy_total / fz_needed) * 100.0

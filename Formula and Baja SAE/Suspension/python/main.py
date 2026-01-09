@@ -228,7 +228,7 @@ class App:
         
         self.e_h_min = self._create_entry(f_in, "Min CG:", 0, 0, "250")
         self.e_h_max = self._create_entry(f_in, "Max CG:", 1, 0, "450")
-        self.e_step = self._create_entry(f_in, "Step:", 2, 0, "25")
+        self.e_h_step = self._create_entry(f_in, "Step CG:", 2, 0, "25")
         self.e_mass = self._create_entry(f_in, "Mass [kg]:", 3, 0, "200")
         self.e_ay = self._create_entry(f_in, "Ay [m/s2]:", 4, 0, "9.8")
         self.e_rs = self._create_entry(f_in, "Scrub [mm]:", 5, 0, "50")
@@ -264,10 +264,10 @@ class App:
     def _run_baja(self):
         h_ro = self.last_2d_results.h_ro if self.last_2d_results and self.last_2d_results.h_ro else 100.0
         
-        params = models.BajaParameters(
+        params = models.SuspensionParameters(
             h_min=utils.safe_float(self.e_h_min.get()),
             h_max=utils.safe_float(self.e_h_max.get()),
-            step=utils.safe_float(self.e_step.get()),
+            h_step=utils.safe_float(self.e_h_step.get()),
             mass=utils.safe_float(self.e_mass.get()),
             ay=utils.safe_float(self.e_ay.get()),
             track=utils.safe_float(self.e_bf.get()),
@@ -346,7 +346,7 @@ class App:
 
     def _run_opt(self):
         try:
-            results = dynamics.calculate_force_vs_angle(
+            results = dynamics.calculate_force_vs_angle_sweep(
                 f_load=utils.safe_float(self.e_load.get()),
                 angle_sup_base=utils.safe_float(self.e_ang_sup.get()),
                 angle_inf_base=utils.safe_float(self.e_ang_inf.get()),
