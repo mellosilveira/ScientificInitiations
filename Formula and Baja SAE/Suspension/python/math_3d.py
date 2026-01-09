@@ -51,9 +51,9 @@ def calculate_forces(geo: SuspensionGeometry3D) -> Optional[ForceResult3D]:
     l_inf = vector_len(geo.inf_in, geo.inf_out)
     
     if l_sup < EPSILON or l_inf < EPSILON:
-        return None
+        return None # Avoid division by zero
         
-    # Calculate Z-axis direction cosine
+    # Calculate Z-axis direction cosine (Projection of unit vector on Z)
     ez_sup = (geo.sup_out.z - geo.sup_in.z) / l_sup
     ez_inf = (geo.inf_out.z - geo.inf_in.z) / l_inf
     

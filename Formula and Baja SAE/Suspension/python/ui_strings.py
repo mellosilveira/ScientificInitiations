@@ -1,36 +1,36 @@
 SUMMARY_2D = """
-=== 2D GEOMETRY SUMMARY ===
-A) Front View Logic:
-- IC (Instant Center): Intersection of upper and lower arm lines. Determines the pivot point of the suspension in this view.
-- Roll Center (Ro): Intersection of the line IC-W (FVSA) with the vehicle centerline (x=0). This point determines the geometric roll moment arm.
-- q-factor: Reimpell's curvature metric. Used to compare how much the roll center migrates during movement.
+=== RESUMO GEOMETRIA 2D (REIMPELL) ===
+A) Lógica da Vista Frontal:
+- IC (Centro Instantâneo): Interseção das linhas dos braços superior e inferior. Determina o ponto de pivô virtual da suspensão nesta vista.
+- Centro de Rolagem (Ro): Interseção da linha IC-W (FVSA) com a linha central do veículo (x=0). Este ponto determina o braço de momento geométrico de rolagem.
+- Fator-q: Métrica de curvatura de Reimpell. Usado para comparar o quanto o centro de rolagem migra durante o movimento.
 
-B) Camber Gain:
-- dφ: Roll angle derived from suspension travel.
-- kγ: Camber factor. Negative values indicate the geometry compensates for roll (the tire leans into the turn), which improves grip.
+B) Ganho de Cambagem:
+- dφ: Ângulo de rolagem derivado do curso da suspensão.
+- kγ: Fator de cambagem. Valores negativos indicam que a geometria compensa a rolagem (o pneu inclina para dentro da curva), o que melhora a aderência.
 """
 
 SUMMARY_3D = """
-=== 3D FORCE SUMMARY ===
-A) Force Distribution:
-- The longitudinal force (Fx_tire, e.g., Braking) is distributed to the arms based on stiffness ratios.
-- Geometric Effect: Inclined arms generate parasitic Vertical (Fy) and Lateral (Fx) forces on the chassis when reacting to braking loads.
+=== RESUMO DE FORÇAS 3D ===
+A) Distribuição de Forças:
+- A força longitudinal (Fx_pneu, ex: Frenagem) é distribuída para os braços com base nas razões de rigidez.
+- Efeito Geométrico: Braços inclinados geram forças parasitas Verticais (Fy) e Laterais (Fx) no chassi ao reagir a cargas de frenagem.
 
-B) Anti-Dive:
-- Calculated as (Fy_suspension / Fz_needed_for_100%) * 100.
-- Determines how much the suspension geometry resists diving under braking (nose dip).
+B) Anti-Mergulho (Anti-Dive):
+- Calculado como (Fy_suspensão / Fz_necessário_para_100%) * 100.
+- Determina o quanto a geometria da suspensão resiste ao mergulho da dianteira (nose dip) durante a frenagem, sem comprimir as molas.
 
-C) Alignment:
-- Camber/Caster/Toe are calculated by projecting 3D points onto 2D planes.
+C) Alinhamento:
+- Camber/Caster/Toe são calculados projetando os pontos 3D nos planos 2D correspondentes.
 """
 
 SUMMARY_BAJA = """
-=== BAJA DYNAMICS SUMMARY ===
-A) Trends (CG Variation):
-- Increasing CG height linearly increases Load Transfer (ΔFz) and Roll Moment.
-- Critical Risk: If Fz_int (Internal Wheel Load) drops near zero, the inner wheel lifts off the ground, causing loss of traction and stability control.
+=== RESUMO DINÂMICA BAJA ===
+A) Tendências (Variação de CG):
+- Aumentar a altura do CG aumenta linearmente a Transferência de Carga (ΔFz) e o Momento de Rolagem.
+- Risco Crítico: Se Fz_int (Carga na Roda Interna) cair para perto de zero, a roda interna levanta do chão, causando perda de tração e controle de estabilidade.
 
-B) Spindle Moment (Steering Feedback):
-- Depends on Lateral Force and Scrub Radius.
-- Large scrub radius + high lateral g = heavy steering effort for the driver.
+B) Momento na Manga (Feedback de Direção):
+- Depende da Força Lateral e do Raio de Arrasto (Scrub Radius).
+- Grande scrub radius + alta força lateral g = esforço de direção pesado para o piloto.
 """

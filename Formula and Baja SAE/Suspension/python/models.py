@@ -92,9 +92,9 @@ class SuspensionParameters:
     """
     Parameters for the dynamic simulation.
     """
-    h: float                # Minimum CG height to simulate
+    h: float                # Current CG height
     mass: float             # Vehicle total mass
-    ay: float               # Lateral acceleration (in g's or m/s^2)
+    ay: float               # Lateral acceleration (in m/s^2)
     track: float            # Track width
     h_ro: float             # Roll Center height (from 2D calculation)
     scrub_radius: float     # Distance from kingpin axis intersection to contact patch center
@@ -109,7 +109,7 @@ class SuspensionIteratorParameters:
     h_max: float            # Maximum CG height to simulate
     h_step: float           # Increment step for CG height
     mass: float             # Vehicle total mass
-    ay: float               # Lateral acceleration (in g's or m/s^2)
+    ay: float               # Lateral acceleration (in m/s^2)
     track: float            # Track width
     h_ro: float             # Roll Center height (from 2D calculation)
     scrub_radius: float     # Distance from kingpin axis intersection to contact patch center
@@ -118,7 +118,7 @@ class SuspensionIteratorParameters:
 @dataclass(frozen=True)
 class ForceAngleParameters:
     """
-    Parameters for the Force vs Angle optimization analysis.
+    Parameters for a single iteration of Force vs Angle analysis.
     """
     f_load: float           # Total lateral load to be resisted by the suspension
     angle_sup_base: float   # Base angle of the upper arm (degrees)
@@ -131,7 +131,7 @@ class ForceAngleParameters:
 @dataclass(frozen=True)
 class ForceAngleIteratorParameters:
     """
-    Parameters for the Force vs Angle optimization analysis.
+    Parameters for the sweep optimization Force vs Angle.
     """
     f_load: float           # Total lateral load to be resisted by the suspension
     angle_sup_base: float   # Base angle of the upper arm (degrees)
@@ -139,9 +139,9 @@ class ForceAngleIteratorParameters:
     k_sup: float            # Stiffness of the upper arm
     k_inf: float            # Stiffness of the lower arm
     limit: float            # Maximum allowable force in each arm
-    ang_min: int            # Minimum angle delta to analyze
-    ang_max: int            # Maximum angle delta to analyze
-    step: int               # Step size for angle delta
+    ang_min: float          # Minimum angle delta to analyze
+    ang_max: float          # Maximum angle delta to analyze
+    step: float             # Step size for angle delta
 
 # ==========================================
 # CALCULATION RESULTS

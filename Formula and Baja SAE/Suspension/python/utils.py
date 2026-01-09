@@ -1,5 +1,6 @@
 import math
 
+# Conversion constant
 RAD_PER_DEG = math.pi / 180.0
 
 def to_rad(deg: float) -> float:

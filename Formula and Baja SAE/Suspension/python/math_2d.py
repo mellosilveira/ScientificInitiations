@@ -52,13 +52,13 @@ def calculate_roll_center(geo: SuspensionGeometry2D) -> RollCenterResult:
     
     # 3. Calculate Roll Center (h_ro)
     # The Roll Center lies on the line connecting the IC and the Wheel Center (W).
-    # We need the height where this line crosses x=0.
+    # We need the height where this line crosses x=0 (vehicle centerline).
     
     if abs(ic.x - w_x) < EPSILON:
         h_ro = None
         q = None
     else:
-        # Slope of FVSA
+        # Slope of FVSA (Front View Swing Arm)
         m = (ic.y - w_y) / (ic.x - w_x)
         
         # Line Eq: y - wy = m(x - wx). Solving for x=0 gives h_ro.
