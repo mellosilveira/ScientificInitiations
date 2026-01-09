@@ -13,7 +13,7 @@ from typing import Optional
 EPSILON = 1e-9
 
 # Constant for gravity acceleration (m/s²)
-g = 9.81
+GRAVITY = 9.81
 
 # ==========================================
 # GEOMETRY PRIMITIVES

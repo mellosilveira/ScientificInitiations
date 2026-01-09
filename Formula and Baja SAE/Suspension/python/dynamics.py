@@ -3,7 +3,7 @@ from typing import Iterator, Optional
 from models import (
     SuspensionParameters, SuspensionIteratorParameters, SuspensionResult,
     ForceAngleParameters, ForceAngleIteratorParameters, ForceAngleResult, 
-    EPSILON, g
+    EPSILON, GRAVITY 
 )
 
 def calculate_baja_sim_row(params: SuspensionParameters) -> SuspensionResult:
@@ -20,7 +20,7 @@ def calculate_baja_sim_row(params: SuspensionParameters) -> SuspensionResult:
     d_fz = params.mass * params.ay * (params.h / params.track)
     
     # 3. Vertical Loads (N)
-    fz_static = (params.mass * g) / 4.0
+    fz_static = (params.mass * GRAVITY ) / 4.0
     fz_ext = fz_static + (d_fz / 2.0)
     fz_int = fz_static - (d_fz / 2.0)
     
