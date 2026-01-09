@@ -103,14 +103,14 @@ class BajaParameters:
 @dataclass(frozen=True)
 class RollCenterResult:
     """Output of the Reimpell 2D geometric analysis."""
-    ic: Optional[Point2D]     # Instant Center of Rotation
-    h_ro: Optional[float]     # Roll Center Height relative to ground
+    ic: Optional[Point2D]   # Instant Center of Rotation
+    h_ro: Optional[float]   # Roll Center Height relative to ground
     q_factor: Optional[float] # Reimpell's curvature factor (stability metric)
 
 @dataclass(frozen=True)
 class CamberGainResult:
-    d_phi_deg: float         # Body roll angle
-    d_gamma_k: float         # Camber change
+    d_phi_deg: float        # Body roll angle
+    d_gamma_k: float        # Camber change
     k_gamma: Optional[float] # Camber gain factor
 
 @dataclass(frozen=True)
@@ -144,3 +144,12 @@ class BajaSimRow:
     fz_ext: float   # Vertical load on external wheel
     fz_int: float   # Vertical load on internal wheel
     m_sp: float     # Spindle Moment (Steering effort)
+
+@dataclass(frozen=True)
+class ForceAngleRow:
+    """Stores result for the Force vs Angle optimization analysis."""
+    angle_delta: float
+    force_sup: float
+    force_inf: float
+    force_total: float
+    status: str  # "OK" or "LIMIT"
