@@ -20,6 +20,3 @@ def safe_float(value: str, default: float = 0.0) -> float:
         return float(clean_val)
     except (ValueError, AttributeError):
         return default
-
-def format_value(val: float, precision: int = 1) -> str:
-    return f"{val:.{precision}f}"
