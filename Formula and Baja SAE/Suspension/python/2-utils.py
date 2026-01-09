@@ -1,5 +1,8 @@
 import math
 
+# Constant for floating point comparisons to avoid precision errors
+EPSILON = 1e-9
+
 def to_rad(deg: float) -> float:
     """Converts Degrees to Radians."""
     return deg * math.pi / 180.0
