@@ -87,11 +87,11 @@ class SuspensionGeometry3D:
     stiffness_ratio_inf: float
     fx_tire: float          # Longitudinal force at the contact patch (e.g., Braking)
 
+# --- DYNAMICS PARAMETERS ---
+
 @dataclass(frozen=True)
 class SuspensionParameters:
-    """
-    Parameters for the dynamic simulation.
-    """
+    """Parameters for a single iteration of CG simulation."""
     h: float                # Current CG height
     mass: float             # Vehicle total mass
     ay: float               # Lateral acceleration (in m/s^2)
@@ -101,9 +101,9 @@ class SuspensionParameters:
     clearance: float        # Ground clearance (affects moment arm calculation)
 
 @dataclass(frozen=True)
-class SuspensionIteratorParameters:
+class SuspensionCGScanParameters:
     """
-    Parameters for the dynamic sweep simulation (CG height variation).
+    Parameters for the CG Height sweep simulation.
     """
     h_min: float            # Minimum CG height to simulate
     h_max: float            # Maximum CG height to simulate
@@ -114,6 +114,19 @@ class SuspensionIteratorParameters:
     h_ro: float             # Roll Center height (from 2D calculation)
     scrub_radius: float     # Distance from kingpin axis intersection to contact patch center
     clearance: float        # Ground clearance (affects moment arm calculation)
+
+@dataclass(frozen=True)
+class SuspensionMassScanParameters:
+    """Parameters for the Mass sweep simulation (New in v2.0)."""
+    m_min: float
+    m_max: float
+    m_step: float
+    h_cg: float
+    ay: float
+    track: float
+    h_ro: float
+
+# --- OPTIMIZATION PARAMETERS ---
 
 @dataclass(frozen=True)
 class ForceAngleParameters:
@@ -191,6 +204,23 @@ class SuspensionResult:
     fz_ext: float   # Vertical load on external wheel
     fz_int: float   # Vertical load on internal wheel
     m_sp: float     # Spindle Moment (Steering effort)
+
+@dataclass(frozen=True)
+class MassScanResult:
+    """Data row for Mass simulation (New in v2.0)."""
+    mass: float
+    m_roll: float
+    d_fz: float
+    ssf: float              # Static Stability Factor
+    ay_crit: float          # Critical Rollover Acceleration
+    margin: Optional[float] # Safety margin
+
+@dataclass(frozen=True)
+class LoadTransferComponents:
+    """Breakdown of load transfer (Geo vs Elastic)."""
+    d_fz_total: float
+    d_fz_geo: float
+    d_fz_el: float
 
 @dataclass(frozen=True)
 class ForceAngleResult:
