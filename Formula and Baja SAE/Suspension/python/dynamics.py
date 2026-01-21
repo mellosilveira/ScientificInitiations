@@ -135,16 +135,19 @@ def calculate_force_vs_angle_step(params: ForceAngleParameters) -> Optional[Forc
 
 def calculate_force_vs_angle_sweep(params: ForceAngleIteratorParameters) -> Iterator[ForceAngleResult]:
     """Generator: Iterates through angle deltas."""
-    for d_ang in range(params.ang_min, params.ang_max + 1, params.step):
-        p = ForceAngleParameters(
+    d_ang = params.ang_min
+    while d_ang <= params.ang_max + EPSILON:
+        iteration_params = ForceAngleParameters(
             f_load=params.f_load,
             angle_sup_base=params.angle_sup_base,
             angle_inf_base=params.angle_inf_base,
             k_sup=params.k_sup,
             k_inf=params.k_inf,
             limit=params.limit,
-            ang=float(d_ang)
-        )
-        res = calculate_force_vs_angle_step(p)
-        if res:
-            yield res
+            ang=d_ang)
+        
+        result = calculate_force_vs_angle_step(iteration_params)
+        if result is not None:
+            yield result
+
+        d_ang += params.step
