@@ -1,11 +1,13 @@
 import json
+import csv
+import math
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
-# Domain modules
+# Domain modules (precisam existir no seu projeto)
 import models
 import math_2d
 import math_3d
@@ -118,26 +120,195 @@ def safe_num(s: str) -> float:
 
 
 # =========================
-# Main App (UNIFICADO)
+# Main App
 # =========================
 
 class App:
+    # -------------------------
+    # Hardpoints helpers
+    # -------------------------
+    def _safe_call(self, fn, name: str):
+        """Executa uma ação com captura de erro sem quebrar a sequência."""
+        try:
+            fn()
+            return True
+        except Exception as e:
+            self._set_status(f"Erro em {name}: {e}")
+            try:
+                messagebox.showerror(f"Erro em {name}", str(e))
+            except Exception:
+                pass
+            return False
+
+    def _calc_all(self):
+        """
+        Executa tudo em sequência:
+        2D -> 3D -> Visual 3D -> CG Sweep -> Mass Sweep -> Estrutura
+        Observação: CG/Mass usam h_ro do 2D; por isso 2D vem primeiro.
+        """
+        ok2d = self._safe_call(self._calc_2d, "Calcular 2D")
+        ok3d = self._safe_call(self._calc_3d, "Calcular 3D")
+        okvis = self._safe_call(self._calc_full_3d, "Visual 3D")
+
+        # Se 2D falhou, CG/Mass podem não ter h_ro; ainda assim você colocou fallback 100 mm,
+        # então deixo rodar. Se você quiser travar, use: if ok2d: ...
+        okcg = self._safe_call(self._run_cg_sweep, "CG Sweep")
+        okm = self._safe_call(self._run_mass_sweep, "Mass Sweep")
+
+        okopt = self._safe_call(self._run_opt, "Estrutura")
+
+        if all([ok2d, ok3d, okvis, okcg, okm, okopt]):
+            self._set_status("✅ Calcular TODOS concluído.")
+        else:
+            self._set_status("⚠️ Calcular TODOS terminou com alguns erros (veja mensagens).")
+
+    def _goto_tab(self, tab_name: str):
+        """Atalho de visualização: seleciona a aba desejada."""
+        tabs = {
+            "2D": getattr(self, "tab_2d", None),
+            "3D": getattr(self, "tab_3d", None),
+            "VIS3D": getattr(self, "tab_vis3d", None),
+            "DYN": getattr(self, "tab_dyn", None),
+            "OPT": getattr(self, "tab_opt", None),
+        }
+        t = tabs.get(tab_name)
+        if t is not None:
+            self.content_area.select(t)
+
+    def _hp_key(self, corner: str, point: str) -> str:
+        return f"{corner} {point}"
+
+    def _hp_get(self, lbl: str):
+        """Retorna (x,y,z) float dos hardpoints do label."""
+        if lbl not in self.entries_hp:
+            raise KeyError(f"Hardpoint não encontrado: {lbl}")
+        ex, ey, ez = self.entries_hp[lbl]
+        return safe_num(ex.get()), safe_num(ey.get()), safe_num(ez.get())
+
+    def _hp_set(self, lbl: str, x: float, y: float, z: float):
+        """Seta (x,y,z) nos hardpoints do label."""
+        if lbl not in self.entries_hp:
+            raise KeyError(f"Hardpoint não encontrado: {lbl}")
+        ex, ey, ez = self.entries_hp[lbl]
+        ex.delete(0, tk.END); ex.insert(0, str(x))
+        ey.delete(0, tk.END); ey.insert(0, str(y))
+        ez.delete(0, tk.END); ez.insert(0, str(z))
+
+    def _export_hardpoints_csv(self):
+        """
+        Exporta SOMENTE os hardpoints (16 pontos) + bitola para CSV.
+        Formato:
+        key,x,y,z
+        bf,1250,,
+        FR Sup In,450,420,200
+        ...
+        """
+        path = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV", "*.csv")]
+        )
+        if not path:
+            return
+
+        try:
+            rows = []
+            rows.append(["bf", self.entries["bf"].get(), "", ""])
+
+            for lbl in getattr(self, "hp_keys", []):
+                x, y, z = self._hp_get(lbl)
+                rows.append([lbl, f"{x}", f"{y}", f"{z}"])
+
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f, delimiter=",")
+                w.writerow(["key", "x", "y", "z"])
+                w.writerows(rows)
+
+            self._set_status("Hardpoints exportados para CSV.")
+        except Exception as e:
+            self._set_status(f"Erro export CSV: {e}")
+            messagebox.showerror("Erro", str(e))
+
+    def _import_hardpoints_csv(self):
+        """
+        Importa SOMENTE hardpoints + bf (se existir) do CSV e preenche automaticamente.
+        Aceita separador ',' e decimal com vírgula (safe_num).
+        """
+        path = filedialog.askopenfilename(filetypes=[("CSV", "*.csv")])
+        if not path:
+            return
+
+        try:
+            got_any = False
+            with open(path, "r", encoding="utf-8") as f:
+                rdr = csv.DictReader(f)
+                for row in rdr:
+                    key = (row.get("key") or "").strip()
+                    if not key:
+                        continue
+
+                    if key == "bf":
+                        bf_val = row.get("x", "")
+                        if bf_val:
+                            self._set("bf", safe_num(bf_val))
+                            got_any = True
+                        continue
+
+                    if key in self.entries_hp:
+                        x = safe_num(row.get("x", "0"))
+                        y = safe_num(row.get("y", "0"))
+                        z = safe_num(row.get("z", "0"))
+                        self._hp_set(key, x, y, z)
+                        got_any = True
+
+            if got_any:
+                self._set_status("Hardpoints importados do CSV.")
+            else:
+                self._set_status("CSV lido, mas não encontrou chaves válidas.")
+                messagebox.showwarning("Aviso", "Não encontrei chaves (key) válidas no CSV.")
+        except Exception as e:
+            self._set_status(f"Erro import CSV: {e}")
+            messagebox.showerror("Erro", str(e))
+
+    def _compute_arm_angles_deg(self, corner: str):
+        """
+        Calcula ângulo do braço superior e inferior na vista frontal (X lateral, Y vertical).
+        Ângulo = atan2(dY, dX) em graus. Usa pontos In->Out.
+        """
+        sup_in_x, sup_in_y, _ = self._hp_get(self._hp_key(corner, "Sup In"))
+        sup_out_x, sup_out_y, _ = self._hp_get(self._hp_key(corner, "Sup Out"))
+
+        inf_in_x, inf_in_y, _ = self._hp_get(self._hp_key(corner, "Inf In"))
+        inf_out_x, inf_out_y, _ = self._hp_get(self._hp_key(corner, "Inf Out"))
+
+        ang_sup = math.degrees(math.atan2((sup_out_y - sup_in_y), (sup_out_x - sup_in_x)))
+        ang_inf = math.degrees(math.atan2((inf_out_y - inf_in_y), (inf_out_x - inf_in_x)))
+        return ang_sup, ang_inf
+
+    # -------------------------
+    # Init
+    # -------------------------
     def __init__(self, root: tk.Tk):
         self.root = root
         self.root.title("Suíte de Engenharia de Suspensão (2D/3D/Visual/Dinâmica/Estrutura)")
         self.root.geometry("1400x900")
 
-        # ---------- Estado (IMPORTANTE: antes de criar tabs/botões) ----------
-        self.free_view = False          # começa FIXO (YZ)
+        # Estado: 3D view
+        self.free_view = False
         self._view_lock_cid = None
 
+        # Estado: resultados
         self.last_2d_results = None
         self.last_3d_results = None
 
+        # Entradas
         self.entries = {}
         self.entries_hp = {}
+        self.hp_keys = []
 
-        # ---------- UI ----------
+        # Corner usado nos cálculos 2D/3D/Opt
+        self.var_corner = tk.StringVar(value="FR")
+
+        # UI
         self._setup_style()
         self._build_topbar()
 
@@ -188,7 +359,6 @@ class App:
         ttk.Button(bar, text="Calcular 2D", style="Action.TButton", command=self._calc_2d).pack(side="left", padx=4)
         ttk.Button(bar, text="Calcular 3D", style="Action.TButton", command=self._calc_3d).pack(side="left", padx=4)
         ttk.Button(bar, text="Visual 3D", style="Action.TButton", command=self._calc_full_3d).pack(side="left", padx=4)
-
         ttk.Button(bar, text="CG Sweep", command=self._run_cg_sweep).pack(side="left", padx=4)
         ttk.Button(bar, text="Mass Sweep", command=self._run_mass_sweep).pack(side="left", padx=4)
         ttk.Button(bar, text="Estrutura", command=self._run_opt).pack(side="left", padx=4)
@@ -198,6 +368,44 @@ class App:
         ttk.Button(bar, text="Salvar preset", command=self._save_preset).pack(side="left", padx=4)
         ttk.Button(bar, text="Carregar preset", command=self._load_preset).pack(side="left", padx=4)
         ttk.Button(bar, text="Reset defaults", command=self._reset_defaults).pack(side="left", padx=4)
+
+        # ===========================
+        # ✅ CANTO DIREITO: CALCULAR + VISUAL
+        # ===========================
+        right = ttk.Frame(bar)
+        right.pack(side="right", padx=8)
+
+        # ---- Menu "Calcular" ----
+        btn_calc = ttk.Menubutton(right, text="Calcular ▾", style="Action.TButton")
+        m_calc = tk.Menu(btn_calc, tearoff=0)
+        btn_calc["menu"] = m_calc
+
+        m_calc.add_command(label="Calcular TODOS", command=self._calc_all)
+        m_calc.add_separator()
+        m_calc.add_command(label="Calcular 2D", command=self._calc_2d)
+        m_calc.add_command(label="Calcular 3D", command=self._calc_3d)
+        m_calc.add_command(label="Calcular Visual 3D", command=self._calc_full_3d)
+        m_calc.add_separator()
+        m_calc.add_command(label="CG Sweep", command=self._run_cg_sweep)
+        m_calc.add_command(label="Mass Sweep", command=self._run_mass_sweep)
+        m_calc.add_separator()
+        m_calc.add_command(label="Estrutura", command=self._run_opt)
+
+        btn_calc.pack(side="left", padx=(0, 6))
+
+        # ---- Menu "Visual" (atalhos para abas) ----
+        btn_vis = ttk.Menubutton(right, text="Visual ▾")
+        m_vis = tk.Menu(btn_vis, tearoff=0)
+        btn_vis["menu"] = m_vis
+
+        m_vis.add_command(label="Ir para Resultados 2D", command=lambda: self._goto_tab("2D"))
+        m_vis.add_command(label="Ir para Resultados 3D", command=lambda: self._goto_tab("3D"))
+        m_vis.add_command(label="Ir para Visualização 3D", command=lambda: self._goto_tab("VIS3D"))
+        m_vis.add_separator()
+        m_vis.add_command(label="Ir para Dinâmica Veicular", command=lambda: self._goto_tab("DYN"))
+        m_vis.add_command(label="Ir para Otimização", command=lambda: self._goto_tab("OPT"))
+
+        btn_vis.pack(side="left")
 
     def _build_statusbar(self):
         self.status_var = tk.StringVar(value="Pronto.")
@@ -238,7 +446,7 @@ class App:
     # Sidebar Sections
     # -------------------------
     def _init_sidebar_inputs(self, parent):
-        # 1) Geometria
+        # 1) Geometria (Hardpoints)
         sec_geo = CollapsibleSection(parent, "1) Geometria (Hardpoints) [mm]")
         sec_geo.pack(fill="x", padx=6, pady=6)
         f_geo = sec_geo.body
@@ -246,23 +454,64 @@ class App:
         self._create_entry(f_geo, "bf", "Bitola (bf):", 1250, 0, 0, width=12,
                            tip="Distância entre centros das rodas (track). Use mm.")
 
+        # Seleção do canto para cálculos 2D/3D/Opt
+        ttk.Label(f_geo, text="Canto p/ cálculo:").grid(row=0, column=2, sticky="e", padx=3, pady=2)
+        cb = ttk.Combobox(f_geo, values=["FR", "FL", "RR", "RL"], textvariable=self.var_corner, width=6, state="readonly")
+        cb.grid(row=0, column=3, sticky="w", padx=3, pady=2)
+        ToolTip(cb, "Define qual canto (FR/FL/RR/RL) será usado nos cálculos 2D/3D e ângulos automáticos.")
+
         ttk.Label(f_geo, text="X").grid(row=1, column=1)
         ttk.Label(f_geo, text="Y").grid(row=1, column=2)
         ttk.Label(f_geo, text="Z").grid(row=1, column=3)
 
-        labels = ["Sup In:", "Sup Out:", "Inf In:", "Inf Out:"]
-        defaults = [(450, 420, 200), (625, 390, 300), (430, 210, 200), (625, 190, 300)]
+        corners = ["FR", "FL", "RR", "RL"]
+        pts = ["Sup In", "Sup Out", "Inf In", "Inf Out"]
 
-        for i, (lbl, (dx, dy, dz)) in enumerate(zip(labels, defaults), start=2):
-            ttk.Label(f_geo, text=lbl).grid(row=i, column=0, sticky="e")
-            ex = ttk.Entry(f_geo, width=7); ex.insert(0, str(dx)); ex.grid(row=i, column=1)
-            ey = ttk.Entry(f_geo, width=7); ey.insert(0, str(dy)); ey.grid(row=i, column=2)
-            ez = ttk.Entry(f_geo, width=7); ez.insert(0, str(dz)); ez.grid(row=i, column=3)
-            self.entries_hp[lbl] = (ex, ey, ez)
+        # Defaults base (FR)
+        base_defaults = {
+            "Sup In":  (450, 420, 200),
+            "Sup Out": (625, 390, 300),
+            "Inf In":  (430, 210, 200),
+            "Inf Out": (625, 190, 300),
+        }
 
-            ToolTip(ex, f"{lbl} coordenada X (mm).")
-            ToolTip(ey, f"{lbl} coordenada Y (mm).")
-            ToolTip(ez, f"{lbl} coordenada Z (mm).")
+        def mirror_x(x):
+            # Se X lateral positivo é direita, esquerda = -x
+            return -x
+
+        r = 2
+        self.hp_keys = []
+
+        for corner in corners:
+            ttk.Label(f_geo, text=f"== {corner} ==", font=("Arial", 9, "bold"))\
+                .grid(row=r, column=0, columnspan=4, sticky="w", pady=(10, 2))
+            r += 1
+
+            for p in pts:
+                lbl = self._hp_key(corner, p)
+                dx, dy, dz = base_defaults[p]
+
+                if corner in ("FL", "RL"):
+                    dx = mirror_x(dx)
+
+                ttk.Label(f_geo, text=lbl + ":").grid(row=r, column=0, sticky="e")
+                ex = ttk.Entry(f_geo, width=8); ex.insert(0, str(dx)); ex.grid(row=r, column=1)
+                ey = ttk.Entry(f_geo, width=8); ey.insert(0, str(dy)); ey.grid(row=r, column=2)
+                ez = ttk.Entry(f_geo, width=8); ez.insert(0, str(dz)); ez.grid(row=r, column=3)
+
+                self.entries_hp[lbl] = (ex, ey, ez)
+                self.hp_keys.append(lbl)
+
+                ToolTip(ex, f"{lbl} X (mm)")
+                ToolTip(ey, f"{lbl} Y (mm)")
+                ToolTip(ez, f"{lbl} Z (mm)")
+                r += 1
+
+        # Botões CSV (somente hardpoints)
+        frm_csv = ttk.Frame(f_geo)
+        frm_csv.grid(row=r, column=0, columnspan=4, sticky="ew", pady=(10, 2))
+        ttk.Button(frm_csv, text="Exportar Hardpoints CSV", command=self._export_hardpoints_csv).pack(side="left", padx=4)
+        ttk.Button(frm_csv, text="Importar Hardpoints CSV", command=self._import_hardpoints_csv).pack(side="left", padx=4)
 
         # 2) Cinemática
         sec_kin = CollapsibleSection(parent, "2) Cinemática & Alinhamento")
@@ -308,6 +557,13 @@ class App:
         self.var_static = tk.IntVar(value=0)
         ttk.Checkbutton(f_opt, text="+ Estática (mg/4)", variable=self.var_static)\
             .grid(row=0, column=2, columnspan=2, sticky="w")
+
+        self.var_auto_arm_angles = tk.IntVar(value=1)
+        ttk.Checkbutton(
+            f_opt,
+            text="Usar ângulos automáticos (do canto selecionado)",
+            variable=self.var_auto_arm_angles
+        ).grid(row=1, column=0, columnspan=4, sticky="w", pady=(2, 6))
 
         self._create_entry(f_opt, "ang_sup", "Ang Base Sup:", 10, 2, 0)
         self._create_entry(f_opt, "ang_inf", "Ang Base Inf:", 20, 2, 2)
@@ -476,13 +732,11 @@ class App:
             self._view_lock_cid = None
 
         if self.free_view:
-            # rotação ON
             try:
                 self.ax_vis3d.mouse_init(rotate_btn=1, zoom_btn=3)
             except Exception:
                 pass
         else:
-            # rotação OFF (zoom/pan via toolbar)
             try:
                 self.ax_vis3d.mouse_init(rotate_btn=None, zoom_btn=3)
             except Exception:
@@ -526,21 +780,18 @@ class App:
     # =========================
     # Domain gathering
     # =========================
-    def _get_point3d_from_input(self, key):
-        ex, ey, ez = self.entries_hp[key]
-        return models.Point3D(safe_num(ex.get()), safe_num(ey.get()), safe_num(ez.get()))
+    def _get_point3d_from_input(self, label: str):
+        x, y, z = self._hp_get(label)
+        return models.Point3D(x, y, z)
 
     def _get_geo2d(self):
+        corner = self.var_corner.get().strip() or "FR"
         return models.SuspensionGeometry2D(
             track_width=self._read("bf"),
-            upper_in=models.Point2D(safe_num(self.entries_hp["Sup In:"][0].get()),
-                                    safe_num(self.entries_hp["Sup In:"][1].get())),
-            upper_out=models.Point2D(safe_num(self.entries_hp["Sup Out:"][0].get()),
-                                     safe_num(self.entries_hp["Sup Out:"][1].get())),
-            lower_in=models.Point2D(safe_num(self.entries_hp["Inf In:"][0].get()),
-                                    safe_num(self.entries_hp["Inf In:"][1].get())),
-            lower_out=models.Point2D(safe_num(self.entries_hp["Inf Out:"][0].get()),
-                                     safe_num(self.entries_hp["Inf Out:"][1].get())),
+            upper_in=models.Point2D(*self._hp_get(self._hp_key(corner, "Sup In"))[:2]),
+            upper_out=models.Point2D(*self._hp_get(self._hp_key(corner, "Sup Out"))[:2]),
+            lower_in=models.Point2D(*self._hp_get(self._hp_key(corner, "Inf In"))[:2]),
+            lower_out=models.Point2D(*self._hp_get(self._hp_key(corner, "Inf Out"))[:2]),
             s1=self._read("s1"),
             s2=self._read("s2"),
             camber_out_deg=self._read("cam_o"),
@@ -548,21 +799,24 @@ class App:
         )
 
     def _get_geo3d(self):
+        corner = self.var_corner.get().strip() or "FR"
+
+        sup_in = self._get_point3d_from_input(self._hp_key(corner, "Sup In"))
+        sup_out = self._get_point3d_from_input(self._hp_key(corner, "Sup Out"))
+        inf_in = self._get_point3d_from_input(self._hp_key(corner, "Inf In"))
+        inf_out = self._get_point3d_from_input(self._hp_key(corner, "Inf Out"))
+
+        # spindle sup/inf: usa as coordenadas XY do "Out" do canto e Z do campo
+        sup_out_x, sup_out_y, _ = self._hp_get(self._hp_key(corner, "Sup Out"))
+        inf_out_x, inf_out_y, _ = self._hp_get(self._hp_key(corner, "Inf Out"))
+
         return models.SuspensionGeometry3D(
-            sup_in=self._get_point3d_from_input("Sup In:"),
-            sup_out=self._get_point3d_from_input("Sup Out:"),
-            inf_in=self._get_point3d_from_input("Inf In:"),
-            inf_out=self._get_point3d_from_input("Inf Out:"),
-            spindle_sup=models.Point3D(
-                safe_num(self.entries_hp["Sup Out:"][0].get()),
-                safe_num(self.entries_hp["Sup Out:"][1].get()),
-                self._read("spindle_sup_z")
-            ),
-            spindle_inf=models.Point3D(
-                safe_num(self.entries_hp["Inf Out:"][0].get()),
-                safe_num(self.entries_hp["Inf Out:"][1].get()),
-                self._read("spindle_inf_z")
-            ),
+            sup_in=sup_in,
+            sup_out=sup_out,
+            inf_in=inf_in,
+            inf_out=inf_out,
+            spindle_sup=models.Point3D(sup_out_x, sup_out_y, self._read("spindle_sup_z")),
+            spindle_inf=models.Point3D(inf_out_x, inf_out_y, self._read("spindle_inf_z")),
             toe_front=models.Point3D(self._read("toe_f_x"), 0, 0),
             toe_rear=models.Point3D(self._read("toe_r_x"), 0, 0),
             stiffness_ratio_sup=1.0,
@@ -585,6 +839,7 @@ class App:
             h_ro_str = f"{h_ro_val:.1f} mm" if h_ro_val is not None else "--"
 
             self.lbl_2d_res.config(text=(
+                f"Canto: {self.var_corner.get()}\n"
                 f"IC: {ic_str} mm\n"
                 f"Altura RC (h_Ro): {h_ro_str}\n"
                 f"fator-q: {getattr(rc_res, 'q_factor', '--')}\n"
@@ -604,7 +859,7 @@ class App:
 
             self.ax_2d.grid(True)
             self.ax_2d.legend()
-            self.ax_2d.set_title("Geometria Vista Frontal")
+            self.ax_2d.set_title("Geometria Vista Frontal (canto selecionado)")
             self.canvas_2d.draw()
 
             self._set_status("2D calculado com sucesso.")
@@ -621,6 +876,7 @@ class App:
 
             if forces:
                 self.lbl_3d_res.config(text=(
+                    f"Canto: {self.var_corner.get()}\n"
                     "== FORÇAS AXIAIS ==\n"
                     f"Sup: {forces.upper.axial:.1f} N\n"
                     f"Inf: {forces.lower.axial:.1f} N\n"
@@ -635,15 +891,32 @@ class App:
             messagebox.showerror("Erro 3D", str(e))
 
     def _calc_full_3d(self):
+        """
+        Mantive seu visual 3D original, mas agora puxando:
+        - Frente direita (FR) e frente esquerda (FL) para desenhar dianteira.
+        Se você quiser incluir traseira, dá pra estender no math_3d depois.
+        """
         try:
             wb = self._read("wb")
             bf = self._read("bf")
             rs = self._read("rs")
 
+            # usa FR/FL para montar “frente” do carro no plot
+            fr_sup_in = self._get_point3d_from_input(self._hp_key("FR", "Sup In"))
+            fr_sup_out = self._get_point3d_from_input(self._hp_key("FR", "Sup Out"))
+            fr_inf_in = self._get_point3d_from_input(self._hp_key("FR", "Inf In"))
+            fr_inf_out = self._get_point3d_from_input(self._hp_key("FR", "Inf Out"))
+
+            fl_sup_in = self._get_point3d_from_input(self._hp_key("FL", "Sup In"))
+            fl_sup_out = self._get_point3d_from_input(self._hp_key("FL", "Sup Out"))
+            fl_inf_in = self._get_point3d_from_input(self._hp_key("FL", "Inf In"))
+            fl_inf_out = self._get_point3d_from_input(self._hp_key("FL", "Inf Out"))
+
+            # mantém API do seu models.VehicleGeometry (igual seu código anterior)
             geo = models.VehicleGeometry(
                 wb, bf, bf,
-                self._get_point3d_from_input("Sup In:"), self._get_point3d_from_input("Sup Out:"),
-                self._get_point3d_from_input("Inf In:"), self._get_point3d_from_input("Inf Out:"),
+                fr_sup_in, fr_sup_out,
+                fr_inf_in, fr_inf_out,
                 models.Point3D(self._read("toe_f_x") - 100, 200, 100),
                 models.Point3D(self._read("toe_f_x"), 200, 100),
                 rs * 3
@@ -674,11 +947,13 @@ class App:
                     ax.plot([p.x, p.x], [p.z, p.z], [p.y, 0],
                             color='gray', linestyle=':', linewidth=0.8, alpha=0.5)
 
+            # Frente Direita
             plot_link("FR Sup In", "FR Sup Out", "blue", "--")
             plot_link("FR Inf In", "FR Inf Out", "blue", "--")
             plot_link("FR Sup Out", "FR Inf Out", "black", "-")
             plot_link("FR Tie In", "FR Tie Out", "green", "--")
 
+            # Frente Esquerda
             plot_link("FL Sup In", "FL Sup Out", "red", "--")
             plot_link("FL Inf In", "FL Inf Out", "red", "--")
             plot_link("FL Sup Out", "FL Inf Out", "black", "-")
@@ -698,20 +973,20 @@ class App:
 
             self.canvas_vis3d.draw_idle()
 
-            # importante: se estiver fixo, força YZ após desenhar
+            # se estiver fixo, força YZ
             if not self.free_view:
                 self._enforce_yz_view()
 
             self._set_status("Visualização 3D gerada.")
             self.content_area.select(self.tab_vis3d)
+
         except Exception as e:
             self._set_status(f"Erro Visual 3D: {e}")
             messagebox.showerror("Erro", str(e))
 
     def _run_cg_sweep(self):
         try:
-            h_ro = (getattr(self.last_2d_results, "h_ro", None)
-                    if self.last_2d_results is not None else None)
+            h_ro = getattr(self.last_2d_results, "h_ro", None) if self.last_2d_results else None
             if h_ro is None:
                 h_ro = 100.0
 
@@ -755,14 +1030,26 @@ class App:
 
     def _run_mass_sweep(self):
         try:
+            if not hasattr(self, "tree_mass"):
+                raise RuntimeError("tree_mass não existe (aba Dinâmica não montada).")
+
             h_ro = getattr(self.last_2d_results, "h_ro", None) if self.last_2d_results else None
             if h_ro is None:
                 h_ro = 100.0
 
+            m_min = self._read("m_min")
+            m_max = self._read("m_max")
+            step = self._read("step")
+
+            if step <= 0:
+                raise ValueError("Passo (step) deve ser > 0.")
+            if m_max < m_min:
+                raise ValueError("Massa Max deve ser maior ou igual à Massa Min.")
+
             params = models.SuspensionMassScanParameters(
-                m_min=self._read("m_min"),
-                m_max=self._read("m_max"),
-                m_step=self._read("step"),
+                m_min=m_min,
+                m_max=m_max,
+                m_step=step,
                 h_cg=self._read("hcg"),
                 ay=self._read("ay"),
                 track=self._read("bf"),
@@ -794,11 +1081,22 @@ class App:
 
     def _run_opt(self):
         try:
+            corner = self.var_corner.get().strip() or "FR"
+
+            # ângulos dos braços
+            if getattr(self, "var_auto_arm_angles", tk.IntVar(value=1)).get() == 1:
+                ang_sup, ang_inf = self._compute_arm_angles_deg(corner)
+                self._set("ang_sup", f"{ang_sup:.3f}")
+                self._set("ang_inf", f"{ang_inf:.3f}")
+            else:
+                ang_sup = self._read("ang_sup")
+                ang_inf = self._read("ang_inf")
+
             results = list(dynamics.calculate_force_vs_angle_sweep(
                 models.ForceAngleIteratorParameters(
                     f_load=self._read("load"),
-                    angle_sup_base=self._read("ang_sup"),
-                    angle_inf_base=self._read("ang_inf"),
+                    angle_sup_base=ang_sup,
+                    angle_inf_base=ang_inf,
                     k_sup=self._read("ksup"),
                     k_inf=1.0 - self._read("ksup"),
                     limit=self._read("limit"),
@@ -837,7 +1135,7 @@ class App:
             messagebox.showerror("Erro Opt", str(e))
 
     # =========================
-    # Presets (save/load)
+    # Presets (JSON geral)
     # =========================
     def _collect_preset(self) -> dict:
         data = {k: e.get() for k, e in self.entries.items()}
@@ -846,6 +1144,7 @@ class App:
             hp[lbl] = {"x": ex.get(), "y": ey.get(), "z": ez.get()}
         data["_hardpoints"] = hp
         data["_static"] = int(getattr(self, "var_static", tk.IntVar(value=0)).get())
+        data["_corner"] = self.var_corner.get()
         return data
 
     def _apply_preset(self, data: dict):
@@ -864,6 +1163,12 @@ class App:
 
         if hasattr(self, "var_static"):
             self.var_static.set(int(data.get("_static", 0)))
+
+        if "_corner" in data:
+            try:
+                self.var_corner.set(str(data["_corner"]))
+            except Exception:
+                pass
 
     def _save_preset(self):
         path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON", "*.json")])
@@ -901,6 +1206,10 @@ class App:
         }
         for k, v in defaults.items():
             self._set(k, v)
+
+        self.var_corner.set("FR")
+        self._set_status("Defaults restaurados.")
+
 
 if __name__ == "__main__":
     root = tk.Tk()
