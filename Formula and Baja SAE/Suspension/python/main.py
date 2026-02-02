@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 # Domain modules
 import models
@@ -94,7 +94,6 @@ class ScrollableFrame(ttk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        # Mouse wheel only when pointer is over the canvas
         self.canvas.bind("<Enter>", lambda e: self._bind_wheel())
         self.canvas.bind("<Leave>", lambda e: self._unbind_wheel())
 
@@ -128,38 +127,32 @@ class App:
         self.root.title("Suíte de Engenharia de Suspensão (2D/3D/Visual/Dinâmica/Estrutura)")
         self.root.geometry("1400x900")
 
-        self._setup_style()
+        # ---------- Estado (IMPORTANTE: antes de criar tabs/botões) ----------
+        self.free_view = False          # começa FIXO (YZ)
+        self._view_lock_cid = None
 
-        # Shared State
         self.last_2d_results = None
         self.last_3d_results = None
 
-        # Entries
-        self.entries = {}     # all entry widgets by key
-        self.entries_hp = {}  # hardpoints grouped
+        self.entries = {}
+        self.entries_hp = {}
 
-        # Topbar
+        # ---------- UI ----------
+        self._setup_style()
         self._build_topbar()
 
-        # Main Layout
         self.paned = tk.PanedWindow(root, orient="horizontal", sashwidth=6, bg="#b0b0b0")
         self.paned.pack(fill="both", expand=True)
 
-        # Sidebar
         self.sidebar_container = ScrollableFrame(self.paned, width=410)
         self.paned.add(self.sidebar_container, minsize=400, width=420)
 
-        # Content
         self.content_area = ttk.Notebook(self.paned)
         self.paned.add(self.content_area, minsize=700)
 
-        # Build UI
         self._init_sidebar_inputs(self.sidebar_container.scrollable_window)
         self._init_result_tabs()
         self._build_statusbar()
-
-        # Default view
-        self._reset_view()
 
     # -------------------------
     # Style
@@ -195,6 +188,7 @@ class App:
         ttk.Button(bar, text="Calcular 2D", style="Action.TButton", command=self._calc_2d).pack(side="left", padx=4)
         ttk.Button(bar, text="Calcular 3D", style="Action.TButton", command=self._calc_3d).pack(side="left", padx=4)
         ttk.Button(bar, text="Visual 3D", style="Action.TButton", command=self._calc_full_3d).pack(side="left", padx=4)
+
         ttk.Button(bar, text="CG Sweep", command=self._run_cg_sweep).pack(side="left", padx=4)
         ttk.Button(bar, text="Mass Sweep", command=self._run_mass_sweep).pack(side="left", padx=4)
         ttk.Button(bar, text="Estrutura", command=self._run_opt).pack(side="left", padx=4)
@@ -212,7 +206,8 @@ class App:
         ttk.Label(bar, textvariable=self.status_var, style="Status.TLabel").pack(side="left", padx=8, pady=3)
 
     def _set_status(self, msg: str):
-        self.status_var.set(msg)
+        if hasattr(self, "status_var"):
+            self.status_var.set(msg)
 
     # -------------------------
     # Entry builders
@@ -246,8 +241,8 @@ class App:
         # 1) Geometria
         sec_geo = CollapsibleSection(parent, "1) Geometria (Hardpoints) [mm]")
         sec_geo.pack(fill="x", padx=6, pady=6)
-
         f_geo = sec_geo.body
+
         self._create_entry(f_geo, "bf", "Bitola (bf):", 1250, 0, 0, width=12,
                            tip="Distância entre centros das rodas (track). Use mm.")
 
@@ -256,12 +251,7 @@ class App:
         ttk.Label(f_geo, text="Z").grid(row=1, column=3)
 
         labels = ["Sup In:", "Sup Out:", "Inf In:", "Inf Out:"]
-        defaults = [
-            (450, 420, 200),
-            (625, 390, 300),
-            (430, 210, 200),
-            (625, 190, 300)
-        ]
+        defaults = [(450, 420, 200), (625, 390, 300), (430, 210, 200), (625, 190, 300)]
 
         for i, (lbl, (dx, dy, dz)) in enumerate(zip(labels, defaults), start=2):
             ttk.Label(f_geo, text=lbl).grid(row=i, column=0, sticky="e")
@@ -279,17 +269,16 @@ class App:
         sec_kin.pack(fill="x", padx=6, pady=6)
         f_kin = sec_kin.body
 
-        self._create_entry(f_kin, "s1", "Curso Ext (mm):", 40, 0, 0, tip="Deslocamento vertical da roda externa (mm).")
-        self._create_entry(f_kin, "s2", "Curso Int (mm):", 30, 0, 2, tip="Deslocamento vertical da roda interna (mm).")
-        self._create_entry(f_kin, "cam_o", "Camber Ext (°):", -1.5, 1, 0, tip="Cambagem da roda externa (graus).")
-        self._create_entry(f_kin, "cam_i", "Camber Int (°):", -4.0, 1, 2, tip="Cambagem da roda interna (graus).")
+        self._create_entry(f_kin, "s1", "Curso Ext (mm):", 40, 0, 0)
+        self._create_entry(f_kin, "s2", "Curso Int (mm):", 30, 0, 2)
+        self._create_entry(f_kin, "cam_o", "Camber Ext (°):", -1.5, 1, 0)
+        self._create_entry(f_kin, "cam_i", "Camber Int (°):", -4.0, 1, 2)
 
         ttk.Label(f_kin, text="Auxiliares 3D").grid(row=2, column=0, columnspan=4, pady=(8, 2), sticky="w")
-
-        self._create_entry(f_kin, "spindle_sup_z", "Spindle Sup Z:", 300, 3, 0, tip="Z do ponto superior no spindle (mm).")
-        self._create_entry(f_kin, "spindle_inf_z", "Spindle Inf Z:", 300, 3, 2, tip="Z do ponto inferior no spindle (mm).")
-        self._create_entry(f_kin, "toe_f_x", "Toe Front X:", 600, 4, 0, tip="X do ponto frontal da barra de direção (mm).")
-        self._create_entry(f_kin, "toe_r_x", "Toe Rear X:", 600, 4, 2, tip="X do ponto traseiro da barra de direção (mm).")
+        self._create_entry(f_kin, "spindle_sup_z", "Spindle Sup Z:", 300, 3, 0)
+        self._create_entry(f_kin, "spindle_inf_z", "Spindle Inf Z:", 300, 3, 2)
+        self._create_entry(f_kin, "toe_f_x", "Toe Front X:", 600, 4, 0)
+        self._create_entry(f_kin, "toe_r_x", "Toe Rear X:", 600, 4, 2)
 
         # 3) Dinâmica
         sec_dyn = CollapsibleSection(parent, "3) Dinâmica Veicular (Baja)")
@@ -317,18 +306,18 @@ class App:
 
         self._create_entry(f_opt, "load", "Carga F [N]:", 3000, 0, 0)
         self.var_static = tk.IntVar(value=0)
-        ttk.Checkbutton(f_opt, text="+ Estática (mg/4)", variable=self.var_static).grid(row=0, column=2, columnspan=2, sticky="w")
+        ttk.Checkbutton(f_opt, text="+ Estática (mg/4)", variable=self.var_static)\
+            .grid(row=0, column=2, columnspan=2, sticky="w")
 
         self._create_entry(f_opt, "ang_sup", "Ang Base Sup:", 10, 2, 0)
         self._create_entry(f_opt, "ang_inf", "Ang Base Inf:", 20, 2, 2)
         self._create_entry(f_opt, "limit", "Limite (N):", 8000, 3, 0)
         self._create_entry(f_opt, "ksup", "K Sup:", 0.5, 3, 2)
-
         self._create_entry(f_opt, "amin", "Varredura Min:", 0, 4, 0)
         self._create_entry(f_opt, "amax", "Varredura Max:", 40, 4, 2)
 
     # -------------------------
-    # Tabs (Resultados)
+    # Tabs
     # -------------------------
     def _init_result_tabs(self):
         self.tab_2d = ttk.Frame(self.content_area)
@@ -380,23 +369,33 @@ class App:
         txt.pack(fill="x", side="bottom")
 
     def _setup_res_vis3d(self, parent):
-        # Barra de controle
         ctrl = ttk.Frame(parent, padding=8)
         ctrl.pack(fill="x")
 
-        ttk.Button(ctrl, text="GERAR DIAGRAMA 3D (Ref: Pneu TR Esq)", style="Action.TButton",
+        ttk.Button(ctrl, text="GERAR DIAGRAMA 3D", style="Action.TButton",
                    command=self._calc_full_3d).pack(side="left", fill="x", expand=True, padx=2)
 
         ttk.Button(ctrl, text="Resetar Visualização", style="Reset.TButton",
                    command=self._reset_view).pack(side="right", padx=2)
+
+        self.btn_free_view = ttk.Button(ctrl, text="Visualização: FIXA (YZ)", command=self._toggle_free_view)
+        self.btn_free_view.pack(side="right", padx=8)
 
         self.lbl_steer_data = ttk.Label(parent, text="Dados: --", font=("Courier", 10))
         self.lbl_steer_data.pack(pady=5)
 
         self.fig_vis3d = plt.figure(figsize=(6, 5))
         self.ax_vis3d = self.fig_vis3d.add_subplot(111, projection="3d")
+
         self.canvas_vis3d = FigureCanvasTkAgg(self.fig_vis3d, master=parent)
-        self.canvas_vis3d.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
+        self.canvas_vis3d.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=(0, 0))
+
+        toolbar = NavigationToolbar2Tk(self.canvas_vis3d, parent)
+        toolbar.update()
+        toolbar.pack(fill="x", padx=10, pady=(0, 8))
+
+        self._apply_view_mode()
+        self._reset_view()
 
     def _setup_res_dyn(self, parent):
         nb = ttk.Notebook(parent)
@@ -435,10 +434,6 @@ class App:
         paned = tk.PanedWindow(parent, orient="vertical")
         paned.pack(fill="both", expand=True, padx=12, pady=10)
 
-        top = ttk.Frame(parent, padding=(12, 0, 12, 0))
-        top.place_forget()  # não usado, mas deixei caso você queira por botões aqui
-        # (Você já tem no topbar)
-
         f_tab = ttk.Frame(paned)
         cols = ("dAngle", "F_Sup", "F_Inf", "Status")
         self.tree_opt = ttk.Treeview(f_tab, columns=cols, show="headings")
@@ -455,7 +450,81 @@ class App:
         paned.add(f_graph)
 
     # =========================
-    # Domain data gathering
+    # 3D view mode controls
+    # =========================
+    def _toggle_free_view(self):
+        self.free_view = not self.free_view
+        self._apply_view_mode()
+
+        if self.free_view:
+            self.btn_free_view.config(text="Visualização: LIVRE (3D)")
+            self._set_status("Visualização livre ativada (rotação habilitada).")
+        else:
+            self.btn_free_view.config(text="Visualização: FIXA (YZ)")
+            self._reset_view()
+            self._set_status("Visualização fixa ativada (plano YZ, sem rotação).")
+
+    def _apply_view_mode(self):
+        if not hasattr(self, "ax_vis3d") or not hasattr(self, "canvas_vis3d"):
+            return
+
+        if self._view_lock_cid is not None:
+            try:
+                self.canvas_vis3d.mpl_disconnect(self._view_lock_cid)
+            except Exception:
+                pass
+            self._view_lock_cid = None
+
+        if self.free_view:
+            # rotação ON
+            try:
+                self.ax_vis3d.mouse_init(rotate_btn=1, zoom_btn=3)
+            except Exception:
+                pass
+        else:
+            # rotação OFF (zoom/pan via toolbar)
+            try:
+                self.ax_vis3d.mouse_init(rotate_btn=None, zoom_btn=3)
+            except Exception:
+                pass
+
+            self._view_lock_cid = self.canvas_vis3d.mpl_connect(
+                "button_release_event",
+                lambda evt: self._enforce_yz_view()
+            )
+
+    def _enforce_yz_view(self):
+        if self.free_view:
+            return
+        if not hasattr(self, "ax_vis3d") or not hasattr(self, "canvas_vis3d"):
+            return
+
+        try:
+            dist = self.ax_vis3d.dist
+        except Exception:
+            dist = None
+
+        self.ax_vis3d.view_init(elev=0, azim=0)
+
+        if dist is not None:
+            try:
+                self.ax_vis3d.dist = dist
+            except Exception:
+                pass
+
+        self.canvas_vis3d.draw_idle()
+
+    def _reset_view(self):
+        if not hasattr(self, "ax_vis3d") or not hasattr(self, "canvas_vis3d"):
+            return
+        if self.free_view:
+            self.ax_vis3d.view_init(elev=20, azim=-60)
+        else:
+            self.ax_vis3d.view_init(elev=0, azim=0)
+        self.canvas_vis3d.draw_idle()
+
+    # =========================
+    # Domain gathering
     # =========================
     def _get_point3d_from_input(self, key):
         ex, ey, ez = self.entries_hp[key]
@@ -464,10 +533,14 @@ class App:
     def _get_geo2d(self):
         return models.SuspensionGeometry2D(
             track_width=self._read("bf"),
-            upper_in=models.Point2D(safe_num(self.entries_hp["Sup In:"][0].get()), safe_num(self.entries_hp["Sup In:"][1].get())),
-            upper_out=models.Point2D(safe_num(self.entries_hp["Sup Out:"][0].get()), safe_num(self.entries_hp["Sup Out:"][1].get())),
-            lower_in=models.Point2D(safe_num(self.entries_hp["Inf In:"][0].get()), safe_num(self.entries_hp["Inf In:"][1].get())),
-            lower_out=models.Point2D(safe_num(self.entries_hp["Inf Out:"][0].get()), safe_num(self.entries_hp["Inf Out:"][1].get())),
+            upper_in=models.Point2D(safe_num(self.entries_hp["Sup In:"][0].get()),
+                                    safe_num(self.entries_hp["Sup In:"][1].get())),
+            upper_out=models.Point2D(safe_num(self.entries_hp["Sup Out:"][0].get()),
+                                     safe_num(self.entries_hp["Sup Out:"][1].get())),
+            lower_in=models.Point2D(safe_num(self.entries_hp["Inf In:"][0].get()),
+                                    safe_num(self.entries_hp["Inf In:"][1].get())),
+            lower_out=models.Point2D(safe_num(self.entries_hp["Inf Out:"][0].get()),
+                                     safe_num(self.entries_hp["Inf Out:"][1].get())),
             s1=self._read("s1"),
             s2=self._read("s2"),
             camber_out_deg=self._read("cam_o"),
@@ -498,7 +571,7 @@ class App:
         )
 
     # =========================
-    # Actions: 2D
+    # Actions: 2D / 3D / Visual / Dynamics / Opt
     # =========================
     def _calc_2d(self):
         try:
@@ -524,11 +597,8 @@ class App:
                             marker="o", label="Superior")
             self.ax_2d.plot([geo2d.lower_in.x, geo2d.lower_out.x], [geo2d.lower_in.y, geo2d.lower_out.y],
                             marker="o", label="Inferior")
-
             if getattr(rc_res, "ic", None):
                 self.ax_2d.plot(rc_res.ic.x, rc_res.ic.y, marker="s", linestyle="None", label="IC")
-
-            # FIX: plota RC mesmo se h_ro for 0 ou negativo
             if h_ro_val is not None:
                 self.ax_2d.plot(0, h_ro_val, marker="*", linestyle="None", markersize=12, label="RC")
 
@@ -543,46 +613,18 @@ class App:
             self._set_status(f"Erro 2D: {e}")
             messagebox.showerror("Erro 2D", str(e))
 
-    # =========================
-    # Actions: 3D (forças/alinhamento)
-    # =========================
     def _calc_3d(self):
         try:
             geo3d = self._get_geo3d()
-
             forces = math_3d.calculate_forces(geo3d)
             self.last_3d_results = forces
 
-            # Alguns módulos podem não ter isso — protegemos:
-            align = math_3d.calculate_alignment(geo3d) if hasattr(math_3d, "calculate_alignment") else None
-            anti_dive = None
-            if hasattr(math_3d, "calculate_anti_dive") and forces:
-                fy_total = getattr(getattr(forces, "total", None), "fy", 0) or 0
-                anti_dive = math_3d.calculate_anti_dive(
-                    geo3d.fx_tire,
-                    fy_total,
-                    self._read("hcg"),
-                    self._read("wb"),
-                )
-
             if forces:
-                lines = [
-                    "== FORÇAS AXIAIS ==",
-                    f"Sup: {forces.upper.axial:.1f} N",
-                    f"Inf: {forces.lower.axial:.1f} N",
-                ]
-                if anti_dive is not None:
-                    lines += ["", "== DINÂMICA ==", f"Anti-Dive: {anti_dive:.1f} %"]
-
-                if align is not None:
-                    lines += [
-                        "",
-                        "== ALINHAMENTO ==",
-                        f"Camber: {getattr(align,'camber',0):.2f} deg",
-                        f"Caster: {getattr(align,'caster',0):.2f} deg"
-                    ]
-
-                self.lbl_3d_res.config(text="\n".join(lines))
+                self.lbl_3d_res.config(text=(
+                    "== FORÇAS AXIAIS ==\n"
+                    f"Sup: {forces.upper.axial:.1f} N\n"
+                    f"Inf: {forces.lower.axial:.1f} N\n"
+                ))
                 self._set_status("3D calculado com sucesso.")
                 self.content_area.select(self.tab_3d)
             else:
@@ -592,22 +634,7 @@ class App:
             self._set_status(f"Erro 3D: {e}")
             messagebox.showerror("Erro 3D", str(e))
 
-    # =========================
-    # Visualização 3D (do Código 1)
-    # =========================
-    def _reset_view(self):
-        if hasattr(self, "ax_vis3d"):
-            self.ax_vis3d.view_init(elev=20, azim=-60)
-            if hasattr(self, "canvas_vis3d"):
-                self.canvas_vis3d.draw()
-
     def _calc_full_3d(self):
-        """
-        Visualização avançada:
-        - Rótulos de texto para cada ponto.
-        - Linhas tracejadas para os braços.
-        - Linhas de projeção até o chão.
-        """
         try:
             wb = self._read("wb")
             bf = self._read("bf")
@@ -638,7 +665,6 @@ class App:
                 if p1_name in pts and p2_name in pts:
                     p1 = pts[p1_name]
                     p2 = pts[p2_name]
-                    # Modelo(X,Y,Z) -> Matplotlib(X,Z,Y)
                     ax.plot([p1.x, p2.x], [p1.z, p2.z], [p1.y, p2.y],
                             color=color, linestyle=style, linewidth=linewidth)
 
@@ -648,18 +674,15 @@ class App:
                     ax.plot([p.x, p.x], [p.z, p.z], [p.y, 0],
                             color='gray', linestyle=':', linewidth=0.8, alpha=0.5)
 
-            # Frente Direita
             plot_link("FR Sup In", "FR Sup Out", "blue", "--")
             plot_link("FR Inf In", "FR Inf Out", "blue", "--")
             plot_link("FR Sup Out", "FR Inf Out", "black", "-")
             plot_link("FR Tie In", "FR Tie Out", "green", "--")
 
-            # Frente Esquerda
             plot_link("FL Sup In", "FL Sup Out", "red", "--")
             plot_link("FL Inf In", "FL Inf Out", "red", "--")
             plot_link("FL Sup Out", "FL Inf Out", "black", "-")
 
-            # Pontos + rótulos
             for name, p in pts.items():
                 c = 'red' if "Roll" in name else 'black' if "Wheel" in name else 'blue'
                 m = '*' if "Roll" in name else 'o'
@@ -673,17 +696,18 @@ class App:
             ax.set_zlabel('Y (Vertical)')
             ax.set_zlim(bottom=0)
 
-            self.canvas_vis3d.draw()
+            self.canvas_vis3d.draw_idle()
+
+            # importante: se estiver fixo, força YZ após desenhar
+            if not self.free_view:
+                self._enforce_yz_view()
+
             self._set_status("Visualização 3D gerada.")
             self.content_area.select(self.tab_vis3d)
-
         except Exception as e:
             self._set_status(f"Erro Visual 3D: {e}")
             messagebox.showerror("Erro", str(e))
 
-    # =========================
-    # Dinâmica
-    # =========================
     def _run_cg_sweep(self):
         try:
             h_ro = (getattr(self.last_2d_results, "h_ro", None)
@@ -731,8 +755,7 @@ class App:
 
     def _run_mass_sweep(self):
         try:
-            h_ro = (getattr(self.last_2d_results, "h_ro", None)
-                    if self.last_2d_results is not None else None)
+            h_ro = getattr(self.last_2d_results, "h_ro", None) if self.last_2d_results else None
             if h_ro is None:
                 h_ro = 100.0
 
@@ -745,30 +768,30 @@ class App:
                 track=self._read("bf"),
                 h_ro=h_ro
             )
+
             results = list(dynamics.calculate_mass_sweep(params))
 
             for i in self.tree_mass.get_children():
                 self.tree_mass.delete(i)
 
             for r in results:
+                margin = getattr(r, "margin", None)
                 self.tree_mass.insert("", "end", values=(
                     f"{r.mass:.0f}",
                     f"{r.m_roll:.1f}",
                     f"{r.d_fz:.1f}",
                     f"{r.ssf:.3f}",
                     f"{getattr(r, 'ay_crit', 0):.2f}",
-                    f"{getattr(r, 'margin', None):.2f}" if getattr(r, 'margin', None) is not None else "--"
+                    f"{margin:.2f}" if margin is not None else "--"
                 ))
 
             self._set_status("Varredura de massa concluída.")
             self.content_area.select(self.tab_dyn)
+
         except Exception as e:
             self._set_status(f"Erro mass sweep: {e}")
             messagebox.showerror("Erro", str(e))
 
-    # =========================
-    # Otimização / Estrutura
-    # =========================
     def _run_opt(self):
         try:
             results = list(dynamics.calculate_force_vs_angle_sweep(
@@ -822,7 +845,7 @@ class App:
         for lbl, (ex, ey, ez) in self.entries_hp.items():
             hp[lbl] = {"x": ex.get(), "y": ey.get(), "z": ez.get()}
         data["_hardpoints"] = hp
-        data["_static"] = int(self.var_static.get())
+        data["_static"] = int(getattr(self, "var_static", tk.IntVar(value=0)).get())
         return data
 
     def _apply_preset(self, data: dict):
@@ -839,7 +862,8 @@ class App:
                 ey.delete(0, tk.END); ey.insert(0, str(coords.get("y", ey.get())))
                 ez.delete(0, tk.END); ez.insert(0, str(coords.get("z", ez.get())))
 
-        self.var_static.set(int(data.get("_static", 0)))
+        if hasattr(self, "var_static"):
+            self.var_static.set(int(data.get("_static", 0)))
 
     def _save_preset(self):
         path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON", "*.json")])
@@ -877,22 +901,6 @@ class App:
         }
         for k, v in defaults.items():
             self._set(k, v)
-
-        hp_defaults = {
-            "Sup In:": (450, 420, 200),
-            "Sup Out:": (625, 390, 300),
-            "Inf In:": (430, 210, 200),
-            "Inf Out:": (625, 190, 300)
-        }
-        for lbl, (x, y, z) in hp_defaults.items():
-            ex, ey, ez = self.entries_hp[lbl]
-            ex.delete(0, tk.END); ex.insert(0, str(x))
-            ey.delete(0, tk.END); ey.insert(0, str(y))
-            ez.delete(0, tk.END); ez.insert(0, str(z))
-
-        self.var_static.set(0)
-        self._set_status("Defaults restaurados.")
-
 
 if __name__ == "__main__":
     root = tk.Tk()
