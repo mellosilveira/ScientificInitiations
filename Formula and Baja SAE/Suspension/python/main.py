@@ -14,7 +14,7 @@ import ui_strings
 
 
 # =========================
-# UI Helpers
+# UI Helperss
 # =========================
 
 class ToolTip:
