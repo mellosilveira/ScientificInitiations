@@ -1,6 +1,5 @@
 import math
 
-# Conversion constant
 RAD_PER_DEG = math.pi / 180.0
 
 def to_rad(deg: float) -> float:
@@ -12,10 +11,7 @@ def to_deg(rad: float) -> float:
     return rad / RAD_PER_DEG
 
 def safe_float(value: str, default: float = 0.0) -> float:
-    """
-    Safely converts a string from UI entry to float.
-    Handles empty strings and comma/dot decimal separators.
-    """
+    """Safely converts string input to float."""
     try:
         clean_val = value.strip().replace(',', '.')
         return default if not clean_val else float(clean_val)
