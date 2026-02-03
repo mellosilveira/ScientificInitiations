@@ -127,6 +127,53 @@ class App:
     # -------------------------
     # Hardpoints helpers
     # -------------------------
+    def _pair_corner(self, corner: str):
+        """
+        Retorna (corner_right, corner_left) do mesmo eixo.
+        Ex:
+          FR -> (FR, FL)
+          FL -> (FR, FL)
+          RR -> (RR, RL)
+          RL -> (RR, RL)
+        """
+        c = (corner or "FR").strip().upper()
+        if c.endswith("L"):
+            cR = c[:-1] + "R"
+            cL = c
+        else:
+            cR = c
+            cL = c[:-1] + "L"
+        return cR, cL
+
+    def _corner_points_2d(self, corner: str):
+        """Lê os 4 hardpoints 2D (x,y) de um canto."""
+        c = (corner or "FR").strip().upper()
+        ui_x, ui_y, _ = self._hp_get(self._hp_key(c, "Sup In"))
+        uo_x, uo_y, _ = self._hp_get(self._hp_key(c, "Sup Out"))
+        li_x, li_y, _ = self._hp_get(self._hp_key(c, "Inf In"))
+        lo_x, lo_y, _ = self._hp_get(self._hp_key(c, "Inf Out"))
+        return (
+            models.Point2D(ui_x, ui_y),
+            models.Point2D(uo_x, uo_y),
+            models.Point2D(li_x, li_y),
+            models.Point2D(lo_x, lo_y),
+        )
+
+    def _make_geo2d_for_corner(self, corner: str):
+        """Monta um SuspensionGeometry2D para um canto específico, reaproveitável."""
+        upper_in, upper_out, lower_in, lower_out = self._corner_points_2d(corner)
+        return models.SuspensionGeometry2D(
+            track_width=self._read("bf"),
+            upper_in=upper_in,
+            upper_out=upper_out,
+            lower_in=lower_in,
+            lower_out=lower_out,
+            s1=self._read("s1"),
+            s2=self._read("s2"),
+            camber_out_deg=self._read("cam_o"),
+            camber_in_deg=self._read("cam_i"),
+        )
+
     def _safe_call(self, fn, name: str):
         """Executa uma ação com captura de erro sem quebrar a sequência."""
         try:
@@ -786,17 +833,7 @@ class App:
 
     def _get_geo2d(self):
         corner = self.var_corner.get().strip() or "FR"
-        return models.SuspensionGeometry2D(
-            track_width=self._read("bf"),
-            upper_in=models.Point2D(*self._hp_get(self._hp_key(corner, "Sup In"))[:2]),
-            upper_out=models.Point2D(*self._hp_get(self._hp_key(corner, "Sup Out"))[:2]),
-            lower_in=models.Point2D(*self._hp_get(self._hp_key(corner, "Inf In"))[:2]),
-            lower_out=models.Point2D(*self._hp_get(self._hp_key(corner, "Inf Out"))[:2]),
-            s1=self._read("s1"),
-            s2=self._read("s2"),
-            camber_out_deg=self._read("cam_o"),
-            camber_in_deg=self._read("cam_i"),
-        )
+        return self._make_geo2d_for_corner(corner)
 
     def _get_geo3d(self):
         corner = self.var_corner.get().strip() or "FR"
@@ -829,41 +866,80 @@ class App:
     # =========================
     def _calc_2d(self):
         try:
-            geo2d = self._get_geo2d()
-            rc_res = math_2d.calculate_roll_center(geo2d)
-            cam_res = math_2d.calculate_camber_gain(geo2d)
-            self.last_2d_results = rc_res
+            # canto selecionado e o par (direita/esquerda no mesmo eixo)
+            corner_sel = (self.var_corner.get().strip() or "FR").upper()
+            corner_R, corner_L = self._pair_corner(corner_sel)
 
-            ic_str = f"({rc_res.ic.x:.1f}, {rc_res.ic.y:.1f})" if getattr(rc_res, "ic", None) else "Paralelo"
-            h_ro_val = getattr(rc_res, "h_ro", None)
-            h_ro_str = f"{h_ro_val:.1f} mm" if h_ro_val is not None else "--"
+            # geometria 2D de ambos lados
+            geoR = self._make_geo2d_for_corner(corner_R)
+            geoL = self._make_geo2d_for_corner(corner_L)
 
+            # cálculos (mantém compatibilidade com sua math_2d atual)
+            rcR = math_2d.calculate_roll_center(geoR)
+            rcL = math_2d.calculate_roll_center(geoL)
+            camR = math_2d.calculate_camber_gain(geoR)  # opcional: você pode escolher só um lado
+
+            # mantém "last_2d_results" como o lado do canto selecionado
+            self.last_2d_results = rcR if corner_sel.endswith("R") else rcL
+
+            def fmt_ic(rc):
+                return f"({rc.ic.x:.1f}, {rc.ic.y:.1f})" if getattr(rc, "ic", None) else "Paralelo"
+
+            def fmt_hro(rc):
+                h = getattr(rc, "h_ro", None)
+                return f"{h:.1f} mm" if h is not None else "--"
+
+            # texto: agora mostra ambos
             self.lbl_2d_res.config(text=(
-                f"Canto: {self.var_corner.get()}\n"
-                f"IC: {ic_str} mm\n"
-                f"Altura RC (h_Ro): {h_ro_str}\n"
-                f"fator-q: {getattr(rc_res, 'q_factor', '--')}\n"
-                f"Rolagem (dPhi): {cam_res.d_phi_deg:.3f} deg\n"
-                f"Fator Camber (kGamma): {cam_res.k_gamma:.3f}"
+                f"Eixo: {corner_R[:-1]}  |  Canto selecionado: {corner_sel}\n"
+                f"== DIREITA ({corner_R}) ==\n"
+                f"IC: {fmt_ic(rcR)} mm\n"
+                f"Altura RC (h_Ro): {fmt_hro(rcR)}\n"
+                f"q: {getattr(rcR, 'q_factor', '--')}\n"
+                f"\n== ESQUERDA ({corner_L}) ==\n"
+                f"IC: {fmt_ic(rcL)} mm\n"
+                f"Altura RC (h_Ro): {fmt_hro(rcL)}\n"
+                f"q: {getattr(rcL, 'q_factor', '--')}\n"
+                f"\nRolagem (dPhi - ref. lado R): {camR.d_phi_deg:.3f} deg\n"
+                f"Fator Camber (kGamma - ref. lado R): {camR.k_gamma:.3f}"
             ))
 
-            self.ax_2d.clear()
-            self.ax_2d.plot([geo2d.upper_in.x, geo2d.upper_out.x], [geo2d.upper_in.y, geo2d.upper_out.y],
-                            marker="o", label="Superior")
-            self.ax_2d.plot([geo2d.lower_in.x, geo2d.lower_out.x], [geo2d.lower_in.y, geo2d.lower_out.y],
-                            marker="o", label="Inferior")
-            if getattr(rc_res, "ic", None):
-                self.ax_2d.plot(rc_res.ic.x, rc_res.ic.y, marker="s", linestyle="None", label="IC")
-            if h_ro_val is not None:
-                self.ax_2d.plot(0, h_ro_val, marker="*", linestyle="None", markersize=12, label="RC")
+            # ===== PLOT 2D: dois lados =====
+            ax = self.ax_2d
+            ax.clear()
 
-            self.ax_2d.grid(True)
-            self.ax_2d.legend()
-            self.ax_2d.set_title("Geometria Vista Frontal (canto selecionado)")
+            def plot_corner(geo, rc, label_prefix, color):
+                # braços
+                ax.plot([geo.upper_in.x, geo.upper_out.x], [geo.upper_in.y, geo.upper_out.y],
+                        marker="o", label=f"{label_prefix} Braço Sup", color=color, linestyle="--")
+                ax.plot([geo.lower_in.x, geo.lower_out.x], [geo.lower_in.y, geo.lower_out.y],
+                        marker="o", label=f"{label_prefix} Braço Inf", color=color, linestyle="-")
+
+                # IC e RC
+                if getattr(rc, "ic", None):
+                    ax.plot(rc.ic.x, rc.ic.y, marker="s", linestyle="None", label=f"{label_prefix} IC", color=color)
+                h_ro_val = getattr(rc, "h_ro", None)
+                if h_ro_val is not None:
+                    ax.plot(0, h_ro_val, marker="*", linestyle="None", markersize=12,
+                            label=f"{label_prefix} RC (no centro)", color=color)
+
+            # direita (x normalmente positivo) e esquerda (x negativo)
+            plot_corner(geoR, rcR, f"{corner_R}", "tab:blue")
+            plot_corner(geoL, rcL, f"{corner_L}", "tab:red")
+
+            ax.axvline(0, linestyle=":", linewidth=1)  # plano central do carro
+            ax.set_title(f"Vista Frontal 2D (dois lados): {corner_R} + {corner_L}")
+            ax.set_xlabel("X lateral (mm)")
+            ax.set_ylabel("Y vertical (mm)")
+            ax.grid(True)
+            ax.legend(ncols=2, fontsize=8)
+            ax.set_aspect("equal", adjustable="datalim")
+
             self.canvas_2d.draw()
 
-            self._set_status("2D calculado com sucesso.")
+            self._set_status("2D calculado (mostrando esquerda e direita).")
             self.content_area.select(self.tab_2d)
+
         except Exception as e:
             self._set_status(f"Erro 2D: {e}")
             messagebox.showerror("Erro 2D", str(e))
