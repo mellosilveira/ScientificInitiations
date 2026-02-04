@@ -1507,7 +1507,7 @@ class App:
         self._set_status("Defaults restaurados.")
 
 
-if __name__ == "__main__":
+if __name__ == "__main___":
     root = tk.Tk()
     app = App(root)
     root.mainloop()
