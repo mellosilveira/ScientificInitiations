@@ -145,6 +145,25 @@ class App:
             cL = c[:-1] + "L"
         return cR, cL
 
+    def _hp_key(self, corner: str, point: str) -> str:
+        return f"{corner} {point}"
+
+    def _hp_get(self, lbl: str):
+        """Retorna (x,y,z) float dos hardpoints do label."""
+        if lbl not in self.entries_hp:
+            raise KeyError(f"Hardpoint não encontrado: {lbl}")
+        ex, ey, ez = self.entries_hp[lbl]
+        return safe_num(ex.get()), safe_num(ey.get()), safe_num(ez.get())
+
+    def _hp_set(self, lbl: str, x: float, y: float, z: float):
+        """Seta (x,y,z) nos hardpoints do label."""
+        if lbl not in self.entries_hp:
+            raise KeyError(f"Hardpoint não encontrado: {lbl}")
+        ex, ey, ez = self.entries_hp[lbl]
+        ex.delete(0, tk.END); ex.insert(0, str(x))
+        ey.delete(0, tk.END); ey.insert(0, str(y))
+        ez.delete(0, tk.END); ez.insert(0, str(z))
+
     def _corner_points_2d(self, corner: str):
         """Lê os 4 hardpoints 2D (x,y) de um canto."""
         c = (corner or "FR").strip().upper()
@@ -196,12 +215,8 @@ class App:
         ok2d = self._safe_call(self._calc_2d, "Calcular 2D")
         ok3d = self._safe_call(self._calc_3d, "Calcular 3D")
         okvis = self._safe_call(self._calc_full_3d, "Visual 3D")
-
-        # Se 2D falhou, CG/Mass podem não ter h_ro; ainda assim você colocou fallback 100 mm,
-        # então deixo rodar. Se você quiser travar, use: if ok2d: ...
         okcg = self._safe_call(self._run_cg_sweep, "CG Sweep")
         okm = self._safe_call(self._run_mass_sweep, "Mass Sweep")
-
         okopt = self._safe_call(self._run_opt, "Estrutura")
 
         if all([ok2d, ok3d, okvis, okcg, okm, okopt]):
@@ -222,28 +237,175 @@ class App:
         if t is not None:
             self.content_area.select(t)
 
-    def _hp_key(self, corner: str, point: str) -> str:
-        return f"{corner} {point}"
+    # =========================
+    # Gerador de hardpoints (linha "Reimpell" / Duplo A)
+    # =========================
+    def _sign_from_corner(self, corner: str) -> float:
+        c = (corner or "FR").strip().upper()
+        return -1.0 if c.endswith("L") else 1.0
 
-    def _hp_get(self, lbl: str):
-        """Retorna (x,y,z) float dos hardpoints do label."""
-        if lbl not in self.entries_hp:
-            raise KeyError(f"Hardpoint não encontrado: {lbl}")
-        ex, ey, ez = self.entries_hp[lbl]
-        return safe_num(ex.get()), safe_num(ey.get()), safe_num(ez.get())
+    def _axle_z_from_corner(self, corner: str) -> float:
+        c = (corner or "FR").strip().upper()
+        return self._read("z_front") if c.startswith("F") else self._read("z_rear")
 
-    def _hp_set(self, lbl: str, x: float, y: float, z: float):
-        """Seta (x,y,z) nos hardpoints do label."""
-        if lbl not in self.entries_hp:
-            raise KeyError(f"Hardpoint não encontrado: {lbl}")
-        ex, ey, ez = self.entries_hp[lbl]
-        ex.delete(0, tk.END); ex.insert(0, str(x))
-        ey.delete(0, tk.END); ey.insert(0, str(y))
-        ez.delete(0, tk.END); ez.insert(0, str(z))
+    def _apply_double_a_reimpell(self):
+        """
+        Preenche automaticamente Sup/Inf In/Out (e também Toe/Damper simples)
+        para FR/FL/RR/RL, com parâmetros “de projeto” (lateral/vertical/longitudinal).
 
+        Ideia (bem prática para você evoluir):
+        - Outboard fica no “plano da roda”: x = ±bf/2
+        - Inboard fica no chassi: x = ±(bf/2 - L_arm)
+        - Alturas y_in e y_out controlam inclinação dos braços na vista frontal
+        - z_front / z_rear posicionam o eixo no 3D (longitudinal)
+        - dz_inboard desloca inboard em z pra não ficar tudo colinear no 3D
+        """
+        bf = self._read("bf")
+        half_track = 0.5 * bf
+
+        # Front params
+        LsF = self._read("LsF")      # lateral span upper arm (front)
+        LiF = self._read("LiF")      # lateral span lower arm (front)
+        ySupInF = self._read("ySupInF")
+        ySupOutF = self._read("ySupOutF")
+        yInfInF = self._read("yInfInF")
+        yInfOutF = self._read("yInfOutF")
+
+        # Rear params
+        LsR = self._read("LsR")
+        LiR = self._read("LiR")
+        ySupInR = self._read("ySupInR")
+        ySupOutR = self._read("ySupOutR")
+        yInfInR = self._read("yInfInR")
+        yInfOutR = self._read("yInfOutR")
+
+        dz_in = self._read("dz_inboard")   # separa inboard em z
+        dz_toe = self._read("dz_toe")      # separa toe em z
+        dy_toe = self._read("dy_toe")      # altura do toe
+        dy_damper = self._read("dy_damper")  # altura do damper in/out
+        dx_toe_in = self._read("dx_toe_in")  # deslocamento lateral interno do toe in
+        dx_damper_in = self._read("dx_damper_in")
+
+        # corners
+        corners = ["FR", "FL", "RR", "RL"]
+
+        for c in corners:
+            sgn = self._sign_from_corner(c)
+            z_axle = self._axle_z_from_corner(c)
+
+            if c.startswith("F"):
+                Ls = LsF; Li = LiF
+                ySupIn = ySupInF; ySupOut = ySupOutF
+                yInfIn = yInfInF; yInfOut = yInfOutF
+            else:
+                Ls = LsR; Li = LiR
+                ySupIn = ySupInR; ySupOut = ySupOutR
+                yInfIn = yInfInR; yInfOut = yInfOutR
+
+            # Outboard (na roda)
+            x_out = sgn * half_track
+            z_out = z_axle
+
+            # Inboard (no chassi)
+            x_sup_in = sgn * (half_track - Ls)
+            x_inf_in = sgn * (half_track - Li)
+
+            z_sup_in = z_axle - dz_in
+            z_inf_in = z_axle + dz_in
+
+            # Define hardpoints do Duplo A
+            self._hp_set(self._hp_key(c, "Sup Out"), x_out, ySupOut, z_out)
+            self._hp_set(self._hp_key(c, "Inf Out"), x_out, yInfOut, z_out)
+
+            self._hp_set(self._hp_key(c, "Sup In"), x_sup_in, ySupIn, z_sup_in)
+            self._hp_set(self._hp_key(c, "Inf In"), x_inf_in, yInfIn, z_inf_in)
+
+            # Toe link (simples: no meio da altura, com z separado)
+            # Toe Out: próximo do outboard, Toe In: mais interno
+            self._hp_set(self._hp_key(c, "Toe Out"), x_out, dy_toe, z_axle + dz_toe)
+            self._hp_set(self._hp_key(c, "Toe In"), sgn * (half_track - dx_toe_in), dy_toe, z_axle - dz_toe)
+
+            # Damper (simples: inboard alto, outboard médio)
+            self._hp_set(self._hp_key(c, "Damper Out"), x_out, ySupOut + 0.5 * (dy_damper), z_axle)
+            self._hp_set(self._hp_key(c, "Damper In"), sgn * (half_track - dx_damper_in), ySupIn + dy_damper, z_axle)
+
+        self._set_status("Hardpoints Duplo A gerados (estilo Reimpell simplificado) para FR/FL/RR/RL.")
+        # já atualiza os gráficos
+        self._safe_call(self._calc_2d, "Calcular 2D (auto)")
+        self._safe_call(self._calc_full_3d, "Visual 3D (auto)")
+
+    # =========================
+    # 3D helpers (autoscale + grid fixo 600x600)
+    # =========================
+    def _autoscale_3d_equal(self, ax, points, pad_factor=0.35, min_range=400.0):
+        """
+        Autoscale 3D "forte" para sempre enquadrar todos os pontos.
+        IMPORTANTE: seu plot usa ax.scatter(x, z, y) -> eixos do gráfico:
+          X_graf = x (lateral)
+          Y_graf = z (longitudinal)
+          Z_graf = y (vertical)
+        """
+        if not points:
+            return
+
+        xs = [p.x for p in points]
+        ys = [p.y for p in points]  # vertical real
+        zs = [p.z for p in points]  # longitudinal real
+
+        xmin, xmax = min(xs), max(xs)
+        ymin, ymax = min(ys), max(ys)
+        zmin, zmax = min(zs), max(zs)
+
+        cx = 0.5 * (xmin + xmax)
+        cy = 0.5 * (ymin + ymax)
+        cz = 0.5 * (zmin + zmax)
+
+        rx = max(1e-9, (xmax - xmin))
+        ry = max(1e-9, (ymax - ymin))
+        rz = max(1e-9, (zmax - zmin))
+
+        rmax = max(rx, ry, rz, float(min_range))
+        rmax *= (1.0 + float(pad_factor))
+        half = 0.5 * rmax
+
+        # setlim no espaço do gráfico: X -> x, Y -> z, Z -> y
+        ax.set_xlim(cx - half, cx + half)
+        ax.set_ylim(cz - half, cz + half)
+        ax.set_zlim(cy - half, cy + half)
+
+    def _draw_ground_mesh_fixed_600(self, ax, step=50.0):
+        """
+        Desenha uma malha fixa de 600x600 mm no chão (Z_graf = 0):
+          X: -300 .. +300
+          Y_graf (longitudinal): -300 .. +300
+        step: espaçamento das linhas (mm)
+        """
+        half = 300.0  # 600/2
+        step = float(step) if step else 50.0
+        if step <= 0:
+            step = 50.0
+
+        # linhas paralelas ao "longitudinal" (Y do gráfico)
+        x = -half
+        while x <= half + 1e-9:
+            ax.plot([x, x], [-half, half], [0, 0],
+                    linestyle=":", linewidth=0.8, alpha=0.55, color="gray")
+            x += step
+
+        # linhas paralelas ao "lateral" (X do gráfico)
+        z = -half
+        while z <= half + 1e-9:
+            ax.plot([-half, half], [z, z], [0, 0],
+                    linestyle=":", linewidth=0.8, alpha=0.55, color="gray")
+            z += step
+
+    # -------------------------
+    # CSV hardpoints
+    # -------------------------
     def _export_hardpoints_csv(self):
         """
-        Exporta SOMENTE os hardpoints (16 pontos) + bitola para CSV.
+        Exporta SOMENTE os hardpoints + bitola para CSV.
+        Inclui Toe/Damper (total 32 hardpoints).
         Formato:
         key,x,y,z
         bf,1250,,
@@ -277,7 +439,7 @@ class App:
 
     def _import_hardpoints_csv(self):
         """
-        Importa SOMENTE hardpoints + bf (se existir) do CSV e preenche automaticamente.
+        Importa hardpoints + bf (se existir) do CSV e preenche automaticamente.
         Aceita separador ',' e decimal com vírgula (safe_num).
         """
         path = filedialog.askopenfilename(filetypes=[("CSV", "*.csv")])
@@ -416,17 +578,13 @@ class App:
         ttk.Button(bar, text="Carregar preset", command=self._load_preset).pack(side="left", padx=4)
         ttk.Button(bar, text="Reset defaults", command=self._reset_defaults).pack(side="left", padx=4)
 
-        # ===========================
-        # ✅ CANTO DIREITO: CALCULAR + VISUAL
-        # ===========================
+        # CANTO DIREITO: CALCULAR + VISUAL
         right = ttk.Frame(bar)
         right.pack(side="right", padx=8)
 
-        # ---- Menu "Calcular" ----
         btn_calc = ttk.Menubutton(right, text="Calcular ▾", style="Action.TButton")
         m_calc = tk.Menu(btn_calc, tearoff=0)
         btn_calc["menu"] = m_calc
-
         m_calc.add_command(label="Calcular TODOS", command=self._calc_all)
         m_calc.add_separator()
         m_calc.add_command(label="Calcular 2D", command=self._calc_2d)
@@ -437,21 +595,17 @@ class App:
         m_calc.add_command(label="Mass Sweep", command=self._run_mass_sweep)
         m_calc.add_separator()
         m_calc.add_command(label="Estrutura", command=self._run_opt)
-
         btn_calc.pack(side="left", padx=(0, 6))
 
-        # ---- Menu "Visual" (atalhos para abas) ----
         btn_vis = ttk.Menubutton(right, text="Visual ▾")
         m_vis = tk.Menu(btn_vis, tearoff=0)
         btn_vis["menu"] = m_vis
-
         m_vis.add_command(label="Ir para Resultados 2D", command=lambda: self._goto_tab("2D"))
         m_vis.add_command(label="Ir para Resultados 3D", command=lambda: self._goto_tab("3D"))
         m_vis.add_command(label="Ir para Visualização 3D", command=lambda: self._goto_tab("VIS3D"))
         m_vis.add_separator()
         m_vis.add_command(label="Ir para Dinâmica Veicular", command=lambda: self._goto_tab("DYN"))
         m_vis.add_command(label="Ir para Otimização", command=lambda: self._goto_tab("OPT"))
-
         btn_vis.pack(side="left")
 
     def _build_statusbar(self):
@@ -493,40 +647,104 @@ class App:
     # Sidebar Sections
     # -------------------------
     def _init_sidebar_inputs(self, parent):
-        # 1) Geometria (Hardpoints)
-        sec_geo = CollapsibleSection(parent, "1) Geometria (Hardpoints) [mm]")
+        # 1) Geometria (Hardpoints) MTOMBO
+        sec_geo = CollapsibleSection(parent, "1) Geometria (Hardpoints) MTOMBO [mm]")
         sec_geo.pack(fill="x", padx=6, pady=6)
         f_geo = sec_geo.body
 
-        self._create_entry(f_geo, "bf", "Bitola (bf):", 1250, 0, 0, width=12,
-                           tip="Distância entre centros das rodas (track). Use mm.")
+        self._create_entry(
+            f_geo, "bf", "Bitola (bf):", 1250, 0, 0, width=12,
+            tip="Distância entre centros das rodas (track). Use mm."
+        )
 
-        # Seleção do canto para cálculos 2D/3D/Opt
         ttk.Label(f_geo, text="Canto p/ cálculo:").grid(row=0, column=2, sticky="e", padx=3, pady=2)
         cb = ttk.Combobox(f_geo, values=["FR", "FL", "RR", "RL"], textvariable=self.var_corner, width=6, state="readonly")
         cb.grid(row=0, column=3, sticky="w", padx=3, pady=2)
         ToolTip(cb, "Define qual canto (FR/FL/RR/RL) será usado nos cálculos 2D/3D e ângulos automáticos.")
 
-        ttk.Label(f_geo, text="X").grid(row=1, column=1)
-        ttk.Label(f_geo, text="Y").grid(row=1, column=2)
-        ttk.Label(f_geo, text="Z").grid(row=1, column=3)
+        # =========================
+        # Gerador Duplo A (paramétrico)
+        # =========================
+        gen = CollapsibleSection(f_geo, "Gerador Duplo A (Reimpell - parametrizado)")
+        gen.grid(row=1, column=0, columnspan=4, sticky="ew", padx=0, pady=(10, 6))
+        f_gen = gen.body
+
+        # (opcional, mas recomendado)
+        for c in range(4):
+            f_geo.grid_columnconfigure(c, weight=1)
+
+        # Longitudinal (posiciona eixo no 3D)
+        self._create_entry(f_gen, "z_front", "Z eixo dianteiro:", 775, 0, 0, width=10,
+                           tip="Posição longitudinal do eixo dianteiro (mm).")
+        self._create_entry(f_gen, "z_rear", "Z eixo traseiro:", -775, 0, 2, width=10,
+                           tip="Posição longitudinal do eixo traseiro (mm).")
+
+        # Front lateral spans
+        self._create_entry(f_gen, "LsF", "Front L sup:", 450, 1, 0, width=10,
+                           tip="Distância lateral entre inboard e outboard do braço superior (dianteiro).")
+        self._create_entry(f_gen, "LiF", "Front L inf:", 520, 1, 2, width=10,
+                           tip="Distância lateral entre inboard e outboard do braço inferior (dianteiro).")
+
+        # Front heights
+        self._create_entry(f_gen, "ySupInF", "Front y sup in:", 420, 2, 0, width=10)
+        self._create_entry(f_gen, "ySupOutF", "Front y sup out:", 390, 2, 2, width=10)
+        self._create_entry(f_gen, "yInfInF", "Front y inf in:", 210, 3, 0, width=10)
+        self._create_entry(f_gen, "yInfOutF", "Front y inf out:", 190, 3, 2, width=10)
+
+        # Rear lateral spans
+        self._create_entry(f_gen, "LsR", "Rear L sup:", 430, 4, 0, width=10)
+        self._create_entry(f_gen, "LiR", "Rear L inf:", 500, 4, 2, width=10)
+
+        # Rear heights
+        self._create_entry(f_gen, "ySupInR", "Rear y sup in:", 410, 5, 0, width=10)
+        self._create_entry(f_gen, "ySupOutR", "Rear y sup out:", 380, 5, 2, width=10)
+        self._create_entry(f_gen, "yInfInR", "Rear y inf in:", 200, 6, 0, width=10)
+        self._create_entry(f_gen, "yInfOutR", "Rear y inf out:", 180, 6, 2, width=10)
+
+        # 3D separations + Toe/Damper helpers
+        self._create_entry(f_gen, "dz_inboard", "dz inboard:", 80, 7, 0, width=10,
+                           tip="Desloca inboards em z (um vai +dz, outro -dz) para 3D não colinear.")
+        self._create_entry(f_gen, "dz_toe", "dz toe:", 60, 7, 2, width=10)
+
+        self._create_entry(f_gen, "dy_toe", "y toe:", 260, 8, 0, width=10)
+        self._create_entry(f_gen, "dx_toe_in", "dx toe in:", 520, 8, 2, width=10,
+                           tip="Distância lateral (da borda/roda) para posicionar Toe In (mm).")
+
+        self._create_entry(f_gen, "dy_damper", "dy damper:", 100, 9, 0, width=10,
+                           tip="Eleva Damper In acima de y sup in (mm).")
+        self._create_entry(f_gen, "dx_damper_in", "dx damper in:", 380, 9, 2, width=10)
+
+        ttk.Button(f_gen, text="Gerar Hardpoints Duplo A (Reimpell) + Plot 2D/3D",
+                   style="Action.TButton", command=self._apply_double_a_reimpell)\
+            .grid(row=10, column=0, columnspan=4, sticky="ew", pady=(8, 4))
+
+        # =========================
+        # Hardpoints (32)
+        # =========================
+        ttk.Label(f_geo, text="X").grid(row=999, column=1)  # placeholders (não usado)
+        ttk.Label(f_geo, text="Y").grid(row=999, column=2)
+        ttk.Label(f_geo, text="Z").grid(row=999, column=3)
 
         corners = ["FR", "FL", "RR", "RL"]
-        pts = ["Sup In", "Sup Out", "Inf In", "Inf Out"]
+        pts = ["Sup In", "Sup Out", "Inf In", "Inf Out",
+               "Toe In", "Toe Out", "Damper In", "Damper Out"]
 
-        # Defaults base (FR)
+        # Defaults base (FR) - ficam como “fallback”
         base_defaults = {
-            "Sup In":  (450, 420, 200),
-            "Sup Out": (625, 390, 300),
-            "Inf In":  (430, 210, 200),
-            "Inf Out": (625, 190, 300),
+            "Sup In":     (450, 420, 200),
+            "Sup Out":    (625, 390, 300),
+            "Inf In":     (430, 210, 200),
+            "Inf Out":    (625, 190, 300),
+            "Toe In":     (520, 260, 120),
+            "Toe Out":    (650, 260, 180),
+            "Damper In":  (380, 520, 150),
+            "Damper Out": (610, 430, 260),
         }
 
         def mirror_x(x):
-            # Se X lateral positivo é direita, esquerda = -x
             return -x
 
-        r = 2
+        r = 20  # começa depois do gerador
         self.hp_keys = []
 
         for corner in corners:
@@ -537,7 +755,6 @@ class App:
             for p in pts:
                 lbl = self._hp_key(corner, p)
                 dx, dy, dz = base_defaults[p]
-
                 if corner in ("FL", "RL"):
                     dx = mirror_x(dx)
 
@@ -554,7 +771,6 @@ class App:
                 ToolTip(ez, f"{lbl} Z (mm)")
                 r += 1
 
-        # Botões CSV (somente hardpoints)
         frm_csv = ttk.Frame(f_geo)
         frm_csv.grid(row=r, column=0, columnspan=4, sticky="ew", pady=(10, 2))
         ttk.Button(frm_csv, text="Exportar Hardpoints CSV", command=self._export_hardpoints_csv).pack(side="left", padx=4)
@@ -684,6 +900,16 @@ class App:
         self.btn_free_view = ttk.Button(ctrl, text="Visualização: FIXA (YZ)", command=self._toggle_free_view)
         self.btn_free_view.pack(side="right", padx=8)
 
+        # slider do espaçamento do grid 600x600
+        self.var_grid_step = tk.DoubleVar(value=50.0)
+        frm_grid = ttk.Frame(ctrl)
+        frm_grid.pack(side="left", padx=(10, 10))
+        ttk.Label(frm_grid, text="Grid 600×600 (step mm):").grid(row=0, column=0, sticky="e")
+        s_step = ttk.Scale(frm_grid, from_=10, to=100, variable=self.var_grid_step, orient="horizontal", length=160)
+        s_step.grid(row=0, column=1, sticky="w", padx=6)
+        ToolTip(s_step, "Espaçamento das linhas do grid fixo 600×600 (mm). Solte o mouse para redesenhar.")
+        s_step.bind("<ButtonRelease-1>", lambda e: self._calc_full_3d())
+
         self.lbl_steer_data = ttk.Label(parent, text="Dados: --", font=("Courier", 10))
         self.lbl_steer_data.pack(pady=5)
 
@@ -758,7 +984,6 @@ class App:
     def _toggle_free_view(self):
         self.free_view = not self.free_view
         self._apply_view_mode()
-
         if self.free_view:
             self.btn_free_view.config(text="Visualização: LIVRE (3D)")
             self._set_status("Visualização livre ativada (rotação habilitada).")
@@ -788,7 +1013,6 @@ class App:
                 self.ax_vis3d.mouse_init(rotate_btn=None, zoom_btn=3)
             except Exception:
                 pass
-
             self._view_lock_cid = self.canvas_vis3d.mpl_connect(
                 "button_release_event",
                 lambda evt: self._enforce_yz_view()
@@ -831,55 +1055,21 @@ class App:
         x, y, z = self._hp_get(label)
         return models.Point3D(x, y, z)
 
-    def _get_geo2d(self):
-        corner = self.var_corner.get().strip() or "FR"
-        return self._make_geo2d_for_corner(corner)
-
-    def _get_geo3d(self):
-        corner = self.var_corner.get().strip() or "FR"
-
-        sup_in = self._get_point3d_from_input(self._hp_key(corner, "Sup In"))
-        sup_out = self._get_point3d_from_input(self._hp_key(corner, "Sup Out"))
-        inf_in = self._get_point3d_from_input(self._hp_key(corner, "Inf In"))
-        inf_out = self._get_point3d_from_input(self._hp_key(corner, "Inf Out"))
-
-        # spindle sup/inf: usa as coordenadas XY do "Out" do canto e Z do campo
-        sup_out_x, sup_out_y, _ = self._hp_get(self._hp_key(corner, "Sup Out"))
-        inf_out_x, inf_out_y, _ = self._hp_get(self._hp_key(corner, "Inf Out"))
-
-        return models.SuspensionGeometry3D(
-            sup_in=sup_in,
-            sup_out=sup_out,
-            inf_in=inf_in,
-            inf_out=inf_out,
-            spindle_sup=models.Point3D(sup_out_x, sup_out_y, self._read("spindle_sup_z")),
-            spindle_inf=models.Point3D(inf_out_x, inf_out_y, self._read("spindle_inf_z")),
-            toe_front=models.Point3D(self._read("toe_f_x"), 0, 0),
-            toe_rear=models.Point3D(self._read("toe_r_x"), 0, 0),
-            stiffness_ratio_sup=1.0,
-            stiffness_ratio_inf=1.0,
-            fx_tire=self._read("fx"),
-        )
-
     # =========================
     # Actions: 2D / 3D / Visual / Dynamics / Opt
     # =========================
     def _calc_2d(self):
         try:
-            # canto selecionado e o par (direita/esquerda no mesmo eixo)
             corner_sel = (self.var_corner.get().strip() or "FR").upper()
             corner_R, corner_L = self._pair_corner(corner_sel)
 
-            # geometria 2D de ambos lados
             geoR = self._make_geo2d_for_corner(corner_R)
             geoL = self._make_geo2d_for_corner(corner_L)
 
-            # cálculos (mantém compatibilidade com sua math_2d atual)
             rcR = math_2d.calculate_roll_center(geoR)
             rcL = math_2d.calculate_roll_center(geoL)
-            camR = math_2d.calculate_camber_gain(geoR)  # opcional: você pode escolher só um lado
+            camR = math_2d.calculate_camber_gain(geoR)
 
-            # mantém "last_2d_results" como o lado do canto selecionado
             self.last_2d_results = rcR if corner_sel.endswith("R") else rcL
 
             def fmt_ic(rc):
@@ -889,7 +1079,6 @@ class App:
                 h = getattr(rc, "h_ro", None)
                 return f"{h:.1f} mm" if h is not None else "--"
 
-            # texto: agora mostra ambos
             self.lbl_2d_res.config(text=(
                 f"Eixo: {corner_R[:-1]}  |  Canto selecionado: {corner_sel}\n"
                 f"== DIREITA ({corner_R}) ==\n"
@@ -904,18 +1093,15 @@ class App:
                 f"Fator Camber (kGamma - ref. lado R): {camR.k_gamma:.3f}"
             ))
 
-            # ===== PLOT 2D: dois lados =====
             ax = self.ax_2d
             ax.clear()
 
             def plot_corner(geo, rc, label_prefix, color):
-                # braços
                 ax.plot([geo.upper_in.x, geo.upper_out.x], [geo.upper_in.y, geo.upper_out.y],
                         marker="o", label=f"{label_prefix} Braço Sup", color=color, linestyle="--")
                 ax.plot([geo.lower_in.x, geo.lower_out.x], [geo.lower_in.y, geo.lower_out.y],
                         marker="o", label=f"{label_prefix} Braço Inf", color=color, linestyle="-")
 
-                # IC e RC
                 if getattr(rc, "ic", None):
                     ax.plot(rc.ic.x, rc.ic.y, marker="s", linestyle="None", label=f"{label_prefix} IC", color=color)
                 h_ro_val = getattr(rc, "h_ro", None)
@@ -923,11 +1109,10 @@ class App:
                     ax.plot(0, h_ro_val, marker="*", linestyle="None", markersize=12,
                             label=f"{label_prefix} RC (no centro)", color=color)
 
-            # direita (x normalmente positivo) e esquerda (x negativo)
             plot_corner(geoR, rcR, f"{corner_R}", "tab:blue")
             plot_corner(geoL, rcL, f"{corner_L}", "tab:red")
 
-            ax.axvline(0, linestyle=":", linewidth=1)  # plano central do carro
+            ax.axvline(0, linestyle=":", linewidth=1)
             ax.set_title(f"Vista Frontal 2D (dois lados): {corner_R} + {corner_L}")
             ax.set_xlabel("X lateral (mm)")
             ax.set_ylabel("Y vertical (mm)")
@@ -936,7 +1121,6 @@ class App:
             ax.set_aspect("equal", adjustable="datalim")
 
             self.canvas_2d.draw()
-
             self._set_status("2D calculado (mostrando esquerda e direita).")
             self.content_area.select(self.tab_2d)
 
@@ -946,13 +1130,35 @@ class App:
 
     def _calc_3d(self):
         try:
-            geo3d = self._get_geo3d()
+            corner = (self.var_corner.get().strip() or "FR").upper()
+            sup_in = self._get_point3d_from_input(self._hp_key(corner, "Sup In"))
+            sup_out = self._get_point3d_from_input(self._hp_key(corner, "Sup Out"))
+            inf_in = self._get_point3d_from_input(self._hp_key(corner, "Inf In"))
+            inf_out = self._get_point3d_from_input(self._hp_key(corner, "Inf Out"))
+
+            sup_out_x, sup_out_y, _ = self._hp_get(self._hp_key(corner, "Sup Out"))
+            inf_out_x, inf_out_y, _ = self._hp_get(self._hp_key(corner, "Inf Out"))
+
+            geo3d = models.SuspensionGeometry3D(
+                sup_in=sup_in,
+                sup_out=sup_out,
+                inf_in=inf_in,
+                inf_out=inf_out,
+                spindle_sup=models.Point3D(sup_out_x, sup_out_y, self._read("spindle_sup_z")),
+                spindle_inf=models.Point3D(inf_out_x, inf_out_y, self._read("spindle_inf_z")),
+                toe_front=models.Point3D(self._read("toe_f_x"), 0, 0),
+                toe_rear=models.Point3D(self._read("toe_r_x"), 0, 0),
+                stiffness_ratio_sup=1.0,
+                stiffness_ratio_inf=1.0,
+                fx_tire=self._read("fx"),
+            )
+
             forces = math_3d.calculate_forces(geo3d)
             self.last_3d_results = forces
 
             if forces:
                 self.lbl_3d_res.config(text=(
-                    f"Canto: {self.var_corner.get()}\n"
+                    f"Canto: {corner}\n"
                     "== FORÇAS AXIAIS ==\n"
                     f"Sup: {forces.upper.axial:.1f} N\n"
                     f"Inf: {forces.lower.axial:.1f} N\n"
@@ -968,92 +1174,90 @@ class App:
 
     def _calc_full_3d(self):
         """
-        Mantive seu visual 3D original, mas agora puxando:
-        - Frente direita (FR) e frente esquerda (FL) para desenhar dianteira.
-        Se você quiser incluir traseira, dá pra estender no math_3d depois.
+        - Mostra FR, FL, RR, RL
+        - Plota 32 hardpoints (Sup/Inf + Toe + Damper)
+        - Não conecta SupOut com InfOut (sem upright em linha)
+        - Grid fixo 600x600 no chão (step configurável)
+        - Autoscale robusto (RR/RL nunca somem)
         """
         try:
-            wb = self._read("wb")
-            bf = self._read("bf")
-            rs = self._read("rs")
-
-            # usa FR/FL para montar “frente” do carro no plot
-            fr_sup_in = self._get_point3d_from_input(self._hp_key("FR", "Sup In"))
-            fr_sup_out = self._get_point3d_from_input(self._hp_key("FR", "Sup Out"))
-            fr_inf_in = self._get_point3d_from_input(self._hp_key("FR", "Inf In"))
-            fr_inf_out = self._get_point3d_from_input(self._hp_key("FR", "Inf Out"))
-
-            fl_sup_in = self._get_point3d_from_input(self._hp_key("FL", "Sup In"))
-            fl_sup_out = self._get_point3d_from_input(self._hp_key("FL", "Sup Out"))
-            fl_inf_in = self._get_point3d_from_input(self._hp_key("FL", "Inf In"))
-            fl_inf_out = self._get_point3d_from_input(self._hp_key("FL", "Inf Out"))
-
-            # mantém API do seu models.VehicleGeometry (igual seu código anterior)
-            geo = models.VehicleGeometry(
-                wb, bf, bf,
-                fr_sup_in, fr_sup_out,
-                fr_inf_in, fr_inf_out,
-                models.Point3D(self._read("toe_f_x") - 100, 200, 100),
-                models.Point3D(self._read("toe_f_x"), 200, 100),
-                rs * 3
-            )
-
-            ro = math_3d.calculate_3d_roll_center(geo)
-            pts = math_3d.generate_full_car_plot_points(geo, ro)
-            kpi = math_3d.calculate_kingpin_metrics(geo)
-
-            self.lbl_steer_data.config(
-                text=f"KPI: {kpi.kpi_deg:.1f}° | Scrub: {kpi.scrub_radius:.1f} mm\n"
-                     f"Ro Local: ({ro.x:.1f}, {ro.y:.1f}, {ro.z:.1f})"
-            )
-
             ax = self.ax_vis3d
             ax.clear()
 
-            def plot_link(p1_name, p2_name, color, style='-', linewidth=2):
+            corners = ["FR", "FL", "RR", "RL"]
+            pts_types = ["Sup In", "Sup Out", "Inf In", "Inf Out", "Toe In", "Toe Out", "Damper In", "Damper Out"]
+
+            pts = {}
+            plotted_points = []
+            missing = []
+
+            for c in corners:
+                for p in pts_types:
+                    key = f"{c} {p}"
+                    try:
+                        pts[key] = self._get_point3d_from_input(key)
+                    except Exception:
+                        missing.append(key)
+
+            def plot_link(p1_name, p2_name, color, style="--", linewidth=2):
                 if p1_name in pts and p2_name in pts:
                     p1 = pts[p1_name]
                     p2 = pts[p2_name]
                     ax.plot([p1.x, p2.x], [p1.z, p2.z], [p1.y, p2.y],
                             color=color, linestyle=style, linewidth=linewidth)
 
-            def plot_projection(p_name):
-                if p_name in pts:
-                    p = pts[p_name]
-                    ax.plot([p.x, p.x], [p.z, p.z], [p.y, 0],
-                            color='gray', linestyle=':', linewidth=0.8, alpha=0.5)
+            for c in corners:
+                col = "blue" if c.endswith("R") else "red"
+                plot_link(f"{c} Sup In", f"{c} Sup Out", col, "--", 2)
+                plot_link(f"{c} Inf In", f"{c} Inf Out", col, "--", 2)
+                plot_link(f"{c} Toe In", f"{c} Toe Out", "green", "--", 2)
+                plot_link(f"{c} Damper In", f"{c} Damper Out", "purple", "-", 2)
 
-            # Frente Direita
-            plot_link("FR Sup In", "FR Sup Out", "blue", "--")
-            plot_link("FR Inf In", "FR Inf Out", "blue", "--")
-            plot_link("FR Sup Out", "FR Inf Out", "black", "-")
-            plot_link("FR Tie In", "FR Tie Out", "green", "--")
+            for c in corners:
+                for p in pts_types:
+                    name = f"{c} {p}"
+                    if name not in pts:
+                        continue
+                    pt = pts[name]
+                    plotted_points.append(pt)
 
-            # Frente Esquerda
-            plot_link("FL Sup In", "FL Sup Out", "red", "--")
-            plot_link("FL Inf In", "FL Inf Out", "red", "--")
-            plot_link("FL Sup Out", "FL Inf Out", "black", "-")
+                    if "Toe" in name:
+                        color = "green"
+                    elif "Damper" in name:
+                        color = "purple"
+                    else:
+                        color = "black"
 
-            for name, p in pts.items():
-                c = 'red' if "Roll" in name else 'black' if "Wheel" in name else 'blue'
-                m = '*' if "Roll" in name else 'o'
-                ax.scatter(p.x, p.z, p.y, c=c, marker=m, s=40)
-                ax.text(p.x, p.z, p.y + 10, name, fontsize=8, color='black')
-                if "Wheel" not in name and "Roll" not in name:
-                    plot_projection(name)
+                    ax.scatter(pt.x, pt.z, pt.y, c=color, marker="o", s=35)
+                    ax.text(pt.x, pt.z, pt.y + 10, name, fontsize=7)
 
-            ax.set_xlabel('X (Lateral)')
-            ax.set_ylabel('Z (Longitudinal)')
-            ax.set_zlabel('Y (Vertical)')
-            ax.set_zlim(bottom=0)
+            step = float(getattr(self, "var_grid_step", tk.DoubleVar(value=50.0)).get())
+            self._draw_ground_mesh_fixed_600(ax, step=step)
+
+            self._autoscale_3d_equal(ax, plotted_points, pad_factor=0.35, min_range=400.0)
+
+            ax.set_xlabel("X (Lateral)")
+            ax.set_ylabel("Z (Longitudinal)")
+            ax.set_zlabel("Y (Vertical)")
+
+            info = []
+            try:
+                wb = self._read("wb")
+                bf = self._read("bf")
+                rs = self._read("rs")
+                info.append(f"wb={wb:.0f} mm | bf={bf:.0f} mm | scrub={rs:.0f} mm")
+            except Exception:
+                pass
+            if missing:
+                info.append(f"⚠️ Faltando {len(missing)} hardpoints (não plotados).")
+
+            self.lbl_steer_data.config(text="\n".join(info) if info else "Dados: --")
 
             self.canvas_vis3d.draw_idle()
-
-            # se estiver fixo, força YZ
             if not self.free_view:
                 self._enforce_yz_view()
 
-            self._set_status("Visualização 3D gerada.")
+            self._set_status("Visualização 3D gerada (FR/FL/RR/RL + 32 hardpoints).")
             self.content_area.select(self.tab_vis3d)
 
         except Exception as e:
@@ -1159,7 +1363,6 @@ class App:
         try:
             corner = self.var_corner.get().strip() or "FR"
 
-            # ângulos dos braços
             if getattr(self, "var_auto_arm_angles", tk.IntVar(value=1)).get() == 1:
                 ang_sup, ang_inf = self._compute_arm_angles_deg(corner)
                 self._set("ang_sup", f"{ang_sup:.3f}")
@@ -1278,10 +1481,20 @@ class App:
             "mass": 200, "hcg": 450, "ay": 9.8, "wb": 1550, "fx": 1200, "rs": 50,
             "h_min": 250, "h_max": 650, "m_min": 180, "m_max": 240, "step": 25,
             "load": 3000, "ang_sup": 10, "ang_inf": 20, "limit": 8000, "ksup": 0.5,
-            "amin": 0, "amax": 40
+            "amin": 0, "amax": 40,
+
+            # gerador
+            "z_front": 775, "z_rear": -775,
+            "LsF": 450, "LiF": 520,
+            "ySupInF": 420, "ySupOutF": 390, "yInfInF": 210, "yInfOutF": 190,
+            "LsR": 430, "LiR": 500,
+            "ySupInR": 410, "ySupOutR": 380, "yInfInR": 200, "yInfOutR": 180,
+            "dz_inboard": 80, "dz_toe": 60, "dy_toe": 260, "dx_toe_in": 520,
+            "dy_damper": 100, "dx_damper_in": 380
         }
         for k, v in defaults.items():
-            self._set(k, v)
+            if k in self.entries:
+                self._set(k, v)
 
         self.var_corner.set("FR")
         self._set_status("Defaults restaurados.")
