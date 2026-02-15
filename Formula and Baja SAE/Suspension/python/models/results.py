@@ -1,4 +1,4 @@
-from primitives import Point2D, Point3D
+from primitives import Point2D, Point3D, Vector3D
 from lines import LineCoefficients3D
 from dataclasses import dataclass
 from typing import Optional
@@ -24,7 +24,7 @@ class RollCenterResult2D:
     q_factor: Optional[float]               # Suspension curvature factor
 
 @dataclass(frozen=True)
-class RollCenterResult3D:
+class RollCenterResult:
     """Result of 3D geometric analysis."""
     instantaneous_center: Optional[Point3D]  # Instant Center
     roll_center_point: Optional[Point3D]    # Roll Center in plane
@@ -49,8 +49,25 @@ class CamberGainResult:
     k_gamma: float        # Camber gain factor (deg/deg)
 
 @dataclass(frozen=True)
-class AlignmentMetricsResult3D:
+class LongitudinalResult:
+    percentage: float
+    instantaneous_center: Point3D
+    vector: Vector3D
+    angle: float
+
+@dataclass(frozen=True)
+class AlignmentMetricsResult:
     """3D Geometry results (Static Alignment)."""
     tire_angles: TireAnglesResult
     kingpin_parameters: KingpingResult
-    roll_center_prameters: RollCenterResult3D
+    roll_center_prameters: RollCenterResult
+    anti_dive_parameters: LongitudinalResult
+    anti_squat_parameters: LongitudinalResult
+
+@dataclass(frozen=True)
+class SteeringMetricsResult:
+    ackermann_percentage: float
+    turning_radius: float
+    inner_angle: float
+    outer_angle: float
+    ideal_outer_angle: float

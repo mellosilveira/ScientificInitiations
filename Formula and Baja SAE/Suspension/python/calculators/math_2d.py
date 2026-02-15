@@ -7,7 +7,7 @@ from ..models.suspension import Suspension2D
 from ..models.constants import EPSILON
 from utils import to_deg
 
-def calculate_roll_center(geo: Suspension2D, vehicle_center_line: Optional[LineCoefficients2D] = None) -> RollCenterResult2D:
+def calculate_roll_center(geo: Suspension2D, vehicle_center_line: LineCoefficients2D) -> RollCenterResult2D:
     # 1. Define lines for Upper and Lower arms
     line_sup = LineCoefficients2D(geo.upper_arm.inner, geo.upper_arm.outer)
     line_inf = LineCoefficients2D(geo.lower_arm.inner, geo.lower_arm.outer)
@@ -19,8 +19,7 @@ def calculate_roll_center(geo: Suspension2D, vehicle_center_line: Optional[LineC
     
     # 3. Find Roll Center (RC)
     line_ic_tr = LineCoefficients2D(geo.tire_contact, ic)
-    line_center = vehicle_center_line if vehicle_center_line else LineCoefficients2D(1, 0, 0)
-    rc = line_ic_tr.intersect(line_center)
+    rc = line_ic_tr.intersect(vehicle_center_line)
     if rc is None:
         return RollCenterResult2D(0, 0, None)
     

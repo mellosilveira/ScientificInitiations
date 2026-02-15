@@ -1,6 +1,17 @@
 from primitives import Point2D, Point3D
+from lines import LineCoefficients3D
 from component_structures import ThreePointArm, TwoPointLink2D, TwoPointLink3D
 from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class VehycleParameters:
+    vehicle_center_line: LineCoefficients3D
+    gravity_center: Point3D
+    wheelbase: float
+    front_brake_percentage: float
+    rear_brake_percentage: float
+    track_width: float
+    kingpin_track: float
 
 @dataclass(frozen=True)
 class Suspension2D:
@@ -22,7 +33,7 @@ class Suspension2D:
     camber_in_deg: float   # Camber at full droop (s2)
 
 @dataclass(frozen=True)
-class Suspension3D:
+class Suspension:
     """
     Suspension points considering 3D (The Master Model).
     Contains all hardpoints essential for kinematics and dynamics.
@@ -33,10 +44,10 @@ class Suspension3D:
     damper: TwoPointLink3D
     tire_contact: Point3D
     tire_diameter: float
-    camber_gap: float                        # Gap between a vertical plumb line and the top/bottom of the rim.
-    toe_distance: float                      # If positive: toe-in. If negative: tou-out.
-    acceleration_torque_on_motor_shaft: bool # Indicates if the acceleration torque acts on motor shaft.
-    brake_torque_on_motor_shaft: bool        # Indicates if the brake torque acts on motor shaft.
+    camber_gap: float           # Distance between a vertical plumb line and the top/bottom of the rim.
+    toe_distance: float         # If positive: toe-in. If negative: tou-out.
+    acceleration_on_shaft: bool # Indicates if the acceleration torque acts on motor shaft.
+    brake_on_shaft: bool        # Indicates if the brake torque acts on motor shaft.
     
     def get_projected_2d(self, plane: str = 'XY') -> Suspension2D:
         """
