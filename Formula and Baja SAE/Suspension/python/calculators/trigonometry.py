@@ -1,6 +1,11 @@
 from ..models.primitives import Point3D, Vector3D
 import math
 
+def cot(angle: float) -> float:
+    return 1.0 / math.tan(angle)
+
+def acot(cot: float) -> float:
+    return math.atan(1 / cot)
 
 def rodrigues_rotation(point: Point3D, axis_origin: Point3D, axis_dir: Vector3D, angle_rad: float) -> Point3D:
     """

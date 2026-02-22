@@ -2,7 +2,6 @@ from lines import LineCoefficients3D
 from primitives import Point2D, Point3D, Vector3D
 from dataclasses import dataclass
 
-
 @dataclass(frozen=True)
 class ThreePointArm:
     """
@@ -14,14 +13,14 @@ class ThreePointArm:
     outer: Point3D       # Upright ball joint/Uniball
 
     @property
-    def chassis_pivot_line(self) -> LineCoefficients3D:
-        return LineCoefficients3D.from_points(self.fore_inner, self.aft_inner)
+    def inner_vector(self) -> Vector3D:
+        return Vector3D.from_points(self.fore_inner, self.aft_inner)
     
     @property
     def outer_line(self) -> LineCoefficients3D:
         return LineCoefficients3D(
             origin = self.outer,
-            direction = self.chassis_pivot_line.direction
+            direction = self.inner_vector.direction
         )
 
     @property

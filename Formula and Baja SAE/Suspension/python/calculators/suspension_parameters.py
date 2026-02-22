@@ -6,9 +6,8 @@ from ..models.suspension import Suspension
 from ..models.numerical import SolverParameters
 from ..models.results import RollCenterResult, TireAnglesResult, KingpingResult, LongitudinalResult, AlignmentMetricsResult, SteeringMetricsResult
 from ..models.constants import EPSILON
-from .math import cot, acot
-from trigonometry import rodrigues_rotation
 from numerical_solvers import find_root
+from trigonometry import rodrigues_rotation, cot, acot
 
 def calculate_lateral_instantaneous_center(geo: Suspension) -> tuple[Point3D, Vector3D, float]:
     reference_point = geo.tire_contact
@@ -22,10 +21,14 @@ def calculate_lateral_instantaneous_center(geo: Suspension) -> tuple[Point3D, Ve
     return [lateral_instantaneous_center, vector, tan_angle]
 
 # TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y) PARA CAMBER
+def calculate_camber_angle(geo: Suspension) -> float:
+    return math.atan(geo.camber_gap / geo.tire_diameter)
+
+# TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y) PARA CAMBER
 def calculate_tire_angles(geo: Suspension) -> TireAnglesResult:
     return TireAnglesResult(
         # 1. Camber (Plano Frontal XY)
-        camber = math.atan(geo.camber_gap / geo.tire_diameter), 
+        camber = calculate_camber_angle(geo), 
         # 2. Toe (Convergência - Plano XZ)
         toe = math.atan2(geo.toe_distance, geo.tire_diameter)
     )
@@ -34,10 +37,9 @@ def calculate_tire_angles(geo: Suspension) -> TireAnglesResult:
 def calculate_kingping_parameters(geo: Suspension) -> KingpingResult:
     # Definir o Vetor Kingpin (Do Superior para o Inferior)
     # Direção: Para baixo (Gravity vector reference)
-    kp_vec = Vector3D.from_points(geo.upper_arm.outer, geo.lower_arm.outer)
     
     # Validação de segurança
-    if kp_vec.magnitude < EPSILON:
+    if geo.kingpin_vector.magnitude < EPSILON:
         return KingpingResult(
             axis = LineCoefficients3D(origin = geo.upper_arm.outer, direction = Vector3D(0, 1, 0)),
             inclination = 0.0,
@@ -46,7 +48,7 @@ def calculate_kingping_parameters(geo: Suspension) -> KingpingResult:
             caster = 0.0)
 
     # Criar o objeto de eixo para visualização/exportação
-    axis = LineCoefficients3D(origin = geo.upper_arm.outer, direction = kp_vec.normalize())
+    axis = LineCoefficients3D(origin = geo.upper_arm.outer, direction = geo.kingpin_vector.normalize())
     if abs(axis.direction.y) < EPSILON:
         return KingpingResult(
             axis,
@@ -167,6 +169,58 @@ def calculate_steering_metrics(wheelbase: float, kingpin_track: float, inner_ang
         ideal_outer_angle = ideal_outer_angle
     )
 
+def calculate_camber_gain(
+    geo: Suspension, 
+    bump_travel_y: float, 
+    solver_params: SolverParameters
+) -> Tuple[float, float, float]:
+    """
+    Simulates vertical suspension travel solving the spatial 4-bar linkage.
+    Returns: (Static_Camber, New_Camber, Camber_Gain_deg_per_mm)
+    """
+    # Eixos de rotação no chassi
+    l_axis_orig = geo.lower_arm.fore_inner
+    l_axis_dir = geo.lower_arm.inner_vector.normalize()
+    
+    u_axis_orig = geo.upper_arm.fore_inner
+    u_axis_dir = geo.upper_arm.inner_vector.normalize()
+    
+    # Comprimento rígido do Kingpin
+    lbj_0 = geo.lower_arm.outer
+    ubj_0 = geo.upper_arm.outer
+    original_kingpin_length = geo.kingpin_vector.magnitude
+    
+    static_camber = calculate_camber_angle(geo)
+    
+    if abs(bump_travel_y) < EPSILON:
+        return static_camber, static_camber, 0.0
+
+    # SOLVER 1: Rotate Lower Arm to target Y
+    def lower_arm_error(theta_low_rad: float) -> float:
+        new_lbj = rodrigues_rotation(lbj_0, l_axis_orig, l_axis_dir, theta_low_rad)
+        current_travel = new_lbj.y - lbj_0.y
+        return current_travel - bump_travel_y
+    
+    theta_low_solution = find_root(lower_arm_error, solver_params)
+    new_lbj = rodrigues_rotation(lbj_0, l_axis_orig, l_axis_dir, theta_low_solution)
+
+    # SOLVER 2: Rotate Upper Arm to match Kingpin length
+    def upper_arm_error(theta_up_rad: float) -> float:
+        new_ubj = rodrigues_rotation(ubj_0, u_axis_orig, u_axis_dir, theta_up_rad)
+        current_kp_length = Vector3D.from_points(new_ubj, new_lbj).magnitude
+        return current_kp_length - original_kingpin_length
+
+    theta_up_solution = find_root(upper_arm_error, solver_params)
+    new_ubj = rodrigues_rotation(ubj_0, u_axis_orig, u_axis_dir, theta_up_solution)
+
+    # Calculate new camber
+    new_kp_vec = new_lbj - new_ubj
+    vec_front = Vector3D(new_kp_vec.x, new_kp_vec.y, 0).normalize()
+    new_camber = math.degrees(math.atan2(vec_front.x, -vec_front.y))
+    
+    camber_gain = (new_camber - static_camber) / bump_travel_y
+
+    return static_camber, new_camber, camber_gain
 
 # def transform_to_rear_left_origin(point: Point3D, geo: VehicleGeometry) -> Point3D:
 #     """

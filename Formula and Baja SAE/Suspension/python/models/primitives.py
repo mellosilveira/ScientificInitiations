@@ -41,6 +41,10 @@ class Point3D:
     def __add__(self, other: 'Point3D') -> 'Point3D':
         """Vector addition: p3 = self + other"""
         return Point3D(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def __add__(self, other: 'Vector3D') -> 'Point3D':
+        """Vector addition: p3 = self + other"""
+        return Point3D(self.x + other.x, self.y + other.y, self.z + other.z)
     
     def __mul__(self, scalar: float) -> 'Point3D':
         """Scalar multiplication: p2 = self * scalar"""

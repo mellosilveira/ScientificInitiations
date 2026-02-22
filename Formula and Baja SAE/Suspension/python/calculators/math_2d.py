@@ -1,33 +1,9 @@
 import math
-from typing import Optional
-from ..models.primitives import Point2D
 from ..models.lines import LineCoefficients2D
 from ..models.results import RollCenterResult2D, CamberGainResult
 from ..models.suspension import Suspension2D
 from ..models.constants import EPSILON
 from utils import to_deg
-
-def calculate_roll_center(geo: Suspension2D, vehicle_center_line: LineCoefficients2D) -> RollCenterResult2D:
-    # 1. Define lines for Upper and Lower arms
-    line_sup = LineCoefficients2D(geo.upper_arm.inner, geo.upper_arm.outer)
-    line_inf = LineCoefficients2D(geo.lower_arm.inner, geo.lower_arm.outer)
-    
-    # 2. Find Instant Center (IC)
-    ic = line_sup.intersect(line_inf)
-    if ic is None:
-        return RollCenterResult2D(None, None, None)
-    
-    # 3. Find Roll Center (RC)
-    line_ic_tr = LineCoefficients2D(geo.tire_contact, ic)
-    rc = line_ic_tr.intersect(vehicle_center_line)
-    if rc is None:
-        return RollCenterResult2D(0, 0, None)
-    
-    h_ro = rc.y
-    p = ic.y - geo.tire_contact.y
-    q = (p * geo.track_width) / (h_ro ** 2) if abs(h_ro) > EPSILON else 0.0
-    return RollCenterResult2D(ic, rc, q)
-
 
 def calculate_camber_gain(geo: Suspension2D) -> CamberGainResult:
     """

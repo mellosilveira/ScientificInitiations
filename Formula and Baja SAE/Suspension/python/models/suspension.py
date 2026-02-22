@@ -1,4 +1,4 @@
-from primitives import Point2D, Point3D
+from primitives import Point2D, Point3D, Vector3D
 from lines import LineCoefficients3D
 from component_structures import ThreePointArm, TwoPointLink2D, TwoPointLink3D
 from dataclasses import dataclass
@@ -48,6 +48,10 @@ class Suspension:
     toe_distance: float         # If positive: toe-in. If negative: tou-out.
     acceleration_on_shaft: bool # Indicates if the acceleration torque acts on motor shaft.
     brake_on_shaft: bool        # Indicates if the brake torque acts on motor shaft.
+
+    @property
+    def kingpin_vector(self) -> Vector3D:
+        return Vector3D.from_points(self.upper_arm.outer, self.lower_arm.outer)
     
     def get_projected_2d(self, plane: str = 'XY') -> Suspension2D:
         """
