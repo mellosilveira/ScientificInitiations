@@ -1,6 +1,5 @@
 import math
-from ..models.lines import LineCoefficients2D
-from ..models.results import RollCenterResult2D, CamberGainResult
+from ..models.results import CamberGainResult
 from ..models.suspension import Suspension2D
 from ..models.constants import EPSILON
 from utils import to_deg

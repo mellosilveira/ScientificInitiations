@@ -66,7 +66,7 @@ def calculate_kingping_parameters(geo: Suspension) -> KingpingResult:
     
     return KingpingResult(
         axis,
-        inclination = math.atan2(kp_vec.x, -kp_vec.y),
+        inclination = math.atan2(geo.kingpin_vector.x, -geo.kingpin_vector.y),
         # Scrub: Distância lateral do centro do pneu até a interseção
         # (Positivo se a interseção for para dentro do centro do pneu)
         scrub_radius = geo.tire_contact.x - ground_point.x,
@@ -76,7 +76,7 @@ def calculate_kingping_parameters(geo: Suspension) -> KingpingResult:
         # Projeta o vetor KPI no plano X=0
         # Convenção: Topo inclinado para trás (+Z) é Caster Positivo.
         # atan2(z, -y): Z positivo e Y negativo gera ângulo positivo
-        caster = math.atan2(kp_vec.z, -kp_vec.y)
+        caster = math.atan2(geo.kingpin_vector.z, -geo.kingpin_vector.y)
     )
 
 # TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y)
