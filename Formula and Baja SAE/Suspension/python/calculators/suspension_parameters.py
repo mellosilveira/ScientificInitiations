@@ -9,36 +9,34 @@ from ..models.constants import EPSILON
 from numerical_solvers import find_root
 from trigonometry import rodrigues_rotation, cot, acot
 
+def get_effective_radius(geo: Suspension) -> float:
+    """Calcula o raio considerando a deformação estática do pneu."""
+    deformation = getattr(geo, 'static_tire_deformation', 0.0)
+    return max(1.0, (geo.tire_diameter / 2.0) - deformation)
+
+def get_effective_diameter(geo: Suspension) -> float:
+    return get_effective_radius(geo) * 2.0
+
 def calculate_lateral_instantaneous_center(geo: Suspension) -> tuple[Point3D, Vector3D, float]:
     reference_point = geo.tire_contact
     if geo.brake_on_shaft:
-        # TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y)
-        reference_point += Point3D(0, geo.tire_diameter / 2, 0)
+        reference_point += Point3D(0, get_effective_radius(geo), 0)
     
     lateral_instantaneous_center = geo.upper_arm.outer_line.intersect(geo.lower_arm.outer_line)
     vector = Vector3D.from_points(lateral_instantaneous_center, reference_point)
     tan_angle = vector.y / vector.z
     return [lateral_instantaneous_center, vector, tan_angle]
 
-# TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y) PARA CAMBER
 def calculate_camber_angle(geo: Suspension) -> float:
-    return math.atan(geo.camber_gap / geo.tire_diameter)
+    return math.atan(geo.camber_gap / get_effective_diameter(geo))
 
-# TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y) PARA CAMBER
 def calculate_tire_angles(geo: Suspension) -> TireAnglesResult:
     return TireAnglesResult(
-        # 1. Camber (Plano Frontal XY)
         camber = calculate_camber_angle(geo), 
-        # 2. Toe (Convergência - Plano XZ)
         toe = math.atan2(geo.toe_distance, geo.tire_diameter)
     )
 
-# TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y)
 def calculate_kingping_parameters(geo: Suspension) -> KingpingResult:
-    # Definir o Vetor Kingpin (Do Superior para o Inferior)
-    # Direção: Para baixo (Gravity vector reference)
-    
-    # Validação de segurança
     if geo.kingpin_vector.magnitude < EPSILON:
         return KingpingResult(
             axis = LineCoefficients3D(origin = geo.upper_arm.outer, direction = Vector3D(0, 1, 0)),
@@ -47,7 +45,6 @@ def calculate_kingping_parameters(geo: Suspension) -> KingpingResult:
             mechanical_trail = 0.0,
             caster = 0.0)
 
-    # Criar o objeto de eixo para visualização/exportação
     axis = LineCoefficients3D(origin = geo.upper_arm.outer, direction = geo.kingpin_vector.normalize())
     if abs(axis.direction.y) < EPSILON:
         return KingpingResult(
@@ -61,38 +58,29 @@ def calculate_kingping_parameters(geo: Suspension) -> KingpingResult:
     # Interseção da Linha do Kingpin com o Plano do Chão (Y = 0)
     # Equação da reta: P(t) = P0 + t * V
     # Queremos Y=0:  0 = P0.y + t * V.y  =>  t = -P0.y / V.y
+    # TODO: APLICAR CORREÇÃO DE DEFORMAÇÃO ESTÁTICA DO NO PONTO DE CONTATO PARA MAIOR REALISMO
     t_ground = -axis.origin.y / axis.direction.y
     ground_point = axis.origin + (axis.direction * t_ground)
     
     return KingpingResult(
         axis,
         inclination = math.atan2(geo.kingpin_vector.x, -geo.kingpin_vector.y),
-        # Scrub: Distância lateral do centro do pneu até a interseção
-        # (Positivo se a interseção for para dentro do centro do pneu)
         scrub_radius = geo.tire_contact.x - ground_point.x,
-        # Mechanical Trail: Distância longitudinal
         mechanical_trail = ground_point.z - geo.tire_contact.z,
-        # 5. Caster (Plano Lateral Y-Z)
-        # Projeta o vetor KPI no plano X=0
-        # Convenção: Topo inclinado para trás (+Z) é Caster Positivo.
-        # atan2(z, -y): Z positivo e Y negativo gera ângulo positivo
         caster = math.atan2(geo.kingpin_vector.z, -geo.kingpin_vector.y)
     )
 
-# TODO: APLICAR RAIO EFETIVO DO PNEU (DEFORMAÇÃO NO EIXO Y)
 def calculate_roll_center_parameters(geo: Suspension, vehicle_center_line: LineCoefficients3D, track_width: float) -> RollCenterResult:
-    # 1. Define lines for Upper and Lower arms
     line_sup = LineCoefficients3D.from_points(geo.upper_arm.centroid_inner, geo.upper_arm.outer)
     line_inf = LineCoefficients3D.from_points(geo.lower_arm.centroid_inner, geo.lower_arm.outer)
     
-    # 2. Find Instant Center (IC)
     front_instantaneous_center = line_sup.intersect(line_inf)
     if front_instantaneous_center is None:
         return RollCenterResult(None, None, None)
     
-    # 3. Find Roll Center (RC)
     line_ic_tr = LineCoefficients3D.from_points(geo.tire_contact, front_instantaneous_center)
     roll_center = line_ic_tr.intersect(vehicle_center_line)
+    
     if roll_center is None:
         return RollCenterResult(0, 0, None)
     
@@ -102,11 +90,6 @@ def calculate_roll_center_parameters(geo: Suspension, vehicle_center_line: LineC
 
 def calculate_anti_dive_parameters(geo: Suspension, gravity_center: Point3D, wheelbase: float, brake_percentage: float) -> LongitudinalResult:
     lateral_instantaneous_center, ic_vector, tan_angle = calculate_lateral_instantaneous_center(geo)
-    
-    # IMPORTANTE: aqui estamos chamando de anti_dive para simplificar a implementação, mas quando o cálculo estiver sendo feito para a traseira,
-    # na verdade, o nome correto é anti_lift, sendo assim, quando ocorre frenagem, os nomes corretos são:
-    # - dianteira: anti dive
-    # - traseira: anti lift
     anti_dive = (brake_percentage * tan_angle / (gravity_center.y / wheelbase)) * 100
     return LongitudinalResult(
         percentage = anti_dive, 
@@ -117,11 +100,6 @@ def calculate_anti_dive_parameters(geo: Suspension, gravity_center: Point3D, whe
 
 def calculate_anti_squat_parameters(geo: Suspension, gravity_center: Point3D, wheelbase: float) -> LongitudinalResult:
     lateral_instantaneous_center, ic_vector, tan_angle = calculate_lateral_instantaneous_center(geo)
-    
-    # IMPORTANTE: aqui estamos chamando de anti_squat para simplificar a implementação, mas quando o cálculo estiver sendo feito para a dianteira,
-    # na verdade, o nome correto é anti_lift, sendo assim, quando ocorre aceleração, os nomes corretos são:
-    # - dianteira: anti lift
-    # - traseira: anti squat
     anti_squat = (tan_angle / (gravity_center.y / wheelbase)) * 100
     return LongitudinalResult(
         percentage = anti_squat, 
@@ -132,16 +110,12 @@ def calculate_anti_squat_parameters(geo: Suspension, gravity_center: Point3D, wh
 
 def calculate_alignment_metrics(
     geo: Suspension,
-    vehicle_center_line: LineCoefficients3D, 
-    gravity_center: Point3D, 
-    wheelbase: float, 
-    track_width: float, 
+    vehicle_center_line: LineCoefficients3D,
+    gravity_center: Point3D,
+    wheelbase: float,
+    track_width: float,
     brake_percentage: float
 ) -> AlignmentMetricsResult:
-    """
-    Calcula ângulos de alinhamento estático usando geometria vetorial 3D.
-    Substitui projeções manuais por operações com Vector3D.
-    """
     return AlignmentMetricsResult(
         tire_angles = calculate_tire_angles(geo),
         kingpin_parameters = calculate_kingping_parameters(geo),
@@ -150,22 +124,52 @@ def calculate_alignment_metrics(
         anti_squat_parameters = calculate_anti_squat_parameters(geo, gravity_center, wheelbase)
     )
 
-def calculate_steering_metrics(wheelbase: float, kingpin_track: float, inner_angle: float) -> SteeringMetricsResult:
-    # Validações de segurança para evitar divisão por zero
-    if abs(wheelbase) < EPSILON or abs(inner_angle) < EPSILON:
+def calculate_steering_metrics(geo: Suspension, wheelbase: float, inner_angle: float) -> SteeringMetricsResult:
+    """
+    APLICADO: Solução Analítica Exata para o Mecanismo de Ackermann sem iterações.
+    Utiliza lei dos cossenos projetada no plano XY para extrair o ângulo real da roda externa.
+    """
+    kp_inner_x = geo.lower_arm.outer.x
+    tie_out_x = geo.tie_rod.outer.x
+    tie_in_x = geo.tie_rod.inner.x
+    
+    kingpin_track = abs(kp_inner_x * 2.0)
+    
+    steering_arm_vec = Vector3D.from_points(geo.lower_arm.outer, geo.tie_rod.outer)
+    R = math.sqrt(steering_arm_vec.x**2 + steering_arm_vec.z**2) 
+    L = math.sqrt((tie_out_x - tie_in_x)**2 + (geo.tie_rod.outer.z - geo.tie_rod.inner.z)**2)
+    
+    if abs(wheelbase) < EPSILON or abs(inner_angle) < EPSILON or R < EPSILON:
         return SteeringMetricsResult(ackermann_percentage = 0.0, inner_angle = 0.0, ideal_outer_angle = 0.0, turning_radius = 0.0)
 
     cot_in = cot(inner_angle)
     ideal_outer_angle = acot(cot_in + (kingpin_track / wheelbase))
     turning_radius = wheelbase / math.sin(inner_angle)
 
-    # 6. Retornar os Resultados
-    # Como este é o cálculo "Ideal", a porcentagem teórica é 100%.
+    alpha_0 = math.asin(abs(geo.tie_rod.outer.z - geo.lower_arm.outer.z) / R)
+    theta_i_arm = alpha_0 + inner_angle
+    
+    new_tie_out_inner_x = kp_inner_x - R * math.cos(theta_i_arm)
+    delta_rack = new_tie_out_inner_x - tie_in_x
+    new_tie_in_outer_x = -tie_in_x + delta_rack
+    
+    D = math.sqrt((new_tie_in_outer_x - (-kp_inner_x))**2 + (geo.tie_rod.inner.z - geo.lower_arm.outer.z)**2)
+    
+    if D > (R + L) or D < abs(R - L):
+        outer_angle = 0.0 
+    else:
+        gamma = math.acos((R**2 + D**2 - L**2) / (2 * R * D))
+        phi = math.atan2(geo.tie_rod.inner.z - geo.lower_arm.outer.z, abs(new_tie_in_outer_x - (-kp_inner_x)))
+        theta_o_arm = gamma + phi
+        outer_angle = theta_o_arm - alpha_0
+
+    percentage = (outer_angle / ideal_outer_angle) * 100.0 if ideal_outer_angle > EPSILON else 0.0
+
     return SteeringMetricsResult(
-        ackermann_percentage = 100.0,
+        ackermann_percentage = percentage,
         turning_radius = turning_radius,
         inner_angle = inner_angle,
-        outer_angle = 0.0, #TODO: TENTAR CALCULAR
+        outer_angle = outer_angle,
         ideal_outer_angle = ideal_outer_angle
     )
 
