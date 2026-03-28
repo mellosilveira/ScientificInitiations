@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
-from typing import Dict, Tuple, Any, Optional, List
+from typing import Dict, Tuple, List
 
 from models.primitives import Point3D
 from models.component_structures import ThreePointArm, TwoPointLink3D
 from models.suspension import Suspension
-
+from orchestrators.suspension import AlignmentOrchestrator
 
 
 # Helpers
-
 
 def _deg(x_rad: float) -> float:
     return float(x_rad) * 180.0 / math.pi
@@ -30,8 +28,6 @@ def _p3(x: float, y: float, z: float) -> Point3D:
     return Point3D(float(x), float(y), float(z))
 
 
-
-
 # Cinemática (varreduras)
 
 
@@ -39,14 +35,11 @@ class KinematicsOrchestrator:
     """
     Varredura de curso (bump/rebound) e captura de camber/caster/toe.
 
-    ⚠️ Este orquestrador depende do que você implementou no seu domínio.
-    Se existir método do tipo:
+    Depende do domínio Suspension ter um dos seguintes métodos:
       - sus.clone() e sus.apply_bump(mm)
       - sus.solve_kinematics(bump_mm)
-      - sus.get_static_alignment()
-    ele usa.
 
-    Senão, ele levanta NotImplementedError bem claro.
+    Se nenhum existir, levanta NotImplementedError.
     """
 
     @staticmethod
@@ -65,7 +58,6 @@ class KinematicsOrchestrator:
             if hasattr(sus, clone_method) and callable(getattr(sus, clone_method)):
                 s = getattr(sus, clone_method)()
             else:
-                # se não tiver clone, tenta usar o próprio (mas isso pode alterar estado)
                 s = sus
 
             # 2) aplicar curso
@@ -91,5 +83,3 @@ class KinematicsOrchestrator:
             })
 
         return results
-
-

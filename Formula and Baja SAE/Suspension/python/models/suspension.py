@@ -1,6 +1,6 @@
-from primitives import Point2D, Point3D, Vector3D
-from lines import LineCoefficients3D
-from component_structures import ThreePointArm, TwoPointLink2D, TwoPointLink3D
+from models.primitives import Point2D, Point3D, Vector3D
+from models.lines import LineCoefficients3D
+from models.component_structures import ThreePointArm, TwoPointLink2D, TwoPointLink3D
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
@@ -24,11 +24,11 @@ class Suspension2D:
     tie_rod: TwoPointLink2D
     damper: TwoPointLink2D
     tire_contact: Point2D
-    
+
     # Geometric parameters for Reimpell analysis
     track_width: float
-    s1: float  # Outer travel
-    s2: float  # Inner travel
+    s1: float           # Outer travel
+    s2: float           # Inner travel
     camber_out_deg: float  # Camber at full bump (s1)
     camber_in_deg: float   # Camber at full droop (s2)
 
@@ -45,18 +45,20 @@ class Suspension:
     tire_contact: Point3D
     tire_diameter: float
     camber_gap: float           # Distance between a vertical plumb line and the top/bottom of the rim.
-    toe_distance: float         # If positive: toe-in. If negative: tou-out.
+    toe_distance: float         # If positive: toe-in. If negative: toe-out.
     acceleration_on_shaft: bool # Indicates if the acceleration torque acts on motor shaft.
     brake_on_shaft: bool        # Indicates if the brake torque acts on motor shaft.
 
     @property
     def kingpin_vector(self) -> Vector3D:
         return Vector3D.from_points(self.upper_arm.outer, self.lower_arm.outer)
-    
+
     def get_projected_2d(self, plane: str = 'XY') -> Suspension2D:
         """
         Automatically generates the 2D geometry from 3D points.
         Uses the centroid of inboard points for the 2D projection of A-arms.
+        Note: track_width, s1, s2, camber_out_deg, camber_in_deg default to 0.0
+        and should be set externally based on kinematic sweep results.
         """
         return Suspension2D(
             upper_arm=TwoPointLink2D(
@@ -77,7 +79,8 @@ class Suspension:
             ),
             tire_contact=self.tire_contact.project_to_2d(plane),
             track_width=0.0,
-            s1=0.0, 
-            s2=0.0, 
-            static_camber=0.0
+            s1=0.0,
+            s2=0.0,
+            camber_out_deg=0.0,
+            camber_in_deg=0.0
         )

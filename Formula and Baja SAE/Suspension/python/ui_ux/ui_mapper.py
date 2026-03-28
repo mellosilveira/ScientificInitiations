@@ -1,5 +1,42 @@
-# Responsabilidade ÚNICA: Transformar dicionário da UI em classes e parâmetros claros (DTOs)
-from models import SuspensionCGScanParameters, SuspensionMassScanParameters, ForceAngleIteratorParameters
+from dataclasses import dataclass
+
+
+@dataclass
+class SuspensionCGScanParameters:
+    h_min: float
+    h_max: float
+    h_step: float
+    mass: float
+    ay: float
+    track: float
+    h_ro: float
+    scrub_radius: float
+    clearance: float
+
+
+@dataclass
+class SuspensionMassScanParameters:
+    m_min: float
+    m_max: float
+    m_step: float
+    h_cg: float
+    ay: float
+    track: float
+    h_ro: float
+
+
+@dataclass
+class ForceAngleIteratorParameters:
+    f_load: float
+    angle_sup_base: float
+    angle_inf_base: float
+    k_sup: float
+    k_inf: float
+    limit: float
+    ang_min: int
+    ang_max: int
+    step: int
+
 
 class UIMapper:
     @staticmethod

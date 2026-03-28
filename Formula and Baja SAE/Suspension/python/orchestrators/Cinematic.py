@@ -7,11 +7,10 @@ from typing import Dict, Tuple, Any, Optional, List
 from models.primitives import Point3D
 from models.component_structures import ThreePointArm, TwoPointLink3D
 from models.suspension import Suspension
+from orchestrators.suspension import SuspensionOrchestrator, AlignmentOrchestrator
 
 
-# =============================================================================
 # Helpers
-# =============================================================================
 
 def _deg(x_rad: float) -> float:
     return float(x_rad) * 180.0 / math.pi
@@ -30,9 +29,7 @@ def _p3(x: float, y: float, z: float) -> Point3D:
     return Point3D(float(x), float(y), float(z))
 
 
-
-
-#  Veículo (FRONT/REAR, 4 cantos)
+# Veículo (FRONT/REAR, 4 cantos)
 
 
 @dataclass
@@ -67,7 +64,12 @@ class VehicleOrchestrator:
     def vehicle_alignment_snapshot(vehicle: VehicleSnapshot) -> Dict[str, Any]:
         out: Dict[str, Any] = {"corners": {}, "axles": {}}
 
-        corner_map = {"FR": vehicle.front_right, "FL": vehicle.front_left, "RR": vehicle.rear_right, "RL": vehicle.rear_left}
+        corner_map = {
+            "FR": vehicle.front_right,
+            "FL": vehicle.front_left,
+            "RR": vehicle.rear_right,
+            "RL": vehicle.rear_left
+        }
         for c, sus in corner_map.items():
             if sus is None:
                 out["corners"][c] = None
@@ -87,8 +89,3 @@ class VehicleOrchestrator:
         out["axles"]["FRONT"] = axle_avg("FR", "FL")
         out["axles"]["REAR"] = axle_avg("RR", "RL")
         return out
-
-
-
-
-

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import math
-from typing import Tuple
-from constants import EPSILON
+from typing import Tuple, Union
+from models.constants import EPSILON
 import numpy as np
 
 @dataclass(frozen=True)
@@ -34,18 +34,14 @@ class Point3D:
         """Vector subtraction: p3 = self - other"""
         return Point3D(self.x - other.x, self.y - other.y, self.z - other.z)
 
-    def __iadd__ (self, other: 'Point3D') -> 'Point3D':
-        """Vector addition: p3 = self + other"""
+    def __iadd__(self, other: Union['Point3D', 'Vector3D']) -> 'Point3D':
+        """In-place addition (returns new Point3D): p3 = self + other"""
         return Point3D(self.x + other.x, self.y + other.y, self.z + other.z)
 
-    def __add__(self, other: 'Point3D') -> 'Point3D':
-        """Vector addition: p3 = self + other"""
+    def __add__(self, other: Union['Point3D', 'Vector3D']) -> 'Point3D':
+        """Vector addition: p3 = self + other (Point3D or Vector3D)"""
         return Point3D(self.x + other.x, self.y + other.y, self.z + other.z)
 
-    def __add__(self, other: 'Vector3D') -> 'Point3D':
-        """Vector addition: p3 = self + other"""
-        return Point3D(self.x + other.x, self.y + other.y, self.z + other.z)
-    
     def __mul__(self, scalar: float) -> 'Point3D':
         """Scalar multiplication: p2 = self * scalar"""
         return Point3D(self.x * scalar, self.y * scalar, self.z * scalar)
@@ -61,7 +57,7 @@ class Point3D:
     def array(self) -> np.ndarray:
         """Returns NumPy array [x, y, z] for matrix calculations."""
         return np.array([self.x, self.y, self.z])
-    
+
     def project_to_2d(self, plane: str = 'XY') -> Point2D:
         """Projects the point to the Frontal Plane (drops Z coordinate)."""
         if plane == 'XY':
@@ -81,7 +77,7 @@ class Vector3D:
     x: float
     y: float
     z: float
-    
+
     @staticmethod
     def from_points(p1: Point3D, p2: Point3D) -> 'Vector3D':
         return Vector3D(
@@ -118,6 +114,10 @@ class Vector3D:
 
     def is_zero(self) -> bool:
         return self.magnitude < EPSILON
-    
+
+    def __add__(self, other: 'Vector3D') -> 'Vector3D':
+        """Vector addition: v3 = self + other"""
+        return Vector3D(self.x + other.x, self.y + other.y, self.z + other.z)
+
     def __mul__(self, scalar: float) -> 'Vector3D':
         return Vector3D(self.x * scalar, self.y * scalar, self.z * scalar)

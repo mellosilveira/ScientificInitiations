@@ -1,5 +1,5 @@
-from primitives import Point2D, Point3D, Vector3D
-from lines import LineCoefficients3D
+from models.primitives import Point2D, Point3D, Vector3D
+from models.lines import LineCoefficients3D
 from dataclasses import dataclass
 from typing import Optional
 
@@ -11,7 +11,7 @@ class TireAnglesResult:
 @dataclass(frozen=True)
 class KingpingResult:
     axis: LineCoefficients3D
-    inclination: float  
+    inclination: float
     scrub_radius: float
     mechanical_trail: float
     caster: float
@@ -20,25 +20,31 @@ class KingpingResult:
 class RollCenterResult2D:
     """Result of 2D geometric analysis (Reimpell)."""
     instantaneous_center: Optional[Point2D]  # Instant Center
-    roll_center_point: Optional[Point2D]    # Roll Center in plane
+    roll_center_point: Optional[Point2D]     # Roll Center in plane
     q_factor: Optional[float]               # Suspension curvature factor
 
 @dataclass(frozen=True)
 class RollCenterResult:
     """Result of 3D geometric analysis."""
     instantaneous_center: Optional[Point3D]  # Instant Center
-    roll_center_point: Optional[Point3D]    # Roll Center in plane
+    roll_center_point: Optional[Point3D]     # Roll Center in plane
     q_factor: Optional[float]               # Suspension curvature factor
-    
+
     def get_projected_2d(self, plane: str = 'XY') -> RollCenterResult2D:
         """
         Automatically generates the 2D geometry from 3D points.
-        Uses the centroid of inboard points for the 2D projection of A-arms.
+        Returns None for each point if the 3D result is None.
         """
         return RollCenterResult2D(
-            instantaneous_center = self.instantaneous_center.project_to_2d(plane),
-            roll_center_point = self.roll_center_point.project_to_2d(plane),
-            q_factor = self.q_factor
+            instantaneous_center=(
+                self.instantaneous_center.project_to_2d(plane)
+                if self.instantaneous_center is not None else None
+            ),
+            roll_center_point=(
+                self.roll_center_point.project_to_2d(plane)
+                if self.roll_center_point is not None else None
+            ),
+            q_factor=self.q_factor
         )
 
 @dataclass(frozen=True)
@@ -60,7 +66,7 @@ class AlignmentMetricsResult:
     """3D Geometry results (Static Alignment)."""
     tire_angles: TireAnglesResult
     kingpin_parameters: KingpingResult
-    roll_center_prameters: RollCenterResult
+    roll_center_parameters: RollCenterResult
     anti_dive_parameters: LongitudinalResult
     anti_squat_parameters: LongitudinalResult
 

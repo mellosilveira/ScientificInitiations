@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
-from typing import Dict, Tuple, Any, Optional, List
+from typing import Dict, Tuple, Any
 
 from models.primitives import Point3D
-from models.component_structures import ThreePointArm, TwoPointLink3D
-from models.suspension import Suspension
-
+from orchestrators.suspension import SuspensionOrchestrator, AlignmentOrchestrator
+from orchestrators.Alinhament import KinematicsOrchestrator
+from orchestrators.Cinematic import VehicleOrchestrator
 
 
 # Helpers
-
 
 def _deg(x_rad: float) -> float:
     return float(x_rad) * 180.0 / math.pi
@@ -30,8 +28,7 @@ def _p3(x: float, y: float, z: float) -> Point3D:
     return Point3D(float(x), float(y), float(z))
 
 
-
-#  Serialização (HP + presets)
+# Serialização (HP + presets)
 
 
 class SerializationOrchestrator:
@@ -42,13 +39,11 @@ class SerializationOrchestrator:
 
     @staticmethod
     def hardpoints_to_dict(hp_dict: dict) -> Dict[str, Any]:
-        # Normaliza valores
         out = {}
         for k, v in hp_dict.items():
             if isinstance(v, (tuple, list)) and len(v) == 3:
                 out[k] = (float(v[0]), float(v[1]), float(v[2]))
             else:
-                # permite campos escalares (ex.: "FR Camber Gap")
                 try:
                     out[k] = float(v)
                 except Exception:
@@ -57,18 +52,15 @@ class SerializationOrchestrator:
 
     @staticmethod
     def hardpoints_from_dict(data: Dict[str, Any]) -> Dict[str, Any]:
-        # Já vem normalizado; só retorna
         return dict(data)
 
 
-# =============================================================================
-# FACADE: "hub" com todos os orquestradores
-# =============================================================================
+# FACADE: hub com todos os orquestradores
 
 class Orchestrators:
     """
     Um único ponto para importar no main.py:
-        from models.suspension import Orchestrators
+        from orchestrators.Hardpoin import Orchestrators
         sus = Orchestrators.suspension.build_suspension_from_ui(...)
     """
     suspension = SuspensionOrchestrator

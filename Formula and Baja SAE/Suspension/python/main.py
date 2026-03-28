@@ -17,6 +17,14 @@ except ImportError as e:
     print(f"ERRO CRÍTICO: Orquestrador não encontrado ({e}). A aplicação não funcionará.")
     SuspensionOrchestrator = None
 
+try:
+    from models.primitives import Point3D, Point2D, Vector3D
+    from models.lines import LineCoefficients3D
+    _models_ok = True
+except ImportError:
+    _models_ok = False
+    Point3D = Point2D = Vector3D = LineCoefficients3D = None
+
 # =============================================================================
 # IMPORTS DE UI/UX (se existir) — mas agora com fallback interno completo
 # =============================================================================
@@ -216,6 +224,39 @@ def safe_num(s: str) -> float:
     s = str(s).strip().replace(",", ".")
     if s == "": raise ValueError("Valor vazio.")
     return float(s)
+
+
+def _atan2_deg(num: float, den: float) -> float:
+    return math.degrees(math.atan2(num, den))
+
+
+def zebra_stripes(tv, colors=("#ffffff", "#eef2ff")):
+    for i, row in enumerate(tv.get_children()):
+        tv.item(row, tags=("even" if i % 2 == 0 else "odd",))
+    tv.tag_configure("even", background=colors[0])
+    tv.tag_configure("odd",  background=colors[1])
+
+
+def autosize_treeview_columns(tv, min_width=80, max_width=300, pad=20):
+    for col in tv["columns"]:
+        children = tv.get_children()
+        if children:
+            w = max(
+                len(str(tv.set(item, col))) * 8 + pad
+                for item in children
+            )
+        else:
+            w = min_width
+        tv.column(col, width=max(min_width, min(max_width, w)))
+
+
+def copy_treeview_to_clipboard(root, tv):
+    cols = tv["columns"]
+    lines = ["\t".join(cols)]
+    for row in tv.get_children():
+        lines.append("\t".join(str(v) for v in tv.item(row, "values")))
+    root.clipboard_clear()
+    root.clipboard_append("\n".join(lines))
 
 
 # =============================================================================
@@ -428,35 +469,8 @@ class App:
         ez.delete(0, tk.END); ez.insert(0, str(z))
 
     def _get_point3d_from_input(self, label: str):
-        if models is None:
-            raise RuntimeError("Módulo models não foi importado.")
         x, y, z = self._hp_get(label)
-        return models.Point3D(x, y, z)
-
-    def _corner_points_2d(self, corner: str):
-        if models is None:
-            raise RuntimeError("Módulo models não foi importado.")
-        c = (corner or "FR").strip().upper()
-        ui_x, ui_y, _ = self._hp_get(self._hp_key(c, "Sup In"))
-        uo_x, uo_y, _ = self._hp_get(self._hp_key(c, "Sup Out"))
-        li_x, li_y, _ = self._hp_get(self._hp_key(c, "Inf In"))
-        lo_x, lo_y, _ = self._hp_get(self._hp_key(c, "Inf Out"))
-        return (
-            models.Point2D(ui_x, ui_y), models.Point2D(uo_x, uo_y),
-            models.Point2D(li_x, li_y), models.Point2D(lo_x, lo_y),
-        )
-
-    def _make_geo2d_for_corner(self, corner: str):
-        if models is None:
-            raise RuntimeError("Módulo models não foi importado.")
-        upper_in, upper_out, lower_in, lower_out = self._corner_points_2d(corner)
-        return models.SuspensionGeometry2D(
-            track_width=self._read("bf"),
-            upper_in=upper_in, upper_out=upper_out,
-            lower_in=lower_in, lower_out=lower_out,
-            s1=self._read("s1"), s2=self._read("s2"),
-            camber_out_deg=self._read("cam_o"), camber_in_deg=self._read("cam_i"),
-        )
+        return Point3D(x, y, z)
 
     # =========================================================================
     # NOVO: ALINHAMENTO (Camber/Caster/Toe)
@@ -510,14 +524,15 @@ class App:
         ttk.Label(bar, text="Ações rápidas", font=("Segoe UI", 10, "bold")).pack(side="left", padx=(10, 12))
 
         actions = [
-            ("Calcular 2D (F/R)", self._calc_2d_front_rear),
-            ("Calcular 3D", self._calc_3d),
-            ("Visual 3D", self._calc_full_3d),
-            ("Alinhamento", self._calc_alignment_tab),
-            ("Panhard (Momento)", self._calc_panhard_moments),
-            ("CG Sweep", self._run_cg_sweep),
-            ("Mass Sweep", self._run_mass_sweep),
-            ("Estrutura", self._run_opt),
+            ("2D (F/R)",       self._calc_2d_front_rear),
+            ("Análise 3D",     self._calc_3d),
+            ("Visual 3D",      self._calc_full_3d),
+            ("Alinhamento",    self._calc_alignment_tab),
+            ("Cinemática",     self._run_kinematic_sweep),
+            ("Panhard",        self._calc_panhard_moments),
+            ("CG Sweep",       self._run_cg_sweep),
+            ("Mass Sweep",     self._run_mass_sweep),
+            ("Estrutura",      self._run_opt),
         ]
         for txt, cmd in actions:
             ttk.Button(bar, text=txt, command=cmd).pack(side="left", padx=4, pady=6)
@@ -700,84 +715,79 @@ class App:
     # =========================================================================
 
     def _calc_2d_front_rear(self):
-        if not SuspensionOrchestrator: return
-        ui_data = self._collect_preset()
-        
-        # O orquestrador deve receber o dicionário e devolver pontos prontos para plotagem
-        res_front = SuspensionOrchestrator.run_2d_analysis(ui_data, "FRONT")
-        res_rear = SuspensionOrchestrator.run_2d_analysis(ui_data, "REAR")
-
-        self.last_2d_results["front"] = {"h_ro": res_front.get("h_ro")}
-        self.last_2d_results["rear"] = {"h_ro": res_rear.get("h_ro")}
-
-        ax.clear()
-
-        # RIGID
-        if mode == "RIGID":
-            xr, yr, _ = self._hp_get(self._hp_key(corner_R, "Inf Out"))
-            xl, yl, _ = self._hp_get(self._hp_key(corner_L, "Inf Out"))
-            ax.plot([xl, xr], [yl, yr], "o-", linewidth=2, label="Eixo rígido (Inf Out L↔R)")
-
-            h_ro = 0.5 * (self._read("pf_ch_y") + self._read("pf_ax_y")) if axis == "FRONT" else \
-                   0.5 * (self._read("pr_ch_y") + self._read("pr_ax_y"))
-
-            ax.plot(0, h_ro, "*", markersize=14, label="RC (aprox. Panhard)")
-            ax.axvline(0, linestyle=":", color="k")
-            ax.set_title(f"{axis} 2D — Eixo Rígido")
-            ax.grid(True)
-            ax.legend(fontsize=8)
-            ax.set_aspect("equal", adjustable="datalim")
-
-            self.last_2d_results["front" if axis == "FRONT" else "rear"] = type(
-                "Rigid2DResult", (), {"h_ro": h_ro, "ic": None}
-            )()
-            self._update_2d_summary_label()
-            self.canvas_2d.draw()
+        if not SuspensionOrchestrator:
             return
+        self._safe_call(self._do_calc_2d, "Cálculo 2D")
+        self.content_area.select(self.tab_2d)
 
-        # DOUBLE_A
-        if math_2d is None:
-            raise RuntimeError("math_2d não foi importado (módulo de domínio faltando).")
+    def _do_calc_2d(self):
+        ui_data = self._collect_preset()
 
-        geoR = self._make_geo2d_for_corner(corner_R)
-        geoL = self._make_geo2d_for_corner(corner_L)
+        for axis, ax_obj, axis_key in [
+            ("FRONT", self.ax_2d_front, "front"),
+            ("REAR",  self.ax_2d_rear,  "rear"),
+        ]:
+            ax_obj.clear()
+            corners = ("FR", "FL") if axis == "FRONT" else ("RR", "RL")
+            mode_var = self.var_front_type if axis == "FRONT" else self.var_rear_type
+            mode = mode_var.get().strip().upper()
 
-        rcR = math_2d.calculate_roll_center(geoR)
-        rcL = math_2d.calculate_roll_center(geoL)
-        camR = math_2d.calculate_camber_gain(geoR)
+            if mode == "RIGID":
+                # Rigid axle: draw axle beam + approximate Panhard RC
+                corner_L, corner_R = corners[1], corners[0]
+                xr, yr, _ = self._hp_get(self._hp_key(corner_R, "Inf Out"))
+                xl, yl, _ = self._hp_get(self._hp_key(corner_L, "Inf Out"))
+                ax_obj.plot([xl, xr], [yl, yr], "o-", linewidth=2, label="Eixo rígido")
 
-        h_vals = []
-        if getattr(rcR, "h_ro", None) is not None:
-            h_vals.append(rcR.h_ro)
-        if getattr(rcL, "h_ro", None) is not None:
-            h_vals.append(rcL.h_ro)
-        h_ro_axis = sum(h_vals) / len(h_vals) if h_vals else None
+                if axis == "FRONT":
+                    h_ro = 0.5 * (self._read("pf_ch_y") + self._read("pf_ax_y"))
+                else:
+                    h_ro = 0.5 * (self._read("pr_ch_y") + self._read("pr_ax_y"))
 
-        self.last_2d_results["front" if axis == "FRONT" else "rear"] = type(
-            "Axis2DResult", (), {"h_ro": h_ro_axis, "rcR": rcR, "rcL": rcL, "camR": camR}
-        )()
+                ax_obj.plot(0, h_ro, "*", markersize=14, color="tab:orange", label=f"RC ≈ {h_ro:.1f} mm")
+                ax_obj.axvline(0, linestyle=":", color="k")
+                ax_obj.set_title(f"{axis} 2D — Eixo Rígido")
+                self.last_2d_results[axis_key] = {"h_ro": h_ro}
+            else:
+                # Double A-arm: compute roll centre via domain model
+                res = SuspensionOrchestrator.run_2d_analysis(ui_data, axis)
+                h_ro = res.get("h_ro", 0.0)
+                self.last_2d_results[axis_key] = {"h_ro": h_ro}
 
-        def fmt_ic(rc):
-            return f"({rc.ic.x:.1f},{rc.ic.y:.1f})" if getattr(rc, "ic", None) else "Paralelo"
+                colors_map = {corners[0]: "tab:blue", corners[1]: "tab:red"}
+                for c in corners:
+                    col = colors_map[c]
+                    try:
+                        ui_x, ui_y, _ = self._hp_get(self._hp_key(c, "Sup In"))
+                        uo_x, uo_y, _ = self._hp_get(self._hp_key(c, "Sup Out"))
+                        li_x, li_y, _ = self._hp_get(self._hp_key(c, "Inf In"))
+                        lo_x, lo_y, _ = self._hp_get(self._hp_key(c, "Inf Out"))
+                        ax_obj.plot([ui_x, uo_x], [ui_y, uo_y], "o--", color=col, label=f"{c} Upper")
+                        ax_obj.plot([li_x, lo_x], [li_y, lo_y], "o-",  color=col, label=f"{c} Lower")
+                    except Exception:
+                        pass
+                    rc = res["corners"].get(c)
+                    if rc and rc.instantaneous_center:
+                        ic = rc.instantaneous_center
+                        ax_obj.plot(ic.x, ic.y, "s", color=col, markersize=8)
+                        ax_obj.annotate(f"IC {c}", (ic.x, ic.y), fontsize=7, color=col)
+                    if rc and rc.roll_center_point:
+                        rcp = rc.roll_center_point
+                        ax_obj.plot(rcp.x, rcp.y, "*", color=col, markersize=12)
 
-        def plot_corner(geo, rc, label, col):
-            ax.plot([geo.upper_in.x, geo.upper_out.x], [geo.upper_in.y, geo.upper_out.y],
-                    "o--", label=f"{label} Upper", color=col)
-            ax.plot([geo.lower_in.x, geo.lower_out.x], [geo.lower_in.y, geo.lower_out.y],
-                    "o-", label=f"{label} Lower", color=col)
-            if getattr(rc, "ic", None):
-                ax.plot(rc.ic.x, rc.ic.y, "s", color=col)
-            if getattr(rc, "h_ro", None) is not None:
-                ax.plot(0, rc.h_ro, "*", markersize=12, color=col)
+                ax_obj.plot(0, h_ro, "D", color="k", markersize=10, label=f"RC avg {h_ro:.1f} mm")
+                ax_obj.set_title(f"{axis} 2D — Double A-arm")
 
-        plot_corner(geoR, rcR, "R", "tab:blue")
-        plot_corner(geoL, rcL, "L", "tab:red")
+            ax_obj.axvline(0, linestyle=":", color="k", linewidth=0.8)
+            ax_obj.axhline(0, linestyle="-", color="gray", linewidth=0.5)
+            ax_obj.grid(True)
+            ax_obj.legend(fontsize=7)
+            ax_obj.set_xlabel("X lateral [mm]")
+            ax_obj.set_ylabel("Y vertical [mm]")
 
-        ax.axvline(0, linestyle=":", color="k")
-        ax.set_title(f"{axis_name} 2D")
-        ax.grid(True)
-        ax.legend(fontsize=8)
-        ax.set_aspect("equal", adjustable="datalim")
+        self._update_2d_summary_label()
+        self.canvas_2d.draw()
+        self._set_status("✅ 2D calculado (Front + Rear).")
 
     def _update_2d_summary_label(self):
         f = self.last_2d_results.get("front", {}).get("h_ro")
@@ -904,50 +914,85 @@ class App:
     # 3D (domínio) + VISUALIZAÇÃO
     # =========================================================================
     def _calc_3d(self):
-        if models is None or math_3d is None:
-            raise RuntimeError("models/math_3d não importados.")
-
-        corner = (self.var_corner.get().strip() or "FR").upper()
-        self.last_alignment["CORNER"] = self._calc_alignment_corner(corner)
-
-        sup_in = self._get_point3d_from_input(self._hp_key(corner, "Sup In"))
-        sup_out = self._get_point3d_from_input(self._hp_key(corner, "Sup Out"))
-        inf_in = self._get_point3d_from_input(self._hp_key(corner, "Inf In"))
-        inf_out = self._get_point3d_from_input(self._hp_key(corner, "Inf Out"))
-
-        sup_out_x, sup_out_y, _ = self._hp_get(self._hp_key(corner, "Sup Out"))
-        inf_out_x, inf_out_y, _ = self._hp_get(self._hp_key(corner, "Inf Out"))
-
-        geo3d = models.SuspensionGeometry3D(
-            sup_in=sup_in, sup_out=sup_out, inf_in=inf_in, inf_out=inf_out,
-            spindle_sup=models.Point3D(sup_out_x, sup_out_y, self._read("spindle_sup_z")),
-            spindle_inf=models.Point3D(inf_out_x, inf_out_y, self._read("spindle_inf_z")),
-            toe_front=models.Point3D(self._read("toe_f_x"), 0, 0),
-            toe_rear=models.Point3D(self._read("toe_r_x"), 0, 0),
-            stiffness_ratio_sup=1.0, stiffness_ratio_inf=1.0,
-            fx_tire=self._read("fx"),
-        )
-
-        forces = math_3d.calculate_forces(geo3d)
-        self.last_3d_results = forces
-
-        al = self.last_alignment["CORNER"]
-        if forces:
-            self.lbl_3d_res.config(text=(
-                f"Canto: {corner}\n"
-                f"Camber={al['camber_deg']:.3f}°  Caster={al['caster_deg']:.3f}°  Toe={al['toe_deg']:.3f}°\n"
-                f"F Axial Sup: {forces.upper.axial:.1f} N\n"
-                f"F Axial Inf: {forces.lower.axial:.1f} N"
-            ))
-        else:
-            self.lbl_3d_res.config(text=(
-                f"Canto: {corner}\n"
-                f"Camber={al['camber_deg']:.3f}°  Caster={al['caster_deg']:.3f}°  Toe={al['toe_deg']:.3f}°\n"
-                f"Forças: (sem retorno do domínio)"
-            ))
-
-        self._set_status("✅ 3D calculado.")
+        if not SuspensionOrchestrator:
+            messagebox.showerror("Erro", "Orquestrador não importado.")
+            return
+        self._safe_call(self._do_calc_3d, "Cálculo 3D")
         self.content_area.select(self.tab_3d)
+
+    def _do_calc_3d(self):
+        corner = (self.var_corner.get().strip() or "FR").upper()
+        ui_data = self._collect_preset()
+
+        result = SuspensionOrchestrator.run_full_3d_analysis(ui_data, corner)
+        self.last_3d_results = result
+
+        m = result["metrics"]
+        kp = m.kingpin_parameters
+        rc = m.roll_center_parameters
+        ta = m.tire_angles
+        ad = m.anti_dive_parameters
+        aq = m.anti_squat_parameters
+
+        lines = [
+            f"═══════ Canto: {corner} ═══════",
+            "",
+            "── Ângulos do Pneu ──────────────────",
+            f"  Cambagem (KPI)  : {math.degrees(ta.camber):+.3f} °",
+            f"  Convergência     : {math.degrees(ta.toe):+.3f} °",
+            "",
+            "── Geometria do Kingpin ─────────────",
+            f"  Inclinação (KPI) : {math.degrees(kp.inclination):+.3f} °",
+            f"  Caster           : {math.degrees(kp.caster):+.3f} °",
+            f"  Scrub Radius     : {kp.scrub_radius:+.2f} mm",
+            f"  Mechanical Trail : {kp.mechanical_trail:+.2f} mm",
+            "",
+            "── Centro de Rolamento ──────────────",
+        ]
+
+        if rc.roll_center_point is not None:
+            lines += [
+                f"  h_RC             : {rc.roll_center_point.y:.2f} mm",
+                f"  Q Factor (Reimp) : {rc.q_factor:.4f}" if rc.q_factor is not None else "  Q Factor        : --",
+            ]
+            if rc.instantaneous_center is not None:
+                ic = rc.instantaneous_center
+                lines.append(f"  IC (x,y)         : ({ic.x:.1f}, {ic.y:.1f}) mm")
+        else:
+            lines.append("  Roll Center      : paralelo / não calculado")
+
+        lines += [
+            "",
+            "── Geometria Longitudinal ───────────",
+            f"  Anti-Dive        : {ad.percentage:+.1f} %",
+            f"  Anti-Squat       : {aq.percentage:+.1f} %",
+        ]
+
+        st = result.get("steering")
+        if st is not None:
+            lines += [
+                "",
+                "── Ackermann / Direção ──────────────",
+                f"  Ângulo interno   : {math.degrees(st.inner_angle):.2f} °",
+                f"  Ângulo externo   : {math.degrees(st.outer_angle):.2f} °",
+                f"  Ideal externo    : {math.degrees(st.ideal_outer_angle):.2f} °",
+                f"  % Ackermann      : {st.ackermann_percentage:.1f} %",
+                f"  Raio de curva    : {st.turning_radius:.0f} mm",
+            ]
+
+        cg_tuple = result.get("camber_gain")
+        if cg_tuple is not None:
+            static_rad, new_rad, gain = cg_tuple
+            lines += [
+                "",
+                "── Ganho de Câmbagem (20 mm bump) ───",
+                f"  Câmbagem estática: {math.degrees(static_rad):+.3f} °",
+                f"  Câmbagem nova    : {math.degrees(new_rad):+.3f} °",
+                f"  Ganho            : {gain:+.4f} °/mm",
+            ]
+
+        self.lbl_3d_res.config(text="\n".join(lines))
+        self._set_status(f"✅ Análise 3D completa — canto {corner}.")
 
     def _calc_full_3d(self):
         ax = self.ax_vis3d
@@ -1010,17 +1055,17 @@ class App:
                 ax.text(ptxt.x, ptxt.z, ptxt.y, f" {corner}", fontsize=9)
 
         def draw_rigid_axle(axis: str):
-            if models is None:
+            if Point3D is None:
                 return
 
             if axis == "FRONT":
                 left_corner, right_corner = "FL", "FR"
-                ch = models.Point3D(self._read("pf_ch_x"), self._read("pf_ch_y"), self._read("pf_ch_z"))
-                axp = models.Point3D(self._read("pf_ax_x"), self._read("pf_ax_y"), self._read("pf_ax_z"))
+                ch  = Point3D(self._read("pf_ch_x"), self._read("pf_ch_y"), self._read("pf_ch_z"))
+                axp = Point3D(self._read("pf_ax_x"), self._read("pf_ax_y"), self._read("pf_ax_z"))
             else:
                 left_corner, right_corner = "RL", "RR"
-                ch = models.Point3D(self._read("pr_ch_x"), self._read("pr_ch_y"), self._read("pr_ch_z"))
-                axp = models.Point3D(self._read("pr_ax_x"), self._read("pr_ax_y"), self._read("pr_ax_z"))
+                ch  = Point3D(self._read("pr_ch_x"), self._read("pr_ch_y"), self._read("pr_ch_z"))
+                axp = Point3D(self._read("pr_ax_x"), self._read("pr_ax_y"), self._read("pr_ax_z"))
 
             pl = getp(left_corner, "Inf Out")
             pr = getp(right_corner, "Inf Out")
@@ -1056,12 +1101,12 @@ class App:
             draw_rigid_axle("REAR")
 
         valid_pts = [p for p in pts.values() if p is not None]
-        if models is not None:
+        if Point3D is not None:
             try:
-                pf_ch = models.Point3D(self._read("pf_ch_x"), self._read("pf_ch_y"), self._read("pf_ch_z"))
-                pf_ax = models.Point3D(self._read("pf_ax_x"), self._read("pf_ax_y"), self._read("pf_ax_z"))
-                pr_ch = models.Point3D(self._read("pr_ch_x"), self._read("pr_ch_y"), self._read("pr_ch_z"))
-                pr_ax = models.Point3D(self._read("pr_ax_x"), self._read("pr_ax_y"), self._read("pr_ax_z"))
+                pf_ch = Point3D(self._read("pf_ch_x"), self._read("pf_ch_y"), self._read("pf_ch_z"))
+                pf_ax = Point3D(self._read("pf_ax_x"), self._read("pf_ax_y"), self._read("pf_ax_z"))
+                pr_ch = Point3D(self._read("pr_ch_x"), self._read("pr_ch_y"), self._read("pr_ch_z"))
+                pr_ax = Point3D(self._read("pr_ax_x"), self._read("pr_ax_y"), self._read("pr_ax_z"))
                 valid_pts += [pf_ch, pf_ax, pr_ch, pr_ax]
             except Exception:
                 pass
@@ -1098,45 +1143,75 @@ class App:
     # DYNAMICS
     # =========================================================================
     def _run_cg_sweep(self):
-        if not SuspensionOrchestrator: return
-        h_ro = self.last_2d_results.get("front", {}).get("h_ro") or 100.0
+        if not SuspensionOrchestrator:
+            return
+        self._safe_call(self._do_cg_sweep, "CG Sweep")
+        self.content_area.select(self.tab_dyn)
+
+    def _do_cg_sweep(self):
+        h_ro = (self.last_2d_results.get("front") or {}).get("h_ro") or 100.0
         ui_data = self._collect_preset()
-        
         results = SuspensionOrchestrator.run_cg_sweep(ui_data, h_ro)
-        
+
         for i in self.tree_cg.get_children():
             self.tree_cg.delete(i)
-        
+
         h_vals, dfz_vals, m_vals = [], [], []
         for r in results:
-            self.tree_cg.insert("", "end", values=(f"{r.h_cg:.1f}", f"{r.d_fz:.1f}", f"{r.fz_int:.1f}", f"{r.m_roll:.1f}"))
+            self.tree_cg.insert("", "end", values=(
+                f"{r.h_cg:.1f}", f"{r.d_fz:.1f}", f"{r.fz_int:.1f}", f"{r.m_roll:.1f}",
+            ))
+            h_vals.append(r.h_cg)
+            dfz_vals.append(r.d_fz)
+            m_vals.append(r.m_roll)
+
         zebra_stripes(self.tree_cg)
         autosize_treeview_columns(self.tree_cg)
 
-        self.ax_cg1.clear(); self.ax_cg2.clear()
-        self.ax_cg1.plot(h_vals, dfz_vals, "o-"); self.ax_cg1.set_title("Transf. Carga vs CG"); self.ax_cg1.grid(True)
-        self.ax_cg2.plot(h_vals, m_vals, "o-"); self.ax_cg2.set_title("Momento Roll vs CG"); self.ax_cg2.grid(True)
+        self.ax_cg1.clear()
+        self.ax_cg1.plot(h_vals, dfz_vals, "o-", color="tab:blue")
+        self.ax_cg1.set_xlabel("h_CG [mm]")
+        self.ax_cg1.set_ylabel("ΔFz [N]")
+        self.ax_cg1.set_title("Transferência de Carga vs CG")
+        self.ax_cg1.grid(True)
+
+        self.ax_cg2.clear()
+        self.ax_cg2.plot(h_vals, m_vals, "o-", color="tab:orange")
+        self.ax_cg2.set_xlabel("h_CG [mm]")
+        self.ax_cg2.set_ylabel("M_roll [N·mm]")
+        self.ax_cg2.set_title("Momento de Rolamento vs CG")
+        self.ax_cg2.grid(True)
+
         self.canvas_cg.draw()
-        self.content_area.select(self.tab_dyn)
+        self._set_status(f"✅ CG Sweep concluído ({len(results)} pontos).")
 
     def _run_mass_sweep(self):
-        if not SuspensionOrchestrator: return
-        h_ro = self.last_2d_results.get("front", {}).get("h_ro") or 100.0
+        if not SuspensionOrchestrator:
+            return
+        self._safe_call(self._do_mass_sweep, "Mass Sweep")
+        self.content_area.select(self.tab_dyn)
+
+    def _do_mass_sweep(self):
+        h_ro = (self.last_2d_results.get("front") or {}).get("h_ro") or 100.0
         ui_data = self._collect_preset()
-        
         results = SuspensionOrchestrator.run_mass_sweep(ui_data, h_ro)
-        
+
         for i in self.tree_mass.get_children():
             self.tree_mass.delete(i)
-            
+
         for r in results:
             self.tree_mass.insert("", "end", values=(
-                f"{r['mass']:.0f}", f"{r['m_roll']:.1f}", f"{r['d_fz']:.1f}",
-                f"{r['ssf']:.3f}", f"{r['ay_crit']:.2f}", f"{r['margin']:.2f}"
+                f"{r['mass']:.0f}",
+                f"{r['m_roll']:.1f}",
+                f"{r['d_fz']:.1f}",
+                f"{r['ssf']:.3f}",
+                f"{r['ay_crit']:.2f}",
+                f"{r['margin']:.2f}",
             ))
+
         zebra_stripes(self.tree_mass)
         autosize_treeview_columns(self.tree_mass)
-        self.content_area.select(self.tab_dyn)
+        self._set_status(f"✅ Mass Sweep concluído ({len(results)} pontos).")
 
     def _run_opt(self):
         if not SuspensionOrchestrator: return
@@ -1170,10 +1245,6 @@ class App:
     # =========================================================================
     # VIEW CONTROL (3D)
     # =========================================================================
-    def _calc_full_3d(self):
-        # A Plotagem Visual 3D pode permanecer na UI consultando os Dicionários ou via Orquestrador.
-        pass
-
     def _toggle_free_view(self):
         self.free_view = not self.free_view
         self._apply_view_mode()
@@ -1210,26 +1281,29 @@ class App:
     # SETUP DAS ABAS (agora com “tabelas colapsáveis” + botões úteis)
     # =========================================================================
     def _init_result_tabs(self):
-        self.tab_2d = ttk.Frame(self.content_area)
-        self.tab_3d = ttk.Frame(self.content_area)
-        self.tab_vis3d = ttk.Frame(self.content_area)
-        self.tab_align = ttk.Frame(self.content_area)
-        self.tab_dyn = ttk.Frame(self.content_area)
-        self.tab_opt = ttk.Frame(self.content_area)
+        self.tab_2d      = ttk.Frame(self.content_area)
+        self.tab_3d      = ttk.Frame(self.content_area)
+        self.tab_vis3d   = ttk.Frame(self.content_area)
+        self.tab_align   = ttk.Frame(self.content_area)
+        self.tab_kinswp  = ttk.Frame(self.content_area)
         self.tab_panhard = ttk.Frame(self.content_area)
+        self.tab_dyn     = ttk.Frame(self.content_area)
+        self.tab_opt     = ttk.Frame(self.content_area)
 
-        self.content_area.add(self.tab_2d, text="Resultados 2D (Front/Rear)")
-        self.content_area.add(self.tab_3d, text="Resultados 3D")
-        self.content_area.add(self.tab_vis3d, text="Visualização 3D")
-        self.content_area.add(self.tab_align, text="Alinhamento (Camber/Caster/Toe)")
-        self.content_area.add(self.tab_panhard, text="Panhard (Momento)")
-        self.content_area.add(self.tab_dyn, text="Dinâmica Veicular")
-        self.content_area.add(self.tab_opt, text="Otimização")
+        self.content_area.add(self.tab_2d,      text="Resultados 2D")
+        self.content_area.add(self.tab_3d,      text="Análise 3D Completa")
+        self.content_area.add(self.tab_vis3d,   text="Visualização 3D")
+        self.content_area.add(self.tab_align,   text="Alinhamento")
+        self.content_area.add(self.tab_kinswp,  text="Cinemática (Sweep)")
+        self.content_area.add(self.tab_panhard, text="Panhard")
+        self.content_area.add(self.tab_dyn,     text="Dinâmica")
+        self.content_area.add(self.tab_opt,     text="Otimização")
 
         self._setup_res_2d(self.tab_2d)
         self._setup_res_3d(self.tab_3d)
         self._setup_res_vis3d(self.tab_vis3d)
         self._setup_res_align(self.tab_align)
+        self._setup_res_kinswp(self.tab_kinswp)
         self._setup_res_panhard(self.tab_panhard)
         self._setup_res_dyn(self.tab_dyn)
         self._setup_res_opt(self.tab_opt)
@@ -1307,6 +1381,75 @@ class App:
             self.tree_align.heading(c, text=c)
             self.tree_align.column(c, width=150, anchor="center")
         self.tree_align.pack(fill="both", expand=True)
+
+    def _setup_res_kinswp(self, parent):
+        top = ttk.Frame(parent, padding=10)
+        top.pack(fill="x")
+        ttk.Label(top, text="Cinemática: Câmbagem vs Curso", font=("Segoe UI", 11, "bold")).pack(side="left")
+        ttk.Button(top, text="Calcular Sweep", command=self._run_kinematic_sweep).pack(side="left", padx=10)
+        ttk.Button(top, text="Copiar tabela", command=lambda: copy_treeview_to_clipboard(self.root, self.tree_kinswp)).pack(side="left", padx=6)
+
+        sec_plot = CollapsibleSection(parent, "Gráfico Câmbagem vs Curso (abre/fecha)", initially_open=True)
+        sec_plot.pack(fill="both", expand=True, padx=12, pady=(6, 4))
+        self.fig_kinswp, self.ax_kinswp = plt.subplots(figsize=(7, 3.5))
+        self.canvas_kinswp = FigureCanvasTkAgg(self.fig_kinswp, master=sec_plot.body)
+        self.canvas_kinswp.get_tk_widget().pack(fill="both", expand=True)
+
+        sec_tbl = CollapsibleSection(parent, "Tabela Cinemática (abre/fecha)", initially_open=True)
+        sec_tbl.pack(fill="x", padx=12, pady=(0, 12))
+
+        cols_k = ("Curso_mm", "Camb_estatica_deg", "Camb_nova_deg", "Ganho_deg_per_mm")
+        self.tree_kinswp = ttk.Treeview(sec_tbl.body, columns=cols_k, show="headings", height=10)
+        for c in cols_k:
+            self.tree_kinswp.heading(c, text=c)
+            self.tree_kinswp.column(c, anchor="center", width=160)
+        self.tree_kinswp.pack(fill="x")
+
+    def _run_kinematic_sweep(self):
+        if not SuspensionOrchestrator:
+            return
+        self._safe_call(self._do_kinematic_sweep, "Cinemática Sweep")
+        self.content_area.select(self.tab_kinswp)
+
+    def _do_kinematic_sweep(self):
+        corner = (self.var_corner.get().strip() or "FR").upper()
+        ui_data = self._collect_preset()
+
+        results = SuspensionOrchestrator.run_kinematic_sweep(
+            ui_data, corner,
+            travel_min=-40.0, travel_max=40.0, n_steps=17,
+        )
+
+        for i in self.tree_kinswp.get_children():
+            self.tree_kinswp.delete(i)
+
+        travels, cambers = [], []
+        for r in results:
+            self.tree_kinswp.insert("", "end", values=(
+                f"{r['travel_mm']:.1f}",
+                f"{r['static_camber_deg']:.3f}",
+                f"{r['new_camber_deg']:.3f}",
+                f"{r['gain_deg_per_mm']:.4f}",
+            ))
+            travels.append(r["travel_mm"])
+            cambers.append(r["new_camber_deg"])
+
+        zebra_stripes(self.tree_kinswp)
+        autosize_treeview_columns(self.tree_kinswp)
+
+        self.ax_kinswp.clear()
+        if travels:
+            static_val = results[len(results) // 2]["static_camber_deg"]
+            self.ax_kinswp.plot(travels, cambers, "o-", label="Câmbagem vs Curso")
+            self.ax_kinswp.axhline(static_val, linestyle="--", color="gray", label=f"Estática {static_val:.2f}°")
+            self.ax_kinswp.axvline(0, linestyle=":", color="k")
+        self.ax_kinswp.set_xlabel("Curso vertical [mm]  (+ = bump)")
+        self.ax_kinswp.set_ylabel("Câmbagem [°]")
+        self.ax_kinswp.set_title(f"Câmbagem Cinemática — canto {corner}")
+        self.ax_kinswp.grid(True)
+        self.ax_kinswp.legend(fontsize=8)
+        self.canvas_kinswp.draw()
+        self._set_status(f"✅ Cinemática sweep — canto {corner} ({len(results)} pontos).")
 
     def _setup_res_panhard(self, parent):
         top = ttk.Frame(parent, padding=10)
@@ -1391,40 +1534,132 @@ class App:
     # PERSISTÊNCIA E UTILITÁRIOS
     # =========================================================================
     def _collect_preset(self) -> dict:
+        """
+        Build a flat dictionary suitable for the orchestrator methods.
+
+        Hardpoints are stored as (x, y, z) float tuples keyed by
+        "<corner> <point>" so orchestrators can call:
+            ui_data["FR Sup In"]  →  (450.0, 420.0, 200.0)
+        Scalar entries are kept as strings (safe_num handles conversion).
+        """
         data = {k: e.get() for k, e in self.entries.items()}
-        hp = {lbl: {"x": v[0].get(), "y": v[1].get(), "z": v[2].get()} for lbl, v in self.entries_hp.items()}
-        data["_hardpoints"] = hp
-        data["_corner"] = self.var_corner.get()
+        for lbl, (ex, ey, ez) in self.entries_hp.items():
+            try:
+                data[lbl] = (float(ex.get()), float(ey.get()), float(ez.get()))
+            except ValueError:
+                data[lbl] = (0.0, 0.0, 0.0)
+        data["_corner"]     = self.var_corner.get()
         data["_front_type"] = self.var_front_type.get()
-        data["_rear_type"] = self.var_rear_type.get()
-        data["_static"] = getattr(self, "var_static", tk.IntVar(value=0)).get()
+        data["_rear_type"]  = self.var_rear_type.get()
+        data["_static"]     = getattr(self, "var_static", tk.IntVar(value=0)).get()
         data["_vis3d_mode"] = self.var_vis3d_mode.get()
         return data
 
     def _apply_preset(self, data: dict):
+        # Scalar fields
         for k, e in self.entries.items():
             if k in data:
                 e.delete(0, tk.END)
                 e.insert(0, str(data[k]))
-        hp = data.get("_hardpoints", {})
-        for lbl, coords in hp.items():
-            if lbl in self.entries_hp:
-                ex, ey, ez = self.entries_hp[lbl]
-                ex.delete(0, tk.END); ex.insert(0, str(coords.get("x", ex.get())))
-                ey.delete(0, tk.END); ey.insert(0, str(coords.get("y", ey.get())))
-                ez.delete(0, tk.END); ez.insert(0, str(coords.get("z", ez.get())))
+        # Hardpoints — support both tuple and {"x":, "y":, "z":} formats
+        for lbl, (ex, ey, ez) in self.entries_hp.items():
+            if lbl not in data:
+                continue
+            v = data[lbl]
+            if isinstance(v, (list, tuple)) and len(v) == 3:
+                xv, yv, zv = v
+            elif isinstance(v, dict):
+                xv = v.get("x", ex.get())
+                yv = v.get("y", ey.get())
+                zv = v.get("z", ez.get())
+            else:
+                continue
+            ex.delete(0, tk.END); ex.insert(0, str(xv))
+            ey.delete(0, tk.END); ey.insert(0, str(yv))
+            ez.delete(0, tk.END); ez.insert(0, str(zv))
 
     def _save_preset(self):
         path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON", "*.json")])
-        if path:
-            with open(path, "w", encoding="utf-8") as f:
-                json.dump(self._collect_preset(), f, indent=2, ensure_ascii=False)
+        if not path:
+            return
+        raw = self._collect_preset()
+        # Convert tuples to lists for JSON serialisation
+        serialisable = {
+            k: list(v) if isinstance(v, tuple) else v
+            for k, v in raw.items()
+        }
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(serialisable, f, indent=2, ensure_ascii=False)
 
     def _load_preset(self):
         path = filedialog.askopenfilename(filetypes=[("JSON", "*.json")])
         if path:
             with open(path, "r", encoding="utf-8") as f:
                 self._apply_preset(json.load(f))
+
+    def _reset_defaults(self):
+        defaults_entries = {
+            "bf": 1250, "wb": 1550,
+            "s1": 40, "s2": 30,
+            "cam_o": -1.5, "cam_i": -4.0,
+            "spindle_sup_z": 300, "spindle_inf_z": 300,
+            "toe_f_x": 600, "toe_r_x": 600,
+            "mass": 260, "hcg": 450, "ay": 9.8, "fx": 1200, "rs": 50,
+            "h_min": 250, "h_max": 650,
+            "m_min": 180, "m_max": 300, "step": 25,
+            "front_share": 0.55,
+            "load": 3000, "ang_sup": 10, "ang_inf": 20,
+            "limit": 8000, "ksup": 0.5, "amin": 0, "amax": 40,
+        }
+        for k, v in defaults_entries.items():
+            self._set(k, v)
+
+        base_defaults = {
+            "Sup In": (450, 420, 200), "Sup Out": (625, 390, 300),
+            "Inf In": (430, 210, 200), "Inf Out": (625, 190, 300),
+            "Toe In": (520, 260, 120), "Toe Out": (650, 260, 180),
+            "Damper In": (380, 520, 150), "Damper Out": (610, 430, 260),
+        }
+        for corner in ("FR", "FL", "RR", "RL"):
+            for p, (dx, dy, dz) in base_defaults.items():
+                if corner in ("FL", "RL"):
+                    dx = -dx
+                lbl = self._hp_key(corner, p)
+                if lbl in self.entries_hp:
+                    self._hp_set(lbl, dx, dy, dz)
+
+        self._set_status("✅ Valores padrão restaurados.")
+
+    def _export_hardpoints_csv(self):
+        path = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV", "*.csv")],
+        )
+        if not path:
+            return
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["label", "x", "y", "z"])
+            for lbl, (ex, ey, ez) in self.entries_hp.items():
+                writer.writerow([lbl, ex.get(), ey.get(), ez.get()])
+        self._set_status(f"✅ Hardpoints exportados → {path}")
+
+    def _import_hardpoints_csv(self):
+        path = filedialog.askopenfilename(filetypes=[("CSV", "*.csv")])
+        if not path:
+            return
+        with open(path, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                lbl = row.get("label", "").strip()
+                if lbl in self.entries_hp:
+                    self._hp_set(
+                        lbl,
+                        row.get("x", "0"),
+                        row.get("y", "0"),
+                        row.get("z", "0"),
+                    )
+        self._set_status(f"✅ Hardpoints importados de {path}")
 
 if __name__ == "__main__":
     root = tk.Tk()

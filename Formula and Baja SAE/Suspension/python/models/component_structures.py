@@ -1,5 +1,5 @@
-from lines import LineCoefficients3D
-from primitives import Point2D, Point3D, Vector3D
+from models.lines import LineCoefficients3D
+from models.primitives import Point2D, Point3D, Vector3D
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
@@ -15,12 +15,12 @@ class ThreePointArm:
     @property
     def inner_vector(self) -> Vector3D:
         return Vector3D.from_points(self.fore_inner, self.aft_inner)
-    
+
     @property
     def outer_line(self) -> LineCoefficients3D:
         return LineCoefficients3D(
-            origin = self.outer,
-            direction = self.inner_vector.direction
+            origin=self.outer,
+            direction=self.inner_vector.normalize()
         )
 
     @property
@@ -29,7 +29,7 @@ class ThreePointArm:
         return Vector3D.from_points(self.fore_inner, self.outer)
 
     @property
-    def vector_aft(self) -> Point3D:
+    def vector_aft(self) -> Vector3D:
         """Vector from Chassis Aft to Upright (Outer - Aft)."""
         return Vector3D.from_points(self.aft_inner, self.outer)
 
@@ -52,7 +52,7 @@ class TwoPointLink3D:
     def vector(self) -> Vector3D:
         """Vector from Inner to Outer."""
         return Vector3D.from_points(self.inner, self.outer)
-    
+
     @property
     def length(self) -> float:
         return self.vector.magnitude
