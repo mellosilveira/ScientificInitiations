@@ -30,3 +30,11 @@
 - A abertura efetiva da janela Tkinter exige um computador com ambiente gráfico.
 - O módulo `KinematicsOrchestrator` ainda depende de um solver cinemático no modelo `Suspension` (`clone/apply_bump` ou `solve_kinematics`) quando utilizado diretamente. A interface principal usa a varredura implementada em `SuspensionOrchestrator`.
 - `models/math_2d.py` foi mantido por compatibilidade, embora exista também `calculators/math_2d.py`. Recomenda-se consolidar esses dois módulos em uma futura revisão funcional, após confirmar quais chamadas externas ainda dependem do módulo legado.
+
+## Correção 3D — centro instantâneo longitudinal
+
+- Corrigida a exceção `'NoneType' object has no attribute 'x'` durante **Análise 3D**.
+- A causa era a interseção dos eixos internos dos braços superior e inferior, que normalmente são paralelos e retornavam `None`.
+- O centro instantâneo longitudinal passou a ser calculado corretamente na vista lateral (plano Y-Z), usando as linhas entre os pivôs internos médios e os pivôs externos.
+- Geometrias paralelas ou degeneradas agora retornam resultado neutro sem interromper a aplicação.
+- Testado nos quatro cantos com os hardpoints padrão.

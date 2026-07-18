@@ -1,8 +1,12 @@
+from ui_ux.advanced_engineering import AdvancedEngineeringWindow
 import json
 import csv
 import math
+import sys
+from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
+from engineering_reports import EngineeringReportEngine
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -42,11 +46,17 @@ except Exception as e:
 # =============================================================================
 # UI/UX FALLBACK (se uic não existir): tema cinza + seções colapsáveis + scroll
 # =============================================================================
-_BG = "#d0d0d0"        # fundo cinza claro (pedido)
-_PANEL = "#e0e0e0"     # painéis
-_PANEL2 = "#f0f0f0"    # cards
-_TEXT = "#111111"
-_ACCENT = "#5a5a5a"
+_BG = "#eef2f6"        # fundo técnico neutro
+_PANEL = "#dce5ee"     # painéis
+_PANEL2 = "#ffffff"    # cards e abas ativas
+_TEXT = "#17212b"
+_ACCENT = "#005A96"
+
+
+def resource_path(relative_path: str) -> Path:
+    """Resolve recursos no código-fonte e em builds empacotados (ex.: PyInstaller)."""
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+    return base / relative_path
 
 
 class ToolTip:
@@ -148,7 +158,7 @@ class ScrollableFrame(ttk.Frame):
 
 def setup_style(root: tk.Tk):
     """
-    Tema cinza e consistente usando ttk.
+    Tema técnico consistente, com alto contraste e hierarquia visual.
     """
     try:
         style = ttk.Style(root)
@@ -165,7 +175,7 @@ def setup_style(root: tk.Tk):
     style.configure("TLabelframe", background=_BG, foreground=_TEXT)
     style.configure("TLabelframe.Label", background=_BG, foreground=_TEXT, font=("Segoe UI", 9, "bold"))
     style.configure("TLabel", background=_BG, foreground=_TEXT)
-    style.configure("TButton", padding=(10, 6), background=_PANEL, foreground=_TEXT)
+    style.configure("TButton", padding=(10, 6), background=_PANEL, foreground=_TEXT, relief="flat")
     style.map("TButton", background=[("active", _PANEL2)], foreground=[("disabled", "#777777")])
 
     # Entradas/Combobox
@@ -175,7 +185,7 @@ def setup_style(root: tk.Tk):
     # Notebook
     style.configure("TNotebook", background=_BG, tabmargins=(6, 6, 6, 0))
     style.configure("TNotebook.Tab", background=_PANEL, padding=(12, 6))
-    style.map("TNotebook.Tab", background=[("selected", _PANEL2)])
+    style.map("TNotebook.Tab", background=[("selected", _PANEL2)], foreground=[("selected", _ACCENT)])
 
     # Seções colapsáveis
     style.configure("Section.TFrame", background=_BG)
@@ -294,11 +304,22 @@ def cross(a: Vec3, b: Vec3) -> Vec3:
 class App:
     def __init__(self, root: tk.Tk):
         self.root = root
-        self.root.title("Simas Turbo")
-        self.root.geometry("1920x1080")
+        self.root.title("MudRunner — Baja Suspension Engineering Suite v2.0")
+        self.root.geometry("1600x900")
+        self.root.minsize(1180, 720)
         self.root.configure(bg=_BG)
 
-        # aplica tema cinza (mesmo se tiver uic externo, a UI fica consistente)
+        # Identidade visual MudRunner. A referência precisa permanecer viva no App.
+        self.brand_logo = None
+        try:
+            logo_path = resource_path("assets/mudrunner_logo.png")
+            if logo_path.exists():
+                self.brand_logo = tk.PhotoImage(file=str(logo_path))
+                self.root.iconphoto(True, self.brand_logo)
+        except Exception as exc:
+            print(f"AVISO: não foi possível carregar o logotipo MudRunner: {exc}")
+
+        # aplica tema técnico (mesmo se tiver uic externo, a UI fica consistente)
         setup_style(self.root)
 
         # Modo do VIS 3D (AUTO herda FRONT/REAR, ou força DOUBLE_A/RIGID)
@@ -313,6 +334,9 @@ class App:
         self.last_3d_results = None
         self.last_panhard = {"front": None, "rear": None}
         self.last_alignment = {"FRONT": None, "REAR": None, "CORNER": None}
+        self.report_engine = EngineeringReportEngine()
+        self.report_history = []
+        self.last_report = None
 
         self.entries = {}
         self.entries_hp = {}
@@ -395,6 +419,10 @@ class App:
         self._init_result_tabs()
         self._build_statusbar()
 
+
+    def _open_advanced_engineering(self):
+        AdvancedEngineeringWindow(self.root, level="2.0")
+
     # =========================================================================
     # HELPERS DE UI
     # =========================================================================
@@ -432,6 +460,66 @@ class App:
             self._set_status(f"Erro em {name}: {e}")
             messagebox.showerror(f"Erro em {name}", str(e))
             return False
+
+    def _publish_report(self, report):
+        """Registra, exibe e disponibiliza para exportação o relatório mais recente."""
+        self.last_report = report
+        self.report_history.append(report)
+        if len(self.report_history) > 100:
+            self.report_history = self.report_history[-100:]
+        if hasattr(self, "report_text"):
+            self.report_text.configure(state="normal")
+            self.report_text.delete("1.0", tk.END)
+            self.report_text.insert("1.0", report.to_text())
+            self.report_text.configure(state="disabled")
+        if hasattr(self, "lbl_report_score"):
+            self.lbl_report_score.config(text=f"{report.score}/100 — {report.verdict}")
+        if hasattr(self, "report_history_list"):
+            self.report_history_list.insert(tk.END, f"{report.created_at} | {report.score:03d} | {report.title}")
+            self.report_history_list.see(tk.END)
+        self._set_status(f"Relatório gerado: {report.score}/100 — {report.verdict}")
+
+    def _show_latest_report(self):
+        if not self.last_report:
+            messagebox.showinfo("Relatório técnico", "Execute um cálculo para gerar a primeira avaliação.")
+            return
+        self.content_area.select(self.tab_report)
+
+    def _export_latest_report(self):
+        if not self.last_report:
+            messagebox.showinfo("Exportar relatório", "Nenhum relatório foi gerado.")
+            return
+        path = filedialog.asksaveasfilename(
+            title="Exportar relatório técnico", defaultextension=".txt",
+            filetypes=[("Relatório de texto", "*.txt"), ("JSON", "*.json")]
+        )
+        if not path:
+            return
+        from pathlib import Path
+        out = Path(path)
+        if out.suffix.lower() == ".json":
+            import json
+            out.write_text(json.dumps(self.last_report.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
+        else:
+            out.write_text(self.last_report.to_text(), encoding="utf-8")
+        self._set_status(f"Relatório exportado: {out.name}")
+
+    def _select_report_history(self, _event=None):
+        if not hasattr(self, "report_history_list"):
+            return
+        sel = self.report_history_list.curselection()
+        if not sel:
+            return
+        idx = sel[0]
+        if idx >= len(self.report_history):
+            return
+        report = self.report_history[idx]
+        self.last_report = report
+        self.report_text.configure(state="normal")
+        self.report_text.delete("1.0", tk.END)
+        self.report_text.insert("1.0", report.to_text())
+        self.report_text.configure(state="disabled")
+        self.lbl_report_score.config(text=f"{report.score}/100 — {report.verdict}")
 
     # =========================================================================
     # HARDPOINTS HELPERS
@@ -518,33 +606,59 @@ class App:
     # TOPBAR / STATUS
     # =========================================================================
     def _build_topbar(self):
-        bar = ttk.Frame(self.root)
-        bar.pack(fill="x")
+        """Cabeçalho de marca e comandos, dividido em duas faixas para evitar poluição visual."""
+        shell = ttk.Frame(self.root)
+        shell.pack(fill="x")
 
-        ttk.Label(bar, text="Ações rápidas", font=("Segoe UI", 10, "bold")).pack(side="left", padx=(10, 12))
+        brand_row = ttk.Frame(shell)
+        brand_row.pack(fill="x", padx=10, pady=(6, 2))
+
+        if self.brand_logo is not None:
+            ttk.Label(brand_row, image=self.brand_logo).pack(side="left", padx=(0, 10))
+
+        title_box = ttk.Frame(brand_row)
+        title_box.pack(side="left", fill="x", expand=True)
+        ttk.Label(
+            title_box,
+            text="MUDRUNNER — BAJA SUSPENSION ENGINEERING SUITE",
+            font=("Segoe UI", 13, "bold"),
+            foreground=_ACCENT,
+        ).pack(anchor="w")
+        ttk.Label(
+            title_box,
+            text="Ferramenta de engenharia para geometria, cinemática e validação preliminar de suspensão",
+            font=("Segoe UI", 9),
+        ).pack(anchor="w")
+
+        ttk.Button(brand_row, text="Relatório técnico", command=self._show_latest_report).pack(side="right", padx=(6, 0))
+        ttk.Button(brand_row, text="Salvar preset", command=self._save_preset).pack(side="right", padx=3)
+        ttk.Button(brand_row, text="Carregar preset", command=self._load_preset).pack(side="right", padx=3)
+        ttk.Button(brand_row, text="Restaurar padrões", command=self._reset_defaults).pack(side="right", padx=3)
+
+        ttk.Separator(shell, orient="horizontal").pack(fill="x", padx=10, pady=2)
+
+        action_row = ttk.Frame(shell)
+        action_row.pack(fill="x", padx=10, pady=(2, 6))
+        ttk.Label(action_row, text="ANÁLISES", font=("Segoe UI", 9, "bold")).pack(side="left", padx=(0, 8))
 
         actions = [
-            ("2D (F/R)",       self._calc_2d_front_rear),
-            ("Análise 3D",     self._calc_3d),
-            ("Visual 3D",      self._calc_full_3d),
-            ("Alinhamento",    self._calc_alignment_tab),
-            ("Cinemática",     self._run_kinematic_sweep),
-            ("Panhard",        self._calc_panhard_moments),
-            ("CG Sweep",       self._run_cg_sweep),
-            ("Mass Sweep",     self._run_mass_sweep),
-            ("Estrutura",      self._run_opt),
+            ("Geometria 2D", self._calc_2d_front_rear),
+            ("Análise 3D", self._calc_3d),
+            ("Visualização 3D", self._calc_full_3d),
+            ("Alinhamento", self._calc_alignment_tab),
+            ("Cinemática / Curso", self._run_kinematic_sweep),
+            ("Panhard", self._calc_panhard_moments),
+            ("Varredura CG", self._run_cg_sweep),
+            ("Varredura de massa", self._run_mass_sweep),
+            ("Estrutura", self._run_opt),
         ]
         for txt, cmd in actions:
-            ttk.Button(bar, text=txt, command=cmd).pack(side="left", padx=4, pady=6)
+            ttk.Button(action_row, text=txt, command=cmd).pack(side="left", padx=3)
 
-        ttk.Separator(bar, orient="vertical").pack(side="left", fill="y", padx=12)
-
-        ttk.Button(bar, text="Salvar preset", command=self._save_preset).pack(side="left", padx=4)
-        ttk.Button(bar, text="Carregar preset", command=self._load_preset).pack(side="left", padx=4)
-        ttk.Button(bar, text="Reset defaults", command=self._reset_defaults).pack(side="left", padx=4)
+        ttk.Button(action_row, text="Engenharia Avançada v2.0", command=self._open_advanced_engineering).pack(side="left", padx=4)
 
     def _build_statusbar(self):
-        self.status_var = tk.StringVar(value="Pronto.")
+        self.status_var = tk.StringVar(value="MudRunner | Sistema pronto para análise.")
         bar = ttk.Frame(self.root)
         bar.pack(fill="x", side="bottom")
         ttk.Label(bar, textvariable=self.status_var).pack(side="left", padx=10, pady=4)
@@ -788,6 +902,10 @@ class App:
         self._update_2d_summary_label()
         self.canvas_2d.draw()
         self._set_status("✅ 2D calculado (Front + Rear).")
+        self._publish_report(self.report_engine.report_2d(
+            self.last_2d_results.get("front", {}).get("h_ro"),
+            self.last_2d_results.get("rear", {}).get("h_ro"), self._read("hcg")
+        ))
 
     def _update_2d_summary_label(self):
         f = self.last_2d_results.get("front", {}).get("h_ro")
@@ -796,12 +914,9 @@ class App:
         r_str = f"{r:.1f} mm" if r is not None else "--"
         self.lbl_2d_res.config(text=f"FRONT h_Ro={f_str} | REAR h_Ro={r_str}")
 
-        def h(v):
-            return "--" if (v is None or getattr(v, "h_ro", None) is None) else f"{v.h_ro:.1f} mm"
-
         self.lbl_2d_res.config(text=(
-            f"FRONT type={self.var_front_type.get()} | h_Ro={h(f)}\n"
-            f"REAR  type={self.var_rear_type.get()} | h_Ro={h(r)}"
+            f"FRONT type={self.var_front_type.get()} | h_Ro={f_str}\n"
+            f"REAR  type={self.var_rear_type.get()} | h_Ro={r_str}"
         ))
 
     # =========================================================================
@@ -839,6 +954,7 @@ class App:
             f"REAR: Cam={rear['avg_camber_deg']:.3f}° Cas={rear['avg_caster_deg']:.3f}° Toe={rear['avg_toe_deg']:.3f}°"
         ))
         self._set_status("✅ Alinhamento calculado (4 cantos + médias).")
+        self._publish_report(self.report_engine.report_alignment(self.last_alignment))
 
     # =========================================================================
     # PANHARD
@@ -864,6 +980,7 @@ class App:
         zebra_stripes(self.tree_panhard)
         autosize_treeview_columns(self.tree_panhard)
         self._set_status("✅ Panhard calculada (força + momentos nos suportes).")
+        self._publish_report(self.report_engine.report_panhard(self.last_panhard))
         self.content_area.select(self.tab_panhard)
 
     def _calc_panhard_one(self, axis: str, share: float):
@@ -993,6 +1110,7 @@ class App:
 
         self.lbl_3d_res.config(text="\n".join(lines))
         self._set_status(f"✅ Análise 3D completa — canto {corner}.")
+        self._publish_report(self.report_engine.report_3d(result, corner))
 
     def _calc_full_3d(self):
         ax = self.ax_vis3d
@@ -1184,6 +1302,7 @@ class App:
 
         self.canvas_cg.draw()
         self._set_status(f"✅ CG Sweep concluído ({len(results)} pontos).")
+        self._publish_report(self.report_engine.report_sweep("cg", results))
 
     def _run_mass_sweep(self):
         if not SuspensionOrchestrator:
@@ -1212,6 +1331,7 @@ class App:
         zebra_stripes(self.tree_mass)
         autosize_treeview_columns(self.tree_mass)
         self._set_status(f"✅ Mass Sweep concluído ({len(results)} pontos).")
+        self._publish_report(self.report_engine.report_sweep("mass", results))
 
     def _run_opt(self):
         if not SuspensionOrchestrator: return
@@ -1241,6 +1361,7 @@ class App:
         self.ax_opt.legend()
         self.canvas_opt.draw()
         self.content_area.select(self.tab_opt)
+        self._publish_report(self.report_engine.report_structural(results, self._read("limit")))
 
     # =========================================================================
     # VIEW CONTROL (3D)
@@ -1289,6 +1410,7 @@ class App:
         self.tab_panhard = ttk.Frame(self.content_area)
         self.tab_dyn     = ttk.Frame(self.content_area)
         self.tab_opt     = ttk.Frame(self.content_area)
+        self.tab_report  = ttk.Frame(self.content_area)
 
         self.content_area.add(self.tab_2d,      text="Resultados 2D")
         self.content_area.add(self.tab_3d,      text="Análise 3D Completa")
@@ -1298,6 +1420,7 @@ class App:
         self.content_area.add(self.tab_panhard, text="Panhard")
         self.content_area.add(self.tab_dyn,     text="Dinâmica")
         self.content_area.add(self.tab_opt,     text="Otimização")
+        self.content_area.add(self.tab_report,  text="Relatórios técnicos")
 
         self._setup_res_2d(self.tab_2d)
         self._setup_res_3d(self.tab_3d)
@@ -1307,6 +1430,7 @@ class App:
         self._setup_res_panhard(self.tab_panhard)
         self._setup_res_dyn(self.tab_dyn)
         self._setup_res_opt(self.tab_opt)
+        self._setup_res_report(self.tab_report)
 
     def _setup_res_2d(self, parent):
         sec = CollapsibleSection(parent, "Resumo 2D", initially_open=True)
@@ -1450,6 +1574,7 @@ class App:
         self.ax_kinswp.legend(fontsize=8)
         self.canvas_kinswp.draw()
         self._set_status(f"✅ Cinemática sweep — canto {corner} ({len(results)} pontos).")
+        self._publish_report(self.report_engine.report_kinematics(results, corner))
 
     def _setup_res_panhard(self, parent):
         top = ttk.Frame(parent, padding=10)
@@ -1529,6 +1654,34 @@ class App:
         self.fig_opt, self.ax_opt = plt.subplots(figsize=(5, 3))
         self.canvas_opt = FigureCanvasTkAgg(self.fig_opt, master=sec_plot.body)
         self.canvas_opt.get_tk_widget().pack(fill="both", expand=True)
+
+    def _setup_res_report(self, parent):
+        header = ttk.Frame(parent, padding=12)
+        header.pack(fill="x")
+        ttk.Label(header, text="RELATÓRIO DE ENGENHARIA", font=("Segoe UI", 13, "bold")).pack(side="left")
+        self.lbl_report_score = ttk.Label(header, text="Aguardando cálculo", font=("Segoe UI", 11, "bold"))
+        self.lbl_report_score.pack(side="left", padx=24)
+        ttk.Button(header, text="Exportar TXT/JSON", command=self._export_latest_report).pack(side="right")
+
+        body = ttk.Panedwindow(parent, orient="horizontal")
+        body.pack(fill="both", expand=True, padx=12, pady=(0, 12))
+        history_frame = ttk.Frame(body, padding=6)
+        report_frame = ttk.Frame(body, padding=6)
+        body.add(history_frame, weight=1)
+        body.add(report_frame, weight=4)
+
+        ttk.Label(history_frame, text="Histórico da sessão", font=("Segoe UI", 10, "bold")).pack(anchor="w", pady=(0, 6))
+        self.report_history_list = tk.Listbox(history_frame, width=42, exportselection=False)
+        self.report_history_list.pack(fill="both", expand=True)
+        self.report_history_list.bind("<<ListboxSelect>>", self._select_report_history)
+
+        self.report_text = tk.Text(report_frame, wrap="word", font=("Consolas", 10), padx=12, pady=12)
+        scroll = ttk.Scrollbar(report_frame, orient="vertical", command=self.report_text.yview)
+        self.report_text.configure(yscrollcommand=scroll.set)
+        scroll.pack(side="right", fill="y")
+        self.report_text.pack(fill="both", expand=True)
+        self.report_text.insert("1.0", "Execute um cálculo. Cada análise produzirá um relatório com índice, comparação, constatações, recomendações e referências bibliográficas.")
+        self.report_text.configure(state="disabled")
 
     # =========================================================================
     # PERSISTÊNCIA E UTILITÁRIOS

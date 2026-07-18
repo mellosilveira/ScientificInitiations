@@ -1,7 +1,7 @@
 import math
 from typing import Tuple
-from models.primitives import Point3D, Vector3D
-from models.lines import LineCoefficients3D
+from models.primitives import Point2D, Point3D, Vector3D
+from models.lines import LineCoefficients2D, LineCoefficients3D
 from models.suspension import Suspension
 from models.numerical import SolverParameters
 from models.results import RollCenterResult, TireAnglesResult, KingpingResult, LongitudinalResult, AlignmentMetricsResult, SteeringMetricsResult
@@ -18,14 +18,50 @@ def get_effective_diameter(geo: Suspension) -> float:
     return get_effective_radius(geo) * 2.0
 
 def calculate_lateral_instantaneous_center(geo: Suspension) -> tuple:
+    """Calcula o centro instantâneo longitudinal na vista lateral (plano Y-Z).
+
+    A implementação anterior intersectava os eixos internos dos braços. Como os
+    dois eixos são normalmente paralelos, a interseção retornava ``None`` e o
+    cálculo 3D falhava ao tentar acessar ``None.x``. Para anti-dive/anti-squat,
+    devem ser intersectadas as linhas que unem o centro dos pivôs internos aos
+    pivôs externos, projetadas na vista lateral.
+
+    Retorna ``(None, vetor_zero, 0.0)`` quando a geometria é paralela ou
+    degenerada, permitindo que a interface continue funcionando sem inventar
+    um centro instantâneo inexistente.
+    """
     reference_point = geo.tire_contact
     if geo.brake_on_shaft:
         reference_point = reference_point + Point3D(0, get_effective_radius(geo), 0)
 
-    lateral_instantaneous_center = geo.upper_arm.outer_line.intersect(geo.lower_arm.outer_line)
+    upper_inner = geo.upper_arm.centroid_inner
+    lower_inner = geo.lower_arm.centroid_inner
+    upper_outer = geo.upper_arm.outer
+    lower_outer = geo.lower_arm.outer
+
+    # Vista lateral: coordenada horizontal = Z; coordenada vertical = Y.
+    line_upper = LineCoefficients2D(
+        Point2D(upper_inner.z, upper_inner.y),
+        Point2D(upper_outer.z, upper_outer.y),
+    )
+    line_lower = LineCoefficients2D(
+        Point2D(lower_inner.z, lower_inner.y),
+        Point2D(lower_outer.z, lower_outer.y),
+    )
+    ic_yz = line_upper.intersect(line_lower)
+
+    if ic_yz is None:
+        return None, Vector3D(0.0, 0.0, 0.0), 0.0
+
+    lateral_instantaneous_center = Point3D(
+        reference_point.x, ic_yz.y, ic_yz.x
+    )
     vector = Vector3D.from_points(lateral_instantaneous_center, reference_point)
+    if abs(vector.z) < EPSILON:
+        return lateral_instantaneous_center, vector, 0.0
+
     tan_angle = vector.y / vector.z
-    return [lateral_instantaneous_center, vector, tan_angle]
+    return lateral_instantaneous_center, vector, tan_angle
 
 def calculate_camber_angle(geo: Suspension) -> float:
     return math.atan(geo.camber_gap / get_effective_diameter(geo))
