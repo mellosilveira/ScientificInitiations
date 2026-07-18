@@ -4,7 +4,7 @@ from models.component_structures import ThreePointArm, TwoPointLink2D, TwoPointL
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
-class VehycleParameters:
+class VehicleParameters:
     vehicle_center_line: LineCoefficients3D
     gravity_center: Point3D
     wheelbase: float
@@ -12,6 +12,10 @@ class VehycleParameters:
     rear_brake_percentage: float
     track_width: float
     kingpin_track: float
+
+# Compatibilidade com versões anteriores. Remover em uma futura versão principal.
+VehycleParameters = VehicleParameters
+
 
 @dataclass(frozen=True)
 class Suspension2D:
