@@ -1,14 +1,11 @@
-# MudRunner Engineering Suite v2.0
+# MudRunner Engineering Suite v3.0
 
 ## Recursos
-- Ackermann ideal e paramétrico
-- Sweep bump/rebound
-- Bump steer
-- Camber/caster/KPI
-- Scrub e trail
-- Variação de bitola/entre-eixos
-- Motion ratio
-- Wheel rate, ride rate e frequência natural
+- Tudo da 2.5
+- Monte Carlo de tolerâncias
+- Base para rastreabilidade industrial
+- Comparação e exportação serializável
+- Arquitetura pronta para banco de projetos e FEA
 
 ## Validação necessária
 Os cálculos paramétricos servem como triagem de engenharia. Antes de aprovação do veículo, validar hardpoints reais, convenção de eixos, pneus, massa, amortecedores e ensaios no Adams/Car e em pista.

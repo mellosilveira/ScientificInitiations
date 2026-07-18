@@ -304,7 +304,7 @@ def cross(a: Vec3, b: Vec3) -> Vec3:
 class App:
     def __init__(self, root: tk.Tk):
         self.root = root
-        self.root.title("MudRunner — Baja Suspension Engineering Suite v2.0")
+        self.root.title("MudRunner — Baja Suspension Engineering Suite v3.0")
         self.root.geometry("1600x900")
         self.root.minsize(1180, 720)
         self.root.configure(bg=_BG)
@@ -421,7 +421,7 @@ class App:
 
 
     def _open_advanced_engineering(self):
-        AdvancedEngineeringWindow(self.root, level="2.0")
+        AdvancedEngineeringWindow(self.root, level="3.0")
 
     # =========================================================================
     # HELPERS DE UI
@@ -655,7 +655,7 @@ class App:
         for txt, cmd in actions:
             ttk.Button(action_row, text=txt, command=cmd).pack(side="left", padx=3)
 
-        ttk.Button(action_row, text="Engenharia Avançada v2.0", command=self._open_advanced_engineering).pack(side="left", padx=4)
+        ttk.Button(action_row, text="Avançado", command=self._open_advanced_engineering).pack(side="left", padx=4)
 
     def _build_statusbar(self):
         self.status_var = tk.StringVar(value="MudRunner | Sistema pronto para análise.")
