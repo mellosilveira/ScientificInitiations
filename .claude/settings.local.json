@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find '/d/Mello Silveira Serviços LTDA/Projetos/ScientificInitiations/' -maxdepth 2 -type f \\\\\\(-name README* -o -name *.md -o -name package.json -o -name pyproject.toml -o -name Cargo.toml -o -name Makefile -o -name .cursorrules -o -name .env* \\\\\\))",
+      "Bash(xargs head:*)",
+      "Bash(find '/d/Mello Silveira Serviços LTDA/Projetos/ScientificInitiations' -maxdepth 2 -type d ! -path */.git* ! -path */.vs* ! -path */build* ! -path */obj* ! -path */bin*)",
+      "Bash(python3 -m py_compile models/*.py)",
+      "Bash(grep -n \"^class \" \"/d/Mello Silveira Serviços LTDA/Projetos/ScientificInitiations/Formula and Baja SAE/Suspension/python/orchestrators\"/*.py)"
+    ]
+  }
+}
